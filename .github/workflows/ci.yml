@@ -1,0 +1,167 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # 06:00 UTC every Monday: the slow searches and the sample puzzles, which
+    # are too expensive to run on every push.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # No install step: the package has zero runtime dependencies and the
+      # language model ships in the repository, so the suite runs from a checkout.
+      #
+      # Failures are re-emitted as workflow annotations: the log archive lives on
+      # a host that is not always reachable from a sandbox, and annotations are
+      # readable through the API, so a red run still says *which* test failed.
+      - name: Unit tests
+        env:
+          BUTTCRACK_STRICT: "1"
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -t . -v 2>&1 | tee unit.log || {
+            grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
+            # The cause is at the *end* of each traceback, so dump the tail of the
+            # failure block rather than its head.
+            sed -n '/^====/,$p' unit.log | tail -n 90 | sed 's/^/::notice::/'
+            exit 1
+          }
+
+      - name: Doctests
+        run: python scripts/run_doctests.py
+
+      - name: Self-test (quick)
+        run: python -m buttcrack selftest --quick
+
+      - name: CLI smoke test
+        run: |
+          python -m buttcrack ciphers | grep -q "35 ciphers"
+          python -m buttcrack "Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj" --json \
+            | python -c "import json,sys; r=json.load(sys.stdin); assert r['solved'], r; assert r['best']['cipher'] in ('caesar','rot13'), r; print('crack ok:', r['best']['key'])"
+          python -m buttcrack encrypt vigenere --key LEMON "meet me at noon" | grep -qi "xiqh"
+          python -m buttcrack identify "Wkh txlfn eurzq ira" | grep -qi caesar
+
+  package:
+    name: package builds and installs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+
+      - name: Install the wheel somewhere else
+        run: |
+          python -m pip install dist/*.whl
+          cd /tmp
+          python -c "import buttcrack; print('version', buttcrack.__version__); print('ciphers', len(buttcrack.CIPHERS))"
+          # The data files and the static web UI must be inside the wheel, or an
+          # installed buttcrack has no language model and no interface.
+          python -c "
+          from importlib import resources
+          import buttcrack
+          data = resources.files('buttcrack') / 'data'
+          static = resources.files('buttcrack') / 'static'
+          assert (data / 'english_quadgrams.txt.gz').is_file(), 'language model missing from the wheel'
+          assert (static / 'index.html').is_file(), 'web UI missing from the wheel'
+          print('package data ok')
+          "
+          buttcrack ciphers | grep -q "35 ciphers"
+          buttcrack "Zdvkph dw gdzq" --json | python -c "import json,sys; assert json.load(sys.stdin)['solved']"
+
+  slow:
+    name: slow searches and sample puzzles
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests including the expensive searches
+        env:
+          BUTTCRACK_STRICT: "1"
+          BUTTCRACK_SLOW: "1"
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -t . 2>&1 | tee unit.log || {
+            grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
+            sed -n '/^====/,$p' unit.log | tail -n 90 | sed 's/^/::notice::/'
+            exit 1
+          }
+
+      - name: Self-test (full)
+        run: python -m buttcrack selftest --slow
+
+      - name: Sample puzzles
+        run: python examples/generate.py --check
+
+  web:
+    name: web interface
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Serve and exercise the API
+        run: |
+          python -m buttcrack serve --host 127.0.0.1 --port 8080 --no-browser &
+          SERVER=$!
+          for i in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8080/api/health >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8080/api/health | python -c "import json,sys; h=json.load(sys.stdin); assert h['ciphers'] == 35, h; print('health ok', h['version'])"
+          curl -fsS http://127.0.0.1:8080/ | grep -q "<title>"
+          curl -fsS http://127.0.0.1:8080/api/ciphers | python -c "import json,sys; assert len(json.load(sys.stdin)) == 35"
+          curl -fsS -X POST http://127.0.0.1:8080/api/identify \
+               -H 'content-type: application/json' \
+               -d '{"text":"Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj"}' \
+            | python -c "import json,sys; r=json.load(sys.stdin); assert any(h['cipher']=='caesar' for h in r['hypotheses']), r"
+          curl -fsS -X POST http://127.0.0.1:8080/api/transform \
+               -H 'content-type: application/json' \
+               -d '{"cipher":"vigenere","key":"LEMON","text":"Meet me at noon.","operation":"encrypt"}' \
+            | python -c "import json,sys; r=json.load(sys.stdin); assert r['output'] == 'Xiqh zp ef bbzr.', r"
+          # Traversal and unknown routes must be refused, not served.
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/nope)" = "404"
+          test "$(curl -s -o /dev/null -w '%{http_code}' 'http://127.0.0.1:8080/../cli.py')" != "200"
+          kill $SERVER

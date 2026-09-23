@@ -1,0 +1,24 @@
+{
+  "bigram_p": 0.5,
+  "bigrams_distinct": 676,
+  "bigrams_total": 110387612,
+  "build_seconds": {
+    "ngrams": 21.4
+  },
+  "built_at": "2026-09-23T14:23:20Z",
+  "dictionary_words": 80000,
+  "generator": "scripts/build_language_model.py",
+  "letters": 110387615,
+  "min_count": 50000,
+  "quadgrams_distinct": 258337,
+  "quadgrams_total": 110387612,
+  "sampled_words": 25000000,
+  "seed": 20260923,
+  "sources": {
+    "pyspellchecker": "0.9.0 (MIT) -- word frequency dictionary",
+    "wordsegment": "1.3.1 (Apache-2.0) -- Norvig unigram/bigram lists"
+  },
+  "trigrams_distinct": 16935,
+  "trigrams_total": 110387612,
+  "vocab_size": 148546
+}

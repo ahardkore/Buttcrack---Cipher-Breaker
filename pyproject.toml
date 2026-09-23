@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buttcrack"
+version = "1.0.0"
+description = "Automatic cipher breaker: identifies the cipher, recovers the key, reads the plaintext — including layered puzzles."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "ahardkore" }]
+keywords = [
+  "cryptography",
+  "cipher",
+  "cryptanalysis",
+  "caesar",
+  "vigenere",
+  "transposition",
+  "xor",
+  "ctf",
+  "puzzle",
+  "classical-ciphers",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Education",
+  "Topic :: Security :: Cryptography",
+  "Typing :: Typed",
+]
+
+# Zero runtime dependencies.  The language model ships inside the package and the
+# web interface is http.server plus three static files, so `pip install buttcrack`
+# is the whole installation.
+dependencies = []
+
+[project.optional-dependencies]
+dev = []
+
+[project.urls]
+Homepage = "https://github.com/ahardkore/buttcrack"
+Repository = "https://github.com/ahardkore/buttcrack"
+Issues = "https://github.com/ahardkore/buttcrack/issues"
+
+[project.scripts]
+buttcrack = "buttcrack.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["buttcrack*"]
+exclude = ["tests*", "scripts*", "examples*", "docs*"]
+
+[tool.setuptools.package-data]
+# The n-gram tables and the dictionary are data, not generated build artefacts:
+# without them the scorer has nothing to score against.
+buttcrack = ["data/*.gz", "data/*.json", "static/*.html", "static/*.css", "static/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 118
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+ignore = [
+  "E501",   # line length is handled by the formatter; comments and tables run long
+  "B008",   # function calls in argument defaults are fine for dataclass-free code
+  "SIM108", # a ternary is not always clearer than the if/else it replaces
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]

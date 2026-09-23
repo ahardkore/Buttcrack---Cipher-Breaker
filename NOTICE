@@ -1,0 +1,42 @@
+buttcrack
+Copyright (c) 2026 ahardkore and buttcrack contributors
+
+This product is licensed under the MIT License (see LICENSE).
+
+---------------------------------------------------------------------------
+Bundled language model
+---------------------------------------------------------------------------
+
+The files under `buttcrack/data/` are a derived statistical model of English,
+built by `scripts/build_language_model.py`. They are not source code and not
+secret material: they are letter n-gram counts and a word-frequency dictionary
+used to judge whether a candidate decryption reads as English.
+
+The model is derived from two openly licensed upstream sources, both fetched
+from PyPI at build time:
+
+  * wordsegment 1.3.1 -- Apache License 2.0
+    Supplies the unigram and bigram frequency lists originally compiled by
+    Peter Norvig from the Google Web 1T corpus (1/ngram, "Web 1T corpus",
+    distributed by the LDC). buttcrack uses the derived frequency tables, not
+    the library itself.
+      https://pypi.org/project/wordsegment/
+
+  * pyspellchecker 0.9.0 -- MIT License
+    Supplies the English word-frequency dictionary from which the 80,000 most
+    common words were taken.
+      https://pypi.org/project/pyspellchecker/
+
+`buttcrack/data/model_meta.json` records the exact versions, the sampling seed,
+the corpus size (25,000,000 words) and the resulting table sizes, so a build is
+reproducible and the provenance travels with the data.
+
+Neither upstream project endorses this one. The Apache-2.0 and MIT notices above
+are reproduced in summary form; the full license texts are available from the
+respective project pages.
+
+---------------------------------------------------------------------------
+Third-party runtime dependencies
+---------------------------------------------------------------------------
+
+None. buttcrack uses only the Python standard library at runtime.
