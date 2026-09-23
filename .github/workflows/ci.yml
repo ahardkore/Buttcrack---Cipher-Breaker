@@ -35,10 +35,21 @@ jobs:
 
       # No install step: the package has zero runtime dependencies and the
       # language model ships in the repository, so the suite runs from a checkout.
+      #
+      # Failures are re-emitted as workflow annotations: the log archive lives on
+      # a host that is not always reachable from a sandbox, and annotations are
+      # readable through the API, so a red run still says *which* test failed.
       - name: Unit tests
         env:
           BUTTCRACK_STRICT: "1"
-        run: python -m unittest discover -s tests -t . -v
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -t . -v 2>&1 | tee unit.log || {
+            grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
+            grep -E "^(FAIL|ERROR):" -A 14 unit.log | sed 's/^/::notice::/' | head -120
+            tail -5 unit.log | sed 's/^/::error::/'
+            exit 1
+          }
 
       - name: Doctests
         run: python scripts/run_doctests.py
@@ -105,7 +116,13 @@ jobs:
         env:
           BUTTCRACK_STRICT: "1"
           BUTTCRACK_SLOW: "1"
-        run: python -m unittest discover -s tests -t .
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -t . 2>&1 | tee unit.log || {
+            grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
+            grep -E "^(FAIL|ERROR):" -A 14 unit.log | sed 's/^/::notice::/' | head -120
+            exit 1
+          }
 
       - name: Self-test (full)
         run: python -m buttcrack selftest --slow
