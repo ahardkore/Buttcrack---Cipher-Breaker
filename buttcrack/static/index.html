@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>buttcrack — automatic cipher breaker</title>
+<meta name="description" content="Identify the cipher, recover the key, read the plaintext — including layered and encoded puzzles. Runs entirely in this process: no network, no dependencies.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🔓</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">▚</span>
+    <span class="wordmark">buttcrack</span>
+    <span class="version" id="version"></span>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" class="tab-button active" data-tab="break" aria-selected="true">Break</button>
+    <button role="tab" class="tab-button" data-tab="playground" aria-selected="false">Playground</button>
+    <button role="tab" class="tab-button" data-tab="reference" aria-selected="false">Reference</button>
+    <button role="tab" class="tab-button" data-tab="about" aria-selected="false">About</button>
+  </nav>
+  <div class="health" id="health" title="engine status">…</div>
+</header>
+
+<main>
+
+<!-- ============================== BREAK ============================== -->
+<section class="tab active" id="tab-break" role="tabpanel" aria-label="Break a cipher">
+  <div class="layout">
+    <div class="column-main">
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Ciphertext</h2>
+          <span class="hint">paste anything — prose, hex, base64, Morse, dots and dashes</span>
+        </div>
+        <textarea id="input" spellcheck="false" rows="7"
+          placeholder="Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj&#10;&#10;or try one of the samples below"></textarea>
+
+        <div class="samples" id="samples" aria-label="Sample ciphertexts"></div>
+
+        <details class="advanced" id="advanced">
+          <summary>Search options</summary>
+          <div class="controls">
+            <label>Budget
+              <select id="budget">
+                <option value="5">5 s — quick look</option>
+                <option value="15">15 s</option>
+                <option value="30" selected>30 s — default</option>
+                <option value="60">60 s</option>
+                <option value="120">120 s — deep</option>
+                <option value="300">300 s — everything</option>
+              </select>
+            </label>
+            <label>Workers
+              <select id="workers"></select>
+            </label>
+            <label>Max layers
+              <select id="depth">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+              </select>
+            </label>
+            <label class="check"><input type="checkbox" id="exhaustive"> exhaustive (ignore budget caps)</label>
+          </div>
+          <div class="controls hints">
+            <label>Known key <input id="hint-key" type="text" placeholder="LEMON" autocomplete="off"></label>
+            <label>Key length <input id="hint-len" type="number" min="1" max="40" placeholder="5"></label>
+            <label>Width <input id="hint-width" type="number" min="2" max="40" placeholder="7"></label>
+            <label>Seed <input id="hint-seed" type="number" placeholder="1234"></label>
+            <label class="wide">Crib <input id="hint-crib" type="text" placeholder="a phrase you expect in the plaintext" autocomplete="off"></label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="primary" id="crack">Break it</button>
+          <button id="identify">Identify only</button>
+          <button class="ghost" id="clear">Clear</button>
+          <span class="shortcut">⌘/Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <section class="card" id="progress-card" hidden>
+        <div class="card-head">
+          <h2>Search</h2>
+          <span class="hint" id="progress-state">starting…</span>
+        </div>
+        <div class="meter" aria-hidden="true"><div class="meter-fill" id="progress-bar"></div></div>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </section>
+
+      <section class="card" id="result-card" hidden>
+        <div class="verdict-row">
+          <span class="verdict" id="verdict">—</span>
+          <div class="confidence">
+            <div class="meter"><div class="meter-fill" id="confidence-bar"></div></div>
+            <span class="confidence-value" id="confidence-value"></span>
+          </div>
+          <span class="elapsed" id="elapsed"></span>
+        </div>
+
+        <div class="answer">
+          <div class="answer-head">
+            <h3>Plaintext</h3>
+            <div class="mini-actions">
+              <button class="ghost small" id="copy-plain">Copy</button>
+              <button class="ghost small" id="toggle-formatted">Show raw letters</button>
+            </div>
+          </div>
+          <pre class="plaintext" id="plaintext"></pre>
+        </div>
+
+        <dl class="meta" id="meta"></dl>
+
+        <div class="sub-section" id="alternatives-section" hidden>
+          <h3>Other readings</h3>
+          <p class="hint">Same ciphertext, different explanations — ranked by how well they read as English.</p>
+          <table class="data">
+            <thead><tr><th>#</th><th>Confidence</th><th>Cipher</th><th>Key</th><th>Plaintext</th></tr></thead>
+            <tbody id="alternatives"></tbody>
+          </table>
+        </div>
+
+        <div class="sub-section" id="attacks-section" hidden>
+          <h3>Attack log</h3>
+          <table class="data">
+            <thead><tr><th>Cipher</th><th>Status</th><th>Keys tried</th><th>Best</th><th>Time</th><th>Detail</th></tr></thead>
+            <tbody id="attacks"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card error" id="error-card" hidden>
+        <h2>Something went wrong</h2>
+        <pre id="error-text"></pre>
+      </section>
+    </div>
+
+    <aside class="column-side">
+      <section class="card">
+        <h2>What the text looks like</h2>
+        <dl class="stats" id="stats"><dt>length</dt><dd>—</dd></dl>
+      </section>
+
+      <section class="card">
+        <h2>Hypotheses</h2>
+        <p class="hint">Structural and statistical evidence, before any key is tried.</p>
+        <ol class="hypotheses" id="hypotheses"><li class="empty">run “Identify only” or break a ciphertext</li></ol>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<!-- =========================== PLAYGROUND =========================== -->
+<section class="tab" id="tab-playground" role="tabpanel" aria-label="Cipher playground" hidden>
+  <div class="layout">
+    <div class="column-main">
+      <section class="card">
+        <div class="card-head">
+          <h2>Encrypt &amp; decrypt</h2>
+          <span class="hint">every cipher in the registry, with its own key format</span>
+        </div>
+        <div class="controls">
+          <label>Cipher <select id="pg-cipher"></select></label>
+          <label>Key <input id="pg-key" type="text" autocomplete="off" spellcheck="false"></label>
+          <div class="segmented" role="group" aria-label="Operation">
+            <button class="active" id="pg-encrypt" data-op="encrypt">Encrypt</button>
+            <button id="pg-decrypt" data-op="decrypt">Decrypt</button>
+          </div>
+        </div>
+        <label class="stacked" for="pg-input">Input</label>
+        <textarea id="pg-input" rows="6" spellcheck="false" placeholder="The quick brown fox jumps over the lazy dog."></textarea>
+        <label class="stacked" for="pg-output">Output</label>
+        <textarea id="pg-output" rows="6" readonly spellcheck="false" placeholder="—"></textarea>
+        <div class="actions">
+          <button class="primary" id="pg-run">Run</button>
+          <button class="ghost" id="pg-copy">Copy output</button>
+          <button class="ghost" id="pg-send">Send to Break tab</button>
+        </div>
+        <p class="hint" id="pg-note"></p>
+      </section>
+    </div>
+    <aside class="column-side">
+      <section class="card">
+        <h2 id="pg-title">Cipher</h2>
+        <p id="pg-description" class="description"></p>
+        <dl class="stats" id="pg-details"></dl>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================ REFERENCE ============================ -->
+<section class="tab" id="tab-reference" role="tabpanel" aria-label="Cipher reference" hidden>
+  <div class="layout">
+    <div class="column-main">
+      <section class="card">
+        <div class="card-head">
+          <h2>Ciphers</h2>
+          <input type="search" id="ref-search" placeholder="filter by name, family or alias…" autocomplete="off">
+        </div>
+        <div id="reference"></div>
+      </section>
+    </div>
+    <aside class="column-side">
+      <section class="card">
+        <h2>Reading a report</h2>
+        <dl class="stats glossary">
+          <dt>confidence</dt><dd>How strongly the recovered text reads as English, tempered by how much evidence the ciphertext actually provided. ≥ 0.62 is reported as solved; ≥ 0.86 stops the search.</dd>
+          <dt>path</dt><dd>The decode chain, outermost layer first: <code>base64 -&gt; base16 -&gt; xor_repeating</code>.</dd>
+          <dt>index of coincidence</dt><dd>Probability that two random letters match. English ≈ 0.066, random ≈ 0.038, a transposition keeps it, a polyalphabetic cipher flattens it.</dd>
+          <dt>quadgram fitness</dt><dd>Log-probability per letter under a 258k-quadgram English model. Around −4.3 reads as English; below −6 does not.</dd>
+          <dt>evidence cap</dt><dd>A key that holds more secret than the ciphertext can pin down is capped below “solved”: plausible, not proven.</dd>
+        </dl>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================== ABOUT ============================== -->
+<section class="tab" id="tab-about" role="tabpanel" aria-label="About" hidden>
+  <div class="layout">
+    <div class="column-main">
+      <section class="card prose">
+        <h2>What this is</h2>
+        <p>
+          <strong>buttcrack</strong> is an automatic cipher breaker. Give it ciphertext and it works out what was
+          used, recovers the key, and prints the plaintext — including puzzles where an encoding is wrapped
+          around a cipher, or several layers deep.
+        </p>
+        <p>It runs three stages:</p>
+        <ol>
+          <li><strong>Characterise.</strong> Length, alphabet, entropy, index of coincidence, chi-squared against
+            English, structural tells (hex, base64, Morse, Bacon, Polybius, a Polybius grid, URL escapes).</li>
+          <li><strong>Peel.</strong> Any strongly indicated encoding layer is stripped and the inside is attacked
+            recursively, so <code>base64 → hex → XOR</code> is three easy problems rather than one hard one.</li>
+          <li><strong>Attack.</strong> Each cipher has its own cryptanalysis: chi-squared column solving and
+            quadgram hill climbing for Vigenère-family, coset-IC key-length detection plus per-byte solving for
+            repeating-key XOR, simulated annealing and cycle walking for transpositions, an evidence-capped
+            substitution solver.</li>
+        </ol>
+        <p>
+          Scoring uses an English model built from a 25-million-word corpus: <span id="about-quadgrams">quadgram</span>
+          statistics for fitness plus an 80,000-word dictionary for word coverage, blended differently on short
+          texts where quadgrams are unreliable.
+        </p>
+
+        <h2>What it will not do</h2>
+        <p>
+          Modern cryptography is not a puzzle you can read your way out of. AES with a proper key, RSA, ChaCha20,
+          elliptic curves: these have no letter statistics, no periodicity and no structure left to exploit, and
+          brute force against a 128-bit key is not a matter of time. If your ciphertext is one of those, the honest
+          answer is <em>“this is not a classical cipher”</em> — and that is what the detector will say.
+        </p>
+        <p>What it is genuinely good at:</p>
+        <ul>
+          <li>Classical ciphers — Caesar, Vigenère and its variants, autokey, transpositions, Playfair, Bifid,
+            substitution with a mixed alphabet.</li>
+          <li>Encodings and codes — base64/32/16/58/85, binary, URL, Morse, A1Z26, Polybius, Bacon, book ciphers.</li>
+          <li>Byte-level XOR — single byte and repeating key, over hex or base64 payloads.</li>
+          <li>Stacks of the above, in any order, up to the configured depth.</li>
+        </ul>
+
+        <h2>How it is built</h2>
+        <p>
+          Pure Python standard library. No numpy, no requests, no build step, no network access at runtime.
+          The web interface you are looking at is <code>http.server</code> and three static files; the search is
+          the same engine the CLI runs, so <code>python3 -m buttcrack "…"</code> and this page give identical answers.
+        </p>
+        <p class="hint">
+          Command line: <code>buttcrack &lt;ciphertext&gt;</code>, <code>identify</code>, <code>encrypt</code>,
+          <code>decrypt</code>, <code>ciphers</code>, <code>demo</code>, <code>selftest</code>, <code>serve</code>.
+        </p>
+      </section>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span id="footer-status">buttcrack</span>
+  <span class="hint">everything runs in this process — no ciphertext leaves the machine</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
