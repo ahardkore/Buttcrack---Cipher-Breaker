@@ -159,6 +159,23 @@ class TestRegistryCommands(unittest.TestCase):
         self.assertIn("index_of_coincidence", report["stats"])
 
 
+class TestSelfTestFlags(unittest.TestCase):
+    """Parsed, not run: the quick self-test alone takes twenty seconds."""
+
+    def test_quick_and_slow_are_both_spellable(self):
+        # CI runs `selftest --quick`; the flag did not exist and argparse exited 2.
+        parser = cli.build_parser()
+        self.assertTrue(parser.parse_args(["selftest", "--quick"]).quick)
+        self.assertTrue(parser.parse_args(["selftest", "--slow"]).slow)
+        self.assertFalse(parser.parse_args(["selftest"]).slow)
+
+    def test_quick_and_slow_are_mutually_exclusive(self):
+        parser = cli.build_parser()
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit):
+                parser.parse_args(["selftest", "--quick", "--slow"])
+
+
 class TestTopLevel(unittest.TestCase):
     def test_no_arguments_prints_help(self):
         code, out, _ = run()

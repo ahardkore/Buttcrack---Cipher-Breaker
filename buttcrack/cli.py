@@ -788,7 +788,13 @@ def build_parser() -> argparse.ArgumentParser:
     demo.set_defaults(func=cmd_demo)
 
     selftest = sub.add_parser("selftest", help="verify the installation against known answers")
-    selftest.add_argument("--slow", action="store_true", help="include the expensive searches")
+    # Quick is the default, but saying so out loud is worth the flag: "run the
+    # cheap checks" and "run everything" should both be spellable.
+    scope = selftest.add_mutually_exclusive_group()
+    scope.add_argument("--slow", action="store_true",
+                       help="include the expensive searches (substitution, Playfair, Bifid)")
+    scope.add_argument("--quick", action="store_true",
+                       help="skip the expensive searches (this is the default)")
     selftest.add_argument("--verbose", "-v", action="store_true")
     selftest.add_argument("--json", action="store_true")
     selftest.add_argument("--workers", "-w", type=int, default=os.cpu_count() or 1)
