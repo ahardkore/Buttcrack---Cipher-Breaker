@@ -17,6 +17,8 @@ services, no dependencies. See :mod:`buttcrack.engine` for the search,
 the algorithms themselves.
 """
 
+from __future__ import annotations
+
 from typing import Any
 
 from .ciphers import (
@@ -33,6 +35,7 @@ from .detect import TextStats, characterise, identify
 from .engine import Solver, solve
 from .results import AttackLog, Candidate, CrackReport, Hypothesis
 from .text import best_key_length, frequencies, normalise, restore_shape
+
 
 def encrypt(plaintext: str, cipher: str | Cipher, key: Any = None) -> str:
     """Encrypt ``plaintext`` with a named cipher.

@@ -46,8 +46,9 @@ jobs:
           set -o pipefail
           python -m unittest discover -s tests -t . -v 2>&1 | tee unit.log || {
             grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
-            grep -E "^(FAIL|ERROR):" -A 14 unit.log | sed 's/^/::notice::/' | head -120
-            tail -5 unit.log | sed 's/^/::error::/'
+            # The cause is at the *end* of each traceback, so dump the tail of the
+            # failure block rather than its head.
+            sed -n '/^====/,$p' unit.log | tail -n 90 | sed 's/^/::notice::/'
             exit 1
           }
 
@@ -120,7 +121,7 @@ jobs:
           set -o pipefail
           python -m unittest discover -s tests -t . 2>&1 | tee unit.log || {
             grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
-            grep -E "^(FAIL|ERROR):" -A 14 unit.log | sed 's/^/::notice::/' | head -120
+            sed -n '/^====/,$p' unit.log | tail -n 90 | sed 's/^/::notice::/'
             exit 1
           }
 
