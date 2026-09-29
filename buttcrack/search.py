@@ -18,11 +18,11 @@ import multiprocessing
 import os
 import random
 import time
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Sequence
+from typing import Any, Callable
 
-from .lang import CERTAIN_CONFIDENCE, get_model
-from .results import Candidate
+from .lang import CERTAIN_CONFIDENCE
 from .text import A26
 
 

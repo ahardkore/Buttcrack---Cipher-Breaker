@@ -28,14 +28,14 @@ from __future__ import annotations
 
 import random
 import time
-from collections import Counter
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..lang import get_model
 from ..results import Candidate
 from ..search import parallel_restarts, restart_search
 from ..text import A25, A26, index_of_coincidence, letters_only
-from .base import EXPENSIVE, BRUTAL, Cipher, CipherInfo, CrackContext, Family
+from .base import BRUTAL, EXPENSIVE, Cipher, CipherInfo, CrackContext, Family
 
 
 def make_grid(keyword: str, alphabet: str = A25) -> str:
@@ -218,6 +218,7 @@ class Playfair(Cipher):
                 (ctx.hints.get("seed", 99) + i * 6151) % (2**31 - 1),
                 ctx.deadline,
                 ctx.deadline,
+                ctx.model.language,
             )
             for i in range(workers)
         ]
@@ -231,7 +232,7 @@ class Playfair(Cipher):
             return
         results.sort(key=lambda r: (-r[1], -r[2]))
         seen = set()
-        for grid, conf, fit, iterations in results:
+        for grid, conf, _fit, iterations in results:
             if grid in seen:
                 continue
             seen.add(grid)
@@ -286,13 +287,13 @@ def _playfair_ensemble_worker(payload: tuple) -> tuple:
     from several near misses.  They share a strict wall-clock slice rather than
     being run as two independent budget consumers.
     """
-    stream, seed, deadline, hard_deadline = payload
+    stream, seed, deadline, hard_deadline, language = payload
     now = time.time()
     if now >= hard_deadline:
         return "", 0.0, -99.0, 0
     anneal_deadline = min(deadline, now + (deadline - now) * 0.42)
-    annealed = _playfair_anneal_worker((stream, seed, anneal_deadline, hard_deadline))
-    genetic = _playfair_worker((stream, seed + 104729, deadline, hard_deadline))
+    annealed = _playfair_anneal_worker((stream, seed, anneal_deadline, hard_deadline, language))
+    genetic = _playfair_worker((stream, seed + 104729, deadline, hard_deadline, language))
     return max((annealed, genetic), key=lambda result: (result[2], result[1]))
 
 
@@ -304,8 +305,8 @@ def _playfair_anneal_worker(payload: tuple) -> tuple:
     conventional local search.  The fitness window is intentionally capped
     while the grid is noise, then the winning grid is scored on the full text.
     """
-    stream, seed, deadline, hard_deadline = payload
-    model = get_model()
+    stream, seed, deadline, hard_deadline, language = payload
+    model = get_model(language)
     rng = random.Random(seed)
     n = len(stream)
     window = min(n, PLAYFAIR_SEED_WINDOW)
@@ -378,8 +379,8 @@ def _playfair_worker(payload: tuple) -> tuple:
     Runs until the deadline in the payload, so the engine keeps control of the
     total budget.
     """
-    stream, seed, deadline, hard_deadline = payload
-    model = get_model()
+    stream, seed, deadline, hard_deadline, language = payload
+    model = get_model(language)
     rng = random.Random(seed)
     n = len(stream)
     pairs = [(x, y) for x in range(25) for y in range(x + 1, 25)]
@@ -638,7 +639,14 @@ class Bifid(Cipher):
                 continue
             restarts = 4 if len(stream) >= 300 else 8
             payloads = [
-                (stream, restarts, (ctx.hints.get("seed", 7) + i * 31 + period) % (2**31 - 1), period, 2500)
+                (
+                    stream,
+                    restarts,
+                    (ctx.hints.get("seed", 7) + i * 31 + period) % (2**31 - 1),
+                    period,
+                    2500,
+                    ctx.model.language,
+                )
                 for i in range(max(1, min(ctx.workers, 2)))
             ]
             found = parallel_restarts(_bifid_worker, payloads, len(payloads), ctx.deadline)
@@ -675,15 +683,15 @@ class Bifid(Cipher):
 
 
 def _bifid_worker(payload: tuple) -> tuple:
-    stream, restarts, seed, period, max_evals = payload
-    model = get_model()
+    stream, restarts, seed, period, max_evals, language = payload
+    model = get_model(language)
     rng = random.Random(seed)
     bifid = Bifid()
     grid, plain, fit, conf, evals, used = restart_search(
         stream,
         fitness=model.search_fitness,
         confidence=lambda t: model.score(t).confidence,
-        apply_key=lambda text, key: Bifid()._decrypt_grid(text, "".join(key), period),
+        apply_key=lambda text, key: bifid._decrypt_grid(text, "".join(key), period),
         restarts=restarts,
         rng=rng,
         alphabet=A25,

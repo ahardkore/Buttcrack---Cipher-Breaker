@@ -36,7 +36,7 @@ class TestModelLoading(unittest.TestCase):
         self.assertEqual(model.ngram_count(2), 676)
         self.assertGreater(len(model.words), 10_000)
         self.assertIn("the", model.words)
-        self.assertGreater(model.words["the"], model.words["zymurgy"] if "zymurgy" in model.words else 0)
+        self.assertGreater(model.words["the"], model.words.get("zymurgy", 0))
 
     def test_model_records_its_provenance(self):
         meta = get_model().meta

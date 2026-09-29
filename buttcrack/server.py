@@ -20,6 +20,7 @@ block the rest of the UI.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import socket
@@ -36,9 +37,9 @@ from urllib.parse import urlparse
 
 from . import __version__
 from .ciphers import ALL_CIPHERS, layer_ciphers, try_get
-from .detect import characterise, identify
-from .engine import solve
-from .lang import get_model
+from .detect import identify
+from .engine import solve, solve_auto
+from .lang import LANGUAGES, get_model, resolve_language
 
 STATIC_DIR = Path(__file__).parent / "static"
 MAX_BODY_BYTES = 4 * 1024 * 1024
@@ -98,8 +99,11 @@ class JobStore:
                     }
                 )
 
+        language = str(options.get("language", "english"))
         try:
-            report = solve(
+            solver = solve_auto if language == "auto" else solve
+            extra = {} if language == "auto" else {"language": language}
+            report = solver(
                 options.get("text", ""),
                 budget=float(options.get("budget", 30.0)),
                 workers=int(options.get("workers", 1)),
@@ -107,6 +111,7 @@ class JobStore:
                 hints=options.get("hints") or None,
                 progress=progress,
                 exhaustive=bool(options.get("exhaustive", False)),
+                **extra,
             )
             payload = report.as_dict(max_candidates=int(options.get("candidates", 8)))
             payload["input"] = {
@@ -148,7 +153,7 @@ class Handler(BaseHTTPRequestHandler):
     # -- plumbing ----------------------------------------------------------- #
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002 - stdlib signature
         if os.environ.get("BUTTCRACK_HTTP_LOG"):
-            sys.stderr.write("%s - %s\n" % (self.address_string(), format % args))
+            sys.stderr.write(f"{self.address_string()} - {format % args}\n")
 
     def _send(self, status: int, body: bytes, content_type: str, extra: dict[str, str] | None = None) -> None:
         self.send_response(status)
@@ -200,6 +205,10 @@ class Handler(BaseHTTPRequestHandler):
                         "ciphers": len(ALL_CIPHERS),
                         "layers": [c.info.name for c in layer_ciphers()],
                         "model": get_model().meta,
+                        "languages": [
+                            {"name": name, "quadgrams": get_model(name).ngram_count(4)}
+                            for name in LANGUAGES
+                        ],
                     }
                 )
             if path == "/api/ciphers":
@@ -238,6 +247,7 @@ class Handler(BaseHTTPRequestHandler):
                     "depth": int(_clamp(float(body.get("depth", 3)), 0, 6)),
                     "candidates": int(_clamp(float(body.get("candidates", 8)), 1, 24)),
                     "exhaustive": bool(body.get("exhaustive", False)),
+                    "language": _clean_language(body.get("language", "english")),
                     "hints": _clean_hints(body.get("hints")),
                 }
                 return self._json({"job": JOBS.create(options), "options": options})
@@ -326,6 +336,21 @@ def _clean_hints(raw: Any) -> dict[str, Any]:
     return out
 
 
+def _clean_language(value: Any) -> str:
+    """Whitelist the language option; a bad value falls back, never 500s.
+
+    The UI only offers valid names, but the API is public: ``klingon`` gets
+    English (with the report saying so) rather than a stack trace.
+    """
+    name = str(value or "english").strip().lower()
+    if name in ("auto", "detect"):
+        return "auto"
+    try:
+        return resolve_language(name)
+    except ValueError:
+        return "english"
+
+
 def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) -> int:
     """Run the web interface until interrupted.  Returns a process exit code."""
     ThreadingHTTPServer.allow_reuse_address = True
@@ -341,13 +366,14 @@ def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) ->
     model = get_model()
     print(f"buttcrack {__version__} web interface")
     print(f"  listening on {url}  (bound to {host}:{port})")
-    print(f"  {len(ALL_CIPHERS)} ciphers, {model.ngram_count(4):,} quadgrams, {len(model.words):,} words")
+    print(
+        f"  {len(ALL_CIPHERS)} ciphers, {model.ngram_count(4):,} quadgrams, "
+        f"{len(model.words):,} words, {len(LANGUAGES)} languages"
+    )
     print("  press Ctrl-C to stop")
     if open_browser:
-        try:
+        with contextlib.suppress(Exception):  # headless boxes have no browser; that is fine
             webbrowser.open(url)
-        except Exception:  # headless boxes have no browser; that is fine
-            pass
     try:
         httpd.serve_forever(poll_interval=0.2)
     except KeyboardInterrupt:

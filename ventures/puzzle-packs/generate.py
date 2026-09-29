@@ -182,7 +182,7 @@ def build(puzzles: int, seed: int, title: str) -> str:
             ct = caesar(quote, shift)
             ct_author = caesar(author, shift)
             kind = "Caesar shift"
-            hint_line = f"Hint: this one is a simple letter rotation." if hints else ""
+            hint_line = "Hint: this one is a simple letter rotation." if hints else ""
             answer_key = f"shift of {shift}"
         else:
             key = random_key(rng)

@@ -27,13 +27,22 @@ from __future__ import annotations
 import hashlib
 import os
 import time
-from typing import Any, Callable, Iterable
+from collections.abc import Iterable
+from typing import Any, Callable
 
 from .ciphers import attack_ciphers, layer_ciphers
 from .ciphers.base import BRUTAL, CHEAP, EXPENSIVE, MODERATE, Cipher, CrackContext, Family
-from .detect import characterise, identify
-from .lang import CERTAIN_CONFIDENCE, SOLVED_CONFIDENCE, LanguageModel, get_model
-from .results import AttackLog, Candidate, CrackReport, Hypothesis
+from .detect import identify
+from .lang import (
+    CERTAIN_CONFIDENCE,
+    LANGUAGES,
+    SOLVED_CONFIDENCE,
+    LanguageModel,
+    detect_language,
+    get_model,
+    resolve_language,
+)
+from .results import AttackLog, Candidate, CrackReport
 from .text import letters_only, respaced, restore_shape, trim
 
 #: Families whose ciphers preserve character positions, so the original spacing
@@ -42,7 +51,7 @@ from .text import letters_only, respaced, restore_shape, trim
 #: recorded in the attack log and skipped.
 STRICT_ATTACKS = bool(os.environ.get("BUTTCRACK_STRICT"))
 
-POSITION_PRESERVING = {Family.SHIFT, Family.SUBSTITUTION, Family.POLYALPHABETIC, Family.POLYGRAPHIC}
+POSITION_PRESERVING = {Family.SHIFT, Family.SUBSTITUTION, Family.POLYALPHABETIC, Family.POLYGRAPHIC, Family.WHEEL}
 
 #: Members of those families that do *not* keep a letter in its own position:
 #: ROT47 works over printable ASCII, so a letter can come out as a symbol and a
@@ -51,8 +60,11 @@ POSITION_PRESERVING = {Family.SHIFT, Family.SUBSTITUTION, Family.POLYALPHABETIC,
 LAYOUT_HOSTILE = frozenset({"rot47", "reverse"})
 
 #: Per-attack time slices by cost class.  Cheap attacks are so fast that a hard
-#: cap costs nothing; expensive ones divide what is left.
-PHASE_SLICES = {CHEAP: 3.0, MODERATE: 6.0, EXPENSIVE: 25.0, BRUTAL: 12.0}
+#: cap costs nothing; expensive ones divide what is left.  BRUTAL holds the
+#: searches that cannot promise anything in bounded time (Bifid, M-94); its cap
+#: is high because a wheel-cipher climb measured ~2-in-3 solves inside 20 s on
+#: 250 letters and essentially nothing inside 12.
+PHASE_SLICES = {CHEAP: 3.0, MODERATE: 6.0, EXPENSIVE: 25.0, BRUTAL: 20.0}
 
 
 def fingerprint(text: str) -> str:
@@ -136,11 +148,15 @@ class Solver:
         ciphers: Iterable[Cipher] | None = None,
         hints: dict[str, Any] | None = None,
         exhaustive: bool = False,
+        language: str = "english",
     ):
         self.budget = float(budget)
         self.workers = max(1, int(workers))
         self.max_depth = max_depth
-        self.model = model or get_model()
+        #: ``language`` only names the model to load; an explicit ``model``
+        #: always wins, so callers that built their own model keep control.
+        self.language = resolve_language(language)
+        self.model = model or get_model(self.language)
         self.progress = progress
         self.ciphers = list(ciphers) if ciphers is not None else attack_ciphers()
         self.hints = hints or {}
@@ -160,7 +176,10 @@ class Solver:
     def solve(self, ciphertext: str) -> CrackReport:
         started = time.time()
         text = trim(ciphertext)
-        report = CrackReport(ciphertext=ciphertext, budget=self.budget, workers=self.workers)
+        report = CrackReport(
+            ciphertext=ciphertext, budget=self.budget, workers=self.workers,
+            language=self.model.language,
+        )
         if not text:
             report.elapsed = time.time() - started
             return report
@@ -546,12 +565,42 @@ class Solver:
         report.elapsed = time.time() - started
         if report.best is not None:
             self._present(report, original, stats)
+            self._note_language(report)
         self._say(
             f"{'solved' if report.solved else 'best effort'} in {report.elapsed:.2f}s "
             f"({len(report.attacks)} attacks, confidence {report.confidence:.2f})",
             1.0,
         )
         return report
+
+    def _note_language(self, report: CrackReport) -> None:
+        """Flag a plaintext that reads better under another shipped model.
+
+        The English model happily *solves* French or Italian text -- the
+        languages share enough n-grams that a solve under the wrong model is
+        still the right plaintext -- but it cannot respell the words or
+        honestly say how confident it is.  Ranking the winning plaintext
+        under every model costs one scoring pass and tells the user which
+        ``--language`` would have been the right call.
+        """
+        best = report.best
+        if best is None or len(letters_only(best.plaintext)) < 40:
+            return
+        ranked = detect_language(best.plaintext, limit=2)
+        if not ranked:
+            return
+        language, confidence = ranked[0]
+        if language == self.model.language:
+            return
+        runner_up = ranked[1][1] if len(ranked) > 1 else 0.0
+        if confidence - runner_up < 0.015 or confidence < 0.55:
+            return  # too close to call, or nothing reads like language at all
+        best.notes["language"] = (
+            f"plaintext reads as {language.capitalize()} "
+            f"(confidence {confidence:.2f}); rerun with --language {language} "
+            f"for honest scoring and word respacing"
+        )
+        report.language_detected = language
 
     def _present(self, report: CrackReport, original: str, stats) -> None:
         """Add human-friendly renderings of the winning plaintext."""
@@ -658,8 +707,14 @@ def solve(
     progress: Callable[[str, float, dict], None] | None = None,
     model: LanguageModel | None = None,
     exhaustive: bool = False,
+    language: str = "english",
 ) -> CrackReport:
-    """Convenience wrapper around :class:`Solver`."""
+    """Convenience wrapper around :class:`Solver`.
+
+    ``language`` names one of the shipped plaintext models (see
+    :data:`buttcrack.lang.LANGUAGES`) and is ignored when ``model`` is given.
+    Use :func:`solve_auto` to detect the language instead.
+    """
     return Solver(
         budget=budget,
         workers=workers,
@@ -668,4 +723,97 @@ def solve(
         hints=hints,
         progress=progress,
         exhaustive=exhaustive,
+        language=language,
     ).solve(ciphertext)
+
+
+def solve_auto(
+    ciphertext: str,
+    *,
+    budget: float = 30.0,
+    workers: int = 1,
+    max_depth: int = 3,
+    hints: dict[str, Any] | None = None,
+    progress: Callable[[str, float, dict], None] | None = None,
+    exhaustive: bool = False,
+) -> CrackReport:
+    """Solve under every shipped language model, picking the best fit.
+
+    Ciphertext does not carry a language signal, so detection has to ride on
+    *solving*: each model gets a short probe of the budget, and whichever
+    probe reads the most language gets the remainder.  Cheap ciphers (Caesar,
+    substitution, ...) usually solve outright inside their probe, so the
+    early exit fires and the whole thing costs one short solve; the expensive
+    ciphers are probed by how much their best *partial* reading likes the
+    text, which tracks the language well once 60-odd letters are decrypted.
+
+    Probing is capped at half the budget so an ambiguous text still gets a
+    full-strength solve, and English is probed first so the common case --
+    English after all -- pays for exactly one probe.
+    """
+    started = time.time()
+    order = ["english"] + [name for name in LANGUAGES if name != "english"]
+    probe_budget = max(1.0, min(4.0, budget / 12.0))
+    cap = budget * 0.5
+    probes: dict[str, CrackReport] = {}
+    say = progress or (lambda *_: None)
+    for language in order:
+        if time.time() - started >= cap and probes:
+            break
+        say(f"probing {language}", (time.time() - started) / max(budget, 0.001), {"language": language})
+        probes[language] = solve(
+            ciphertext,
+            budget=probe_budget,
+            workers=workers,
+            max_depth=max_depth,
+            hints=hints,
+            progress=None,
+            exhaustive=exhaustive,
+            language=language,
+        )
+        if probes[language].solved:
+            report = probes[language]
+            # A solve under the wrong model still yields the right plaintext,
+            # but its confidence and word spacing are dishonest.  If the
+            # plaintext clearly reads as another shipped language, spend one
+            # more probe there and prefer that solve when it lands.
+            detected = report.language_detected
+            if detected and detected != language and detected in LANGUAGES:
+                say(f"re-probing {detected}", (time.time() - started) / max(budget, 0.001), {})
+                foreign = solve(
+                    ciphertext,
+                    budget=probe_budget,
+                    workers=workers,
+                    max_depth=max_depth,
+                    hints=hints,
+                    progress=None,
+                    exhaustive=exhaustive,
+                    language=detected,
+                )
+                if foreign.solved:
+                    foreign.budget = budget
+                    return foreign
+                report.language_detected = detected
+            report.budget = budget  # the answer stands for the whole budget
+            return report
+    # No probe solved outright: hand the rest of the budget to whichever
+    # language read the most text so far.  Rank by best confidence, then by
+    # how much was found at all -- a probe that produced nothing scores below
+    # one that produced a partial reading.
+    def probe_rank(language: str) -> tuple[float, float]:
+        report = probes[language]
+        return (report.confidence, 1.0 if report.best else 0.0)
+
+    best_language = max(probes, key=probe_rank)
+    remaining = budget - (time.time() - started)
+    say(f"probes favour {best_language}", (time.time() - started) / max(budget, 0.001), {})
+    return solve(
+        ciphertext,
+        budget=max(remaining, probe_budget),
+        workers=workers,
+        max_depth=max_depth,
+        hints=hints,
+        progress=progress,
+        exhaustive=exhaustive,
+        language=best_language,
+    )

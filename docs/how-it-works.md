@@ -114,6 +114,12 @@ over a shared keyspace interface — that would be both slower and dumber:
 * **transposition** — anagram scoring over key permutations (columnar), rail
   counts (rail fence), route patterns and widths (route), coprime skips (skip).
 * **polygraphic** — a genetic algorithm over 5×5 grids (see below).
+* **wheel** — the M-94 attack hill climbs over pairwise spindle-slot swaps.
+  A swap re-decodes only the text positions whose index mod 25 hits one of the
+  two slots, and each candidate order is scored by its best of 26 read rows
+  (rows are prefiltered on a 60-letter prefix, then the top three are scored in
+  full — 3x faster than scoring all 26, and the same answer on every order that
+  matters). Parallel restarts with an early exit at certainty.
 * **xor** — byte-coset IC for the key length (floor 1/256, at least 8 bytes per
   coset, top 8 candidates plus their divisors), per-byte chi-squared against an
   English *byte* table, then quadgram refinement and polish of up to 40 bytes per
@@ -202,7 +208,7 @@ In rough order of usefulness:
 4. **Read the alternatives.** When two keys fit, the report lists both with their
    scores and the first characters of each plaintext — often the second one is
    the answer and the first is an equivalent attribution.
-5. **Check the caveats.** A `PARTIAL` verdict carries a note saying what was
+5. **Check the caveats.** A `BEST GUESS` verdict carries a note saying what was
    missing: too few letters per key column, a plateau in the search, a layer that
    decoded to something unreadable.
 

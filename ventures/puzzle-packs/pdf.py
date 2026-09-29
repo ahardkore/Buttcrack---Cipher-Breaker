@@ -80,12 +80,12 @@ def escape(s: str) -> str:
         elif " " <= ch <= "~":
             out.append(ch)
         elif ch in WINANSI:
-            out.append("\\%03o" % WINANSI[ch])
+            out.append(f"\\{WINANSI[ch]:03o}")
         elif ch in ASCII_FALLBACK:
             out.append(ASCII_FALLBACK[ch])
         else:
             try:
-                out.append("\\%03o" % ord(ch.encode("latin-1").decode("latin-1")))
+                out.append(f"\\{ord(ch.encode('latin-1').decode('latin-1')):03o}")
             except (UnicodeEncodeError, UnicodeDecodeError):
                 out.append("?")
     return "".join(out)

@@ -22,7 +22,8 @@ permutation.
 from __future__ import annotations
 
 import random
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..lang import CERTAIN_CONFIDENCE, get_model
 from ..results import Candidate
@@ -41,8 +42,8 @@ def _climb_worker(payload: tuple) -> tuple:
     model is inherited copy-on-write under ``fork``, so workers do not re-read
     the data files.
     """
-    ciphertext, restarts, seed, max_evals, use_seed = payload
-    model = get_model()
+    ciphertext, restarts, seed, max_evals, use_seed, language = payload
+    model = get_model(language)
     rng = random.Random(seed)
     seeds = [frequency_seed(ciphertext)] if use_seed and restarts else []
     key, plain, fit, conf, evals, used = restart_search(
@@ -171,13 +172,15 @@ class Substitution(Cipher):
         workers = max(1, ctx.workers) if n >= 120 else 1
         # Give each worker a slice of the restarts; single-worker runs do it all
         # inline and avoid pool startup cost.
+        language = ctx.model.language
         if workers > 1:
             per = max(1, total_restarts // workers)
             payloads = [
-                (stream, per, ctx_seed(ctx, i), max_evals_for(n), i == 0) for i in range(workers)
+                (stream, per, ctx_seed(ctx, i), max_evals_for(n), i == 0, language)
+                for i in range(workers)
             ]
         else:
-            payloads = [(stream, total_restarts, ctx_seed(ctx, 0), max_evals_for(n), True)]
+            payloads = [(stream, total_restarts, ctx_seed(ctx, 0), max_evals_for(n), True, language)]
 
         ctx.report(
             f"substitution: hill climbing over 26! keys "
@@ -190,7 +193,7 @@ class Substitution(Cipher):
         results.sort(key=lambda r: (-r[3], -r[2]))
         seen: set[str] = set()
         emitted = 0
-        for key_str, plain, fit, conf, evals, used in results:
+        for key_str, plain, _fit, _conf, evals, used in results:
             if key_str in seen:
                 continue
             seen.add(key_str)

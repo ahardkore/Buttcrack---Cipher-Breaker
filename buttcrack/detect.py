@@ -415,7 +415,7 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
 
     if stats.is_letter_text and len(stats.letters_only_text) >= 20:
         stream = stats.letters_only_text
-        ic, chi2, fit = stats.ic, stats.chi2_per_char, stats.fitness
+        ic, chi2 = stats.ic, stats.chi2_per_char
 
         # The shift test comes first and beats every statistic below it: on a
         # short message the index of coincidence is noisy enough to send a Caesar

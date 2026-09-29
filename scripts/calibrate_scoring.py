@@ -70,7 +70,8 @@ def main(argv: list[str] | None = None) -> int:
     #   nearmiss-- a decryption with a handful of letters still wrong.  It IS
     #              mostly English, so it must score high enough to be surfaced
     #              as a candidate but below the true plaintext.
-    stats = lambda: {"fitness": [], "words": [], "segmentation": [], "ic": [], "chi": []}
+    def stats() -> dict[str, list]:
+        return {"fitness": [], "words": [], "segmentation": [], "ic": [], "chi": []}
     good, bad, near = stats(), stats(), stats()
 
     def record(bucket: dict, text: str) -> None:
@@ -140,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
     gc = [confidence(good["fitness"][i], good["words"][i], good["segmentation"][i]) for i in range(len(samples))]
     bc = [confidence(bad["fitness"][i], bad["words"][i], bad["segmentation"][i]) for i in range(len(bad["fitness"]))]
     nc = [confidence(near["fitness"][i], near["words"][i], near["segmentation"][i]) for i in range(len(near["fitness"]))]
-    print(f"\nSeparation check")
+    print("\nSeparation check")
     print(f"  english  confidence: min {min(gc):.3f}  median {statistics.median(gc):.3f}  (want min >= 0.80)")
     print(f"  noise    confidence: max {max(bc):.3f}  median {statistics.median(bc):.3f}  (want max <= 0.30)")
     print(f"  nearmiss confidence: min {min(nc):.3f}  median {statistics.median(nc):.3f}  (want median >= 0.45)")

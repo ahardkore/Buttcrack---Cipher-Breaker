@@ -228,6 +228,10 @@ class CrackReport:
     elapsed: float = 0.0
     budget: float = 0.0
     workers: int = 1
+    language: str = "english"
+    """Which language model judged the candidates (``--language``)."""
+    language_detected: str | None = None
+    """Set when the winning plaintext reads better under another model."""
     stats: dict[str, Any] = field(default_factory=dict)
     """Characterisation of the input: length, IC, entropy, alphabet, ..."""
 
@@ -324,5 +328,7 @@ class CrackReport:
             "elapsed": round(self.elapsed, 3),
             "budget": self.budget,
             "workers": self.workers,
+            "language": self.language,
+            "language_detected": self.language_detected,
             "stats": self.stats,
         }

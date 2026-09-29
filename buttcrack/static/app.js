@@ -121,6 +121,7 @@ async function boot() {
     state.byName = new Map(ciphers.map((c) => [c.name, c]));
     renderHealth(health);
     renderWorkers(health.cpus || 1);
+    renderLanguages(health.languages);
     populatePlayground(ciphers);
     renderReference(ciphers);
     if (health.model && health.model.quadgrams) {
@@ -144,6 +145,27 @@ function renderHealth(health) {
   node.className = "health ok";
   $("version").textContent = `v${health.version}`;
   $("footer-status").textContent = `buttcrack ${health.version} — ${health.ciphers} ciphers, ${health.layers.length} peelable layers`;
+}
+
+function renderLanguages(languages) {
+  const select = $("language");
+  clear(select);
+  if (!languages || !languages.length) {
+    const fallback = make("option", null, "English");
+    fallback.value = "english";
+    fallback.selected = true;
+    select.appendChild(fallback);
+    return;
+  }
+  const auto = make("option", null, "Auto-detect (probe all)");
+  auto.value = "auto";
+  select.appendChild(auto);
+  for (const entry of languages) {
+    const option = make("option", null, entry.name.charAt(0).toUpperCase() + entry.name.slice(1));
+    option.value = entry.name;
+    if (entry.name === "english") option.selected = true;
+    select.appendChild(option);
+  }
 }
 
 function renderWorkers(cpus) {
@@ -296,6 +318,7 @@ async function startCrack() {
     workers: parseInt($("workers").value, 10),
     depth: parseInt($("depth").value, 10),
     exhaustive: $("exhaustive").checked,
+    language: $("language").value,
     hints: collectHints(),
   };
 
@@ -415,8 +438,11 @@ function renderMeta(report, best, notes) {
     ["cipher", best.cipher === "none" ? "plain / encoding layer" : best.cipher || "—", false],
     ["key", best.key || "—", true],
     ["also known as", notes.also_known_as || "", false],
+    ["language note", notes.language || "", false],
     ["method", notes.method || "", false],
     ["evidence", notes.evidence || "", false],
+    ["language", report.language || "", false],
+    ["reads as", report.language_detected || "", false],
     ["letters", report.stats ? report.stats.letters : "", false],
     ["index of coincidence", report.stats ? report.stats.index_of_coincidence : "", false],
   ];

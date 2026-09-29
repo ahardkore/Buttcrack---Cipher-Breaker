@@ -32,7 +32,7 @@ from .ciphers import (
     try_get,
 )
 from .detect import TextStats, characterise, identify
-from .engine import Solver, solve
+from .engine import Solver, solve, solve_auto
 from .results import AttackLog, Candidate, CrackReport, Hypothesis
 from .text import best_key_length, frequencies, normalise, restore_shape
 
@@ -85,7 +85,8 @@ __all__ = [
     "normalise",
     "restore_shape",
     "solve",
+    "solve_auto",
     "try_get",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

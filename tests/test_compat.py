@@ -49,9 +49,7 @@ def pep604_lines(tree: ast.AST) -> list[int]:
     found: list[int] = []
     for node in ast.walk(tree):
         annotations = []
-        if isinstance(node, ast.AnnAssign):
-            annotations.append(node.annotation)
-        elif isinstance(node, ast.arg):
+        if isinstance(node, (ast.AnnAssign, ast.arg)):
             annotations.append(node.annotation)
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             annotations.append(node.returns)

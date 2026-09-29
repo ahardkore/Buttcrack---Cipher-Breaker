@@ -20,6 +20,7 @@ these keys, so the answers are known by construction rather than guessed.
 | `13-three-layers.txt` | hard | `VENICE` | 40s | base64 -> base16 -> xor_repeating |
 | `14-bacon.txt` | hard | `none` | 30s | base32 -> bacon |
 | `15-playfair.txt` | brutal | `MONARCHY` | 120s | playfair |
+| `16-m94.txt` | brutal | `order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9` | 120s |  |
 
 The plaintext of the long puzzles:
 

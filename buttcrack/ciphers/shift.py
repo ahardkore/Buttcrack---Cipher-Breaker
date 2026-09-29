@@ -15,8 +15,10 @@ cipher is monoalphabetic, so it preserves the plaintext's letter distribution
 from __future__ import annotations
 
 import string
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
+from ..results import Candidate
 from ..text import A26, index_of_coincidence, letters_only, printable_only
 from .base import CHEAP, Cipher, CipherInfo, CrackContext, Family
 

@@ -17,8 +17,7 @@ from datetime import date
 from pathlib import Path
 
 from generate import QUOTES, caesar, difficulty_for, encrypt, hint_for, random_key
-from pdf import (COURIER, COURIER_B, Document, HELV, HELV_B, HELV_O, TIMES,
-                 TIMES_B, TIMES_I, text_width, wrap)
+from pdf import COURIER, HELV, HELV_B, HELV_O, TIMES, TIMES_I, Document, text_width, wrap
 
 PAGE_W, PAGE_H = 612.0, 792.0        # US Letter in points
 MARGIN = 54.0                         # 0.75 inch

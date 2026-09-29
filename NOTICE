@@ -36,6 +36,44 @@ are reproduced in summary form; the full license texts are available from the
 respective project pages.
 
 ---------------------------------------------------------------------------
+Bundled non-English language models
+---------------------------------------------------------------------------
+
+`french_/german_/italian_/latin/spanish_{bigrams,trigrams,quadgrams}.txt.gz`
+under `buttcrack/data/` are letter n-gram count tables for five more
+languages, used by `--language` to judge candidate plaintexts that are not
+English.  They carry no dictionaries: only English ships a word list, so under
+the other languages the solver's verdicts rest on n-gram fitness alone (see
+the README section on languages for what that means in practice).
+
+The tables are the practicalcryptography.com n-gram counts published by
+James Lyons (counts distilled from Wortschaftz corpora), imported by
+`scripts/import_ngram_tables.py`, which re-exports them gzipped, drops
+non-A-Z grams, and records each table's size and self-entropy in
+`model_meta.json` so the scoring thresholds in the code can be checked
+against the data that produced them.
+
+  https://practicalcryptography.com/cryptanalysis/letter-frequencies-various-languages/
+
+Mr. Lyons publishes the tables for free reuse; he does not endorse this
+project.
+
+---------------------------------------------------------------------------
+Bundled M-94 disk set
+---------------------------------------------------------------------------
+
+`buttcrack/data/m94_disks.txt` is the standard 25-disk set of the US Army
+M-94 / Navy CSP-488 wheel cipher (Major Joseph Mauborgne, 1917; adopted
+1922).  The alphabets are public: they were engraved on every device
+manufactured, and the set has been reproduced in print since Friedman's
+day (e.g. Military Cryptanalytics; a convenient online copy with the
+history is prc68.com/I/M94.shtml, whose disk 17 -- the one spelling
+ARMY OF THE US around its rim -- matches the file letter for letter).
+Each disk here is normalised to start at its `A`; disk identity is the
+letter that follows (disks B through Z), which is also how keys are
+written.
+
+---------------------------------------------------------------------------
 Third-party runtime dependencies
 ---------------------------------------------------------------------------
 

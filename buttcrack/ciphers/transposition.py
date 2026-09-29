@@ -29,8 +29,9 @@ columns -- handled by enumerating those patterns, capped for large widths.
 from __future__ import annotations
 
 import random
+from collections.abc import Iterator, Sequence
 from itertools import combinations, permutations, product
-from typing import Any, Iterator, Sequence
+from typing import Any
 
 from ..results import Candidate
 from ..text import A26, index_of_coincidence, letters_only
