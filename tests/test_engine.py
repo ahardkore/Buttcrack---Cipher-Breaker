@@ -14,6 +14,7 @@ import time
 import unittest
 
 from buttcrack.ciphers import get
+from buttcrack.ciphers.base import EXPENSIVE, Cipher, CipherInfo, Family
 from buttcrack.engine import STRONG_LAYER, CandidatePool, Solver, solve
 from buttcrack.lang import SOLVED_CONFIDENCE, get_model
 from buttcrack.results import Candidate
@@ -314,6 +315,32 @@ class TestSolverControls(unittest.TestCase):
         started = time.time()
         solve(enc("substitution", PARAGRAPH), budget=1.0, workers=1)
         self.assertLess(time.time() - started, 12.0)
+
+    def test_expensive_attacks_split_the_remaining_budget_without_a_floor(self):
+        class BudgetProbe(Cipher):
+            def __init__(self, name):
+                self.info = CipherInfo(
+                    name=name,
+                    title=name,
+                    family=Family.SUBSTITUTION,
+                    cost=EXPENSIVE,
+                    min_length=2,
+                    description="test-only budget probe",
+                )
+                self.slices = []
+
+            def crack(self, ciphertext, ctx):
+                self.slices.append(ctx.budget)
+                if False:  # make this a generator without producing a candidate
+                    yield None
+
+        first, second = BudgetProbe("budget_probe_first"), BudgetProbe("budget_probe_second")
+        Solver(budget=1.0, ciphers=[first, second]).solve("QZXWVUTSRQPONMLKJIHGFEDCBA")
+        self.assertEqual(len(first.slices), 1)
+        self.assertEqual(len(second.slices), 1)
+        # Each of two expensive attacks receives at most half of the time left.
+        self.assertLessEqual(first.slices[0], 0.5)
+        self.assertLessEqual(second.slices[0], 0.5)
 
     def test_the_attack_set_can_be_restricted(self):
         solver = Solver(budget=10, ciphers=[get("caesar")])

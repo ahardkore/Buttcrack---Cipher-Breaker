@@ -15,25 +15,39 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Vigen\u00e8re cipher be broken without the key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases."}}, {"@type": "Question", "name": "What if the key is as long as the message?", "acceptedAnswer": {"@type": "Answer", "text": "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words."}}, {"@type": "Question", "name": "Why did it return a key that is a repeated word, like LAMPLAMP?", "acceptedAnswer": {"@type": "Answer", "text": "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."}}]}</script>
 </head>
 <body data-preset="vigenere">
-<header>
+<header class="site-header">
   <div class="wrap">
-    <h1>Vigenère Solver<span class="dot">.</span></h1>
-    <p class="tagline">No keyword needed — it recovers the key from the ciphertext itself.</p>
-    <nav class="tools"><a href="index.html">All ciphers</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html" aria-current="page">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Vigenère Solver<span class="dot">.</span></h1>
+      <p class="tagline">No keyword needed — it recovers the key from the ciphertext itself.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html" aria-current="page">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
   </div>
 </header>
 
 <main class="wrap">
-  <textarea id="ciphertext" spellcheck="false"
-    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-  <div class="controls">
-    <button class="go" id="go">Break it</button>
-    <button class="ghost" id="clear">Clear</button>
-    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
-  </div>
-  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
 
-  <div id="output"></div>
+  <div id="output" aria-live="polite"></div>
 
   <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
 

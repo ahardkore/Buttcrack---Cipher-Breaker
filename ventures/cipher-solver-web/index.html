@@ -15,25 +15,39 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need to know which cipher was used?", "acceptedAnswer": {"@type": "Answer", "text": "No. The solver characterises the text first \u2014 index of coincidence, entropy, character set \u2014 then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button."}}, {"@type": "Question", "name": "Is my ciphertext uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."}}, {"@type": "Question", "name": "Which ciphers can it break?", "acceptedAnswer": {"@type": "Answer", "text": "Caesar and ROT13, Atbash, affine, Vigen\u00e8re with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text \u2014 including several of those stacked on top of each other."}}, {"@type": "Question", "name": "Why did it fail on my text?", "acceptedAnswer": {"@type": "Answer", "text": "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English, or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext."}}, {"@type": "Question", "name": "Can it break modern encryption like AES or RSA?", "acceptedAnswer": {"@type": "Answer", "text": "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."}}]}</script>
 </head>
 <body data-preset="caesar">
-<header>
+<header class="site-header">
   <div class="wrap">
-    <h1>Cipher Solver<span class="dot">.</span></h1>
-    <p class="tagline">Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.</p>
-    <nav class="tools"><a href="index.html" aria-current="page">All ciphers</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Cipher Solver<span class="dot">.</span></h1>
+      <p class="tagline">Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.</p>
+    </div>
+    <nav class="tools"><a href="index.html" aria-current="page">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
   </div>
 </header>
 
 <main class="wrap">
-  <textarea id="ciphertext" spellcheck="false"
-    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-  <div class="controls">
-    <button class="go" id="go">Break it</button>
-    <button class="ghost" id="clear">Clear</button>
-    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
-  </div>
-  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
 
-  <div id="output"></div>
+  <div id="output" aria-live="polite"></div>
 
   <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
 

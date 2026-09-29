@@ -25,7 +25,8 @@ CFG = json.loads((HERE / "site.json").read_text())
 SAMPLES = json.loads((HERE / "samples.json").read_text())
 
 NAV = [
-    ("index.html", "All ciphers"),
+    ("index.html", "Solver"),
+    ("cipher-wiki.html", "Cipher wiki"),
     ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
@@ -229,25 +230,39 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 {faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
 </head>
 <body data-preset="{preset}">
-<header>
+<header class="site-header">
   <div class="wrap">
-    <h1>{h1}<span class="dot">.</span></h1>
-    <p class="tagline">{tagline}</p>
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>{h1}<span class="dot">.</span></h1>
+      <p class="tagline">{tagline}</p>
+    </div>
     {nav(slug)}
   </div>
 </header>
 
 <main class="wrap">
-  <textarea id="ciphertext" spellcheck="false"
-    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-  <div class="controls">
-    <button class="go" id="go">Break it</button>
-    <button class="ghost" id="clear">Clear</button>
-    <span class="samples">{sample_buttons}</span>
-  </div>
-  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span>{sample_buttons}</span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
 
-  <div id="output"></div>
+  <div id="output" aria-live="polite"></div>
 
   {ad_slot()}
 
@@ -575,6 +590,235 @@ PAGES = [
     ),
 ]
 
+# A compact, interlinked reference rather than a grab-bag of thin SEO pages.
+# Each article starts with the practical recognition clues, then explains the
+# underlying operation, its historical context and the honest limits of the
+# attack. The solver stays on the page so a reader can immediately test a clue.
+WIKI_PAGES = [
+    dict(
+        slug="cipher-wiki.html",
+        title="Cipher Wiki — A Field Guide to Classical Codes and Ciphers",
+        desc="A practical field guide to classical ciphers: how to recognise Caesar, Vigenère, substitution and Playfair, how they work, and what actually breaks them.",
+        h1="Cipher Wiki",
+        tagline="Recognise the shape. Understand the mechanism. Know what an answer is worth.",
+        preset="caesar",
+        faqs=[
+            ("What is the difference between a code and a cipher?",
+             "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
+            ("Can this site break every cipher in the wiki?",
+             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The command-line project has a wider experimental set. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+            ("How much ciphertext is enough?",
+             "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure."),
+        ],
+        body="""    <h2>Start with the ciphertext, not a favourite cipher</h2>
+    <p>A useful first question is not <em>which trick do I know?</em> but <em>what survives the
+    transformation?</em> Spaces, punctuation, repeated letters, a restricted alphabet and the
+    frequency of letters are clues. A Caesar shift preserves every word shape. A substitution
+    preserves repeated patterns but changes the letter distribution. Vigenère flattens that
+    distribution because one plaintext letter can encrypt several ways. Playfair works in pairs,
+    so it leaves a different set of fingerprints again.</p>
+
+    <h2>The field guide</h2>
+    <ul>
+      <li><a href="caesar-cipher-wiki.html">Caesar cipher</a> — one fixed rotation; 26 possibilities.</li>
+      <li><a href="vigenere-cipher-wiki.html">Vigenère cipher</a> — a repeating keyword creates interleaved Caesar shifts.</li>
+      <li><a href="substitution-cipher-wiki.html">Monoalphabetic substitution</a> — a scrambled alphabet, solved by language statistics.</li>
+      <li><a href="playfair-cipher-wiki.html">Playfair cipher</a> — a 5×5 grid that transforms letter pairs.</li>
+    </ul>
+
+    <h2>Three measurements worth knowing</h2>
+    <h3>Alphabet and formatting</h3>
+    <p>Only dots and dashes suggests Morse; hexadecimal uses only <code>0–9</code> and
+    <code>A–F</code>; base64 is usually a multiple of four characters and may end in
+    <code>=</code>. For letter ciphers, note whether spacing survived. A transposition may lose
+    word boundaries while a substitution normally keeps them.</p>
+    <h3>Frequency</h3>
+    <p>English has uneven letter frequencies: E, T, A and O are common; Q and Z are not. A
+    single-alphabet substitution preserves that unevenness under new names. A repeating-key
+    cipher mixes several distributions together, making the text look flatter.</p>
+    <h3>Index of coincidence</h3>
+    <p>The index of coincidence measures the chance that two drawn letters are the same.
+    Ordinary English is near <code>0.067</code>; uniformly random letters are near
+    <code>0.038</code>. It is a guide, not a verdict, but it is exceptionally useful for
+    separating monoalphabetic and polyalphabetic puzzles.</p>
+
+    <h2>What this wiki does not promise</h2>
+    <p>Recognising a classical cipher does not mean a unique solution exists. Short messages can
+    fit several keys; proper names and another language confuse an English scorer; and a
+    one-time pad used correctly has no statistical weakness. Treat an automatic answer as a
+    hypothesis backed by evidence, then read it and verify the recovered key.</p>""",
+    ),
+    dict(
+        slug="caesar-cipher-wiki.html",
+        title="Caesar Cipher Explained — History, Formula and How to Break It",
+        desc="A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.",
+        h1="The Caesar Cipher",
+        tagline="A rotation so small it teaches nearly every idea behind classical cryptanalysis.",
+        preset="caesar",
+        faqs=[
+            ("What is the Caesar cipher formula?",
+             "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet."),
+            ("Is ROT13 a Caesar cipher?",
+             "Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text."),
+            ("Why is it not secure?",
+             "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough."),
+        ],
+        body="""    <h2>The operation</h2>
+    <p>Write the alphabet twice and slide the lower copy by a fixed number of places. With a
+    shift of three, <code>A → D</code>, <code>B → E</code> and <code>Z → C</code>. Every letter
+    gets exactly the same treatment; punctuation and spaces are usually copied unchanged. That
+    simple uniformity is both the cipher's appeal and its fatal weakness.</p>
+
+    <h2>A tiny keyspace</h2>
+    <p>The key can be any number from 0 to 25. Shift 0 says nothing was encrypted, so there are
+    only 25 meaningful alternatives. Try each decryption and score the result for English
+    trigrams such as <code>THE</code>, <code>ING</code> and <code>AND</code>. The correct shift
+    rapidly separates itself from the other 24.</p>
+
+    <h2>Recognising a Caesar shift</h2>
+    <p>Word lengths, apostrophes, punctuation and repeated-letter patterns are unchanged. The
+    most frequent ciphertext letter is often the encryption of E, and common short words remain
+    the same shape. None of those clues is proof — a substitution cipher has similar surface
+    properties — but a 26-shift sweep is so cheap that there is no reason to guess by eye.</p>
+
+    <h2>History and legacy</h2>
+    <p>The cipher is named for Julius Caesar, who reportedly used a fixed shift in Roman military
+    correspondence. Its modern value is educational: it demonstrates modular arithmetic, the
+    difference between a keyspace and a strong keyspace, and the reason letter statistics matter.
+    ROT13 survives as a convention for hiding spoilers, not for protecting secrets.</p>
+
+    <p>Next: learn why a repeating sequence of Caesar shifts is harder to spot in the
+    <a href="vigenere-cipher-wiki.html">Vigenère cipher guide</a>.</p>""",
+    ),
+    dict(
+        slug="vigenere-cipher-wiki.html",
+        title="Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence",
+        desc="Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.",
+        h1="The Vigenère Cipher",
+        tagline="Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.",
+        preset="vigenere",
+        faqs=[
+            ("Why was Vigenère called unbreakable?",
+             "It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible."),
+            ("What is Kasiski examination?",
+             "Repeated ciphertext fragments can result from repeated plaintext fragments aligned under the same part of the keyword. Distances between them often share factors with the key length. It suggests periods to test; it does not recover the key on its own."),
+            ("What makes a Vigenère cipher genuinely secure?",
+             "If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigenère."),
+        ],
+        body="""    <h2>A Caesar shift that changes every letter</h2>
+    <p>Vigenère assigns each keyword letter a shift. With the key <code>LEMON</code>, the shifts
+    11, 4, 12, 14 and 13 repeat across the message. The same plaintext letter may therefore
+    encrypt to different ciphertext letters. This defeats the simple “most common letter is E”
+    reasoning that breaks Caesar immediately.</p>
+
+    <h2>Find the period before the key</h2>
+    <p>If the key has five letters, take every fifth ciphertext character. Each resulting column
+    was encrypted by one fixed Caesar shift. The attack is therefore: propose a key length, split
+    into columns, and measure whether each column behaves like English. The average index of
+    coincidence rises when the proposed period is a multiple of the real period.</p>
+
+    <h2>Recover and refine</h2>
+    <p>Once the period is known, compare each column's letter frequencies with expected English
+    frequencies to choose a shift. That produces a first key. On short texts, refine it by changing
+    one key letter at a time and rescoring the <em>whole</em> plaintext: language model context
+    resolves columns too sparse for frequency analysis alone.</p>
+
+    <h2>Limits of the method</h2>
+    <p>Short messages and long keys leave too few letters in each column. A period that is a
+    multiple of the true key can also look convincing; prefer the shortest key that explains the
+    text. Variants such as Beaufort use a different algebraic direction but retain the same
+    repeating-period weakness.</p>
+
+    <p>For a cipher that uses one fixed alphabet instead, see the
+    <a href="substitution-cipher-wiki.html">substitution cipher guide</a>.</p>""",
+    ),
+    dict(
+        slug="substitution-cipher-wiki.html",
+        title="Substitution Cipher Explained — Cryptogram Patterns and Hill Climbing",
+        desc="How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.",
+        h1="Substitution Ciphers",
+        tagline="A colossal keyspace with a very human leak: the shape of language remains.",
+        preset="substitution",
+        faqs=[
+            ("How many keys does a substitution cipher have?",
+             "A full mixed alphabet has 26 factorial possible permutations, about 4 × 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea."),
+            ("What patterns survive a substitution?",
+             "Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses."),
+            ("Why do solvers sometimes miss rare letters?",
+             "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity."),
+        ],
+        body="""    <h2>A scrambled alphabet, used consistently</h2>
+    <p>In a monoalphabetic substitution cipher, each plaintext letter maps to one different
+    ciphertext letter for the entire message. A key might map A to Q, B to W and so on, but it
+    need not follow any keyboard or keyword pattern. Unlike Caesar, there is no small numerical
+    key to enumerate.</p>
+
+    <h2>Why it still falls</h2>
+    <p>English is highly redundant. E remains the commonest plaintext letter even after it is
+    renamed; <code>THE</code> retains the pattern of three distinct letters; and <code>HELLO</code>
+    retains the pattern <code>0-1-2-2-3</code>. Word boundaries make newspaper cryptograms easier,
+    but continuous ciphertext still contains n-gram frequencies such as TH, HE and ING.</p>
+
+    <h2>From hand solving to hill climbing</h2>
+    <p>A hand solver starts with frequency counts, one-letter words, doubled letters and likely
+    short words. An automatic solver starts similarly, then scores the decrypted text with a
+    language model. It swaps two assignments in a candidate alphabet, keeps swaps that improve
+    quadgram fitness, and restarts from perturbed keys to escape local optima. The result is a
+    search guided by English rather than a futile walk through every permutation.</p>
+
+    <h2>Use enough text</h2>
+    <p>With fewer than about 60 letters, the statistical evidence is thin; with 150 or more,
+    common patterns repeat and recovery becomes much steadier. Do not treat a beautifully
+    English-shaped 30-letter output as proof. Verify that the recovered key consistently
+    transforms the full message.</p>
+
+    <p>For a pair-based cipher whose statistics are less familiar, continue to
+    <a href="playfair-cipher-wiki.html">Playfair</a>.</p>""",
+    ),
+    dict(
+        slug="playfair-cipher-wiki.html",
+        title="Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks",
+        desc="Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.",
+        h1="The Playfair Cipher",
+        tagline="A grid of 25 letters turns single-letter statistics into a pairwise problem.",
+        preset="substitution",
+        faqs=[
+            ("Why are I and J combined in Playfair?",
+             "A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices."),
+            ("Why does Playfair insert X characters?",
+             "A digraph cannot contain the same letter twice. A repeated letter is split with a filler, traditionally X, and an odd-length message gets a final filler. That means decryption returns the intended letters plus ambiguous Xs that a reader removes from context."),
+            ("Can frequency analysis break Playfair?",
+             "Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important."),
+        ],
+        body="""    <h2>The keyed square</h2>
+    <p>Playfair writes a keyword without duplicates into a 5×5 square, then fills the remaining
+    cells with the unused alphabet. In the traditional English form I and J share a cell. Plaintext
+    is normalised into pairs; repeated letters in one pair are separated with a filler such as X.</p>
+
+    <h2>Three rules for every pair</h2>
+    <p>If both letters are on the same row, encrypt each with the letter to its right. If they are
+    in the same column, use the letter below. Otherwise they form the corners of a rectangle: keep
+    each letter's row and take the other letter's column. Decryption reverses the row and column
+    steps; the rectangle rule is its own inverse.</p>
+
+    <h2>What to look for</h2>
+    <p>Traditional Playfair ciphertext has an even number of letters, contains no J, and cannot
+    have a doubled letter within a ciphertext pair. These are useful hints, not guarantees. A
+    carefully prepared substitution message can share some of them, and variants may use a
+    different alphabet or filler.</p>
+
+    <h2>Why automated attacks are hard</h2>
+    <p>The unknown key is a 25-cell permutation, not a short word. One wrong cell disrupts many
+    pairs, creating a fitness landscape full of narrow local optima. Effective attacks combine
+    broad exploration, such as simulated annealing, with population-based or hill-climbing
+    refinement, scoring candidate plaintexts using tetragrams. Hundreds of letters help; thousands
+    are better. If a puzzle supplies a likely keyword, test it first.</p>
+
+    <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
+    classical families.</p>""",
+    ),
+]
+
 
 def build_products() -> tuple[list[dict], str]:
     """Generate the puzzle-book PDFs and their delivery pages.
@@ -755,7 +999,10 @@ def main() -> None:
 
     meta = verification_meta()
     urls = []
-    for spec in PAGES:
+    # The storefront is appended above because its body depends on generated
+    # products; the wiki is static and deliberately kept as a separate list so
+    # a rebuild never appends duplicate reference pages in a long-lived process.
+    for spec in PAGES + WIKI_PAGES:
         html = page(**spec)
         # A token configured but missing from a page means a silently unverified
         # property, which shows up as a Search Console failure days later. Fail

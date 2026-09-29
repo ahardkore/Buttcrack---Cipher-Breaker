@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks</title>
+<meta name="description" content="Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/playfair-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks">
+<meta property="og:description" content="Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Playfair Cipher Explained \u2014 The 5\u00d75 Grid, Digraph Rules and Attacks", "description": "Understand the Playfair cipher's 5\u00d75 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why are I and J combined in Playfair?", "acceptedAnswer": {"@type": "Answer", "text": "A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices."}}, {"@type": "Question", "name": "Why does Playfair insert X characters?", "acceptedAnswer": {"@type": "Answer", "text": "A digraph cannot contain the same letter twice. A repeated letter is split with a filler, traditionally X, and an odd-length message gets a final filler. That means decryption returns the intended letters plus ambiguous Xs that a reader removes from context."}}, {"@type": "Question", "name": "Can frequency analysis break Playfair?", "acceptedAnswer": {"@type": "Answer", "text": "Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important."}}]}</script>
+</head>
+<body data-preset="substitution">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>The Playfair Cipher<span class="dot">.</span></h1>
+      <p class="tagline">A grid of 25 letters turns single-letter statistics into a pairwise problem.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>The keyed square</h2>
+    <p>Playfair writes a keyword without duplicates into a 5×5 square, then fills the remaining
+    cells with the unused alphabet. In the traditional English form I and J share a cell. Plaintext
+    is normalised into pairs; repeated letters in one pair are separated with a filler such as X.</p>
+
+    <h2>Three rules for every pair</h2>
+    <p>If both letters are on the same row, encrypt each with the letter to its right. If they are
+    in the same column, use the letter below. Otherwise they form the corners of a rectangle: keep
+    each letter's row and take the other letter's column. Decryption reverses the row and column
+    steps; the rectangle rule is its own inverse.</p>
+
+    <h2>What to look for</h2>
+    <p>Traditional Playfair ciphertext has an even number of letters, contains no J, and cannot
+    have a doubled letter within a ciphertext pair. These are useful hints, not guarantees. A
+    carefully prepared substitution message can share some of them, and variants may use a
+    different alphabet or filler.</p>
+
+    <h2>Why automated attacks are hard</h2>
+    <p>The unknown key is a 25-cell permutation, not a short word. One wrong cell disrupts many
+    pairs, creating a fitness landscape full of narrow local optima. Effective attacks combine
+    broad exploration, such as simulated annealing, with population-based or hill-climbing
+    refinement, scoring candidate plaintexts using tetragrams. Hundreds of letters help; thousands
+    are better. If a puzzle supplies a likely keyword, test it first.</p>
+
+    <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
+    classical families.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>Why are I and J combined in Playfair?</summary><p>A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices.</p></details><details class="faq"><summary>Why does Playfair insert X characters?</summary><p>A digraph cannot contain the same letter twice. A repeated letter is split with a filler, traditionally X, and an odd-length message gets a final filler. That means decryption returns the intended letters plus ambiguous Xs that a reader removes from context.</p></details><details class="faq"><summary>Can frequency analysis break Playfair?</summary><p>Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -15,25 +15,39 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does the ciphertext need to be?", "acceptedAnswer": {"@type": "Answer", "text": "About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them."}}, {"@type": "Question", "name": "Does it handle keyword-generated alphabets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, implicitly. The solver searches for the mapping itself and does not care how the key alphabet was produced, so keyword ciphers, random alphabets and keyed Caesar variants are all the same problem to it."}}, {"@type": "Question", "name": "Why is one or two letters wrong in the output?", "acceptedAnswer": {"@type": "Answer", "text": "Rare letters like J, Q, X and Z appear too infrequently for the statistics to place them confidently, so they sometimes swap. The text is usually readable anyway and the correct letter is obvious from context."}}, {"@type": "Question", "name": "Will it solve a newspaper cryptogram?", "acceptedAnswer": {"@type": "Answer", "text": "Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for."}}]}</script>
 </head>
 <body data-preset="substitution">
-<header>
+<header class="site-header">
   <div class="wrap">
-    <h1>Substitution Solver<span class="dot">.</span></h1>
-    <p class="tagline">Cryptograms cracked by hill-climbing search — no crib, no hints.</p>
-    <nav class="tools"><a href="index.html">All ciphers</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html" aria-current="page">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Substitution Solver<span class="dot">.</span></h1>
+      <p class="tagline">Cryptograms cracked by hill-climbing search — no crib, no hints.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html" aria-current="page">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
   </div>
 </header>
 
 <main class="wrap">
-  <textarea id="ciphertext" spellcheck="false"
-    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-  <div class="controls">
-    <button class="go" id="go">Break it</button>
-    <button class="ghost" id="clear">Clear</button>
-    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
-  </div>
-  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
 
-  <div id="output"></div>
+  <div id="output" aria-live="polite"></div>
 
   <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
 

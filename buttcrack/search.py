@@ -65,7 +65,14 @@ def parallel_restarts(
     thread) must still produce an answer.
     """
     if workers <= 1 or len(payloads) <= 1:
-        return [worker(p) for p in payloads]
+        results = []
+        for payload in payloads:
+            if deadline is not None and time.time() >= deadline:
+                break
+            result = worker(payload)
+            if result:
+                results.append(result)
+        return results
     results: list[tuple] = []
     try:
         ctx = multiprocessing.get_context("fork")
@@ -92,8 +99,14 @@ def parallel_restarts(
         results = []
     if results:
         return results
+    # A process pool can fail before producing a result, in which case serial is
+    # a useful compatibility fallback.  It is not useful after the deadline:
+    # starting a fresh stochastic climb there both violates the caller's budget
+    # and guarantees that the answer arrives too late to use.
+    if deadline is not None and time.time() >= deadline:
+        return results
     for payload in payloads:
-        if deadline is not None and time.time() >= deadline and results:
+        if deadline is not None and time.time() >= deadline:
             break
         result = worker(payload)
         if result:
