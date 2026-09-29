@@ -114,9 +114,27 @@ that point; the rest is monetisation.
 2. **Set the real URL.** If the deployed URL differs from the `base_url` in
    `ventures/cipher-solver-web/site.json`, fix it there and push. Canonical tags
    and the sitemap depend on it.
-3. **Submit to Google.** [Search Console](https://search.google.com/search-console)
-   → add the site → submit `sitemap.xml`. Nothing ranks until Google knows the
-   pages exist. This is the single highest-value step in the whole list.
+3. **Verify ownership, then submit to Google.**
+   [Search Console](https://search.google.com/search-console) → add a
+   **URL prefix** property for your `base_url` → choose the **HTML tag** method
+   → copy the token out of the snippet it shows you, and paste it into
+   `google_site_verification` in `site.json`. Push. Wait for the deploy to go
+   green, then press **Verify**.
+
+   Paste the bare token or the whole `<meta …>` tag — either is accepted. Put it
+   in `site.json`, **not** into the HTML by hand: `build_pages.py` regenerates
+   every page on each deploy, so a hand-edited tag disappears on the next build
+   and silently un-verifies the property. Leave the token in place permanently;
+   removing it makes Google drop ownership.
+
+   Prefer Google's *HTML file* method, or verifying Bing at the same time? Use
+   `verification_files` and the `verification` map in `site.json` — both are
+   written into the site on every build. (The *DNS TXT* method skips the repo
+   entirely, but needs a custom domain, which `github.io` is not.)
+
+   Then submit `sitemap.xml`. Verification on its own does nothing for indexing;
+   the sitemap is what tells Google the pages exist. This is the
+   single highest-value step in the whole list.
 4. **Add analytics** (optional, free): create a
    [Plausible](https://plausible.io) or Cloudflare Web Analytics property and
    put the domain in `site.json`. You cannot improve what you cannot measure.
