@@ -497,25 +497,44 @@ function xorSingle(bytes) {
  * Try every direct cipher on `text`, then recursively peel encoding layers.
  * Returns the highest-confidence report found within `depth` layers.
  */
+// A result above this mark is good enough that another statistical search is
+// more likely to manufacture a competing reading than improve the answer.  It
+// is deliberately below the UI's "SOLVED" threshold: Caesar and Vigenere
+// samples with uncommon proper nouns still get to skip an unnecessary 25-restart
+// substitution climb.
+const FAST_ANSWER_CONFIDENCE = 0.58;
+
 function solve(text, depth = 3, chain = []) {
   const results = [];
   const push = r => { if (r && r.plaintext && r.plaintext.trim()) results.push(r); };
+  const bestConfidence = () => results.reduce((best, r) => Math.max(best, r.confidence || 0), 0);
 
+  // Run the tiny, deterministic keyspaces first.  This used to start every
+  // request with Vigenere and substitution too, even after a Caesar sweep had
+  // already recovered a readable message.  On an ordinary Caesar ciphertext
+  // that meant thousands of redundant trigram evaluations on the worker.
   push(caesar(text));
   push(atbash(text));
   push(rot13(text));
   push(affine(text));
-  push(vigenere(text));
   push(railfence(text));
-  if (lettersOnly(text).length >= 60) push(substitution(text));
 
   const bytes = [...text].map(c => c.charCodeAt(0) & 0xff);
   if (bytes.length >= 8 && bytes.length < 4000) push(xorSingle(bytes));
 
+  // Vigenere is much cheaper than a mixed-alphabet search, but it is still a
+  // whole-key refinement loop.  Do not pay for it when a deterministic attack
+  // already explains the input.
+  if (bestConfidence() < FAST_ANSWER_CONFIDENCE) push(vigenere(text));
+
   for (const r of results) r.chain = chain.slice();
 
   if (depth > 0) {
-    for (const dec of DECODERS) {
+    // Decoding a clearly shaped layer is cheaper and more informative than a
+    // substitution climb over the wrapper.  Keep reverse for last: every long
+    // string has a reverse, so trying it early doubles the search tree.
+    const decoders = DECODERS.filter(dec => dec.name !== 'reversed text');
+    for (const dec of decoders) {
       if (!dec.test(text)) continue;
       let inner;
       try { inner = dec.run(text); } catch { continue; }
@@ -533,6 +552,35 @@ function solve(text, depth = 3, chain = []) {
       // A layer that had to be unwrapped is a stronger explanation than a
       // direct read of encoded-looking text, so nudge nested hits upward.
       if (sub) { sub.confidence = Math.min(1, sub.confidence * 1.05); results.push(sub); }
+    }
+  }
+
+  // The mixed-alphabet climber is the expensive last resort.  It cannot improve
+  // a convincing direct or decoded answer, and skipping it in those cases keeps
+  // the browser responsive for the overwhelmingly common Caesar/base64 inputs.
+  if (lettersOnly(text).length >= 60 && bestConfidence() < FAST_ANSWER_CONFIDENCE) {
+    push(substitution(text));
+  }
+
+  // Reverse is intentionally deferred until after the real cipher attacks.  It
+  // remains part of the general layered search, without making each branch pay
+  // for a second copy of the full solver.
+  if (depth > 0 && bestConfidence() < FAST_ANSWER_CONFIDENCE) {
+    const reverse = DECODERS.find(dec => dec.name === 'reversed text');
+    if (reverse && reverse.test(text)) {
+      let inner;
+      try { inner = reverse.run(text); } catch { inner = null; }
+      if (inner && inner.length >= 4 && inner !== text) {
+        const direct = plausibility(inner);
+        if (direct > 0.35) {
+          results.push({
+            cipher: reverse.name, key: '-', plaintext: inner, confidence: direct,
+            method: 'encoding layer decoded', chain: chain.concat(reverse.name),
+          });
+        }
+        const sub = solve(inner, depth - 1, chain.concat(reverse.name));
+        if (sub) { sub.confidence = Math.min(1, sub.confidence * 1.05); results.push(sub); }
+      }
     }
   }
 
