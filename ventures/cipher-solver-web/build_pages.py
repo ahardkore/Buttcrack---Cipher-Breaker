@@ -229,25 +229,39 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 {faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
 </head>
 <body data-preset="{preset}">
-<header>
+<header class="site-header">
   <div class="wrap">
-    <h1>{h1}<span class="dot">.</span></h1>
-    <p class="tagline">{tagline}</p>
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>{h1}<span class="dot">.</span></h1>
+      <p class="tagline">{tagline}</p>
+    </div>
     {nav(slug)}
   </div>
 </header>
 
 <main class="wrap">
-  <textarea id="ciphertext" spellcheck="false"
-    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-  <div class="controls">
-    <button class="go" id="go">Break it</button>
-    <button class="ghost" id="clear">Clear</button>
-    <span class="samples">{sample_buttons}</span>
-  </div>
-  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span>{sample_buttons}</span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
 
-  <div id="output"></div>
+  <div id="output" aria-live="polite"></div>
 
   {ad_slot()}
 
