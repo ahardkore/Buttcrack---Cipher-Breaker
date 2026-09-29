@@ -1,8 +1,16 @@
-# Publishes ventures/cipher-solver-web to GitHub Pages.
+# Publishes the whole public site to GitHub Pages.
 #
-# The pages are regenerated from build_pages.py during the deploy, so editing
-# site.json (ad IDs, sponsor handles) and pushing is enough to update the live
-# site — no local build step required.
+# The site has two halves, assembled by scripts/build_site.py into one tree:
+#   /          ventures/cipher-solver-web — solver, cipher wiki, storefront
+#   /kryptos/  kryptos-app                — Kryptos research explorer
+#
+# This is deliberately the *only* Pages workflow in the repository. There were
+# two, each uploading its own directory to the same "pages" deployment, so the
+# later run replaced the earlier one's site.
+#
+# The solver pages are regenerated from build_pages.py during the deploy, so
+# editing site.json (ad IDs, sponsor handles) and pushing is enough to update
+# the live site — no local build step required.
 #
 # One-time setup: repo Settings → Pages → Source = "GitHub Actions".
 name: Deploy site
@@ -12,6 +20,8 @@ on:
     branches: [main]
     paths:
       - "ventures/cipher-solver-web/**"
+      - "kryptos-app/**"
+      - "scripts/build_site.py"
       - ".github/workflows/deploy-site.yml"
   workflow_dispatch:
 
@@ -42,11 +52,14 @@ jobs:
       - name: Verify solver accuracy
         run: node ventures/cipher-solver-web/test.js
 
+      - name: Assemble the combined site
+        run: python3 scripts/build_site.py --out _site
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ventures/cipher-solver-web
+          path: _site
 
   deploy:
     needs: build

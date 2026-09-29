@@ -1,0 +1,112 @@
+"""Assemble the single public site that GitHub Pages publishes.
+
+The repository grew two independent web surfaces:
+
+* ``ventures/cipher-solver-web`` — the generated, SEO-facing cipher solver,
+  wiki and storefront. This is the front door.
+* ``kryptos-app`` — the standalone Kryptos research explorer.
+
+They used to have a GitHub Pages workflow each, racing for the same
+``pages`` deployment, so whichever ran last silently replaced the other.
+This script merges them into one tree instead::
+
+    _site/                 <- the solver site, at the domain root
+    _site/kryptos/         <- the Kryptos research explorer
+
+Run it locally exactly as the deploy does::
+
+    python3 scripts/build_site.py --out _site
+    python3 -m http.server 8000 -d _site
+
+Source files that are only build inputs (Python generators, the Node test
+harness, the raw corpus) are left out of the published tree.
+"""
+from __future__ import annotations
+
+import argparse
+import shutil
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SOLVER = ROOT / "ventures" / "cipher-solver-web"
+KRYPTOS_APP = ROOT / "kryptos-app"
+
+#: Mounted under the site root; keep in step with ``KRYPTOS_HREF`` in
+#: ``ventures/cipher-solver-web/build_pages.py``, which links to it from the nav.
+KRYPTOS_DIR = "kryptos"
+
+#: Build inputs, not site content. Publishing them would serve dead weight and
+#: advertise the generator's configuration for no benefit.
+EXCLUDE_NAMES = {
+    "build_pages.py",
+    "build_model.py",
+    "test.js",
+    "site.json",
+    "__pycache__",
+}
+EXCLUDE_SUFFIXES = {".pyc"}
+
+
+def _skip(path: Path) -> bool:
+    return path.name in EXCLUDE_NAMES or path.suffix in EXCLUDE_SUFFIXES
+
+
+def copy_tree(src: Path, dest: Path) -> int:
+    """Copy ``src`` into ``dest``, skipping build inputs. Returns file count."""
+    if not src.is_dir():
+        raise SystemExit(f"missing source directory: {src}")
+    copied = 0
+    for item in sorted(src.rglob("*")):
+        if any(_skip(part) for part in (item, *item.relative_to(src).parents)):
+            continue
+        if _skip(item):
+            continue
+        target = dest / item.relative_to(src)
+        if item.is_dir():
+            target.mkdir(parents=True, exist_ok=True)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
+            copied += 1
+    return copied
+
+
+def build(out: Path) -> Path:
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+
+    pages = copy_tree(SOLVER, out)
+    print(f"solver site   -> {out}/ ({pages} files)")
+
+    kryptos_out = out / KRYPTOS_DIR
+    research = copy_tree(KRYPTOS_APP, kryptos_out)
+    print(f"kryptos app   -> {out}/{KRYPTOS_DIR}/ ({research} files)")
+
+    # Both halves must actually have an entry point, or the deploy publishes a
+    # directory listing (or a 404) and nobody notices until someone visits.
+    for required in (out / "index.html", kryptos_out / "index.html"):
+        if not required.is_file():
+            raise SystemExit(f"assembled site is missing {required.relative_to(out)}")
+
+    return out
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument(
+        "--out",
+        default=str(ROOT / "_site"),
+        help="output directory for the assembled site (default: ./_site)",
+    )
+    args = parser.parse_args(argv)
+
+    out = build(Path(args.out).resolve())
+    print(f"\nsite assembled in {out}")
+    print(f"preview with: python3 -m http.server 8000 -d {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

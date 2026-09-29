@@ -33,6 +33,30 @@ body {
   flex-direction: column;
 }
 
+/* Site switcher: this app is one section of a larger site, so give visitors a
+   visible way back to the solver instead of the browser's back button. */
+.site-switch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 2rem;
+  background-color: #0b0e14;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.site-switch a {
+  color: var(--cyan);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.site-switch a:hover {
+  text-decoration: underline;
+}
+
 /* Header & Nav */
 header {
   background-color: var(--bg-card);
