@@ -182,26 +182,39 @@ jobs:
                -H 'content-type: application/json' \
                -d '{"cipher":"vigenere","key":"LEMON","text":"Meet me at noon.","operation":"encrypt"}' \
             | python -c "import json,sys; r=json.load(sys.stdin); assert r['output'] == 'Xiqh zp ef bbzr.', r"
+          # Cracking is asynchronous: POST /api/crack returns {"job": id} and the
+          # browser polls GET /api/job/<id> until done.  The same flow, in shell.
+          crack_and_wait() {
+            job_id=$(curl -fsS -X POST http://127.0.0.1:8080/api/crack \
+                 -H 'content-type: application/json' \
+                 -d "$1" | python -c "import json,sys; print(json.load(sys.stdin)['job'])")
+            for i in $(seq 1 90); do
+              curl -fsS "http://127.0.0.1:8080/api/job/$job_id" > "/tmp/job-$$.json"
+              python -c "import json; raise SystemExit(0 if json.load(open('/tmp/job-$$.json'))['done'] else 1)" && break
+              sleep 1
+            done
+            cat "/tmp/job-$$.json"
+          }
           # The language option must reach the solver: a Caesar-shifted French
           # sample has to come back solved and judged as French.
-          curl -fsS -X POST http://127.0.0.1:8080/api/crack \
-               -H 'content-type: application/json' \
-               -d '{"text":"WPNSTQQCPXPYEPDEFYACZNPOPOPNCJAEZRCLASTPALCWPBFPWZYDZFSLTEPCPYOCPWLNZXACPSPYDTZYOFYOZNFXPYETXAZDDTMWPLEZFEPAPCDZYYPBFTYPOTDAZDPALDOPWLNWPOPNSTQQCPXPYEMTPYBFPWPNSTQQCPXPYEAFTDDPCPYOCPDPNCPEWPDPYDOFYOZNFXPYEOFYXPDDLRPFYPIAWTNLETZYYPDENZXACPSPYDTMWPBFPALCWPDOPDETYLELTCPDBFTAZDDPOPYEWLNWP","budget":10,"workers":1,"language":"french"}' \
+          crack_and_wait '{"text":"WPNSTQQCPXPYEPDEFYACZNPOPOPNCJAEZRCLASTPALCWPBFPWZYDZFSLTEPCPYOCPWLNZXACPSPYDTZYOFYOZNFXPYETXAZDDTMWPLEZFEPAPCDZYYPBFTYPOTDAZDPALDOPWLNWPOPNSTQQCPXPYEMTPYBFPWPNSTQQCPXPYEAFTDDPCPYOCPDPNCPEWPDPYDOFYOZNFXPYEOFYXPDDLRPFYPIAWTNLETZYYPDENZXACPSPYDTMWPBFPALCWPDOPDETYLELTCPDBFTAZDDPOPYEWLNWP","budget":10,"workers":1,"language":"french"}' \
             | python -c "
           import json,sys
           job = json.load(sys.stdin)
+          assert job.get('done'), job
+          assert not job.get('error'), job
           report = job.get('report') or {}
           assert report.get('solved'), report
           assert report.get('language') == 'french', report
           print('language option ok')
           "
           # Auto-detect has to pick French for the same text without being told.
-          curl -fsS -X POST http://127.0.0.1:8080/api/crack \
-               -H 'content-type: application/json' \
-               -d '{"text":"WPNSTQQCPXPYEPDEFYACZNPOPOPNCJAEZRCLASTPALCWPBFPWZYDZFSLTEPCPYOCPWLNZXACPSPYDTZYOFYOZNFXPYETXAZDDTMWPLEZFEPAPCDZYYPBFTYPOTDAZDPALDOPWLNWPOPNSTQQCPXPYEMTPYBFPWPNSTQQCPXPYEAFTDDPCPYOCPDPNCPEWPDPYDOFYOZNFXPYEOFYXPDDLRPFYPIAWTNLETZYYPDENZXACPSPYDTMWPBFPALCWPDOPDETYLELTCPDBFTAZDDPOPYEWLNWP","budget":10,"workers":1,"language":"auto"}' \
+          crack_and_wait '{"text":"WPNSTQQCPXPYEPDEFYACZNPOPOPNCJAEZRCLASTPALCWPBFPWZYDZFSLTEPCPYOCPWLNZXACPSPYDTZYOFYOZNFXPYETXAZDDTMWPLEZFEPAPCDZYYPBFTYPOTDAZDPALDOPWLNWPOPNSTQQCPXPYEMTPYBFPWPNSTQQCPXPYEAFTDDPCPYOCPDPNCPEWPDPYDOFYOZNFXPYEOFYXPDDLRPFYPIAWTNLETZYYPDENZXACPSPYDTMWPBFPALCWPDOPDETYLELTCPDBFTAZDDPOPYEWLNWP","budget":10,"workers":1,"language":"auto"}' \
             | python -c "
           import json,sys
           job = json.load(sys.stdin)
+          assert job.get('done'), job
+          assert not job.get('error'), job
           report = job.get('report') or {}
           assert report.get('solved') and report.get('language') == 'french', report
           print('auto language ok')

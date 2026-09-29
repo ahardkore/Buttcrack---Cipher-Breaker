@@ -168,7 +168,15 @@ class TestSolveAuto(unittest.TestCase):
     def test_auto_keeps_english_english(self):
         sample = LANGUAGE_SAMPLES["english"]
         ciphertext = get("vigenere").encrypt(sample, "LANTERN")
-        report = solve_auto(ciphertext, budget=10.0)
+        # Auto's probes are wall-clock slices (min(4, budget/12) each, English
+        # first), and this solve needs ~0.8s of calm-machine search.  On a CI
+        # runner ~1.4x slower, a 10s budget gives the English probe a 1s slice
+        # -- just short -- and the ranking then hands the remainder to a
+        # foreign model whose smaller table converged to a false optimum
+        # inside its own slice.  48 puts the probe at its 4s cap: ~3.6x margin
+        # over what the solve needs on that runner, and the early exit still
+        # fires on the first probe, so the happy path costs ~1s.
+        report = solve_auto(ciphertext, budget=48.0)
         self.assertTrue(report.solved)
         self.assertEqual(report.language, "english")
 

@@ -77,6 +77,10 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 118
 target-version = "py39"
+# kryptos/ is a committed cryptanalytic research archive: hundreds of one-shot
+# analysis scripts with embedded data, kept for provenance rather than
+# maintained.  It predates the lint gate and is excluded from it on purpose.
+exclude = ["kryptos"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
