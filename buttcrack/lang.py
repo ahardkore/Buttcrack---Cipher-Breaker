@@ -1,6 +1,6 @@
-"""The English statistical language model and plaintext scoring.
+"""Statistical language models and plaintext scoring.
 
-Everything Buttcrack knows about "does this look like English?" lives here.
+Everything Buttcrack knows about "does this look like <language>?" lives here.
 Two independent views are combined, because each fails in a different place:
 
 ``fitness``
@@ -11,15 +11,38 @@ Two independent views are combined, because each fails in a different place:
 ``words``
     Dictionary coverage from a Viterbi segmentation of the *spaceless* letter
     stream, counting only words of four letters or more.  Much sharper than
-    n-grams at telling real plaintext from a high-scoring near-miss.
+    n-grams at telling real plaintext from a high-scoring near-miss.  Available
+    for English only: the other five languages ship n-gram tables but no
+    frequency dictionary, so their verdicts rest on fitness alone (with the
+    per-language fitness ramps measured at import time to compensate).
+
+Languages
+---------
+Six models ship in ``buttcrack/data``:
+
+``english``
+    The original: 258k quadgrams plus an 80,000-word frequency dictionary,
+    distilled from a 25-million-word corpus (see NOTICE).  The only model with
+    the ``words`` view, and the one whose thresholds were measured directly by
+    ``scripts/calibrate_scoring.py``.
+
+``french``, ``german``, ``italian``, ``latin``, ``spanish``
+    n-gram counts from practicalcryptography.com (Wortschatz corpora), imported
+    by ``scripts/import_ngram_tables.py``.  Each language carries its own
+    fitness ramp, derived from its table's self-entropy using the relationship
+    measured on English (``GOOD = H - 0.14``, ``BAD = GOOD - 1.90``) and
+    validated against real text: native prose scores 0.8-1.0 confidence,
+    prose from a sibling Romance language stays below the solve bar, random
+    letters and wrong shifts score zero.
 
 Distributional statistics (index of coincidence, chi-squared, entropy) are used
 for *identification* rather than ranking -- period detection, transposition vs.
-substitution, single-shift solving.
+substitution, single-shift solving.  Chi-squared is measured against each
+model's own letter distribution.
 
 Calibration
 -----------
-The confidence ramps below were measured, not guessed, by
+The English confidence ramps below were measured, not guessed, by
 ``scripts/calibrate_scoring.py`` over the samples in
 ``examples/english_samples.txt``.  Medians at every length from 40 to 800
 letters::
@@ -30,7 +53,9 @@ letters::
     800           -4.08           0.77           -7.83            -5.96
 
 Data files live in ``buttcrack/data`` and are produced by
-``scripts/build_language_model.py``; see NOTICE for source attribution.
+``scripts/build_language_model.py`` (English) and
+``scripts/import_ngram_tables.py`` (the other five); see NOTICE for source
+attribution.
 """
 
 from __future__ import annotations
@@ -87,6 +112,7 @@ _NGRAM_FILES = {
     4: "english_quadgrams.txt.gz",
 }
 
+
 # --------------------------------------------------------------------------- #
 # calibration constants (see module docstring and scripts/calibrate_scoring.py)
 # --------------------------------------------------------------------------- #
@@ -103,6 +129,131 @@ SOLVED_CONFIDENCE = 0.62
 CERTAIN_CONFIDENCE = 0.86
 #: Minimum word length counted towards the ``words`` view.
 WORD_COVERAGE_MIN_LEN = 4
+#: The languages that ship in ``data/``, in the order ``--language auto`` probes
+#: them.  English leads because it is the one model with a dictionary view and
+#: the calibrated baseline everything else is measured against; the rest follow
+#: alphabetically so the cascade is deterministic.
+LANGUAGE_ALIASES = {
+    "en": "english",
+    "eng": "english",
+    "fr": "french",
+    "fra": "french",
+    "de": "german",
+    "ger": "german",
+    "it": "italian",
+    "ita": "italian",
+    "la": "latin",
+    "lat": "latin",
+    "es": "spanish",
+    "spa": "spanish",
+}
+
+
+@dataclass(frozen=True)
+class LanguageSpec:
+    """Per-language model configuration.
+
+    ``fitness_good`` / ``fitness_bad`` are the ramp endpoints for the
+    fitness-only confidence used when a language has no dictionary.  English's
+    were measured directly (``calibrate_scoring.py``); the others were derived
+    from each quadgram table's self-entropy at import time (see the module
+    docstring) and are recorded here so the code states its numbers.
+    """
+
+    name: str
+    ngram_files: dict[int, str]
+    dictionary: str | None = None
+    fitness_good: float = FITNESS_GOOD
+    fitness_bad: float = FITNESS_BAD
+
+
+#: English first (probing order), then alphabetical.
+LANGUAGES: dict[str, LanguageSpec] = {
+    "english": LanguageSpec(
+        name="english",
+        ngram_files=_NGRAM_FILES,
+        dictionary="english_words.json.gz",
+        fitness_good=-4.30,
+        fitness_bad=-6.20,
+    ),
+    "french": LanguageSpec(
+        name="french",
+        ngram_files={
+            2: "french_bigrams.txt.gz",
+            3: "french_trigrams.txt.gz",
+            4: "french_quadgrams.txt.gz",
+        },
+        # H = -3.921 (scripts/import_ngram_tables.py)
+        fitness_good=-4.06,
+        fitness_bad=-5.96,
+    ),
+    "german": LanguageSpec(
+        name="german",
+        ngram_files={
+            2: "german_bigrams.txt.gz",
+            3: "german_trigrams.txt.gz",
+            4: "german_quadgrams.txt.gz",
+        },
+        # H = -3.752
+        fitness_good=-3.89,
+        fitness_bad=-5.79,
+    ),
+    "italian": LanguageSpec(
+        name="italian",
+        ngram_files={
+            2: "italian_bigrams.txt.gz",
+            3: "italian_trigrams.txt.gz",
+            4: "italian_quadgrams.txt.gz",
+        },
+        # H = -3.936
+        fitness_good=-4.08,
+        fitness_bad=-5.98,
+    ),
+    "latin": LanguageSpec(
+        name="latin",
+        ngram_files={
+            2: "latin_bigrams.txt.gz",
+            3: "latin_trigrams.txt.gz",
+            4: "latin_quadgrams.txt.gz",
+        },
+        # H = -3.899.  Classical Latin barely uses J and W (the source table
+        # carries neither), so the model scores them only through the unseen
+        # floor -- correct, if harsh on mediaeval spellings.
+        fitness_good=-4.04,
+        fitness_bad=-5.94,
+    ),
+    "spanish": LanguageSpec(
+        name="spanish",
+        ngram_files={
+            2: "spanish_bigrams.txt.gz",
+            3: "spanish_trigrams.txt.gz",
+            4: "spanish_quadgrams.txt.gz",
+        },
+        # H = -3.937
+        fitness_good=-4.08,
+        fitness_bad=-5.98,
+    ),
+}
+
+
+def resolve_language(name: str) -> str:
+    """Canonical language name for ``name`` (full, alias or ISO code)."""
+    key = str(name).strip().lower()
+    if key in ("auto", "detect"):
+        return key
+    if key in LANGUAGES:
+        return key
+    resolved = LANGUAGE_ALIASES.get(key)
+    if resolved is not None:
+        return resolved
+    # BCP-47 style tags with a region ("de-DE", "es-419"): the model set has
+    # no regional variants, so the subtag is dropped rather than rejected.
+    base = key.split("-", 1)[0].split("_", 1)[0]
+    resolved = LANGUAGE_ALIASES.get(base)
+    if resolved is not None:
+        return resolved
+    known = ", ".join(LANGUAGES)
+    raise ValueError(f"unknown language {name!r}; known: {known} (or 'auto')")
 
 #: Cost of a letter in a string that is not in the dictionary (log10 units).
 #: The per-letter term is what makes the Viterbi pass prefer
@@ -119,8 +270,12 @@ def ramp(value: float, good: float, bad: float) -> float:
 
 
 @dataclass(frozen=True)
-class EnglishScore:
-    """Multi-view assessment of how English a candidate plaintext is."""
+class LanguageScore:
+    """Multi-view assessment of how language-like a candidate plaintext is.
+
+    ``words``, ``segmentation`` and ``start_quality`` are empty for models
+    without a dictionary (every language but English).
+    """
 
     fitness: float
     """n-gram log10 probability per character (higher is better)."""
@@ -205,14 +360,16 @@ BYTE_PRINTABLE: tuple[int, ...] = tuple(1 if _is_printable_byte(b) else 0 for b 
 
 
 class LanguageModel:
-    """Letter n-gram + dictionary model of English.
+    """Letter n-gram (+ dictionary, English only) model of a language.
 
-    Instances cost ~0.2 s to load, so use :meth:`get`, which caches one per
+    Instances cost ~0.2 s to load (the non-English tables are smaller and
+    load faster), so use :meth:`get`, which caches one per
     (language, order) per process and is thread-safe.
     """
 
     def __init__(self, language: str = "english", data_dir: Path | str | None = None, order: int = 4):
-        self.language = language
+        self.language = resolve_language(language)
+        self.spec = LANGUAGES[self.language]
         self.data_dir = Path(data_dir) if data_dir else DATA_DIR
         self.order = order
         self._tables: dict[int, dict[str, float]] = {}
@@ -226,7 +383,11 @@ class LanguageModel:
         self._lock = threading.Lock()
         self._loaded = False
 
-    # -- loading ------------------------------------------------------------ #
+    @property
+    def has_dictionary(self) -> bool:
+        """True when this model also carries the ``words`` view (English)."""
+        return self.spec.dictionary is not None
+
     @classmethod
     @lru_cache(maxsize=8)
     def get(cls, language: str = "english", order: int = 4) -> LanguageModel:
@@ -238,7 +399,7 @@ class LanguageModel:
         with self._lock:
             if self._loaded:
                 return self
-            for n, filename in _NGRAM_FILES.items():
+            for n, filename in self.spec.ngram_files.items():
                 if n > self.order:
                     continue
                 counts: dict[str, int] = {}
@@ -253,13 +414,18 @@ class LanguageModel:
                 # An unseen n-gram is charged a tenth of a single occurrence:
                 # harsh but finite, so hill climbing still sees a gradient.
                 self._floors[n] = math.log10(0.1 / total)
-            with gzip.open(self.data_dir / "english_words.json.gz", "rt", encoding="utf-8") as fh:
-                self.words = json.load(fh)
-            self._word_total = sum(self.words.values())
-            self._unknown_floor = math.log10(1.0 / self._word_total) - UNKNOWN_FLOOR_MARGIN
+            if self.spec.dictionary is not None:
+                with gzip.open(self.data_dir / self.spec.dictionary, "rt", encoding="utf-8") as fh:
+                    self.words = json.load(fh)
+                self._word_total = sum(self.words.values())
+                self._unknown_floor = math.log10(1.0 / self._word_total) - UNKNOWN_FLOOR_MARGIN
             meta_path = self.data_dir / "model_meta.json"
             if meta_path.exists():
-                self._meta = json.loads(meta_path.read_text())
+                full = json.loads(meta_path.read_text())
+                # English provenance lives at the top level of the meta file;
+                # the imported languages under "languages" (see
+                # scripts/import_ngram_tables.py).
+                self._meta = full.get("languages", {}).get(self.language, full)
             self._loaded = True
         return self
 
@@ -276,6 +442,13 @@ class LanguageModel:
     def ngram_count(self, order: int | None = None) -> int:
         """How many n-grams of ``order`` (default: the model's order) are known."""
         return len(self._tables.get(self.order if order is None else order, {}))
+
+    def ngram_floor(self, order: int | None = None) -> float:
+        """Log10 penalty charged to an n-gram absent from the table."""
+        order = self.order if order is None else order
+        if order not in self._floors:
+            order = max(self._floors)
+        return self._floors[order]
 
     # -- n-gram scoring ----------------------------------------------------- #
     def ngram_score(
@@ -310,10 +483,10 @@ class LanguageModel:
 
     # -- distributional statistics ----------------------------------------- #
     def monogram_reference(self) -> dict[str, float]:
-        """English letter proportions, derived from the shipped bigram table."""
+        """This language's letter proportions, derived from its bigram table."""
         if self._monograms is None:
             counts: Counter = Counter()
-            with gzip.open(self.data_dir / _NGRAM_FILES[2], "rt", encoding="ascii") as fh:
+            with gzip.open(self.data_dir / self.spec.ngram_files[2], "rt", encoding="ascii") as fh:
                 for line in fh:
                     gram, _, count = line.partition(" ")
                     counts[gram[0]] += int(count)
@@ -322,11 +495,11 @@ class LanguageModel:
         return dict(self._monograms)
 
     def chi_squared(self, text: str, *, per_char: bool = False) -> float:
-        """Chi-squared distance from the English letter distribution.
+        """Chi-squared distance from this model's letter distribution.
 
-        Near zero for English, large for random text or a wrongly-shifted
-        decryption.  This is what solves Caesar/Affine/Vigenere columns without
-        any search at all.
+        Near zero for text in the model's language, large for random text or a
+        wrongly-shifted decryption.  This is what solves Caesar/Affine/Vigenere
+        columns without any search at all.
         """
         ref = self.monogram_reference()
         stream = letters_only(text, A26)[:MAX_SCORE_CHARS]
@@ -403,14 +576,19 @@ class LanguageModel:
         return known_all / letters, known_long / letters, words
 
     # -- composite ---------------------------------------------------------- #
-    def score(self, text: str, *, with_words: bool = True) -> EnglishScore:
-        """Full multi-view score of a candidate plaintext."""
+    def score(self, text: str, *, with_words: bool = True) -> LanguageScore:
+        """Full multi-view score of a candidate plaintext.
+
+        Models without a dictionary (all but English) score on fitness alone,
+        using their own measured ramp endpoints, whatever ``with_words`` says.
+        """
         sample = letters_only(text, A26)[:MAX_SCORE_CHARS]
         if not sample:
-            return EnglishScore(-9.0, 0.0, -9.0, 0.0, 999.0, 0.0, 0)
+            return LanguageScore(-9.0, 0.0, -9.0, 0.0, 999.0, 0.0, 0)
         fit = self.ngram_score(sample, normalise=False)
         chi = self.chi_squared(sample, per_char=True)
         ic = index_of_coincidence(sample)
+        with_words = with_words and self.has_dictionary
         if with_words:
             seg_total, words = self.segment(sample)
             seg = seg_total / len(sample)
@@ -424,7 +602,11 @@ class LanguageModel:
                 "words"
             ] * ramp(coverage_long, WORDS_GOOD, WORDS_BAD)
         else:
-            confidence = ramp(fit, FITNESS_GOOD, FITNESS_BAD)
+            # No dictionary view: the fitness ramp has to carry the verdict on
+            # its own, against this language's own endpoints.  Measured on real
+            # text: native prose 0.8-1.0, sibling languages below the solve
+            # bar, random letters and wrong shifts zero.
+            confidence = ramp(fit, self.spec.fitness_good, self.spec.fitness_bad)
         # Variety: text that reuses three letters thirty times is not English,
         # however well its quadgrams happen to score.
         variety = len(set(sample)) / min(n, 26)
@@ -440,7 +622,7 @@ class LanguageModel:
             )
             if n < FRAGMENT_LETTERS:
                 confidence = min(confidence, FRAGMENT_CAP)
-        return EnglishScore(
+        return LanguageScore(
             fitness=fit,
             words=coverage_long,
             segmentation=seg,
@@ -483,6 +665,32 @@ class LanguageModel:
         return score / len(data) - (0.0 if ratio > 0.95 else (0.95 - ratio) * 20)
 
 
+#: Backwards-compatible alias: the score class was English-only until the
+#: 1.1 multi-language models, and downstream code imports the old name.
+EnglishScore = LanguageScore
+
+
 def get_model(language: str = "english", order: int = 4) -> LanguageModel:
-    """Return (and cache) the language model for ``language``."""
-    return LanguageModel.get(language, order)
+    """Return (and cache) the language model for ``language`` (or its alias)."""
+    return LanguageModel.get(resolve_language(language), order)
+
+
+def detect_language(text: str, *, limit: int | None = None) -> list[tuple[str, float]]:
+    """Rank the shipped models by how well ``text`` reads under each.
+
+    Returns ``[(language, confidence), ...]``, best first.  This is plaintext
+    language identification, not cipher identification: it answers "which
+    model should judge this text", which is what ``--language auto`` and the
+    "this reads better as French" note in the report need.
+
+    Every model scores under its own fitness ramp *without* the dictionary
+    view, even English's.  That is deliberate: the dictionary inflates English
+    confidence on French or Italian prose (the languages share enough
+    vocabulary to cover half of each other's words), and a ranking that
+    compares fitness views only is the one that actually picks the right
+    model -- measured on real prose in all six languages, the diagonal wins
+    every time, by 0.07 (French, the closest) to 0.5.
+    """
+    ranked = [(name, get_model(name).score(text, with_words=False).confidence) for name in LANGUAGES]
+    ranked.sort(key=lambda pair: -pair[1])
+    return ranked[:limit] if limit else ranked

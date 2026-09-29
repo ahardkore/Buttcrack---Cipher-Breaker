@@ -42,6 +42,7 @@ from .polygraphic import Bifid, Playfair
 from .shift import ROT13, ROT47, Affine, Atbash, Caesar, Reverse
 from .substitution import KeywordSubstitution, Substitution
 from .transposition import ColumnarTransposition, RailFence, RouteTransposition, SkipTransposition
+from .wheel import M94
 from .xor import RepeatingKeyXOR, SingleByteXOR
 
 #: Every cipher Buttcrack knows, in the order they are displayed.
@@ -71,6 +72,8 @@ ALL_CIPHERS: list[Cipher] = [
     # polygraphic
     Playfair(),
     Bifid(),
+    # wheel ciphers
+    M94(),
     # byte level
     SingleByteXOR(),
     RepeatingKeyXOR(),

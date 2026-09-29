@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "buttcrack"
-version = "1.0.0"
+version = "1.1.0"
 description = "Automatic cipher breaker: identifies the cipher, recovers the key, reads the plaintext — including layered puzzles."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -69,7 +69,7 @@ exclude = ["tests*", "scripts*", "examples*", "docs*"]
 [tool.setuptools.package-data]
 # The n-gram tables and the dictionary are data, not generated build artefacts:
 # without them the scorer has nothing to score against.
-buttcrack = ["data/*.gz", "data/*.json", "static/*.html", "static/*.css", "static/*.js"]
+buttcrack = ["data/*.gz", "data/*.json", "data/*.txt", "static/*.html", "static/*.css", "static/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -40,6 +40,7 @@ class Family(str, Enum):
     SUBSTITUTION = "substitution"
     TRANSPOSITION = "transposition"
     POLYGRAPHIC = "polygraphic"
+    WHEEL = "wheel"
     CODE = "code"
     ENCODING = "encoding"
     XOR = "xor"

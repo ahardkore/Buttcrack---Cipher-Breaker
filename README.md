@@ -100,6 +100,7 @@ Handy options on `crack`:
 | `--json` | machine-readable report — the same fields the web UI uses |
 | `--verbose` | live progress: what is being tried, and what it is scoring |
 | `--hint key=VALUE` | a known or suspected key; also `--hint key=hex:ff10` for raw bytes |
+| `--language LANG` | plaintext language: `english` (default), `french`, `german`, `italian`, `latin`, `spanish`, or `auto` |
 | `--depth N` | how many encoding layers to peel (default 3) |
 | `--exhaustive` | keep going after the first confident answer; report every candidate |
 
@@ -107,7 +108,7 @@ Handy options on `crack`:
 
 ## What it breaks
 
-35 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
+36 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
 
 | family | members | how it is attacked |
 | --- | --- | --- |
@@ -116,6 +117,7 @@ Handy options on `crack`:
 | **polyalphabetic** | vigenère, beaufort, variant beaufort, gronsfeld, autokey, trithemius | coset index-of-coincidence for the period, then chi-squared per column |
 | **transposition** | columnar, rail fence, route, skip/scytale | anagram scoring over key permutations and rail counts |
 | **polygraphic** | playfair, bifid | genetic algorithm over 5×5 / 6×6 grids (see *Limits*) |
+| **wheel** | M-94 / CSP-488 | hill climb over 25! disk orders, quadgram-scored per read row |
 | **xor** | single-byte, repeating-key | byte-coset IC for the key length, per-byte chi-squared, then refinement |
 | **codes** | morse, bacon (+ case variant), a1z26, polybius | structural decode — these are recognised, not searched |
 | **encodings** | base64, base32, base16, base58, base85, url, binary, decimal ASCII | peeled as layers, in any order, to any depth |
@@ -128,7 +130,7 @@ Handy options on `crack`:
 
 ## How it works
 
-**1. A language model, not a word list.** `buttcrack/data/` holds letter n-gram tables (258,337 quadgrams) and an 80,000-word frequency dictionary, distilled from a 25-million-word English corpus. Every candidate decryption is scored two ways: n-gram log-probability per character (English ≈ −4.3, random ≈ −7.7) and the fraction of the text made of real words. That pair — not "does it contain a dictionary word" — is what decides whether an answer is right. See [docs/language-model.md](docs/language-model.md).
+**1. A language model, not a word list.** `buttcrack/data/` holds letter n-gram tables for **six languages** — English (258,337 quadgrams, plus an 80,000-word frequency dictionary distilled from a 25-million-word corpus) and French, German, Italian, Latin and Spanish (n-gram only). Every candidate decryption is scored two ways: n-gram log-probability per character (English ≈ −4.3, random ≈ −7.7) and, for English, the fraction of the text made of real words. That pair — not "does it contain a dictionary word" — is what decides whether an answer is right. Pick the model with `--language`; the report always says which one judged the answer. See [docs/language-model.md](docs/language-model.md).
 
 **2. Identification before search.** `identify()` measures the index of coincidence, entropy, character classes and chi-squared distance from English, then asks the questions in the order that discriminates best: *does one of the 26 shifts restore the English distribution?* → monoalphabetic. *Is the distribution intact but no shift reads it?* → transposition. *Is the index of coincidence flat, and does some period split it into English-like columns?* → Vigenère family. Structural tests (base64 alignment, Morse separators, Playfair's refusal to put the same letter twice in a digraph) run alongside. Each hypothesis is reported with a likelihood **and the reason**, and the solver uses those as priors rather than as orders. See [docs/how-it-works.md](docs/how-it-works.md).
 
@@ -158,6 +160,8 @@ Machine-readable everywhere: `--json` on the CLI, `POST /api/crack` (which retur
 from buttcrack import solve, identify, encrypt, decrypt
 
 report = solve("Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj", budget=10)
+report = solve("EPHMAM...", budget=30, language="french")   # judge as French
+report = solve_auto("EPHMAM...", budget=30)                 # probe all six, pick the fit
 print(report.solved)        # True
 print(report.cipher)        # 'caesar'
 print(report.key_repr)      # '3'
@@ -181,11 +185,26 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 
 `buttcrack serve` starts a local server (stdlib `http.server`, no framework, no build step) with three panels:
 
-* **Break** — paste ciphertext, watch the identification hypotheses arrive, then the ranked readings with confidence, key, decode chain and evidence. Long searches run as background jobs and poll.
-* **Playground** — pick any of the 35 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
+* **Break** — paste ciphertext, watch the identification hypotheses arrive, then the ranked readings with confidence, key, decode chain and evidence. Long searches run as background jobs and poll. The language dropdown sends `--language` (including *Auto-detect*).
+* **Playground** — pick any of the 36 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
 * **Reference** — the cipher table with keyspaces, search costs and each cipher's own notes on what breaks it.
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
+
+---
+
+## Beyond English
+
+Six plaintext models ship in the box, selected with `--language` (or the `language=` keyword to `solve`, or the dropdown in the web UI):
+
+```console
+$ buttcrack ciphertext.txt --language french --budget 30
+$ buttcrack ciphertext.txt --language auto          # probe all six, then commit
+```
+
+* **Auto mode** spends up to half the budget probing each model on a short solve, then hands the rest to whichever read the most language. Cheap ciphers usually solve outright inside their probe; English is probed first, so the common case costs one short probe.
+* **The report names its judge.** `language` says which model produced the verdict. If you crack without naming a language and the plaintext turns out to be French, the report says so (`reads as: french`) and suggests the rerun — because the English model will happily *solve* French text with an English-calibrated confidence and meaningless word respacing.
+* **Only English has a dictionary.** The five other models judge on n-gram fitness alone (their thresholds are measured per language and recorded in `model_meta.json`). What that costs in ranking honesty is spelled out under *Limits*.
 
 ---
 
@@ -198,18 +217,19 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 * **Short text is weak evidence, and the tool says so.** Below ~50 letters the chi-squared distributions of "English under a shift" and "Vigenère" overlap almost completely (measured: English at n = 35 reaches 1.47 at p99 while Vigenère starts at 0.90). `identify` then reports several plausible families with low likelihoods instead of inventing certainty, and confidence is capped accordingly. The solver still attacks all of them.
 * **Some ciphers are lossy by design.** Playfair pads with `X` and splits doubled letters; Bacon merges U/V and I/J; Polybius and Bifid merge I/J. Comparisons in the tests and the selftest fold those away, and the report notes it — you get the letters back, not the typography.
 * **Attribution can be equivalent-but-different.** Atbash may be reported as `affine (25, 25)`; a Vigenère with a one-letter key may be reported as `caesar`. The plaintext is right and the `notes` field explains the equivalence.
-* **The language model is English.** Other languages need their own n-gram tables; `scripts/build_language_model.py` shows how the shipped ones were made.
+* **Non-English models have no dictionary.** Only English ships a word list; the other five languages judge on n-gram fitness alone. Two honest consequences, both measured: (1) a slightly wrong reading can outscore the true one — on a 197-letter German Caesar, a substitution near-miss disagreeing on 4 rare letters beat the true shift by 0.05 confidence — so foreign-language reports grade "solved" on fitness, not word-perfectness; (2) the English model *will* solve its sibling languages (French at 0.88 confidence, Italian 0.86) and report inflated confidence — the report's `reads as` note flags this and names the `--language` rerun that fixes it. `--language auto` probes all six models (up to half the budget) and is reliable for cheap ciphers, but for an expensive cipher it can only rank partial readings, so name the language when you know it.
+* **The M-94 is a genuine search.** 25! ≈ 1.5×10²⁵ disk orders; the hill climb over pairwise swaps lands from ~200 letters given a real slice of budget (measured: 2-in-3 solves at 250 letters inside 20 s with 2 workers; the true order's read row is always found once the order is). Below 150 letters the honest-evidence rule caps the verdict below *solved* — 25 wheels want ~6 letters each. `--budget 120 --workers 2` and 250+ letters is the reliable recipe; `--hint key=<order>` is exact immediately.
 
 ---
 
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 205 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 253 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end
-python3 -m buttcrack selftest --slow                          # + substitution, Playfair, Bifid
+python3 -m buttcrack selftest --slow                          # + substitution, Playfair, Bifid, M-94
 python3 examples/generate.py --check                          # solve every sample puzzle
 python3 -m buttcrack demo                                     # encrypt, then break with no hints
 pip install -e ".[dev]" && ruff check .                       # lint (CI enforces this)
@@ -231,13 +251,14 @@ buttcrack/
   selftest.py    known-answer verification of the whole install
   server.py      REST API + static file serving
   cli.py         the command line
-  ciphers/       one module per family, 35 ciphers behind one interface
-  data/          the language model (see NOTICE for provenance)
+  ciphers/       one module per family, 36 ciphers behind one interface
+  data/          the language models (see NOTICE for provenance)
   static/        the web interface
 scripts/
-  build_language_model.py   rebuild data/ from PyPI sources
+  build_language_model.py   rebuild the English data/ from PyPI sources
+  import_ngram_tables.py    import the five non-English n-gram tables
   calibrate_scoring.py      re-measure the scoring thresholds
-examples/                   fifteen sample puzzles, their answers, and a checker
+examples/                   sixteen sample puzzles, their answers, and a checker
 docs/                       how it works, the cipher table, the language model
 tests/                      the suite
 ```
@@ -250,4 +271,4 @@ Every threshold in this project was measured, not guessed — `scripts/calibrate
 
 MIT — see [LICENSE](LICENSE).
 
-The bundled language model is derived from [wordsegment](https://pypi.org/project/wordsegment/) (Apache-2.0, itself derived from Peter Norvig's tables for the Google Web 1T corpus) and [pyspellchecker](https://pypi.org/project/pyspellchecker/) (MIT). Provenance, versions and the build seed are recorded in [NOTICE](NOTICE) and in `buttcrack/data/model_meta.json`.
+The bundled English language model is derived from [wordsegment](https://pypi.org/project/wordsegment/) (Apache-2.0, itself derived from Peter Norvig's tables for the Google Web 1T corpus) and [pyspellchecker](https://pypi.org/project/pyspellchecker/) (MIT). The French, German, Italian, Latin and Spanish n-gram tables are the practicalcryptography.com counts published by James Lyons, and the M-94 disk set is the historical public set. Provenance, versions and the build seed are recorded in [NOTICE](NOTICE) and in `buttcrack/data/model_meta.json`.

@@ -102,6 +102,11 @@ PUZZLES: tuple[tuple[str, str, str, Callable[[str], str], str, str, float], ...]
     ("15-playfair", "brutal", "A 5x5 grid. Expect most of the letters, not always all of them; "
      "`--hint key=MONARCHY` finishes it at once.",
      cipher("playfair", "MONARCHY"), "MONARCHY", PROSE * 3, 120),
+    ("16-m94", "brutal", "The Army's 25-wheel M-94: every position runs through its own mixed "
+     "alphabet, 25! possible spindle orders. Measured 3/3 exact at this length and budget; "
+     "`--hint key=<order>` finishes it at once.",
+     cipher("m94", {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}),
+     "order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9", PROSE * 2, 120),
 )
 
 

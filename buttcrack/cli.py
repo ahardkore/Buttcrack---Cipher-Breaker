@@ -33,7 +33,8 @@ from . import __version__
 from .ciphers import ALL_CIPHERS, by_family, get, layer_ciphers, try_get
 from .ciphers.base import Cipher
 from .detect import identify
-from .engine import solve
+from .engine import solve, solve_auto
+from .lang import resolve_language
 from .results import CrackReport
 from .text import letters_only
 
@@ -308,6 +309,8 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
     method = report.notes.get("method")
     if method:
         rows.append(("method", str(method)))
+    if report.language and report.language != "english":
+        rows.append(("language", str(report.language)))
     keyword = report.notes.get("keyword")
     if keyword and keyword != report.key_repr:
         rows.append(("keyword", str(keyword)))
@@ -320,6 +323,8 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
         rows.append(("caveat", str(report.notes["evidence"])))
     if report.notes.get("key_note"):
         rows.append(("note", str(report.notes["key_note"])))
+    if report.notes.get("language"):
+        rows.append(("note", str(report.notes["language"])))
     label = max(len(name) for name, _ in rows)
     for name, value in rows:
         print(f"    {pal.dim(name.ljust(label))}  {value}")
@@ -375,6 +380,19 @@ def hint_text(report: CrackReport) -> str:
     return "next: " + "; ".join(tips)
 
 
+def language_name(value: str) -> str:
+    """argparse type for ``--language``: canonical name or a clean error.
+
+    Also accepts the ISO aliases and region tags ``resolve_language`` knows
+    (``fr``, ``de-DE``), so the flag is as forgiving as the Python API.
+    """
+    try:
+        resolved = resolve_language(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from None
+    return "auto" if resolved in ("auto", "detect") else resolved
+
+
 def cmd_crack(args: argparse.Namespace) -> int:
     pal = make_palette(args)
     ciphertext = read_input(args)
@@ -386,15 +404,18 @@ def cmd_crack(args: argparse.Namespace) -> int:
     progress = make_progress(pal, args.verbose, started)
     if args.verbose and not args.json:
         print(rule(pal, f"{PROGRAM} {__version__}"), flush=True)
-    report = solve(
-        ciphertext,
-        budget=args.budget,
-        workers=args.workers,
-        max_depth=args.depth,
-        hints=build_hints(args),
-        progress=progress if not args.json else None,
-        exhaustive=args.exhaustive,
-    )
+    options = {
+        "budget": args.budget,
+        "workers": args.workers,
+        "max_depth": args.depth,
+        "hints": build_hints(args),
+        "progress": progress if not args.json else None,
+        "exhaustive": args.exhaustive,
+    }
+    if args.language == "auto":
+        report = solve_auto(ciphertext, **options)
+    else:
+        report = solve(ciphertext, language=args.language, **options)
 
     if args.json:
         payload = report.as_dict(plaintext_limit=args.limit if args.limit else None,
@@ -646,7 +667,8 @@ def cmd_demo(args: argparse.Namespace) -> int:
         else:
             expected_chain = name
         started = time.time()
-        report = solve(ciphertext, budget=args.budget, workers=args.workers)
+        report = solve(ciphertext, budget=args.budget, workers=args.workers,
+                       language=getattr(args, "language", "english"))
         elapsed = time.time() - started
         ok = report.solved and letters_only(report.plaintext) == letters_only(plaintext)
         failures += 0 if ok else 1
@@ -728,6 +750,12 @@ def build_parser() -> argparse.ArgumentParser:
         target.add_argument("--candidates", "-n", type=int, default=5,
                             help="how many alternative readings to show (default: 5)")
         target.add_argument("--limit", type=int, default=0, help="truncate the printed plaintext")
+        target.add_argument("--language", "-l", default="english", metavar="LANG",
+                            type=language_name,
+                            help="plaintext language model: english (default), french, german, "
+                                 "italian, latin, spanish, or 'auto' to probe all (auto spends up "
+                                 "to half the budget deciding, then solves under the best fit); "
+                                 "ISO aliases like 'fr' or 'es-419' are accepted")
         target.add_argument("--exhaustive", action="store_true",
                             help="enumerate whole keyspaces even where the search would prune")
         target.add_argument("--json", action="store_true", help="machine-readable output")

@@ -1,6 +1,6 @@
 # The cipher table
 
-35 ciphers, codes and encodings behind one interface. Each entry has its own
+36 ciphers, codes and encodings behind one interface. Each entry has its own
 attack — the interface exists so the engine can schedule, budget and report them
 uniformly, not so they can share a brute-force loop.
 
@@ -59,6 +59,12 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | --- | --- | --- | --- | --- | --- |
 | `bifid`<br>Bifid | keyword + period<br>example `key=MONARCHY, period=7` | unbounded | brutal | 80 | Each letter becomes (row, column); the coordinates are recombined within a period. Experimental solver. |
 | `playfair`<br>Playfair | keyword (5x5 grid)<br>example `MONARCHY` | unbounded | expensive | 50 | Digraph substitution on a 5x5 keyed grid. Solved by hill climbing the grid on quadgram fitness. |
+
+### Wheel
+
+| cipher | key | keyspace | cost | min text | how it is attacked |
+| --- | --- | --- | --- | --- | --- |
+| `m94`<br>M-94 / CSP-488<br>(aliases `m-94`, `csp488`, `wheel`) | disk order + read row<br>example `order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9` | 25! × 26 ≈ 2^88 | brutal | 100 | The US Army's 25-wheel device with the standard published disk set. Each of the 25 positions has its own mixed alphabet, so the cipher is polyalphabetic with period exactly 25 and no column is a shift. Hill climbing over pairwise spindle-slot swaps, each order scored by its best of 26 read rows (rows are prefiltered on a 60-letter prefix: ~3x faster, same answer); parallel restarts until the budget or certainty. Lands from ~200 letters with a real slice of budget (measured 2-in-3 at 250 letters / 20 s / 2 workers); under 150 letters the honest-evidence rule caps the verdict below SOLVED because 25 wheels want ~6 letters each. A hinted order is exact, and the read row is recovered from the text when the hint omits it. |
 
 ### XOR (byte level)
 

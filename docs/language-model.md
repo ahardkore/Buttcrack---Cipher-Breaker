@@ -1,9 +1,11 @@
 # The language model
 
 Every decision this tool makes about whether a candidate plaintext "reads as
-English" comes from one place: `buttcrack/data/`. It is a statistical model of
-English, not a word list, and it ships inside the package so that nothing needs
-a network at runtime.
+language" comes from one place: `buttcrack/data/`. Six models ship in the box —
+English, French, German, Italian, Latin and Spanish — selected with
+`--language` (or `language=` on `solve`, or `auto` to probe all six). They are
+statistical models, not word lists (English additionally has a word list), and
+they ship inside the package so that nothing needs a network at runtime.
 
 ## What is in `data/`
 
@@ -13,7 +15,9 @@ a network at runtime.
 | `english_trigrams.txt.gz` | 16,935 trigrams from the same corpus | 64 KB |
 | `english_bigrams.txt.gz` | all 676 bigrams from the same corpus | 4 KB |
 | `english_words.json.gz` | 80,000 most frequent English words with counts | 564 KB |
-| `model_meta.json` | build provenance: sources, versions, seed, corpus size, table counts | 4 KB |
+| `{french,german,italian,latin,spanish}_{bigrams,trigrams,quadgrams}.txt.gz` | the five non-English models (26,182 / 14,141 / 20,848 / 16,258 / 25,233 distinct quadgrams) | 44-212 KB each |
+| `m94_disks.txt` | the standard 25-disk M-94 wheel-cipher set (see `docs/ciphers.md`) | 1 KB |
+| `model_meta.json` | build provenance: sources, versions, seed, corpus size, table counts — per language | 8 KB |
 
 `model_meta.json` is the receipt. It records that the model was built from a
 25,000,000-word sample (seed 20260923), which upstream packages supplied the
@@ -43,7 +47,7 @@ through the build script. Full attribution is in [NOTICE](../NOTICE).
 
 ## How a candidate is scored
 
-`LanguageModel.score(text)` returns an `EnglishScore` with several views, because
+`LanguageModel.score(text)` returns a `LanguageScore` with several views, because
 no single statistic is trustworthy on its own:
 
 | view | what it is | English | noise |
@@ -54,8 +58,8 @@ no single statistic is trustworthy on its own:
 | `ic` | index of coincidence of the sample | ≈ 0.066 | ≈ 0.038 |
 | `chi_squared` | distance per character from the English letter distribution | ≈ 0.1 | ≈ 1.5+ |
 
-`confidence` is the number the engine ranks and thresholds on. It is a weighted
-blend of two ramps:
+`confidence` is the number the engine ranks and thresholds on. For English it is
+a weighted blend of two ramps:
 
 ```python
 FITNESS_GOOD, FITNESS_BAD = -4.30, -6.20     # fitness -> 1.0 / 0.0
@@ -69,6 +73,38 @@ short sample is dominated by which letters happen to be missing; above it,
 fitness is the more stable of the two. A text that uses too few distinct letters
 is penalised separately (`VARIETY_GOOD, VARIETY_BAD = 0.45, 0.18`), which is what
 stops a repeated-letter fake from scoring as prose.
+
+The five non-English models have no dictionary, so for them the fitness ramp
+carries the verdict alone, against each language's own endpoints (measured per
+table at import time by `scripts/import_ngram_tables.py` and recorded in
+`model_meta.json`):
+
+| language | quadgrams | fitness GOOD | fitness BAD | native prose scores | English text scores |
+| --- | --- | --- | --- | --- | --- |
+| english | 258,337 | −4.30 | −6.20 | 0.8–1.0 | — |
+| french | 26,182 | −4.06 | −5.96 | 0.8–1.0 | < 0.62 |
+| german | 14,141 | −3.89 | −5.79 | 0.7–1.0 | < 0.62 |
+| italian | 20,848 | −4.08 | −5.98 | 0.9–1.0 | < 0.62 |
+| latin | 16,258 | −4.04 | −5.94 | 0.8–1.0 | < 0.62 |
+| spanish | 25,233 | −4.08 | −5.98 | 0.8–1.0 | < 0.62 |
+
+Two measured consequences worth knowing before you trust a non-English verdict:
+
+* **Siblings solve each other.** The English model reads real French prose at
+  0.88 confidence and Italian at 0.86 — above the SOLVED bar. A solve under the
+  wrong model still yields the right *plaintext* (the n-grams overlap enough to
+  guide the search), but its confidence is miscalibrated and its word respacing
+  is meaningless. The report therefore names the judging `language`, and when
+  the winner reads better under a sibling it adds a `reads as` note naming the
+  `--language` rerun. `detect_language` ranks fitness views only — never the
+  dictionary view — because the shared vocabulary of the Romance languages
+  makes the word view actively mis-rank them.
+* **No dictionary means no tiebreak.** On a 197-letter German Caesar, a
+  substitution near-miss that disagreed with the truth on four rare letters
+  outscores the true reading by 0.05 confidence, because under a quadgram-only
+  ramp "reads slightly more like German" is all the evidence there is. English
+  would settle it with word coverage; German cannot. Reports under these models
+  are honest about fitness, and near-misses do happen on short text.
 
 Two thresholds turn confidence into a verdict:
 
@@ -119,11 +155,17 @@ python3 scripts/calibrate_scoring.py               # re-measure the thresholds
 The build needs network access to PyPI and about a minute; it rewrites `data/`
 and `model_meta.json` deterministically from the recorded seed.
 
-**Another language** means new n-gram tables and a new word list, then a
-re-calibration: the ramp endpoints are properties of the corpus, not universal
-constants. `LanguageModel(language=..., data_dir=...)` already takes both, and
-the file naming convention (`<language>_<order>grams.txt.gz`,
-`<language>_words.json.gz`) is the only contract the loader assumes. What does
-*not* transfer is the letter-level machinery — `A26`, the IC of English (0.0667),
-the chi-squared thresholds and the byte-frequency table used by the XOR attacks
-are all English-specific.
+**Another language** is now an import, not a build:
+`scripts/import_ngram_tables.py` turns practicalcryptography-format
+`{language}_{order}grams.txt` count files into a packaged model, derives that
+language's fitness endpoints from the table's self-entropy (the relationship
+was measured on the English build: GOOD ≈ H − 0.14, spread ≈ 1.90), and writes
+the numbers into `model_meta.json`. Register the language in
+`buttcrack/lang.py` (`LanguageSpec`) and the rest — engine, CLI, web UI,
+selftest — picks it up. A word list is optional: without one the model judges
+on fitness alone (see the table above for what that costs).
+
+What does *not* transfer between languages is the letter-level machinery —
+`A26`, the IC of English (0.0667), the chi-squared thresholds in `detect.py`
+and the byte-frequency table used by the XOR attacks are English-specific; the
+non-English models are scoring models only.
