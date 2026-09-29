@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls</title>
+<meta name="description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/m94-wheel-cipher.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls">
+<meta property="og:description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "M-94 Wheel Cipher \u2014 How the US Army's Disk Device Worked and How It Falls", "description": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What was the M-94?", "acceptedAnswer": {"@type": "Answer", "text": "A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795."}}, {"@type": "Question", "name": "How does it differ from Vigen\u00e8re?", "acceptedAnswer": {"@type": "Answer", "text": "Vigen\u00e8re shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works \u2014 each column needs its full mixed alphabet recovered."}}, {"@type": "Question", "name": "Can this page break an M-94 message?", "acceptedAnswer": {"@type": "Answer", "text": "No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint."}}, {"@type": "Question", "name": "Why is disk 17 famous?", "acceptedAnswer": {"@type": "Answer", "text": "One of the standard disks spells ARMYOFTHEUS \u2014 'ARMY OF THE US' \u2014 around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret."}}, {"@type": "Question", "name": "How much ciphertext does a break need?", "acceptedAnswer": {"@type": "Answer", "text": "About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven \u2014 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds."}}]}</script>
+</head>
+<body data-preset="vigenere">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>The M-94 Wheel Cipher<span class="dot">.</span></h1>
+      <p class="tagline">Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>The device</h2>
+    <p>Twenty-five brass disks, each about an inch and a half across, threaded onto a spindle in a
+    frame. Every disk carries the alphabet in a different scrambled order around its rim, and the
+    set of alphabets is fixed and public — what the enemy never knew was the <em>order</em> the
+    disks were threaded in, which is one of 25 factorial arrangements: roughly a septillion, or
+    about 83 bits. To encrypt, the sender turned the disks to spell the first 25 letters of the
+    message along one row, then read the ciphertext off any other row. Twenty-five letters at a
+    time, the whole message went round and round the spindle.</p>
+
+    <h2>Why it is stronger than it looks</h2>
+    <p>A Vigenère key of length 25 gives each position of the period a shift — a Caesar cipher
+    with 26 possibilities, crackable by frequency analysis on a few dozen letters of that column.
+    The M-94 gives each position an entire mixed alphabet with no relationship to its neighbours.
+    Nothing about column 1 tells you column 2, and the flat letter statistics that expose a
+    monoalphabetic substitution never appear. When it was adopted in 1922 it was genuinely strong
+    for field traffic, and the Army used it for low-level messages into the 1940s.</p>
+
+    <h2>Recognising wheel-cipher ciphertext</h2>
+    <p>Letters only, no key rhythm, and statistics that look polyalphabetic: the index of
+    coincidence sits near random because the same plaintext letter encrypts differently each time
+    it appears. The tell is the period. Every 25th letter went through the same disk, so if you
+    split the text into 25 columns, each column is a pure monoalphabetic substitution and its
+    letter frequencies look natural — split it into any other number and they stay flat. A
+    column-wise index-of-coincidence spike at exactly 25, on a message whose length is a multiple
+    of 25 or close to one, is the fingerprint. (A Vigenère with a 25-letter key looks similar at
+    this distance; the two are told apart by trying the cheap Vigenère attack first.)</p>
+
+    <h2>How the orders fall</h2>
+    <p>83 bits is far beyond brute force, but the search does not have to be blind. Swapping two
+    disks on the spindle changes only the letters at two of the 25 positions, so a hill climb can
+    start from a random order, swap pairs, and keep every swap that makes some reading of the
+    message look more like language — measured with letter n-gram statistics, exactly as a
+    substitution solver scores candidate alphabets. The row the sender read from is part of the
+    key but costs nothing extra: with the disks in the true order, one of the 26 rows reads as
+    plaintext and the other 25 read as noise, so the search simply scores the best row of each
+    candidate order. A few thousand swaps, restarted from several random orders, converge on the
+    true arrangement from about 200 letters. That is not a weakness of the implementation; it is
+    what actually happened to wheel-cipher traffic, and why the device was retired.</p>
+
+    <h2>Honest limits</h2>
+    <p>Below about 150 letters the recovered order cannot be distinguished from a near-miss — 25
+    wheels each want a handful of letters of evidence before the answer is proven rather than
+    plausible, and a good solver says so instead of guessing. Short messages that also stack an
+    encoding layer around the wheel are the hard case. If you are working one by hand, look for
+    the period-25 column structure first, then try the full version of the
+    <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a> solver with a
+    generous budget, or hand it a suspected order as a key hint.</p>
+
+    <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
+    classical families.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>What was the M-94?</summary><p>A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795.</p></details><details class="faq"><summary>How does it differ from Vigenère?</summary><p>Vigenère shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works — each column needs its full mixed alphabet recovered.</p></details><details class="faq"><summary>Can this page break an M-94 message?</summary><p>No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint.</p></details><details class="faq"><summary>Why is disk 17 famous?</summary><p>One of the standard disks spells ARMYOFTHEUS — 'ARMY OF THE US' — around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret.</p></details><details class="faq"><summary>How much ciphertext does a break need?</summary><p>About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven — 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

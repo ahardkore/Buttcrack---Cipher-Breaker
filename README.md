@@ -191,6 +191,8 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
 
+There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a field guide to the classical ciphers at **[ahardkore.github.io/Buttcrack---Cipher-Breaker](https://ahardkore.github.io/Buttcrack---Cipher-Breaker)**. It covers the common puzzle families; everything this README describes (36 ciphers, six languages, the M-94) is the full local tool.
+
 ---
 
 ## Beyond English

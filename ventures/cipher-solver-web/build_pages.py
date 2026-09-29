@@ -278,8 +278,9 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    The browser build uses a compact trigram model; the command-line version searches far more ciphers
-    with a full quadgram model.</p>
+    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>
@@ -307,7 +308,7 @@ PAGES = [
             ("Which ciphers can it break?",
              "Caesar and ROT13, Atbash, affine, Vigenère with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text — including several of those stacked on top of each other."),
             ("Why did it fail on my text?",
-             "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English, or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext."),
+             "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."),
             ("Can it break modern encryption like AES or RSA?",
              "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."),
         ],
@@ -548,7 +549,7 @@ PAGES = [
             ("What is single-byte XOR and why is it everywhere in CTFs?",
              "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
             ("How deep can the layers go?",
-             "The browser version peels up to three encoding layers. The command-line version goes deeper and searches a wider cipher set, which is what you want for harder challenges."),
+             "The browser version peels up to three encoding layers. The full version goes deeper, searches 36 ciphers and scores in six languages, which is what you want for harder challenges."),
             ("Can it handle flag formats?",
              "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."),
             ("Why does it sometimes pick the wrong layer to unwrap?",
@@ -606,9 +607,9 @@ WIKI_PAGES = [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The command-line project has a wider experimental set. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 36 ciphers — the M-94 wheel cipher among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
             ("How much ciphertext is enough?",
-             "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure."),
+             "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
         ],
         "body": """    <h2>Start with the ciphertext, not a favourite cipher</h2>
     <p>A useful first question is not <em>which trick do I know?</em> but <em>what survives the
@@ -624,6 +625,7 @@ WIKI_PAGES = [
       <li><a href="vigenere-cipher-wiki.html">Vigenère cipher</a> — a repeating keyword creates interleaved Caesar shifts.</li>
       <li><a href="substitution-cipher-wiki.html">Monoalphabetic substitution</a> — a scrambled alphabet, solved by language statistics.</li>
       <li><a href="playfair-cipher-wiki.html">Playfair cipher</a> — a 5×5 grid that transforms letter pairs.</li>
+      <li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a> — twenty-five mixed alphabets on a spindle, one per position.</li>
     </ul>
 
     <h2>Three measurements worth knowing</h2>
@@ -813,6 +815,76 @@ WIKI_PAGES = [
     broad exploration, such as simulated annealing, with population-based or hill-climbing
     refinement, scoring candidate plaintexts using tetragrams. Hundreds of letters help; thousands
     are better. If a puzzle supplies a likely keyword, test it first.</p>
+
+    <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
+    classical families.</p>""",
+    },
+    {
+        "slug": "m94-wheel-cipher.html",
+        "title": "M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls",
+        "desc": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.",
+        "h1": "The M-94 Wheel Cipher",
+        "tagline": "Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.",
+        "preset": "vigenere",
+        "faqs": [
+            ("What was the M-94?",
+             "A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795."),
+            ("How does it differ from Vigenère?",
+             "Vigenère shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works — each column needs its full mixed alphabet recovered."),
+            ("Can this page break an M-94 message?",
+             "No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint."),
+            ("Why is disk 17 famous?",
+             "One of the standard disks spells ARMYOFTHEUS — 'ARMY OF THE US' — around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret."),
+            ("How much ciphertext does a break need?",
+             "About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven — 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds."),
+        ],
+        "body": """    <h2>The device</h2>
+    <p>Twenty-five brass disks, each about an inch and a half across, threaded onto a spindle in a
+    frame. Every disk carries the alphabet in a different scrambled order around its rim, and the
+    set of alphabets is fixed and public — what the enemy never knew was the <em>order</em> the
+    disks were threaded in, which is one of 25 factorial arrangements: roughly a septillion, or
+    about 83 bits. To encrypt, the sender turned the disks to spell the first 25 letters of the
+    message along one row, then read the ciphertext off any other row. Twenty-five letters at a
+    time, the whole message went round and round the spindle.</p>
+
+    <h2>Why it is stronger than it looks</h2>
+    <p>A Vigenère key of length 25 gives each position of the period a shift — a Caesar cipher
+    with 26 possibilities, crackable by frequency analysis on a few dozen letters of that column.
+    The M-94 gives each position an entire mixed alphabet with no relationship to its neighbours.
+    Nothing about column 1 tells you column 2, and the flat letter statistics that expose a
+    monoalphabetic substitution never appear. When it was adopted in 1922 it was genuinely strong
+    for field traffic, and the Army used it for low-level messages into the 1940s.</p>
+
+    <h2>Recognising wheel-cipher ciphertext</h2>
+    <p>Letters only, no key rhythm, and statistics that look polyalphabetic: the index of
+    coincidence sits near random because the same plaintext letter encrypts differently each time
+    it appears. The tell is the period. Every 25th letter went through the same disk, so if you
+    split the text into 25 columns, each column is a pure monoalphabetic substitution and its
+    letter frequencies look natural — split it into any other number and they stay flat. A
+    column-wise index-of-coincidence spike at exactly 25, on a message whose length is a multiple
+    of 25 or close to one, is the fingerprint. (A Vigenère with a 25-letter key looks similar at
+    this distance; the two are told apart by trying the cheap Vigenère attack first.)</p>
+
+    <h2>How the orders fall</h2>
+    <p>83 bits is far beyond brute force, but the search does not have to be blind. Swapping two
+    disks on the spindle changes only the letters at two of the 25 positions, so a hill climb can
+    start from a random order, swap pairs, and keep every swap that makes some reading of the
+    message look more like language — measured with letter n-gram statistics, exactly as a
+    substitution solver scores candidate alphabets. The row the sender read from is part of the
+    key but costs nothing extra: with the disks in the true order, one of the 26 rows reads as
+    plaintext and the other 25 read as noise, so the search simply scores the best row of each
+    candidate order. A few thousand swaps, restarted from several random orders, converge on the
+    true arrangement from about 200 letters. That is not a weakness of the implementation; it is
+    what actually happened to wheel-cipher traffic, and why the device was retired.</p>
+
+    <h2>Honest limits</h2>
+    <p>Below about 150 letters the recovered order cannot be distinguished from a near-miss — 25
+    wheels each want a handful of letters of evidence before the answer is proven rather than
+    plausible, and a good solver says so instead of guessing. Short messages that also stack an
+    encoding layer around the wheel are the hard case. If you are working one by hand, look for
+    the period-25 column structure first, then try the full version of the
+    <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a> solver with a
+    generous budget, or hand it a suspected order as a key hint.</p>
 
     <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
     classical families.</p>""",

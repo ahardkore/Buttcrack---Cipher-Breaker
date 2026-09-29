@@ -214,10 +214,10 @@
       <section class="card">
         <h2>Reading a report</h2>
         <dl class="stats glossary">
-          <dt>confidence</dt><dd>How strongly the recovered text reads as English, tempered by how much evidence the ciphertext actually provided. ≥ 0.62 is reported as solved; ≥ 0.86 stops the search.</dd>
+          <dt>confidence</dt><dd>How strongly the recovered text reads as the selected language, tempered by how much evidence the ciphertext actually provided. ≥ 0.62 is reported as solved; ≥ 0.86 stops the search.</dd>
           <dt>path</dt><dd>The decode chain, outermost layer first: <code>base64 -&gt; base16 -&gt; xor_repeating</code>.</dd>
           <dt>index of coincidence</dt><dd>Probability that two random letters match. English ≈ 0.066, random ≈ 0.038, a transposition keeps it, a polyalphabetic cipher flattens it.</dd>
-          <dt>quadgram fitness</dt><dd>Log-probability per letter under a 258k-quadgram English model. Around −4.3 reads as English; below −6 does not.</dd>
+          <dt>quadgram fitness</dt><dd>Log-probability per letter under the selected language's quadgram model — 258k quadgrams for English. Around −4.3 reads as language; below −6 does not.</dd>
           <dt>evidence cap</dt><dd>A key that holds more secret than the ciphertext can pin down is capped below “solved”: plausible, not proven.</dd>
         </dl>
       </section>
@@ -239,7 +239,7 @@
         <p>It runs three stages:</p>
         <ol>
           <li><strong>Characterise.</strong> Length, alphabet, entropy, index of coincidence, chi-squared against
-            English, structural tells (hex, base64, Morse, Bacon, Polybius, a Polybius grid, URL escapes).</li>
+            the language model, structural tells (hex, base64, Morse, Bacon, Polybius, a Polybius grid, URL escapes).</li>
           <li><strong>Peel.</strong> Any strongly indicated encoding layer is stripped and the inside is attacked
             recursively, so <code>base64 → hex → XOR</code> is three easy problems rather than one hard one.</li>
           <li><strong>Attack.</strong> Each cipher has its own cryptanalysis: chi-squared column solving and
@@ -248,9 +248,12 @@
             substitution solver.</li>
         </ol>
         <p>
-          Scoring uses an English model built from a 25-million-word corpus: <span id="about-quadgrams">quadgram</span>
-          statistics for fitness plus an 80,000-word dictionary for word coverage, blended differently on short
-          texts where quadgrams are unreliable.
+          Scoring uses the model picked by the Language dropdown: six languages ship in the box. English is the
+          deepest — <span id="about-quadgrams">quadgram</span> statistics from a 25-million-word corpus plus an
+          80,000-word dictionary for word coverage, blended differently on short texts where quadgrams are
+          unreliable. French, German, Italian, Latin and Spanish judge on their own quadgram tables, each with
+          fitness thresholds measured for that language. <em>Auto-detect</em> probes all six and commits the
+          budget to whichever reads the text best.
         </p>
 
         <h2>What it will not do</h2>
@@ -264,6 +267,10 @@
         <ul>
           <li>Classical ciphers — Caesar, Vigenère and its variants, autokey, transpositions, Playfair, Bifid,
             substitution with a mixed alphabet.</li>
+          <li>Wheel ciphers — the US Army M-94 / Navy CSP-488: 25 mixed-alphabet wheels, hill-climbed over the
+            25! spindle orders. Wants 200+ letters and a generous budget.</li>
+          <li>Foreign-language plaintext — French, German, Italian, Latin and Spanish models alongside English;
+            pick one, or let Auto-detect probe all six.</li>
           <li>Encodings and codes — base64/32/16/58/85, binary, URL, Morse, A1Z26, Polybius, Bacon, book ciphers.</li>
           <li>Byte-level XOR — single byte and repeating key, over hex or base64 payloads.</li>
           <li>Stacks of the above, in any order, up to the configured depth.</li>
@@ -274,6 +281,11 @@
           Pure Python standard library. No numpy, no requests, no build step, no network access at runtime.
           The web interface you are looking at is <code>http.server</code> and three static files; the search is
           the same engine the CLI runs, so <code>python3 -m buttcrack "…"</code> and this page give identical answers.
+          Source and releases live on
+          <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker" target="_blank" rel="noopener">GitHub</a>;
+          the project also publishes a browser-only quick solver and a
+          <a href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/cipher-wiki.html" target="_blank" rel="noopener">field guide to the classical ciphers</a>
+          — how to recognise each one by hand, and what actually breaks it.
         </p>
         <p class="hint">
           Command line: <code>buttcrack &lt;ciphertext&gt;</code>, <code>identify</code>, <code>encrypt</code>,
