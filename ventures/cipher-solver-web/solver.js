@@ -271,7 +271,12 @@ function vigenere(text, maxLen = 20) {
   // words can distinguish the alternatives.
   {
     let keyArr = [...best.key];
-    const obj = k => score(vigenereDecrypt(text, k)) + 2.5 * wordRate(vigenereDecrypt(text, k));
+    // Decryption dominates this polish pass.  Keep the one plaintext for both
+    // scoring terms instead of decrypting it twice for every candidate letter.
+    const obj = k => {
+      const plain = vigenereDecrypt(text, k);
+      return score(plain) + 2.5 * wordRate(plain);
+    };
     let cur = obj(keyArr.join(''));
     for (let pass = 0; pass < 3; pass++) {
       let changed = false;
@@ -353,8 +358,11 @@ function substitution(text) {
   // Trigram score alone confuses rare letters (b/v/m all fit similar contexts).
   // A final pass judged partly on real word hits breaks those ties.
   const objective = k => {
-    const out = apply(t.length > 600 ? t.slice(0, 600) : t, k);
-    return score(out) + 2.5 * wordRate(apply(text.slice(0, 800), k));
+    const sample = text.slice(0, 800);
+    const out = apply(sample, k);
+    // Use the same decryption for both signals.  This is the polishing hot
+    // path, and the old version applied the full substitution twice per swap.
+    return score(t.length > 600 ? out.slice(0, 600) : out) + 2.5 * wordRate(out);
   };
   let polished = bestKey.slice();
   let polishedScore = objective(polished);
