@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings</title>
+<meta name="description" content="Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/ctf-crypto-solver.html">
+<meta property="og:title" content="CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings">
+<meta property="og:description" content="Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "CTF Crypto Solver \u2014 Base64, Hex, XOR and Layered Encodings", "description": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is single-byte XOR and why is it everywhere in CTFs?", "acceptedAnswer": {"@type": "Answer", "text": "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."}}, {"@type": "Question", "name": "How deep can the layers go?", "acceptedAnswer": {"@type": "Answer", "text": "The browser version peels up to three encoding layers. The command-line version goes deeper and searches a wider cipher set, which is what you want for harder challenges."}}, {"@type": "Question", "name": "Can it handle flag formats?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, incidentally \u2014 flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."}}, {"@type": "Question", "name": "Why does it sometimes pick the wrong layer to unwrap?", "acceptedAnswer": {"@type": "Answer", "text": "Hex and base64 character sets overlap, so a string can be validly interpretable as either. The solver tries both branches and keeps whichever produces the more English-like result rather than committing to the first guess."}}]}</script>
+</head>
+<body data-preset="layered">
+<header>
+  <div class="wrap">
+    <h1>CTF Crypto Solver<span class="dot">.</span></h1>
+    <p class="tagline">Base64 around hex around XOR? It unwraps the whole stack.</p>
+    <nav class="tools"><a href="index.html">All ciphers</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html" aria-current="page">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <textarea id="ciphertext" spellcheck="false"
+    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+  <div class="controls">
+    <button class="go" id="go">Break it</button>
+    <button class="ghost" id="clear">Clear</button>
+    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+  </div>
+  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+
+  <div id="output"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>The shape of a crypto challenge</h2>
+    <p>Introductory CTF crypto is mostly recognition. The underlying operations are simple —
+    base64, hex, XOR, a classical cipher — and the difficulty comes from not knowing which ones
+    were applied, in what order, and how many times. Experienced players recognise the shapes
+    instantly. This tool does the recognising for you and then does the work as well.</p>
+
+    <h2>Identifying encodings by shape</h2>
+    <h3>Base64</h3>
+    <p>Alphanumerics plus <code>+</code> and <code>/</code>, length a multiple of four, often
+    ending in one or two <code>=</code> padding characters. Mixed case with occasional digits is
+    the tell.</p>
+    <h3>Hex</h3>
+    <p>Only <code>0-9</code> and <code>a-f</code>, always an even number of characters. If you
+    see a long string that happens to contain no letters past <code>f</code>, it is hex and not a
+    cipher.</p>
+    <h3>Binary and decimal</h3>
+    <p>Runs of <code>0</code> and <code>1</code> in groups of eight, or space-separated numbers
+    in the 32 to 126 range — the printable ASCII window. Both are common obfuscation for text
+    that is otherwise in the clear.</p>
+
+    <h2>XOR</h2>
+    <p>XOR is its own inverse, which is what makes it convenient and what makes it breakable.
+    With a single-byte key there are 255 candidates; the solver tries every one, discards those
+    producing non-printable bytes, and scores the rest against English. With a repeating
+    multi-byte key the structure is identical to Vigenère: find the key length by looking at
+    the index of coincidence of each byte position, then solve each position independently.</p>
+
+    <h2>Working the layers</h2>
+    <p>The solver treats decoding as a search tree rather than a fixed pipeline. At each node it
+    tries every direct cipher, and separately tests whether the text is a valid encoding it can
+    unwrap. Unwrapping produces a child node and the process repeats. The answer returned is the
+    leaf with the highest confidence, reported with the complete chain that produced it — so you
+    learn the structure of the challenge, not just the flag.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>What is single-byte XOR and why is it everywhere in CTFs?</summary><p>Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories.</p></details><details class="faq"><summary>How deep can the layers go?</summary><p>The browser version peels up to three encoding layers. The command-line version goes deeper and searches a wider cipher set, which is what you want for harder challenges.</p></details><details class="faq"><summary>Can it handle flag formats?</summary><p>Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal.</p></details><details class="faq"><summary>Why does it sometimes pick the wrong layer to unwrap?</summary><p>Hex and base64 character sets overlap, so a string can be validly interpretable as either. The solver tries both branches and keeps whichever produces the more English-like result rather than committing to the first guess.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

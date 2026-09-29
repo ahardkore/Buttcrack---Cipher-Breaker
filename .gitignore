@@ -27,3 +27,10 @@ venv/
 scratch/
 *.local.txt
 timing-*.json
+
+# Generated puzzle books (regenerate with ventures/puzzle-packs/generate.py)
+ventures/puzzle-packs/cryptogram-pack-*.html
+
+# Generated puzzle book PDFs (rebuilt by build_pages.py on every deploy)
+ventures/cipher-solver-web/files/
+ventures/puzzle-packs/cryptogram-pack-*.pdf

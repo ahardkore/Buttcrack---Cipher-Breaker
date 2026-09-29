@@ -1,0 +1,59 @@
+# Publishes ventures/cipher-solver-web to GitHub Pages.
+#
+# The pages are regenerated from build_pages.py during the deploy, so editing
+# site.json (ad IDs, sponsor handles) and pushing is enough to update the live
+# site — no local build step required.
+#
+# One-time setup: repo Settings → Pages → Source = "GitHub Actions".
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ventures/cipher-solver-web/**"
+      - ".github/workflows/deploy-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild language model and pages
+        run: |
+          python3 ventures/cipher-solver-web/build_model.py
+          python3 ventures/cipher-solver-web/build_pages.py
+
+      - name: Verify solver accuracy
+        run: node ventures/cipher-solver-web/test.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ventures/cipher-solver-web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
