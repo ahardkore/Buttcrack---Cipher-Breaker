@@ -34,3 +34,13 @@ ventures/puzzle-packs/cryptogram-pack-*.html
 # Generated puzzle book PDFs (rebuilt by build_pages.py on every deploy)
 ventures/cipher-solver-web/files/
 ventures/puzzle-packs/cryptogram-pack-*.pdf
+
+# Kryptos compiled test binaries
+kryptos/attack_pk10_core_clock_descent
+kryptos/polish_pk10_adjacent_pairs
+kryptos/sweep_pk10_panelB_2opt_3opt
+kryptos/sweep_pk10_panelC_2opt_3opt
+kryptos/test_pk10_alt_factorizations
+kryptos/test_pk10_autokey_feedback
+*.bundle
+push_to_ahardkore.sh
