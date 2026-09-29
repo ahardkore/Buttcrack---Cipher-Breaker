@@ -820,6 +820,43 @@ WIKI_PAGES = [
 ]
 
 
+def wiki_index_section() -> str:
+    """The wiki surfaced on the home page as article cards, not just a nav pill.
+
+    Cards are generated from WIKI_PAGES, so adding an article there is all it
+    takes for it to appear here — the links cannot dangle, because the cards
+    and the pages they point at are written by the same loop in main(). The
+    hub page is pulled out as a full-width featured card (its h1 would
+    otherwise repeat the section heading), and each article's tagline doubles
+    as its card blurb.
+    """
+    cards = [
+        f'      <a class="wiki-card" href="{spec["slug"]}">\n'
+        f'        <h3>{spec["h1"]}</h3>\n'
+        f'        <p>{spec["tagline"]}</p>\n'
+        f'        <span class="wiki-more">Read the guide →</span>\n'
+        f'      </a>'
+        for spec in WIKI_PAGES if spec["slug"] != "cipher-wiki.html"
+    ]
+    return f"""    <section class="wiki-index" aria-label="Cipher wiki">
+    <h2>Cipher wiki</h2>
+    <p>The solver above breaks the puzzle; these guides explain what was going
+    on underneath. Each one covers how a cipher works, how to recognise it in
+    the wild, and what actually breaks it — and every article page carries the
+    same solver, so you can test each idea on a real puzzle as you read.</p>
+    <div class="wiki-grid">
+      <a class="wiki-card featured" href="cipher-wiki.html">
+        <h3>Start here: the field guide</h3>
+        <p>Recognise the shape. Understand the mechanism. Know what an answer is
+        worth — read a ciphertext's alphabet, frequencies and index of
+        coincidence before you guess at the cipher.</p>
+        <span class="wiki-more">Read the field guide →</span>
+      </a>
+{chr(10).join(cards)}
+    </div>
+    </section>"""
+
+
 def build_products() -> tuple[list[dict], str]:
     """Generate the puzzle-book PDFs and their delivery pages.
 
@@ -1003,7 +1040,14 @@ def main() -> None:
     # products; the wiki is static and deliberately kept as a separate list so
     # a rebuild never appends duplicate reference pages in a long-lived process.
     for spec in PAGES + WIKI_PAGES:
-        html = page(**spec)
+        body = spec["body"]
+        # The home page is the site's front door, and the wiki used to be one
+        # nav pill deep. Surface the articles as the first content block under
+        # the solver. Composed at render time rather than folded into the spec
+        # so calling main() twice in one process cannot stack it twice.
+        if spec["slug"] == "index.html":
+            body = wiki_index_section() + "\n\n" + body
+        html = page(**{**spec, "body": body})
         # A token configured but missing from a page means a silently unverified
         # property, which shows up as a Search Console failure days later. Fail
         # the build here instead, where the cause is obvious.
