@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/index.html</loc><priority>1.0</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/caesar-cipher-decoder.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/vigenere-cipher-solver.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-solver.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/morse-code-translator.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/ctf-crypto-solver.html</loc><priority>0.8</priority></url>
+</urlset>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morse Code Translator & Decoder — Dots and Dashes to Text</title>
+<meta name="description" content="Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/morse-code-translator.html">
+<meta property="og:title" content="Morse Code Translator & Decoder — Dots and Dashes to Text">
+<meta property="og:description" content="Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Morse Code Translator & Decoder \u2014 Dots and Dashes to Text", "description": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What separators does it accept?", "acceptedAnswer": {"@type": "Answer", "text": "Single spaces between letters, and a slash, a pipe or a double space between words. Mixed conventions in the same message are handled, which matters because puzzle sources are rarely consistent."}}, {"@type": "Question", "name": "Can it decode Morse audio or flashing lights?", "acceptedAnswer": {"@type": "Answer", "text": "No, this is a text tool. You need to transcribe the signal into dots and dashes first, then paste it here."}}, {"@type": "Question", "name": "What if the decoded Morse is still gibberish?", "acceptedAnswer": {"@type": "Answer", "text": "Then Morse was only the outer layer. This page automatically re-runs the full cipher search on whatever the Morse decodes to, so a Caesar shift or Vigen\u00e8re cipher hidden underneath is peeled off in the same pass."}}, {"@type": "Question", "name": "Does it support numbers and punctuation?", "acceptedAnswer": {"@type": "Answer", "text": "Digits zero through nine are supported. Punctuation codes are rarer in puzzles and are skipped rather than guessed."}}]}</script>
+</head>
+<body data-preset="morse">
+<header>
+  <div class="wrap">
+    <h1>Morse Decoder<span class="dot">.</span></h1>
+    <p class="tagline">Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.</p>
+    <nav class="tools"><a href="index.html">All ciphers</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html" aria-current="page">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <textarea id="ciphertext" spellcheck="false"
+    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+  <div class="controls">
+    <button class="go" id="go">Break it</button>
+    <button class="ghost" id="clear">Clear</button>
+    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+  </div>
+  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+
+  <div id="output"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>Reading Morse</h2>
+    <p>Morse encodes each letter as a sequence of short and long signals — dots and dashes.
+    <code>E</code>, the most common English letter, is a single dot; <code>T</code> is a single
+    dash. Rarer letters get longer sequences. That design makes it efficient to send by hand
+    and, incidentally, easy to decode by lookup table.</p>
+
+    <h3>The separator problem</h3>
+    <p>Morse has no inherent way to mark where one letter ends and the next begins — that is
+    carried by timing in the original signal. Written down, people improvise: one space between
+    letters, three spaces or a slash between words. Puzzle authors mix conventions freely. This
+    decoder accepts slashes, pipes and runs of whitespace as word breaks, which covers nearly
+    everything you will encounter.</p>
+
+    <h2>Morse as a puzzle layer</h2>
+    <p>In puzzle hunts and CTFs, Morse is almost never the whole challenge. It is a wrapper —
+    the dots and dashes decode to letters that are themselves encrypted. Because this page runs
+    the complete cipher search on the decoded output, a Caesar shift, Vigenère cipher or further
+    encoding underneath comes out in the same run, with the full decode chain shown alongside
+    the answer.</p>
+
+    <h2>Common source formats</h2>
+    <p>Morse turns up transcribed from audio files, from blinking lights in a video, from long
+    and short marks in an image, and from text where dots and dashes have been substituted with
+    other characters entirely. If yours uses different symbols, replace them with
+    <code>.</code> and <code>-</code> before pasting.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>What separators does it accept?</summary><p>Single spaces between letters, and a slash, a pipe or a double space between words. Mixed conventions in the same message are handled, which matters because puzzle sources are rarely consistent.</p></details><details class="faq"><summary>Can it decode Morse audio or flashing lights?</summary><p>No, this is a text tool. You need to transcribe the signal into dots and dashes first, then paste it here.</p></details><details class="faq"><summary>What if the decoded Morse is still gibberish?</summary><p>Then Morse was only the outer layer. This page automatically re-runs the full cipher search on whatever the Morse decodes to, so a Caesar shift or Vigenère cipher hidden underneath is peeled off in the same pass.</p></details><details class="faq"><summary>Does it support numbers and punctuation?</summary><p>Digits zero through nine are supported. Punctuation codes are rarer in puzzles and are skipped rather than guessed.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

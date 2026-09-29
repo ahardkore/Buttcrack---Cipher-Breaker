@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Substitution Cipher Solver — Automatic Cryptogram Breaker</title>
+<meta name="description" content="Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-solver.html">
+<meta property="og:title" content="Substitution Cipher Solver — Automatic Cryptogram Breaker">
+<meta property="og:description" content="Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Substitution Cipher Solver \u2014 Automatic Cryptogram Breaker", "description": "Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does the ciphertext need to be?", "acceptedAnswer": {"@type": "Answer", "text": "About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them."}}, {"@type": "Question", "name": "Does it handle keyword-generated alphabets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, implicitly. The solver searches for the mapping itself and does not care how the key alphabet was produced, so keyword ciphers, random alphabets and keyed Caesar variants are all the same problem to it."}}, {"@type": "Question", "name": "Why is one or two letters wrong in the output?", "acceptedAnswer": {"@type": "Answer", "text": "Rare letters like J, Q, X and Z appear too infrequently for the statistics to place them confidently, so they sometimes swap. The text is usually readable anyway and the correct letter is obvious from context."}}, {"@type": "Question", "name": "Will it solve a newspaper cryptogram?", "acceptedAnswer": {"@type": "Answer", "text": "Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for."}}]}</script>
+</head>
+<body data-preset="substitution">
+<header>
+  <div class="wrap">
+    <h1>Substitution Solver<span class="dot">.</span></h1>
+    <p class="tagline">Cryptograms cracked by hill-climbing search — no crib, no hints.</p>
+    <nav class="tools"><a href="index.html">All ciphers</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html" aria-current="page">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <textarea id="ciphertext" spellcheck="false"
+    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+  <div class="controls">
+    <button class="go" id="go">Break it</button>
+    <button class="ghost" id="clear">Clear</button>
+    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+  </div>
+  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+
+  <div id="output"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>A keyspace you cannot search</h2>
+    <p>A monoalphabetic substitution replaces each letter with another, consistently, using a
+    scrambled alphabet as the key. There are 26 factorial such alphabets — roughly
+    403 septillion. Trying them all is not an option now and will not be an option ever.
+    And yet these ciphers fall in seconds, because the keyspace does not need to be
+    searched exhaustively; it needs to be climbed.</p>
+
+    <h2>Hill climbing</h2>
+    <p>The solver starts with a guess built from letter frequencies: the most common
+    ciphertext letter is provisionally <code>E</code>, the next <code>T</code>, and so on down
+    the <code>ETAOIN SHRDLU</code> ordering. That guess is usually wrong in detail but roughly
+    right in shape.</p>
+    <p>Then it improves. Swap two letters in the key, rescore the decryption with the trigram
+    model, and keep the swap if the score went up. Repeat over every pair until no swap helps.
+    That yields a local optimum — often the answer, sometimes a near-miss where a couple of
+    letters are transposed.</p>
+
+    <h3>Escaping local optima</h3>
+    <p>To avoid getting stuck, the search restarts repeatedly from perturbed copies of the
+    best key found so far, keeping whichever run scores highest. A final polish pass changes
+    the objective, scoring partly on how many genuine English words appear, which is what
+    separates confusable letters such as <code>B</code>, <code>V</code> and <code>M</code> that
+    sit in similar trigram contexts.</p>
+
+    <h2>Doing it by hand</h2>
+    <p>If you would rather solve it yourself: single-letter words are <code>A</code> or
+    <code>I</code>. The most common three-letter word is <code>THE</code>, which also hands you
+    the two most common letters. Doubled letters are usually <code>LL</code>, <code>EE</code>,
+    <code>SS</code>, <code>OO</code> or <code>TT</code>. An apostrophe followed by one letter is
+    nearly always <code>S</code> or <code>T</code>. From four or five confirmed letters the rest
+    usually collapses quickly.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>How long does the ciphertext need to be?</summary><p>About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them.</p></details><details class="faq"><summary>Does it handle keyword-generated alphabets?</summary><p>Yes, implicitly. The solver searches for the mapping itself and does not care how the key alphabet was produced, so keyword ciphers, random alphabets and keyed Caesar variants are all the same problem to it.</p></details><details class="faq"><summary>Why is one or two letters wrong in the output?</summary><p>Rare letters like J, Q, X and Z appear too infrequently for the statistics to place them confidently, so they sometimes swap. The text is usually readable anyway and the correct letter is obvious from context.</p></details><details class="faq"><summary>Will it solve a newspaper cryptogram?</summary><p>Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigenère Cipher Solver — Recovers the Key Automatically</title>
+<meta name="description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/vigenere-cipher-solver.html">
+<meta property="og:title" content="Vigenère Cipher Solver — Recovers the Key Automatically">
+<meta property="og:description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Vigen\u00e8re Cipher Solver \u2014 Recovers the Key Automatically", "description": "Break a Vigen\u00e8re cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Vigen\u00e8re cipher be broken without the key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases."}}, {"@type": "Question", "name": "What if the key is as long as the message?", "acceptedAnswer": {"@type": "Answer", "text": "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words."}}, {"@type": "Question", "name": "Why did it return a key that is a repeated word, like LAMPLAMP?", "acceptedAnswer": {"@type": "Answer", "text": "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."}}]}</script>
+</head>
+<body data-preset="vigenere">
+<header>
+  <div class="wrap">
+    <h1>Vigenère Solver<span class="dot">.</span></h1>
+    <p class="tagline">No keyword needed — it recovers the key from the ciphertext itself.</p>
+    <nav class="tools"><a href="index.html">All ciphers</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html" aria-current="page">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <textarea id="ciphertext" spellcheck="false"
+    placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+  <div class="controls">
+    <button class="go" id="go">Break it</button>
+    <button class="ghost" id="clear">Clear</button>
+    <span class="samples"><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+  </div>
+  <p class="privacy">Runs entirely in your browser. Your text is never uploaded, logged or stored.</p>
+
+  <div id="output"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>Why Vigenère resisted for 300 years</h2>
+    <p>A Caesar cipher uses one shift for the whole message, so letter frequencies survive
+    intact and betray it immediately. Vigenère uses a keyword: each letter of the keyword
+    gives a shift, and the keyword repeats across the message. <code>E</code> no longer maps to
+    a single letter, the frequency distribution flattens, and the technique that destroys
+    Caesar simply stops working. It was called <em>le chiffre indéchiffrable</em> for a
+    reason.</p>
+
+    <h2>The crack: find the period first</h2>
+    <p>The weakness is the repetition. If the key is four letters long, then every fourth
+    letter of the ciphertext was encrypted with the same shift. Take positions 1, 5, 9, 13 and
+    you have a pure Caesar cipher. The whole problem reduces to one question: how long is the
+    key?</p>
+
+    <h3>Index of coincidence</h3>
+    <p>For each candidate length, the solver splits the ciphertext into that many cosets and
+    measures the index of coincidence of each. When the guessed length matches the real one,
+    every coset is monoalphabetic and its IC jumps toward the English value of
+    <code>0.067</code>. When the guess is wrong, the cosets stay mixed and the IC stays near
+    random. The correct period announces itself.</p>
+
+    <h3>Then solve each position</h3>
+    <p>With the length known, each coset is attacked by chi-squared comparison against English
+    letter frequencies, which gives a first guess at every key letter. That first guess is
+    often one or two letters wrong on short texts, because a coset of twelve letters is a thin
+    sample. So the solver runs a refinement pass: it re-picks each key letter by scoring the
+    <em>whole</em> decryption with the trigram model, then a final pass that also counts real
+    English words. That is what turns a nearly-right key into an exactly-right one.</p>
+
+    <h2>Related ciphers</h2>
+    <p>The same machinery handles the Beaufort and variant Beaufort ciphers, which differ only
+    in the direction of the shift, and repeating-key XOR, which is Vigenère over bytes instead
+    of letters and is extremely common in CTF challenges.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>Can a Vigenère cipher be broken without the key?</summary><p>Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases.</p></details><details class="faq"><summary>What if the key is as long as the message?</summary><p>Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words.</p></details><details class="faq"><summary>Why did it return a key that is a repeated word, like LAMPLAMP?</summary><p>Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

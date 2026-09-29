@@ -27,3 +27,6 @@ venv/
 scratch/
 *.local.txt
 timing-*.json
+
+# Generated puzzle books (regenerate with ventures/puzzle-packs/generate.py)
+ventures/puzzle-packs/cryptogram-pack-*.html
