@@ -189,6 +189,27 @@ details.faq { padding: 14px 0; border-top: 1px solid var(--line); }
 details.faq summary { cursor: pointer; font-weight: 750; }
 details.faq p { margin: 8px 0 0; color: var(--ink-soft); }
 
+/* ---- cipher wiki cards, surfaced on the home page ---- */
+.wiki-grid { display: grid; gap: 14px; margin: 20px 0 6px; }
+@media (min-width: 700px) { .wiki-grid { grid-template-columns: 1fr 1fr; } }
+a.wiki-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+a.wiki-card:hover { border-color: var(--forest); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(24, 42, 33, 0.09); }
+a.wiki-card h3 { margin: 0; color: var(--forest-dark); font-size: 17px; letter-spacing: -0.02em; }
+a.wiki-card p { margin: 0; color: #385047; font-size: 14px; line-height: 1.55; }
+.wiki-more { margin-top: 4px; color: var(--forest); font: 700 12px var(--mono); }
+a.wiki-card.featured { grid-column: 1 / -1; border-color: var(--forest); background: #f4fbf5; }
+a.wiki-card.featured p { max-width: 640px; }
+
 .support { padding: 23px; margin: 42px 0 20px; border: 1px solid #b7dbc3; border-radius: 15px; background: var(--mint); }
 .support h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.025em; }
 .support p { max-width: 680px; margin: 0 0 14px; color: var(--forest-dark); font-size: 14px; }
