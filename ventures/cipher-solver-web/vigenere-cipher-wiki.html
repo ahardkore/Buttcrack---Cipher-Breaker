@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence</title>
+<meta name="description" content="Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/vigenere-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence">
+<meta property="og:description" content="Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Vigen\u00e8re Cipher Explained \u2014 Keywords, Kasiski and Index of Coincidence", "description": "Learn how the Vigen\u00e8re cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why was Vigen\u00e8re called unbreakable?", "acceptedAnswer": {"@type": "Answer", "text": "It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible."}}, {"@type": "Question", "name": "What is Kasiski examination?", "acceptedAnswer": {"@type": "Answer", "text": "Repeated ciphertext fragments can result from repeated plaintext fragments aligned under the same part of the keyword. Distances between them often share factors with the key length. It suggests periods to test; it does not recover the key on its own."}}, {"@type": "Question", "name": "What makes a Vigen\u00e8re cipher genuinely secure?", "acceptedAnswer": {"@type": "Answer", "text": "If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigen\u00e8re."}}]}</script>
+</head>
+<body data-preset="vigenere">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>The Vigenère Cipher<span class="dot">.</span></h1>
+      <p class="tagline">Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>A Caesar shift that changes every letter</h2>
+    <p>Vigenère assigns each keyword letter a shift. With the key <code>LEMON</code>, the shifts
+    11, 4, 12, 14 and 13 repeat across the message. The same plaintext letter may therefore
+    encrypt to different ciphertext letters. This defeats the simple “most common letter is E”
+    reasoning that breaks Caesar immediately.</p>
+
+    <h2>Find the period before the key</h2>
+    <p>If the key has five letters, take every fifth ciphertext character. Each resulting column
+    was encrypted by one fixed Caesar shift. The attack is therefore: propose a key length, split
+    into columns, and measure whether each column behaves like English. The average index of
+    coincidence rises when the proposed period is a multiple of the real period.</p>
+
+    <h2>Recover and refine</h2>
+    <p>Once the period is known, compare each column's letter frequencies with expected English
+    frequencies to choose a shift. That produces a first key. On short texts, refine it by changing
+    one key letter at a time and rescoring the <em>whole</em> plaintext: language model context
+    resolves columns too sparse for frequency analysis alone.</p>
+
+    <h2>Limits of the method</h2>
+    <p>Short messages and long keys leave too few letters in each column. A period that is a
+    multiple of the true key can also look convincing; prefer the shortest key that explains the
+    text. Variants such as Beaufort use a different algebraic direction but retain the same
+    repeating-period weakness.</p>
+
+    <p>For a cipher that uses one fixed alphabet instead, see the
+    <a href="substitution-cipher-wiki.html">substitution cipher guide</a>.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>Why was Vigenère called unbreakable?</summary><p>It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible.</p></details><details class="faq"><summary>What is Kasiski examination?</summary><p>Repeated ciphertext fragments can result from repeated plaintext fragments aligned under the same part of the keyword. Distances between them often share factors with the key length. It suggests periods to test; it does not recover the key on its own.</p></details><details class="faq"><summary>What makes a Vigenère cipher genuinely secure?</summary><p>If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigenère.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

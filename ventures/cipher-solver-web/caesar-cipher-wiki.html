@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caesar Cipher Explained — History, Formula and How to Break It</title>
+<meta name="description" content="A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/caesar-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Caesar Cipher Explained — History, Formula and How to Break It">
+<meta property="og:description" content="A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Caesar Cipher Explained \u2014 History, Formula and How to Break It", "description": "A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the Caesar cipher formula?", "acceptedAnswer": {"@type": "Answer", "text": "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C \u2212 k mod 26. The key k is the number of places rotated around the alphabet."}}, {"@type": "Question", "name": "Is ROT13 a Caesar cipher?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text."}}, {"@type": "Question", "name": "Why is it not secure?", "acceptedAnswer": {"@type": "Answer", "text": "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough."}}]}</script>
+</head>
+<body data-preset="caesar">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>The Caesar Cipher<span class="dot">.</span></h1>
+      <p class="tagline">A rotation so small it teaches nearly every idea behind classical cryptanalysis.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>The operation</h2>
+    <p>Write the alphabet twice and slide the lower copy by a fixed number of places. With a
+    shift of three, <code>A → D</code>, <code>B → E</code> and <code>Z → C</code>. Every letter
+    gets exactly the same treatment; punctuation and spaces are usually copied unchanged. That
+    simple uniformity is both the cipher's appeal and its fatal weakness.</p>
+
+    <h2>A tiny keyspace</h2>
+    <p>The key can be any number from 0 to 25. Shift 0 says nothing was encrypted, so there are
+    only 25 meaningful alternatives. Try each decryption and score the result for English
+    trigrams such as <code>THE</code>, <code>ING</code> and <code>AND</code>. The correct shift
+    rapidly separates itself from the other 24.</p>
+
+    <h2>Recognising a Caesar shift</h2>
+    <p>Word lengths, apostrophes, punctuation and repeated-letter patterns are unchanged. The
+    most frequent ciphertext letter is often the encryption of E, and common short words remain
+    the same shape. None of those clues is proof — a substitution cipher has similar surface
+    properties — but a 26-shift sweep is so cheap that there is no reason to guess by eye.</p>
+
+    <h2>History and legacy</h2>
+    <p>The cipher is named for Julius Caesar, who reportedly used a fixed shift in Roman military
+    correspondence. Its modern value is educational: it demonstrates modular arithmetic, the
+    difference between a keyspace and a strong keyspace, and the reason letter statistics matter.
+    ROT13 survives as a convention for hiding spoilers, not for protecting secrets.</p>
+
+    <p>Next: learn why a repeating sequence of Caesar shifts is harder to spot in the
+    <a href="vigenere-cipher-wiki.html">Vigenère cipher guide</a>.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>What is the Caesar cipher formula?</summary><p>With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet.</p></details><details class="faq"><summary>Is ROT13 a Caesar cipher?</summary><p>Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text.</p></details><details class="faq"><summary>Why is it not secure?</summary><p>There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    The browser build uses a compact trigram model; the command-line version searches far more ciphers
+    with a full quadgram model.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
