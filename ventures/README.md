@@ -48,8 +48,25 @@ deploy so a bad change cannot ship.
 python3 ventures/cipher-solver-web/build_model.py   # compile the language model
 python3 ventures/cipher-solver-web/build_pages.py   # generate the HTML
 node    ventures/cipher-solver-web/test.js          # verify accuracy
-python3 -m http.server 8000 -d ventures/cipher-solver-web   # preview
+python3 scripts/build_site.py --out _site           # assemble the full site
+python3 -m http.server 8000 -d _site                # preview exactly what deploys
 ```
+
+#### One site, two halves
+
+The repository has two web surfaces and publishes them as **one** site.
+`scripts/build_site.py` assembles the tree that GitHub Pages serves:
+
+| URL          | Source                       | What it is                                   |
+| ------------ | ---------------------------- | -------------------------------------------- |
+| `/`          | `ventures/cipher-solver-web` | Solver, cipher wiki, puzzle-book storefront   |
+| `/kryptos/`  | `kryptos-app`                | Kryptos research explorer                     |
+
+They link to each other: the solver's nav has a **Kryptos** pill, and the
+explorer has a bar back to the solver. `.github/workflows/deploy-site.yml` is
+the only Pages workflow — there used to be a second one uploading `kryptos-app`
+by itself, and because both wrote the same `pages` deployment, whichever
+finished last erased the other's site.
 
 Monetisation is switched on entirely from `site.json` — fill in the AdSense and
 Ko-fi fields, push, and the workflow rebuilds the pages with real ad units. No

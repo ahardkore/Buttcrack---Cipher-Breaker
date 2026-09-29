@@ -24,6 +24,11 @@ sys.path.insert(0, str(PACKS))
 CFG = json.loads((HERE / "site.json").read_text())
 SAMPLES = json.loads((HERE / "samples.json").read_text())
 
+#: The Kryptos research explorer lives in ``kryptos-app/`` and is mounted as a
+#: sub-directory of this site by ``scripts/build_site.py``. Keep the two in
+#: step: this href is what makes the two web surfaces one site rather than two.
+KRYPTOS_HREF = "kryptos/"
+
 NAV = [
     ("index.html", "Solver"),
     ("cipher-wiki.html", "Cipher wiki"),
@@ -33,6 +38,7 @@ NAV = [
     ("substitution-cipher-solver.html", "Substitution"),
     ("morse-code-translator.html", "Morse"),
     ("ctf-crypto-solver.html", "CTF crypto"),
+    (KRYPTOS_HREF, "Kryptos"),
 ]
 
 
@@ -1128,6 +1134,11 @@ def main() -> None:
         (HERE / spec["slug"]).write_text(html)
         urls.append(spec["slug"])
         print(f"wrote {spec['slug']:38} {len(html):>6} bytes")
+
+    # The Kryptos explorer is a hand-written app rather than a generated page,
+    # but it is part of this site once build_site.py mounts it, so it belongs in
+    # the sitemap like everything else.
+    urls.append(KRYPTOS_HREF)
 
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'

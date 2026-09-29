@@ -35,6 +35,9 @@ ventures/puzzle-packs/cryptogram-pack-*.html
 ventures/cipher-solver-web/files/
 ventures/puzzle-packs/cryptogram-pack-*.pdf
 
+# Assembled public site (rebuilt by scripts/build_site.py on every deploy)
+_site/
+
 # Kryptos compiled test binaries
 kryptos/attack_pk10_core_clock_descent
 kryptos/polish_pk10_adjacent_pairs

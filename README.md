@@ -56,7 +56,7 @@ This repository houses the complete, publication-grade cryptanalytic research, p
 * 📑 **Executive Cryptanalytic Brief**: High-density executive summary on final cryptanalytic verdicts and open frontier guidance. See [`kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md).
 * 🗄️ **Master Solutions Manifest**: Verbatim plaintexts, SHA256 checksums, and mathematical keys for PK1–PK10. See [`kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
 * 🗺️ **Dual-Cipher GPS Sculpture Theorem**: Definitive mathematical proof that PK9 and PK10 padding nulls encode the exact coordinates of Jim Sanborn's CIA Kryptos sculpture ($38^\circ 57' 6'' \text{ N}, 77^\circ 8' 44'' \text{ W}$). See [`kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`](kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg).
-* 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). Deployed automatically via GitHub Pages.
+* 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). It is published as the `/kryptos/` section of the project's single GitHub Pages site, alongside the browser cipher solver — see [`scripts/build_site.py`](scripts/build_site.py) and [`ventures/README.md`](ventures/README.md).
 * ⚡ **1-Second Reproducibility Verification**: Automated test suite executing 11 modules with 100% pass rate:
   ```bash
   python3 kryptos/test_full_suite_reproducibility.py
