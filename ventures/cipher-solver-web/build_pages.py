@@ -12,15 +12,20 @@ fill in the AdSense/Ko-fi fields, re-run this script, push.
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
+PACKS = HERE.parent / "puzzle-packs"
+sys.path.insert(0, str(PACKS))
 CFG = json.loads((HERE / "site.json").read_text())
 SAMPLES = json.loads((HERE / "samples.json").read_text())
 
 NAV = [
     ("index.html", "All ciphers"),
+    ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
     ("substitution-cipher-solver.html", "Substitution"),
@@ -72,6 +77,9 @@ def support_block() -> str:
             f'<a class="btn" rel="noopener" target="_blank" '
             f'href="https://ko-fi.com/{CFG["kofi_handle"]}">Buy me a coffee</a>'
         )
+    tip = CFG.get("stripe", {}).get("tip_jar_url", "")
+    if tip:
+        buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{tip}">Leave a tip</a>')
     buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{CFG["repo_url"]}">Star on GitHub</a>')
     return f"""<section class="support">
       <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
@@ -493,7 +501,168 @@ PAGES = [
 ]
 
 
+def build_products() -> tuple[list[dict], str]:
+    """Generate the puzzle-book PDFs and their delivery pages.
+
+    Files get content-hashed names so the download URLs are not guessable from
+    the store page. That is deliberately light protection — it stops casual
+    sharing of a tidy URL, nothing more. For hard entitlement checks you want a
+    platform like Gumroad; for a five dollar puzzle book this is the right
+    trade against running (and paying for) a licensing server.
+    """
+    from build_pdf import build as build_book   # imported late: needs PACKS on sys.path
+
+    stripe = CFG.get("stripe", {})
+    products = stripe.get("products", [])
+    files_dir = HERE / "files"
+    files_dir.mkdir(exist_ok=True)
+    for stale in files_dir.glob("*.pdf"):
+        stale.unlink()
+    for stale in HERE.glob("thank-you-*.html"):   # drop pages from an old salt
+        stale.unlink()
+
+    built = []
+    for product in products:
+        tmp = files_dir / f"_tmp-{product['sku']}.pdf"
+        build_book(product["puzzles"], product["seed"], product["title"], tmp)
+        digest = hashlib.sha256(tmp.read_bytes()).hexdigest()[:16]
+        final = files_dir / f"cryptograms-{product['sku']}-{digest}.pdf"
+        tmp.rename(final)
+        # Derived from the SKU and a fixed salt, never from file contents, so
+        # the delivery URL you paste into Stripe keeps working across rebuilds.
+        token = hashlib.sha256(
+            f"{product['sku']}:{stripe.get('delivery_salt', '')}".encode()
+        ).hexdigest()[:20]
+        built.append({
+            **product,
+            "file": f"files/{final.name}",
+            "size_kb": final.stat().st_size // 1024,
+            "delivery": f"thank-you-{token}.html",
+        })
+
+    sampler_cfg = stripe.get("sampler")
+    sampler_rel = ""
+    if sampler_cfg:
+        tmp = files_dir / "_tmp-sampler.pdf"
+        build_book(sampler_cfg["puzzles"], sampler_cfg["seed"], sampler_cfg["title"], tmp)
+        final = files_dir / "cryptograms-free-sampler.pdf"
+        tmp.rename(final)
+        sampler_rel = f"files/{final.name}"
+
+    # One delivery page per product, reached only by Stripe's post-payment
+    # redirect. Marked noindex so search engines never surface it.
+    for product in built:
+        (HERE / product["delivery"]).write_text(f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Your download — {html_escape(product['title'])}</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Thank you<span class="dot">.</span></h1>
+  <p class="tagline">Your puzzle book is ready.</p>
+</div></header>
+<main class="wrap">
+  <div class="card">
+    <h2 style="margin-top:0">{html_escape(product['title'])}</h2>
+    <p style="color:var(--muted)">{product['puzzles']} puzzles with full solutions · PDF · {product['size_kb']} KB</p>
+    <p><a class="btn primary" style="display:inline-block;padding:11px 24px;border-radius:8px;
+       background:var(--accent);color:#05230f;font-weight:700;text-decoration:none"
+       href="{product['file']}" download>Download the PDF</a></p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:0">
+      Bookmark this page — the link stays valid. Lost it? Email the address on your
+      Stripe receipt and it will be sent again.</p>
+  </div>
+  <div class="card">
+    <p style="margin:0">While you are here, the
+      <a href="index.html">cipher solver</a> is free and will crack any of these
+      puzzles instantly if you get stuck.</p>
+  </div>
+</main>
+<footer><div class="wrap"><p><a href="index.html">Back to the solver</a></p></div></footer>
+</body>
+</html>
+""")
+    return built, sampler_rel
+
+
+def store_page(products: list[dict], sampler: str) -> str:
+    cards = []
+    for product in products:
+        link = product.get("payment_link", "")
+        if link:
+            button = (f'<a class="buy" href="{link}">Buy for {html_escape(product["price"])}</a>')
+        else:
+            button = ('<span class="soon">Payment link not configured yet — '
+                      'see ventures/README.md</span>')
+        cards.append(f"""    <div class="product">
+      <h3>{html_escape(product['title'])}</h3>
+      <p class="blurb">{html_escape(product['blurb'])}</p>
+      <p class="spec">{product['puzzles']} puzzles · full solutions · PDF · {product['size_kb']} KB</p>
+      {button}
+    </div>""")
+
+    free = ""
+    if sampler:
+        free = f"""  <div class="product free">
+      <h3>Free sampler</h3>
+      <p class="blurb">Ten puzzles from the collection, with solutions. No email, no checkout — just the file.</p>
+      <a class="buy ghostbuy" href="{sampler}" download>Download free PDF</a>
+    </div>"""
+
+    return f"""    <h2>Printable cryptogram books</h2>
+    <p>The solver on this site breaks ciphers. These books are the other direction: quiet,
+    pencil-and-paper puzzles built from the same engine. Every quotation is a short fragment
+    from a historical figure, every puzzle is graded, and every answer is in the back.</p>
+    <div class="products">
+{free}
+{chr(10).join(cards)}
+    </div>
+    <p class="spec" style="margin-top:22px">Payment is handled by Stripe. Files are delivered
+    instantly in the browser after checkout — no account, no mailing list, no subscription.</p>
+
+    <h2>What is inside</h2>
+    <p>Each volume opens with a page on technique — how to attack one-letter words, why
+    <code>THE</code> is the most valuable guess you can make, which doubled letters to expect —
+    then works from puzzles with several letters given up to puzzles with nothing at all. Every
+    fifth puzzle is a Caesar rotation for a change of pace.</p>
+    <p>They are typeset for US Letter with answer blanks under every character, so they print
+    cleanly and are comfortable to work on directly.</p>"""
+
+
+def html_escape(s: str) -> str:
+    return (s.replace("&", "&amp;").replace("<", "&lt;")
+             .replace(">", "&gt;").replace('"', "&quot;"))
+
+
 def main() -> None:
+    products, sampler = build_products()
+    print(f"built {len(products)} puzzle book PDF(s)" + (" + free sampler" if sampler else ""))
+
+    PAGES.append(dict(
+        slug="downloads.html",
+        title="Printable Cryptogram Puzzle Books — PDF, Instant Download",
+        desc="Printable cryptogram puzzle books as PDFs: graded easy to hard, full solutions included, plus a free ten-puzzle sampler. Instant download, no account needed.",
+        h1="Puzzle Books",
+        tagline="Pencil-and-paper cryptograms, graded and solved, as printable PDFs.",
+        preset="substitution",
+        body=store_page(products, sampler),
+        faqs=[
+            ("What format are the books in?",
+             "PDF, typeset for US Letter paper with answer blanks under every character. They print cleanly on a home printer and are equally usable on screen."),
+            ("Do I need an account to buy one?",
+             "No. Checkout is handled by Stripe, and the download appears immediately afterwards in your browser. There is no account, no mailing list and no subscription."),
+            ("Are the solutions included?",
+             "Yes, every volume has a complete solutions section listing each quotation, its author and the key that was used."),
+            ("Can I print copies for my classroom or club?",
+             "Yes. Print as many copies as you need for your own group. Please do not redistribute the PDF itself or resell it."),
+        ],
+    ))
+
     urls = []
     for spec in PAGES:
         html = page(**spec)
@@ -516,6 +685,14 @@ def main() -> None:
         f"User-agent: *\nAllow: /\nSitemap: {CFG['base_url']}/sitemap.xml\n"
     )
     print(f"wrote sitemap.xml and robots.txt ({len(urls)} pages)")
+
+    # The delivery URLs are what you paste into each Stripe Payment Link as its
+    # "after payment" redirect, so print them where you cannot miss them.
+    if products:
+        print("\nStripe setup — set each payment link's post-payment redirect to:")
+        for product in products:
+            state = "LINK SET" if product.get("payment_link") else "needs payment_link"
+            print(f"  {product['sku']:6} {CFG['base_url']}/{product['delivery']}   [{state}]")
 
 
 if __name__ == "__main__":

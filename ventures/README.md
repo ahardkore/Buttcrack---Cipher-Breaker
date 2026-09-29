@@ -11,7 +11,7 @@ with near-zero ongoing input and zero hosting cost.
 | --- | --- | --- |
 | Ad revenue on the solver site | $0–40/mo | $200–600/mo |
 | GitHub Sponsors / Ko-fi | $0–15/mo | $50–150/mo |
-| Puzzle packs (Gumroad/KDP) | $0–30/mo | $100–400/mo |
+| Puzzle books (Stripe/Gumroad/KDP) | $0–30/mo | $100–400/mo |
 
 Nobody should plan their life around the right-hand column. The honest
 expectation is that this makes somewhere between nothing and a couple of
@@ -57,21 +57,46 @@ code changes.
 
 ### 2. `puzzle-packs/` — sellable cryptogram books
 
-Generates a print-ready puzzle book: cover, solving instructions, 60–90 graded
-puzzles, full solutions. Deterministic from a seed, so each seed is a different
-volume you can sell separately.
+Generates a print-ready puzzle book: cover, solving instructions, graded
+puzzles with answer blanks, full solutions. Deterministic from a seed, so each
+seed is a different volume you can sell separately.
 
 ```bash
-python3 ventures/puzzle-packs/generate.py --puzzles 60 --seed 1
-python3 ventures/puzzle-packs/generate.py --puzzles 90 --seed 42 --title "Cryptograms Volume Two"
+python3 ventures/puzzle-packs/build_pdf.py  --puzzles 60 --seed 1   # PDF, direct
+python3 ventures/puzzle-packs/generate.py   --puzzles 60 --seed 1   # HTML edition
 ```
 
-Open the HTML in a browser, Print → Save as PDF, upload to Gumroad (free to
-list) or Amazon KDP (free to publish, they print on demand). Price at $4–7.
+`build_pdf.py` writes a real US Letter PDF with no dependencies and no browser
+— `pdf.py` is a small PDF writer using only the standard library and the
+base-14 fonts, so books can be produced in CI. That is what lets the storefront
+below rebuild its products automatically on every deploy.
+
 Quotations are short fragments from authors who died before 1956, kept
 deliberately conservative so the book is sellable without licensing worries.
 
-### 3. GitHub Sponsors
+### 3. Stripe storefront — `downloads.html`
+
+A store page and a per-product delivery page, both generated. No server, no
+webhook, no database: Stripe Payment Links host the checkout, and Stripe's
+post-payment redirect sends the buyer to a delivery page carrying the download.
+
+Protection is deliberately light. Download URLs are content-hashed and delivery
+pages are `noindex`, which stops casual sharing of a tidy link — it is not
+entitlement enforcement. Running real licence checks means running a server,
+which costs money and attention; for a $5 puzzle book that trade is not worth
+making. If piracy ever becomes a real problem, move the products to Gumroad,
+which enforces entitlements for a cut of the sale.
+
+The delivery URL is derived from the SKU and a fixed salt, never from file
+contents, so it survives rebuilds. **Change `delivery_salt` in `site.json` once,
+before your first sale, then never again** — changing it later breaks the
+download link for everyone who already bought.
+
+A free ten-puzzle sampler is generated alongside the paid volumes. It exists to
+convert visitors who would never click a Buy button, and to give you something
+to link when someone asks for a recommendation.
+
+### 4. GitHub Sponsors
 
 `.github/FUNDING.yml` puts a Sponsor button on the repo. This earns roughly
 nothing until the project has visible users, which is exactly why the free tool
@@ -98,7 +123,23 @@ that point; the rest is monetisation.
 5. **Apply to AdSense** once the site has a little traffic — applying with zero
    visitors usually gets rejected. Put the client and slot IDs in `site.json`.
    Note that AdSense requires a payment address and pays out at $100.
-6. **Open a Gumroad account**, export a puzzle pack to PDF, list it at $5.
+6. **Wire up Stripe** (you have the account, so this is the short version):
+   1. Run `python3 ventures/cipher-solver-web/build_pages.py`. It prints a
+      delivery URL per product — copy them.
+   2. Change `delivery_salt` in `site.json` to anything you like. Do this
+      **before** your first sale, then leave it alone forever.
+   3. In Stripe → Product catalogue, create a product per volume, priced to
+      match `site.json` ($5 and $7 as shipped).
+   4. For each, create a **Payment Link**. Under "After payment", choose
+      *Don't show confirmation page* → **Redirect to your website**, and paste
+      that product's delivery URL.
+   5. Paste each Payment Link URL into the matching `payment_link` field in
+      `site.json`, and push. The Buy buttons go live on deploy.
+   6. Optional: make one more Payment Link with a customer-chosen amount and
+      put it in `tip_jar_url`. It appears as "Leave a tip" on every page.
+   7. Stripe needs your bank details before it will pay out — do that in the
+      Stripe dashboard, not here. Never paste keys or bank details into this
+      repo; nothing in this setup requires an API key at all.
 7. **Enable GitHub Sponsors** at github.com/sponsors.
 
 ## Your weekly hour

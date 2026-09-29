@@ -6,5 +6,35 @@
   "adsense_slot": "",
   "kofi_handle": "",
   "github_sponsor": "ahardkore",
-  "plausible_domain": ""
+  "plausible_domain": "",
+  "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
+  "stripe": {
+    "tip_jar_url": "",
+    "delivery_salt": "change-me-once-then-never-again-7Kq2xR",
+    "products": [
+      {
+        "sku": "vol1",
+        "title": "The Cryptogram Collection, Volume One",
+        "blurb": "60 hand-graded cryptograms, easy to hard, with a full solutions section. Print it or solve on screen.",
+        "price": "$5",
+        "seed": 1,
+        "puzzles": 60,
+        "payment_link": ""
+      },
+      {
+        "sku": "vol2",
+        "title": "The Cryptogram Collection, Volume Two",
+        "blurb": "90 more puzzles at a step up in difficulty, with Caesar rotations mixed in throughout.",
+        "price": "$7",
+        "seed": 42,
+        "puzzles": 90,
+        "payment_link": ""
+      }
+    ],
+    "sampler": {
+      "puzzles": 10,
+      "seed": 7,
+      "title": "Cryptograms: Free Sampler"
+    }
+  }
 }
