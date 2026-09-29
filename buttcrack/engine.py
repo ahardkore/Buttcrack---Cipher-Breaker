@@ -471,14 +471,20 @@ class Solver:
         usable = prepared if alphabet is None else prepared
         if len(usable) < max(cipher.info.min_length, 2) and not ctx.exhaustive:
             return
-        # Expensive attacks divide what is left of the budget between them;
-        # cheap ones just get their cap.
+        # An attack gets a bounded share of the time still available at *this*
+        # node.  The previous two-second floor could turn a 0.5-second request
+        # into several expensive sub-contexts; each child inherited the root
+        # deadline, but process-backed attacks could still finish after the user
+        # had asked us to stop.  A slice is a cap, never a promise of a minimum.
         remaining = ctx.remaining()
+        if remaining <= 0:
+            return
         if cost >= EXPENSIVE:
-            share = max(2.0, remaining / max(1, group_size))
-            slice_seconds = min(PHASE_SLICES[cost], max(share, remaining * 0.5))
+            slice_seconds = min(PHASE_SLICES[cost], remaining / max(1, group_size))
         else:
-            slice_seconds = min(PHASE_SLICES[cost], max(1.0, remaining))
+            slice_seconds = min(PHASE_SLICES[cost], remaining)
+        if slice_seconds <= 0:
+            return
         sub = ctx.child(budget=slice_seconds)
         log = AttackLog(cipher.info.name, time.time())
         tried = 0

@@ -6,13 +6,15 @@ much flatter than a substitution's 0.066).  They are also the point where
 cryptanalysis becomes statistical rather than mechanical:
 
 Playfair
-    The key is a 5x5 grid -- 25! orderings -- so it is hill climbed exactly like
-    a substitution, scoring quadgram fitness of the decryption and swapping two
-    grid cells at a time.  It needs more text than substitution does: below ~100
-    letters the correct grid is usually not the global optimum, and even above
-    200 a couple of cell swaps can survive as noise.  Playfair also has a
-    structural tell used for identification: no digraph ever repeats a letter
-    ("SS" cannot occur), and J never appears.
+    The key is a 5x5 grid -- 25! orderings -- so it is searched statistically,
+    scoring quadgram fitness of the decryption and swapping two grid cells at a
+    time.  Simulated annealing explores broadly while a compact genetic search
+    recombines promising grids; keeping the best of both avoids making a single
+    search landscape responsible for every ciphertext.  It needs more text than
+    substitution does: below ~100 letters the correct grid is usually not the
+    global optimum, and even above 200 a couple of cell swaps can survive as
+    noise.  Playfair also has a structural tell used for identification: no
+    digraph ever repeats a letter ("SS" cannot occur), and J never appears.
 
 Bifid
     Fractionates each letter into row/column coordinates and recombines them
@@ -105,7 +107,7 @@ class Playfair(Cipher):
         cost=EXPENSIVE,
         alphabet=A25,
         aliases=("playfare", "double_playfair"),
-        description="Digraph substitution on a 5x5 keyed grid. Solved by hill climbing the grid on quadgram fitness.",
+        description="Digraph substitution on a 5x5 keyed grid. Solved by annealing and genetic search on quadgram fitness.",
         example_key="MONARCHY",
     )
 
@@ -203,26 +205,27 @@ class Playfair(Cipher):
         if len(stream) % 2:
             stream += "X"
         workers = max(1, min(ctx.workers, 4))
-        # Split what is left of the budget between the workers.  Playfair is the
-        # one cipher where more time reliably buys more of the key, so the slice
-        # is the whole remaining budget divided by the worker count.
-        remaining = max(2.0, ctx.remaining())
-        per_worker = remaining / workers
-        now = time.time()
+        remaining = ctx.remaining()
+        if remaining <= 0:
+            return
+        # Every worker receives the same hard deadline and splits its slice
+        # between annealing and GA search.  Giving worker N an extra N-th slice
+        # made the total search time depend on worker count and could overrun a
+        # small engine budget.
         payloads = [
             (
                 stream,
                 (ctx.hints.get("seed", 99) + i * 6151) % (2**31 - 1),
-                now + per_worker * (i + 1),
+                ctx.deadline,
                 ctx.deadline,
             )
             for i in range(workers)
         ]
         ctx.report(
-            f"playfair: iterated local search over 25! grids "
-            f"({workers} worker{'s' if workers > 1 else ''}, {per_worker:.0f}s each, {len(stream)} letters)"
+            f"playfair: annealing/GA ensemble over 25! grids "
+            f"({workers} worker{'s' if workers > 1 else ''}, {remaining:.0f}s cap, {len(stream)} letters)"
         )
-        results = parallel_restarts(_playfair_worker, payloads, workers, ctx.deadline + 2.0)
+        results = parallel_restarts(_playfair_ensemble_worker, payloads, workers, ctx.deadline)
         results = [r for r in results if r]
         if not results:
             return
@@ -273,6 +276,75 @@ PLAYFAIR_SEED_WINDOW = 400     #: characters scored while the population is stil
 PLAYFAIR_POLISH_FITNESS = -5.6 #: switch to scoring the whole text past this point
 PLAYFAIR_POPULATION = 12       #: grids kept alive at once
 PLAYFAIR_STAGNATION = 25       #: generations without progress before the tail is reseeded
+
+
+def _playfair_ensemble_worker(payload: tuple) -> tuple:
+    """Run two complementary Playfair searches and return their strongest grid.
+
+    Annealing can cross a bad local basin that an elitist population has already
+    discarded.  The genetic pass, in turn, can preserve useful cell placements
+    from several near misses.  They share a strict wall-clock slice rather than
+    being run as two independent budget consumers.
+    """
+    stream, seed, deadline, hard_deadline = payload
+    now = time.time()
+    if now >= hard_deadline:
+        return "", 0.0, -99.0, 0
+    anneal_deadline = min(deadline, now + (deadline - now) * 0.42)
+    annealed = _playfair_anneal_worker((stream, seed, anneal_deadline, hard_deadline))
+    genetic = _playfair_worker((stream, seed + 104729, deadline, hard_deadline))
+    return max((annealed, genetic), key=lambda result: (result[2], result[1]))
+
+
+def _playfair_anneal_worker(payload: tuple) -> tuple:
+    """Explore Playfair grids with a deadline-aware simulated annealing walk.
+
+    The move is a cell swap.  Early in a run, slightly worse moves are accepted
+    often enough to jump between the narrow Playfair basins; by the end it is a
+    conventional local search.  The fitness window is intentionally capped
+    while the grid is noise, then the winning grid is scored on the full text.
+    """
+    stream, seed, deadline, hard_deadline = payload
+    model = get_model()
+    rng = random.Random(seed)
+    n = len(stream)
+    window = min(n, PLAYFAIR_SEED_WINDOW)
+
+    def fitness(grid: list[str]) -> float:
+        return model.ngram_score(
+            apply_grid(stream, "".join(grid), True), normalise=False, max_chars=window
+        )
+
+    started = time.time()
+    total = max(0.01, min(deadline, hard_deadline) - started)
+    grid = list(rng.sample(A25, 25))
+    current = fitness(grid)
+    best_grid, best_fit = list(grid), current
+    iterations = 0
+    # A handful of independent thermal walks is less prone to preserving an
+    # unlucky random start than one uninterrupted walk.
+    while time.time() < deadline and time.time() < hard_deadline:
+        x, y = rng.sample(range(25), 2)
+        grid[x], grid[y] = grid[y], grid[x]
+        candidate = fitness(grid)
+        progress = min(1.0, (time.time() - started) / total)
+        temperature = 0.30 * (1.0 - progress) + 0.012
+        delta = candidate - current
+        if delta >= 0 or rng.random() < pow(2.718281828, delta / temperature):
+            current = candidate
+        else:
+            grid[x], grid[y] = grid[y], grid[x]
+        if current > best_fit:
+            best_grid, best_fit = list(grid), current
+        iterations += 1
+        if iterations % 900 == 0 and progress < 0.85:
+            grid = list(rng.sample(A25, 25))
+            current = fitness(grid)
+
+    best = "".join(best_grid)
+    plain = apply_grid(stream, best, True)
+    full_fit = model.ngram_score(plain, normalise=False)
+    return best, model.score(plain).confidence, full_fit, iterations
 
 
 def _playfair_worker(payload: tuple) -> tuple:

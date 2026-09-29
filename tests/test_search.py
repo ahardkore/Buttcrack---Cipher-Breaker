@@ -156,6 +156,15 @@ class TestParallelRestarts(unittest.TestCase):
         self.assertIn((1, 2), results)
         self.assertLess(time.time() - started, 4.0)
 
+    def test_an_expired_deadline_does_not_start_a_serial_fallback(self):
+        # A pool can legitimately return no completed work at a deadline.  That
+        # is different from a broken pool: retrying a five-second climb serially
+        # after the caller's deadline defeats the engine's budget cap.
+        started = time.time()
+        results = parallel_restarts(_worker, [(1, 5.0)], 2, deadline=time.time() - 0.01)
+        self.assertEqual(results, [])
+        self.assertLess(time.time() - started, 1.0)
+
     def test_a_broken_worker_falls_back_to_serial(self):
         def exploding(payload):
             raise RuntimeError("no pool here")
