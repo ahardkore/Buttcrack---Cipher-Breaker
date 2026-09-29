@@ -126,6 +126,13 @@ def app_jsonld(title: str, desc: str) -> str:
     return f'<script type="application/ld+json">{json.dumps(data)}</script>'
 
 
+def buy_button_script(body: str) -> str:
+    """Stripe's script, included only on a page that actually uses the button."""
+    if "<stripe-buy-button" not in body:
+        return ""
+    return '\n  <script async src="https://js.stripe.com/v3/buy-button.js"></script>'
+
+
 def page(slug: str, title: str, desc: str, h1: str, tagline: str,
          preset: str, body: str, faqs: list[tuple[str, str]]) -> str:
     faq_html = "".join(
@@ -151,7 +158,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="style.css">
 {app_jsonld(title, desc)}
-{faq_jsonld(faqs) if faqs else ''}{adsense_head()}{analytics()}
+{faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
 </head>
 <body data-preset="{preset}">
 <header>
@@ -591,10 +598,25 @@ def build_products() -> tuple[list[dict], str]:
 
 
 def store_page(products: list[dict], sampler: str) -> str:
+    pk = CFG.get("stripe", {}).get("publishable_key", "")
+    if pk.startswith("sk_"):
+        raise SystemExit(
+            "site.json holds a SECRET Stripe key in publishable_key. Remove it and "
+            "rotate that key in the Stripe dashboard immediately — secret keys must "
+            "never reach a public site."
+        )
+
     cards = []
     for product in products:
         link = product.get("payment_link", "")
-        if link:
+        button_id = product.get("buy_button_id", "")
+        if pk and button_id:
+            # Stripe's embedded button: checkout happens in an overlay, so the
+            # visitor never leaves the page. Publishable keys are meant to ship
+            # in client HTML, so this is safe to commit and deploy.
+            button = (f'<stripe-buy-button buy-button-id="{html_escape(button_id)}" '
+                      f'publishable-key="{html_escape(pk)}"></stripe-buy-button>')
+        elif link:
             button = (f'<a class="buy" href="{link}">Buy for {html_escape(product["price"])}</a>')
         else:
             button = ('<span class="soon">Payment link not configured yet — '

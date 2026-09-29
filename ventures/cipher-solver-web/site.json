@@ -11,6 +11,8 @@
   "stripe": {
     "tip_jar_url": "",
     "delivery_salt": "change-me-once-then-never-again-7Kq2xR",
+    "_buy_button_note": "Optional. Fill BOTH publishable_key (pk_live_... \u2014 publishable keys are safe in public HTML by design) and a product's buy_button_id to embed Stripe's checkout on the page instead of linking out. Leave blank to use plain Payment Links. NEVER put a secret key (sk_live_...) here.",
+    "publishable_key": "",
     "products": [
       {
         "sku": "vol1",
@@ -19,7 +21,8 @@
         "price": "$5",
         "seed": 1,
         "puzzles": 60,
-        "payment_link": ""
+        "payment_link": "",
+        "buy_button_id": ""
       },
       {
         "sku": "vol2",
@@ -28,7 +31,8 @@
         "price": "$7",
         "seed": 42,
         "puzzles": 90,
-        "payment_link": ""
+        "payment_link": "",
+        "buy_button_id": ""
       }
     ],
     "sampler": {

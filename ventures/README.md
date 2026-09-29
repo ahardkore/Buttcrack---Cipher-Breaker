@@ -138,8 +138,24 @@ that point; the rest is monetisation.
    6. Optional: make one more Payment Link with a customer-chosen amount and
       put it in `tip_jar_url`. It appears as "Leave a tip" on every page.
    7. Stripe needs your bank details before it will pay out — do that in the
-      Stripe dashboard, not here. Never paste keys or bank details into this
-      repo; nothing in this setup requires an API key at all.
+      Stripe dashboard, not here.
+
+**On API keys.** Nothing in this setup requires one. Payment Links are
+self-contained URLs, which means there is no credential to leak, rotate or
+accidentally commit — that is the main reason the storefront is built this way.
+
+The one optional exception is Stripe's embedded Buy Button, which keeps checkout
+on your page rather than sending the visitor to Stripe. It needs a
+**publishable** key (`pk_live_…`), which is explicitly designed to be readable in
+public HTML. Put it in `publishable_key` in `site.json` along with each
+product's `buy_button_id` and the store page will embed the button instead of a
+plain link.
+
+A **secret** key (`sk_live_…`, `rk_live_…`) must never appear in this repo, in a
+config file, or in a chat message — it grants full control of your Stripe
+account, including moving money. `build_pages.py` aborts the build if it finds
+one in `publishable_key`, but do not rely on that: if a secret key is ever
+exposed, rotate it immediately at Stripe → Developers → API keys.
 7. **Enable GitHub Sponsors** at github.com/sponsors.
 
 ## Your weekly hour
