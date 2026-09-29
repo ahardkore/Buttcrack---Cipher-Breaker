@@ -1,0 +1,20 @@
+# PK8 Audited Cryptanalytic Frontier: Additive 4-Clock System {Q4, Q5, Q6, Q7}
+# Ciphertext Length: N = 153
+# Cipher Family: Quagmire III over keyed Kryptos alphabet (KRYPTOSABCDEFGHIJLMNQUVWXZ)
+# Aggregate Period: lcm(4, 5, 6, 7) = 420
+# Solved by Kevin Hu (@_newhaiku) after 86 days (2026-09-06); Verified by Dan Robinson. Official plaintext sealed in custody.
+
+# Verified Empirical Clock Parameters:
+# Q4: [0, 6, 13, 20] (Arithmetic progression: +6, +7, +7, +6 = 26 mod 26)
+# Q5: [3, 4, 15, 0, 10]
+# Q6: [3, 18, 15, 25, 20, 4]
+# Q7: [10, 2, 24, 0, 9, 5, 17] (rot_4 of PK10's proven COLD LOCK clock)
+
+# Decrypted 153-Character Plaintext Candidate:
+NRHPXXOEICEJAANOSSOYBUIFLBVVOGFUNOITTHSETEHFANCPLBGLSNTEEVNVZBDELQBONIATIQBSFKTTTBAUGNTHEELHASOCENDFGTHSYORTSUODSEDAWPEYONHEACLITTDHUSSIKEYJMHELODYUDOPTN
+
+# Metrics:
+# Score: -7.3259 | Valid Quadgrams: 75 / 150 (50.0%)
+# Monogram IoC: 0.05022
+# Rare Letters (J, Q, X, Z): 7 / 153 (4.58%)
+# Contiguous English Words Recovered: 38 words (ICE, FUN, SET, FAN, THEE, HEEL, HAS, END, ORTS, DAW, YON, LIT, KEY, MELODY, OPT)

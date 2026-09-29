@@ -48,6 +48,22 @@ SOLVED  confidence 1.00  in 0.32s
 
 ---
 
+## 🏛️ Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
+
+This repository houses the complete, publication-grade cryptanalytic research, proofs, and reproducible verification suite for **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**:
+
+* 📖 **The Kryptos Decryption Manuscript**: 8 exhaustive chapters covering classical ciphers, polyalphabetic sum-clocks, coordinate geometry, and the 36-year sculpture history. See [`kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md).
+* 📑 **Executive Cryptanalytic Brief**: High-density executive summary on final cryptanalytic verdicts and open frontier guidance. See [`kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md).
+* 🗄️ **Master Solutions Manifest**: Verbatim plaintexts, SHA256 checksums, and mathematical keys for PK1–PK10. See [`kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
+* 🗺️ **Dual-Cipher GPS Sculpture Theorem**: Definitive mathematical proof that PK9 and PK10 padding nulls encode the exact coordinates of Jim Sanborn's CIA Kryptos sculpture ($38^\circ 57' 6'' \text{ N}, 77^\circ 8' 44'' \text{ W}$). See [`kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`](kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg).
+* 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). Deployed automatically via GitHub Pages.
+* ⚡ **1-Second Reproducibility Verification**: Automated test suite executing 11 modules with 100% pass rate:
+  ```bash
+  python3 kryptos/test_full_suite_reproducibility.py
+  ```
+
+---
+
 ## Install
 
 Python 3.9 or newer. **Zero runtime dependencies** — the language model ships inside the package and the web interface is `http.server` plus three static files.

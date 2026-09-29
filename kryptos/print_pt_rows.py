@@ -1,0 +1,9 @@
+pt = "JVRMBLARDADEFUNCTORDQBOOMRBETHSKWJERSOISEARVEMYLAILEBOTHEEDAMESQUNGLAYIMELIFORESSESTIAAUONEASTYMARINPRAYIALMIRLOFATSEREDCISANTIDBYOUSCHESALSOMYR"
+N = len(pt)
+W = 18
+H = N // W
+
+print(f"Plaintext (N={N}) in {H} rows of {W} chars:")
+for r in range(H):
+    row = pt[r*W : (r+1)*W]
+    print(f"  Row {r}: {row}")
