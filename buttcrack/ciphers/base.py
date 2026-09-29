@@ -22,9 +22,10 @@ codebase changes.
 from __future__ import annotations
 
 import time
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field, replace
 from enum import Enum
-from typing import Any, Callable, Iterable, Iterator
+from typing import Any, Callable
 
 from ..lang import LanguageModel
 from ..results import EVIDENCE_CAP, Candidate, evidence_shortfall
@@ -131,7 +132,7 @@ class CrackContext:
         hints: dict | None = None,
         progress: Callable[[str, float, dict], None] | None = None,
         **kw,
-    ) -> "CrackContext":
+    ) -> CrackContext:
         from ..lang import get_model
 
         return cls(
@@ -154,7 +155,7 @@ class CrackContext:
     def fraction_left(self) -> float:
         return max(0.0, min(1.0, self.remaining() / self.budget)) if self.budget else 0.0
 
-    def child(self, budget: float, *, steps: tuple[str, ...] = (), depth: int | None = None) -> "CrackContext":
+    def child(self, budget: float, *, steps: tuple[str, ...] = (), depth: int | None = None) -> CrackContext:
         """A sub-context with its own slice of the remaining budget."""
         return CrackContext(
             model=self.model,
@@ -175,7 +176,7 @@ class CrackContext:
         *,
         budget: float | None = None,
         depth: int | None = None,
-    ) -> "CrackContext":
+    ) -> CrackContext:
         """A copy of this context carrying an *absolute* decode chain.
 
         :meth:`child` appends to the chain, which is right when the text being

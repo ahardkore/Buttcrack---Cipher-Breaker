@@ -143,7 +143,7 @@ Handy options on `crack`:
 ## Reading the output
 
 * **`SOLVED confidence 0.89`** — the plaintext reads as English, the key is exhaustive or uniquely determined, and there was enough text to judge. Confidence ≥ 0.86 means the solver would bet on it; ≥ 0.62 means it reads correctly but the evidence is thinner.
-* **`PARTIAL`** — the right family, most of the key, not all of it. The `caveat` note says what to do: raise `--budget`, add more ciphertext, or pass `--hint`.
+* **`BEST GUESS`** — a reading that scores well but does not clear the solved bar: the right family, often most of the key. The `caveat` note says what to do: raise `--budget`, add more ciphertext, or pass `--hint`. (`NOT BROKEN` means nothing scored above the noise floor.)
 * **`alternatives`** — the next-best readings, with their scores and the first characters of their plaintext. Useful when two keys genuinely fit.
 * **`word breaks recovered`** — when the ciphertext had no spaces, the report shows the letters *and* a best-effort respacing from the dictionary.
 * **`formatted`** — the plaintext in the layout of the original: case, punctuation and line breaks are restored wherever the cipher preserved positions (Caesar, Vigenère, Atbash, ROT47 do; reverse and the polygraphic ciphers cannot).
@@ -205,13 +205,14 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 197 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 205 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end
 python3 -m buttcrack selftest --slow                          # + substitution, Playfair, Bifid
 python3 examples/generate.py --check                          # solve every sample puzzle
 python3 -m buttcrack demo                                     # encrypt, then break with no hints
+pip install -e ".[dev]" && ruff check .                       # lint (CI enforces this)
 ```
 
 `BUTTCRACK_STRICT=1` turns solver warnings into test failures; CI runs the suite

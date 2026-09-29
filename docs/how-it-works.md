@@ -202,7 +202,7 @@ In rough order of usefulness:
 4. **Read the alternatives.** When two keys fit, the report lists both with their
    scores and the first characters of each plaintext — often the second one is
    the answer and the first is an equivalent attribution.
-5. **Check the caveats.** A `PARTIAL` verdict carries a note saying what was
+5. **Check the caveats.** A `BEST GUESS` verdict carries a note saying what was
    missing: too few letters per key column, a plateau in the search, a layer that
    decoded to something unreadable.
 

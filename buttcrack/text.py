@@ -168,7 +168,7 @@ def relative_frequencies(text: str, alphabet: str = A26) -> dict[str, float]:
     counts = frequencies(text, alphabet)
     total = sum(counts.values())
     if not total:
-        return {c: 0.0 for c in alphabet}
+        return dict.fromkeys(alphabet, 0.0)
     return {c: counts.get(c, 0) / total for c in alphabet}
 
 
@@ -349,7 +349,7 @@ def best_block_size(data: bytes, max_size: int = 40) -> tuple[int, float]:
 
 def map_letters(
     text: str,
-    transform: "Callable[[int, int], int]",
+    transform: Callable[[int, int], int],
     *,
     alphabet: str = A26,
 ) -> str:

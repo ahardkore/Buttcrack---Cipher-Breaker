@@ -8,8 +8,6 @@ cipher is therefore a two-step change: write the class, add it to
 
 from __future__ import annotations
 
-from typing import Iterator
-
 from .base import (
     BRUTAL,
     CHEAP,
@@ -32,11 +30,6 @@ from .encodings import (
     DecimalASCII,
     PercentEncoding,
 )
-from .polygraphic import Bifid, Playfair
-from .shift import ROT13, ROT47, Affine, Atbash, Caesar, Reverse
-from .substitution import KeywordSubstitution, Substitution
-from .transposition import ColumnarTransposition, RailFence, RouteTransposition, SkipTransposition
-from .xor import RepeatingKeyXOR, SingleByteXOR
 from .polyalphabetic import (
     Autokey,
     Beaufort,
@@ -45,6 +38,11 @@ from .polyalphabetic import (
     VariantBeaufort,
     Vigenere,
 )
+from .polygraphic import Bifid, Playfair
+from .shift import ROT13, ROT47, Affine, Atbash, Caesar, Reverse
+from .substitution import KeywordSubstitution, Substitution
+from .transposition import ColumnarTransposition, RailFence, RouteTransposition, SkipTransposition
+from .xor import RepeatingKeyXOR, SingleByteXOR
 
 #: Every cipher Buttcrack knows, in the order they are displayed.
 ALL_CIPHERS: list[Cipher] = [

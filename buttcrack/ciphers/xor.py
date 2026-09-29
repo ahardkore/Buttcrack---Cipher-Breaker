@@ -27,15 +27,14 @@ import base64
 import binascii
 import re
 from collections import Counter
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..lang import BYTE_VALUE
 from ..results import Candidate
 from ..text import (
-    A26,
     coset_byte_ic,
     divisors,
-    index_of_coincidence,
     is_word_shaped,
     letters_only,
     normalised_hamming,
@@ -95,7 +94,7 @@ def key_text(key: bytes) -> str:
     return f"hex:{reduced.hex()}"
 
 
-def byte_layer_prior(ctx: "CrackContext") -> float:
+def byte_layer_prior(ctx: CrackContext) -> float:
     """Strong prior for XOR when a byte encoding has just been peeled away.
 
     ``hex -> XOR`` and ``base64 -> XOR`` are how constructed puzzles are built,
@@ -167,13 +166,19 @@ def to_payload(text: str) -> tuple[bytes, str]:
     # payloads are one unbroken run, MIME-wrapped at a fixed column, or separated
     # into byte pairs -- none of which are three-letter alphabetic words.
     word_shaped = is_word_shaped(text)
-    if not word_shaped and HEX_RE.match(stripped) and len(stripped) % 2 == 0 and len(stripped) >= 4:
-        # Digits-only strings are ambiguous with decimal; require at least one a-f.
-        if re.search(r"[a-fA-F]", stripped):
-            try:
-                return bytes.fromhex(stripped), "hex"
-            except ValueError:
-                pass
+    # Digits-only strings are ambiguous with decimal; require at least one a-f.
+    hexlike = (
+        not word_shaped
+        and HEX_RE.match(stripped)
+        and len(stripped) % 2 == 0
+        and len(stripped) >= 4
+        and re.search(r"[a-fA-F]", stripped)
+    )
+    if hexlike:
+        try:
+            return bytes.fromhex(stripped), "hex"
+        except ValueError:
+            pass
     if not word_shaped and B32_RE.match(stripped) and len(stripped) >= 8 and not stripped.isdigit():
         try:
             padded = stripped + "=" * (-len(stripped) % 8)

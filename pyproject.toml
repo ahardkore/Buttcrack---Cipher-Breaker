@@ -47,7 +47,9 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = []
+# Lint only; the package itself still has zero runtime dependencies.
+# `ruff format` is NOT enforced: the tree predates it and is `ruff check`-clean.
+dev = ["ruff>=0.16"]
 
 [project.urls]
 Homepage = "https://github.com/ahardkore/buttcrack"

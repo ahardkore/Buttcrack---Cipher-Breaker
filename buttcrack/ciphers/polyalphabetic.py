@@ -22,11 +22,11 @@ splitting into independent chains and hill climbing the primer.
 from __future__ import annotations
 
 from collections import Counter
-from math import gcd
-from typing import Any, Iterable, Iterator
+from collections.abc import Iterable, Iterator
+from typing import Any
 
 from ..results import Candidate
-from ..text import A26, best_key_length, ic_of_columns, index_of_coincidence, letters_only, map_letters
+from ..text import A26, ic_of_columns, index_of_coincidence, letters_only, map_letters
 from .base import CHEAP, MODERATE, Cipher, CipherInfo, CrackContext, Family
 
 ENGLISH_IC = 0.0667
@@ -81,9 +81,6 @@ def candidate_key_lengths(
         return []
     max_len = max(2, min(max_len, n // max(min_letters_per_column, 2), 40))
     ic_scores = {k: ic_of_columns(stream, k) for k in range(1, max_len + 1)}
-    ic_best = max(ic_scores.values())
-    ic_worst = min(ic_scores.values())
-    span = (ic_best - ic_worst) or 1.0
     kas_votes = dict(kasiski(stream, max_len))
     kas_max = max(kas_votes.values()) if kas_votes else 1
 

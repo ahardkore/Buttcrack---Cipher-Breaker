@@ -17,11 +17,12 @@ where uppercase and lowercase letters of ordinary-looking text carry the bits.
 from __future__ import annotations
 
 import re
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..results import Candidate
 from ..text import A25, A26, letters_only
-from .base import CHEAP, CipherInfo, CrackContext, Family, LayerCipher
+from .base import CHEAP, CipherInfo, CrackContext, Family
 from .encodings import _Encoding
 
 MORSE = {

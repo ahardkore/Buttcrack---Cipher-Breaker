@@ -20,6 +20,7 @@ block the rest of the UI.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import socket
@@ -36,7 +37,7 @@ from urllib.parse import urlparse
 
 from . import __version__
 from .ciphers import ALL_CIPHERS, layer_ciphers, try_get
-from .detect import characterise, identify
+from .detect import identify
 from .engine import solve
 from .lang import get_model
 
@@ -148,7 +149,7 @@ class Handler(BaseHTTPRequestHandler):
     # -- plumbing ----------------------------------------------------------- #
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002 - stdlib signature
         if os.environ.get("BUTTCRACK_HTTP_LOG"):
-            sys.stderr.write("%s - %s\n" % (self.address_string(), format % args))
+            sys.stderr.write(f"{self.address_string()} - {format % args}\n")
 
     def _send(self, status: int, body: bytes, content_type: str, extra: dict[str, str] | None = None) -> None:
         self.send_response(status)
@@ -344,10 +345,8 @@ def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) ->
     print(f"  {len(ALL_CIPHERS)} ciphers, {model.ngram_count(4):,} quadgrams, {len(model.words):,} words")
     print("  press Ctrl-C to stop")
     if open_browser:
-        try:
+        with contextlib.suppress(Exception):  # headless boxes have no browser; that is fine
             webbrowser.open(url)
-        except Exception:  # headless boxes have no browser; that is fine
-            pass
     try:
         httpd.serve_forever(poll_interval=0.2)
     except KeyboardInterrupt:

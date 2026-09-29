@@ -259,13 +259,13 @@ class TestKeyspaces(unittest.TestCase):
                 self.assertNotIn(forbidden, list(cipher.keys()))
 
     def test_affine_leaves_shifts_to_caesar(self):
-        for a, _b in get("affine").keys():
+        for a, _b in get("affine").keys():  # noqa: SIM118 - Cipher.keys() is a generator, not dict.keys()
             self.assertNotEqual(a, 1, "a=1 is Caesar, not Affine")
 
     def test_transposition_keys_have_at_least_two_units(self):
-        for rails, _offset in get("rail_fence").keys():
+        for rails, _offset in get("rail_fence").keys():  # noqa: SIM118 - Cipher.keys(), not dict.keys()
             self.assertGreaterEqual(rails, 2)
-        for params in get("route").keys():
+        for params in get("route").keys():  # noqa: SIM118 - Cipher.keys(), not dict.keys()
             self.assertGreaterEqual(params["cols"], 2)
             self.assertIn(params["route"], get("route").ROUTES)
 

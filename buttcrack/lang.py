@@ -229,10 +229,10 @@ class LanguageModel:
     # -- loading ------------------------------------------------------------ #
     @classmethod
     @lru_cache(maxsize=8)
-    def get(cls, language: str = "english", order: int = 4) -> "LanguageModel":
+    def get(cls, language: str = "english", order: int = 4) -> LanguageModel:
         return cls(language=language, order=order).load()
 
-    def load(self) -> "LanguageModel":
+    def load(self) -> LanguageModel:
         if self._loaded:
             return self
         with self._lock:

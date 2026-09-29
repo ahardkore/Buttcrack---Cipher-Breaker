@@ -18,6 +18,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # `ruff check` is the gate (config lives in pyproject.toml); `ruff
+      # format` is deliberately not enforced because the tree predates it.
+      # Pinned to a minor series so a new ruff release cannot turn the build
+      # red overnight.
+      - name: Install ruff
+        run: python -m pip install "ruff~=0.16.0"
+
+      - name: Lint
+        run: ruff check .
+
   tests:
     name: tests (py${{ matrix.python-version }})
     runs-on: ubuntu-latest

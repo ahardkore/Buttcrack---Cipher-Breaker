@@ -292,14 +292,14 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 
 
 PAGES = [
-    dict(
-        slug="index.html",
-        title="Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)",
-        desc="Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.",
-        h1="Cipher Solver",
-        tagline="Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
-        preset="caesar",
-        faqs=[
+    {
+        "slug": "index.html",
+        "title": "Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)",
+        "desc": "Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.",
+        "h1": "Cipher Solver",
+        "tagline": "Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
+        "preset": "caesar",
+        "faqs": [
             ("Do I need to know which cipher was used?",
              "No. The solver characterises the text first — index of coincidence, entropy, character set — then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button."),
             ("Is my ciphertext uploaded anywhere?",
@@ -311,7 +311,7 @@ PAGES = [
             ("Can it break modern encryption like AES or RSA?",
              "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."),
         ],
-        body="""    <h2>What this does</h2>
+        "body": """    <h2>What this does</h2>
     <p>Most cipher tools ask you to pick the cipher and supply the key. That is fine when you
     already know both, and useless when you are staring at a block of gibberish from a puzzle
     box, a geocache, an escape room or a CTF challenge. This one starts from nothing: it
@@ -349,15 +349,15 @@ PAGES = [
     it gives hex; decoding that gives letters that still are not English; the index of
     coincidence says monoalphabetic; a 26-shift sweep finds the answer. The tool reports the
     chain <code>base64 → base16 → caesar</code> along with the key it recovered.</p>""",
-    ),
-    dict(
-        slug="caesar-cipher-decoder.html",
-        title="Caesar Cipher Decoder — Decrypt Without Knowing the Shift",
-        desc="Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.",
-        h1="Caesar Cipher Decoder",
-        tagline="Don't know the shift? It tries all 26 and picks the English one.",
-        preset="caesar",
-        faqs=[
+    },
+    {
+        "slug": "caesar-cipher-decoder.html",
+        "title": "Caesar Cipher Decoder — Decrypt Without Knowing the Shift",
+        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.",
+        "h1": "Caesar Cipher Decoder",
+        "tagline": "Don't know the shift? It tries all 26 and picks the English one.",
+        "preset": "caesar",
+        "faqs": [
             ("How do I decode a Caesar cipher without the key?",
              "There are only 26 possible shifts, so you try them all and pick the one that produces English. This page automates both halves: it generates all 26 candidates and scores each with a trigram language model, so the correct shift is chosen without you reading through the list."),
             ("Is ROT13 the same thing?",
@@ -367,7 +367,7 @@ PAGES = [
             ("The shift looks right but some words are wrong. Why?",
              "A Caesar cipher applies one shift to the whole message, so if part of it decodes and part does not, you are probably looking at a Vigenère cipher, which uses a repeating sequence of shifts. Try the Vigenère page."),
         ],
-        body="""    <h2>How the Caesar cipher works</h2>
+        "body": """    <h2>How the Caesar cipher works</h2>
     <p>Each letter is moved a fixed number of places along the alphabet. With a shift of 3,
     <code>A</code> becomes <code>D</code>, <code>B</code> becomes <code>E</code>, and
     <code>Z</code> wraps around to <code>C</code>. Decryption shifts back by the same amount.
@@ -393,15 +393,15 @@ PAGES = [
     of a harder puzzle, wrapped in base64 or hex to disguise the fact that the underlying
     cipher is trivial — which is why this page still runs the full layered search rather than
     only trying shifts.</p>""",
-    ),
-    dict(
-        slug="vigenere-cipher-solver.html",
-        title="Vigenère Cipher Solver — Recovers the Key Automatically",
-        desc="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.",
-        h1="Vigenère Solver",
-        tagline="No keyword needed — it recovers the key from the ciphertext itself.",
-        preset="vigenere",
-        faqs=[
+    },
+    {
+        "slug": "vigenere-cipher-solver.html",
+        "title": "Vigenère Cipher Solver — Recovers the Key Automatically",
+        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.",
+        "h1": "Vigenère Solver",
+        "tagline": "No keyword needed — it recovers the key from the ciphertext itself.",
+        "preset": "vigenere",
+        "faqs": [
             ("Can a Vigenère cipher be broken without the key?",
              "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."),
             ("How much ciphertext do I need?",
@@ -411,7 +411,7 @@ PAGES = [
             ("Why did it return a key that is a repeated word, like LAMPLAMP?",
              "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."),
         ],
-        body="""    <h2>Why Vigenère resisted for 300 years</h2>
+        "body": """    <h2>Why Vigenère resisted for 300 years</h2>
     <p>A Caesar cipher uses one shift for the whole message, so letter frequencies survive
     intact and betray it immediately. Vigenère uses a keyword: each letter of the keyword
     gives a shift, and the keyword repeats across the message. <code>E</code> no longer maps to
@@ -444,15 +444,15 @@ PAGES = [
     <p>The same machinery handles the Beaufort and variant Beaufort ciphers, which differ only
     in the direction of the shift, and repeating-key XOR, which is Vigenère over bytes instead
     of letters and is extremely common in CTF challenges.</p>""",
-    ),
-    dict(
-        slug="substitution-cipher-solver.html",
-        title="Substitution Cipher Solver — Automatic Cryptogram Breaker",
-        desc="Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.",
-        h1="Substitution Solver",
-        tagline="Cryptograms cracked by hill-climbing search — no crib, no hints.",
-        preset="substitution",
-        faqs=[
+    },
+    {
+        "slug": "substitution-cipher-solver.html",
+        "title": "Substitution Cipher Solver — Automatic Cryptogram Breaker",
+        "desc": "Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.",
+        "h1": "Substitution Solver",
+        "tagline": "Cryptograms cracked by hill-climbing search — no crib, no hints.",
+        "preset": "substitution",
+        "faqs": [
             ("How long does the ciphertext need to be?",
              "About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them."),
             ("Does it handle keyword-generated alphabets?",
@@ -462,7 +462,7 @@ PAGES = [
             ("Will it solve a newspaper cryptogram?",
              "Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for."),
         ],
-        body="""    <h2>A keyspace you cannot search</h2>
+        "body": """    <h2>A keyspace you cannot search</h2>
     <p>A monoalphabetic substitution replaces each letter with another, consistently, using a
     scrambled alphabet as the key. There are 26 factorial such alphabets — roughly
     403 septillion. Trying them all is not an option now and will not be an option ever.
@@ -493,15 +493,15 @@ PAGES = [
     <code>SS</code>, <code>OO</code> or <code>TT</code>. An apostrophe followed by one letter is
     nearly always <code>S</code> or <code>T</code>. From four or five confirmed letters the rest
     usually collapses quickly.</p>""",
-    ),
-    dict(
-        slug="morse-code-translator.html",
-        title="Morse Code Translator & Decoder — Dots and Dashes to Text",
-        desc="Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.",
-        h1="Morse Decoder",
-        tagline="Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.",
-        preset="morse",
-        faqs=[
+    },
+    {
+        "slug": "morse-code-translator.html",
+        "title": "Morse Code Translator & Decoder — Dots and Dashes to Text",
+        "desc": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.",
+        "h1": "Morse Decoder",
+        "tagline": "Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.",
+        "preset": "morse",
+        "faqs": [
             ("What separators does it accept?",
              "Single spaces between letters, and a slash, a pipe or a double space between words. Mixed conventions in the same message are handled, which matters because puzzle sources are rarely consistent."),
             ("Can it decode Morse audio or flashing lights?",
@@ -511,7 +511,7 @@ PAGES = [
             ("Does it support numbers and punctuation?",
              "Digits zero through nine are supported. Punctuation codes are rarer in puzzles and are skipped rather than guessed."),
         ],
-        body="""    <h2>Reading Morse</h2>
+        "body": """    <h2>Reading Morse</h2>
     <p>Morse encodes each letter as a sequence of short and long signals — dots and dashes.
     <code>E</code>, the most common English letter, is a single dot; <code>T</code> is a single
     dash. Rarer letters get longer sequences. That design makes it efficient to send by hand
@@ -536,15 +536,15 @@ PAGES = [
     and short marks in an image, and from text where dots and dashes have been substituted with
     other characters entirely. If yours uses different symbols, replace them with
     <code>.</code> and <code>-</code> before pasting.</p>""",
-    ),
-    dict(
-        slug="ctf-crypto-solver.html",
-        title="CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings",
-        desc="Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.",
-        h1="CTF Crypto Solver",
-        tagline="Base64 around hex around XOR? It unwraps the whole stack.",
-        preset="layered",
-        faqs=[
+    },
+    {
+        "slug": "ctf-crypto-solver.html",
+        "title": "CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings",
+        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.",
+        "h1": "CTF Crypto Solver",
+        "tagline": "Base64 around hex around XOR? It unwraps the whole stack.",
+        "preset": "layered",
+        "faqs": [
             ("What is single-byte XOR and why is it everywhere in CTFs?",
              "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
             ("How deep can the layers go?",
@@ -554,7 +554,7 @@ PAGES = [
             ("Why does it sometimes pick the wrong layer to unwrap?",
              "Hex and base64 character sets overlap, so a string can be validly interpretable as either. The solver tries both branches and keeps whichever produces the more English-like result rather than committing to the first guess."),
         ],
-        body="""    <h2>The shape of a crypto challenge</h2>
+        "body": """    <h2>The shape of a crypto challenge</h2>
     <p>Introductory CTF crypto is mostly recognition. The underlying operations are simple —
     base64, hex, XOR, a classical cipher — and the difficulty comes from not knowing which ones
     were applied, in what order, and how many times. Experienced players recognise the shapes
@@ -587,7 +587,7 @@ PAGES = [
     unwrap. Unwrapping produces a child node and the process repeats. The answer returned is the
     leaf with the highest confidence, reported with the complete chain that produced it — so you
     learn the structure of the challenge, not just the flag.</p>""",
-    ),
+    },
 ]
 
 # A compact, interlinked reference rather than a grab-bag of thin SEO pages.
@@ -595,14 +595,14 @@ PAGES = [
 # underlying operation, its historical context and the honest limits of the
 # attack. The solver stays on the page so a reader can immediately test a clue.
 WIKI_PAGES = [
-    dict(
-        slug="cipher-wiki.html",
-        title="Cipher Wiki — A Field Guide to Classical Codes and Ciphers",
-        desc="A practical field guide to classical ciphers: how to recognise Caesar, Vigenère, substitution and Playfair, how they work, and what actually breaks them.",
-        h1="Cipher Wiki",
-        tagline="Recognise the shape. Understand the mechanism. Know what an answer is worth.",
-        preset="caesar",
-        faqs=[
+    {
+        "slug": "cipher-wiki.html",
+        "title": "Cipher Wiki — A Field Guide to Classical Codes and Ciphers",
+        "desc": "A practical field guide to classical ciphers: how to recognise Caesar, Vigenère, substitution and Playfair, how they work, and what actually breaks them.",
+        "h1": "Cipher Wiki",
+        "tagline": "Recognise the shape. Understand the mechanism. Know what an answer is worth.",
+        "preset": "caesar",
+        "faqs": [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
@@ -610,7 +610,7 @@ WIKI_PAGES = [
             ("How much ciphertext is enough?",
              "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure."),
         ],
-        body="""    <h2>Start with the ciphertext, not a favourite cipher</h2>
+        "body": """    <h2>Start with the ciphertext, not a favourite cipher</h2>
     <p>A useful first question is not <em>which trick do I know?</em> but <em>what survives the
     transformation?</em> Spaces, punctuation, repeated letters, a restricted alphabet and the
     frequency of letters are clues. A Caesar shift preserves every word shape. A substitution
@@ -647,15 +647,15 @@ WIKI_PAGES = [
     fit several keys; proper names and another language confuse an English scorer; and a
     one-time pad used correctly has no statistical weakness. Treat an automatic answer as a
     hypothesis backed by evidence, then read it and verify the recovered key.</p>""",
-    ),
-    dict(
-        slug="caesar-cipher-wiki.html",
-        title="Caesar Cipher Explained — History, Formula and How to Break It",
-        desc="A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.",
-        h1="The Caesar Cipher",
-        tagline="A rotation so small it teaches nearly every idea behind classical cryptanalysis.",
-        preset="caesar",
-        faqs=[
+    },
+    {
+        "slug": "caesar-cipher-wiki.html",
+        "title": "Caesar Cipher Explained — History, Formula and How to Break It",
+        "desc": "A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.",
+        "h1": "The Caesar Cipher",
+        "tagline": "A rotation so small it teaches nearly every idea behind classical cryptanalysis.",
+        "preset": "caesar",
+        "faqs": [
             ("What is the Caesar cipher formula?",
              "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet."),
             ("Is ROT13 a Caesar cipher?",
@@ -663,7 +663,7 @@ WIKI_PAGES = [
             ("Why is it not secure?",
              "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough."),
         ],
-        body="""    <h2>The operation</h2>
+        "body": """    <h2>The operation</h2>
     <p>Write the alphabet twice and slide the lower copy by a fixed number of places. With a
     shift of three, <code>A → D</code>, <code>B → E</code> and <code>Z → C</code>. Every letter
     gets exactly the same treatment; punctuation and spaces are usually copied unchanged. That
@@ -689,15 +689,15 @@ WIKI_PAGES = [
 
     <p>Next: learn why a repeating sequence of Caesar shifts is harder to spot in the
     <a href="vigenere-cipher-wiki.html">Vigenère cipher guide</a>.</p>""",
-    ),
-    dict(
-        slug="vigenere-cipher-wiki.html",
-        title="Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence",
-        desc="Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.",
-        h1="The Vigenère Cipher",
-        tagline="Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.",
-        preset="vigenere",
-        faqs=[
+    },
+    {
+        "slug": "vigenere-cipher-wiki.html",
+        "title": "Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence",
+        "desc": "Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.",
+        "h1": "The Vigenère Cipher",
+        "tagline": "Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.",
+        "preset": "vigenere",
+        "faqs": [
             ("Why was Vigenère called unbreakable?",
              "It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible."),
             ("What is Kasiski examination?",
@@ -705,7 +705,7 @@ WIKI_PAGES = [
             ("What makes a Vigenère cipher genuinely secure?",
              "If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigenère."),
         ],
-        body="""    <h2>A Caesar shift that changes every letter</h2>
+        "body": """    <h2>A Caesar shift that changes every letter</h2>
     <p>Vigenère assigns each keyword letter a shift. With the key <code>LEMON</code>, the shifts
     11, 4, 12, 14 and 13 repeat across the message. The same plaintext letter may therefore
     encrypt to different ciphertext letters. This defeats the simple “most common letter is E”
@@ -731,15 +731,15 @@ WIKI_PAGES = [
 
     <p>For a cipher that uses one fixed alphabet instead, see the
     <a href="substitution-cipher-wiki.html">substitution cipher guide</a>.</p>""",
-    ),
-    dict(
-        slug="substitution-cipher-wiki.html",
-        title="Substitution Cipher Explained — Cryptogram Patterns and Hill Climbing",
-        desc="How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.",
-        h1="Substitution Ciphers",
-        tagline="A colossal keyspace with a very human leak: the shape of language remains.",
-        preset="substitution",
-        faqs=[
+    },
+    {
+        "slug": "substitution-cipher-wiki.html",
+        "title": "Substitution Cipher Explained — Cryptogram Patterns and Hill Climbing",
+        "desc": "How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.",
+        "h1": "Substitution Ciphers",
+        "tagline": "A colossal keyspace with a very human leak: the shape of language remains.",
+        "preset": "substitution",
+        "faqs": [
             ("How many keys does a substitution cipher have?",
              "A full mixed alphabet has 26 factorial possible permutations, about 4 × 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea."),
             ("What patterns survive a substitution?",
@@ -747,7 +747,7 @@ WIKI_PAGES = [
             ("Why do solvers sometimes miss rare letters?",
              "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity."),
         ],
-        body="""    <h2>A scrambled alphabet, used consistently</h2>
+        "body": """    <h2>A scrambled alphabet, used consistently</h2>
     <p>In a monoalphabetic substitution cipher, each plaintext letter maps to one different
     ciphertext letter for the entire message. A key might map A to Q, B to W and so on, but it
     need not follow any keyboard or keyword pattern. Unlike Caesar, there is no small numerical
@@ -774,15 +774,15 @@ WIKI_PAGES = [
 
     <p>For a pair-based cipher whose statistics are less familiar, continue to
     <a href="playfair-cipher-wiki.html">Playfair</a>.</p>""",
-    ),
-    dict(
-        slug="playfair-cipher-wiki.html",
-        title="Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks",
-        desc="Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.",
-        h1="The Playfair Cipher",
-        tagline="A grid of 25 letters turns single-letter statistics into a pairwise problem.",
-        preset="substitution",
-        faqs=[
+    },
+    {
+        "slug": "playfair-cipher-wiki.html",
+        "title": "Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks",
+        "desc": "Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.",
+        "h1": "The Playfair Cipher",
+        "tagline": "A grid of 25 letters turns single-letter statistics into a pairwise problem.",
+        "preset": "substitution",
+        "faqs": [
             ("Why are I and J combined in Playfair?",
              "A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices."),
             ("Why does Playfair insert X characters?",
@@ -790,7 +790,7 @@ WIKI_PAGES = [
             ("Can frequency analysis break Playfair?",
              "Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important."),
         ],
-        body="""    <h2>The keyed square</h2>
+        "body": """    <h2>The keyed square</h2>
     <p>Playfair writes a keyword without duplicates into a 5×5 square, then fills the remaining
     cells with the unused alphabet. In the traditional English form I and J share a cell. Plaintext
     is normalised into pairs; repeated letters in one pair are separated with a filler such as X.</p>
@@ -816,7 +816,7 @@ WIKI_PAGES = [
 
     <p>Return to the <a href="cipher-wiki.html">cipher wiki field guide</a> for the other common
     classical families.</p>""",
-    ),
+    },
 ]
 
 
@@ -866,7 +866,7 @@ def build_products() -> tuple[list[dict], str]:
     platform like Gumroad; for a five dollar puzzle book this is the right
     trade against running (and paying for) a licensing server.
     """
-    from build_pdf import build as build_book   # imported late: needs PACKS on sys.path
+    from build_pdf import build as build_book  # imported late: needs PACKS on sys.path
 
     stripe = CFG.get("stripe", {})
     products = stripe.get("products", [])
@@ -1014,15 +1014,15 @@ def main() -> None:
     products, sampler = build_products()
     print(f"built {len(products)} puzzle book PDF(s)" + (" + free sampler" if sampler else ""))
 
-    PAGES.append(dict(
-        slug="downloads.html",
-        title="Printable Cryptogram Puzzle Books — PDF, Instant Download",
-        desc="Printable cryptogram puzzle books as PDFs: graded easy to hard, full solutions included, plus a free ten-puzzle sampler. Instant download, no account needed.",
-        h1="Puzzle Books",
-        tagline="Pencil-and-paper cryptograms, graded and solved, as printable PDFs.",
-        preset="substitution",
-        body=store_page(products, sampler),
-        faqs=[
+    PAGES.append({
+        "slug": "downloads.html",
+        "title": "Printable Cryptogram Puzzle Books — PDF, Instant Download",
+        "desc": "Printable cryptogram puzzle books as PDFs: graded easy to hard, full solutions included, plus a free ten-puzzle sampler. Instant download, no account needed.",
+        "h1": "Puzzle Books",
+        "tagline": "Pencil-and-paper cryptograms, graded and solved, as printable PDFs.",
+        "preset": "substitution",
+        "body": store_page(products, sampler),
+        "faqs": [
             ("What format are the books in?",
              "PDF, typeset for US Letter paper with answer blanks under every character. They print cleanly on a home printer and are equally usable on screen."),
             ("Do I need an account to buy one?",
@@ -1032,7 +1032,7 @@ def main() -> None:
             ("Can I print copies for my classroom or club?",
              "Yes. Print as many copies as you need for your own group. Please do not redistribute the PDF itself or resell it."),
         ],
-    ))
+    })
 
     meta = verification_meta()
     urls = []

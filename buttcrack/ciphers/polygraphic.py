@@ -28,14 +28,14 @@ from __future__ import annotations
 
 import random
 import time
-from collections import Counter
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..lang import get_model
 from ..results import Candidate
 from ..search import parallel_restarts, restart_search
 from ..text import A25, A26, index_of_coincidence, letters_only
-from .base import EXPENSIVE, BRUTAL, Cipher, CipherInfo, CrackContext, Family
+from .base import BRUTAL, EXPENSIVE, Cipher, CipherInfo, CrackContext, Family
 
 
 def make_grid(keyword: str, alphabet: str = A25) -> str:
@@ -231,7 +231,7 @@ class Playfair(Cipher):
             return
         results.sort(key=lambda r: (-r[1], -r[2]))
         seen = set()
-        for grid, conf, fit, iterations in results:
+        for grid, conf, _fit, iterations in results:
             if grid in seen:
                 continue
             seen.add(grid)
@@ -683,7 +683,7 @@ def _bifid_worker(payload: tuple) -> tuple:
         stream,
         fitness=model.search_fitness,
         confidence=lambda t: model.score(t).confidence,
-        apply_key=lambda text, key: Bifid()._decrypt_grid(text, "".join(key), period),
+        apply_key=lambda text, key: bifid._decrypt_grid(text, "".join(key), period),
         restarts=restarts,
         rng=rng,
         alphabet=A25,

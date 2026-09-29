@@ -18,14 +18,14 @@ in CI and in a package post-install smoke test.
 
 from __future__ import annotations
 
-import base64
 import io
 import json
 import os
 import sys
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 from . import __version__
 from .ciphers import ALL_CIPHERS, get, try_get

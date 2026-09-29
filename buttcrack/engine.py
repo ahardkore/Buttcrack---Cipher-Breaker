@@ -27,13 +27,14 @@ from __future__ import annotations
 import hashlib
 import os
 import time
-from typing import Any, Callable, Iterable
+from collections.abc import Iterable
+from typing import Any, Callable
 
 from .ciphers import attack_ciphers, layer_ciphers
 from .ciphers.base import BRUTAL, CHEAP, EXPENSIVE, MODERATE, Cipher, CrackContext, Family
-from .detect import characterise, identify
+from .detect import identify
 from .lang import CERTAIN_CONFIDENCE, SOLVED_CONFIDENCE, LanguageModel, get_model
-from .results import AttackLog, Candidate, CrackReport, Hypothesis
+from .results import AttackLog, Candidate, CrackReport
 from .text import letters_only, respaced, restore_shape, trim
 
 #: Families whose ciphers preserve character positions, so the original spacing

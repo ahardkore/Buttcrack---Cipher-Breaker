@@ -77,9 +77,8 @@ class TestCrack(unittest.TestCase):
     def test_dash_on_a_terminal_says_so_instead_of_hanging(self):
         # Reading from an interactive terminal would block forever, so the CLI
         # refuses and says what to do instead.
-        with mock.patch("sys.stdin", FakeStdin("", tty=True)):
-            with self.assertRaises(SystemExit) as caught:
-                run("-", "--budget", "2")
+        with mock.patch("sys.stdin", FakeStdin("", tty=True)), self.assertRaises(SystemExit) as caught:
+            run("-", "--budget", "2")
         self.assertIn("nothing to read", str(caught.exception.code))
 
     def test_a_hint_that_does_not_fit_is_survived(self):
@@ -171,9 +170,8 @@ class TestSelfTestFlags(unittest.TestCase):
 
     def test_quick_and_slow_are_mutually_exclusive(self):
         parser = cli.build_parser()
-        with contextlib.redirect_stderr(io.StringIO()):
-            with self.assertRaises(SystemExit):
-                parser.parse_args(["selftest", "--quick", "--slow"])
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            parser.parse_args(["selftest", "--quick", "--slow"])
 
 
 class TestTopLevel(unittest.TestCase):

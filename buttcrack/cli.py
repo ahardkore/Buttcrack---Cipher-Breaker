@@ -18,6 +18,7 @@ The output is written for a terminal: colour when stdout is a tty (and never whe
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import re
@@ -25,13 +26,14 @@ import shutil
 import sys
 import textwrap
 import time
-from typing import Any, Callable, Iterable, Sequence
+from collections.abc import Sequence
+from typing import Any, Callable
 
 from . import __version__
 from .ciphers import ALL_CIPHERS, by_family, get, layer_ciphers, try_get
 from .ciphers.base import Cipher
-from .detect import characterise, identify
-from .engine import Solver, solve
+from .detect import identify
+from .engine import solve
 from .results import CrackReport
 from .text import letters_only
 
@@ -133,7 +135,7 @@ def read_input(args: argparse.Namespace) -> str:
     if path:
         if path == "-":
             return sys.stdin.read().strip()
-        with open(path, "r", encoding="utf-8", errors="replace") as handle:
+        with open(path, encoding="utf-8", errors="replace") as handle:
             return handle.read().strip()
     if not sys.stdin.isatty():
         return sys.stdin.read().strip()
@@ -160,7 +162,7 @@ def parse_key(cipher: Cipher, raw: str | None) -> Any:
         try:
             return int(raw, 0)
         except ValueError:
-            raise SystemExit(f"{PROGRAM}: {cipher.info.name} wants a number, got {raw!r}")
+            raise SystemExit(f"{PROGRAM}: {cipher.info.name} wants a number, got {raw!r}") from None
     if isinstance(example, dict):
         values: dict[str, Any] = dict(example)
         text = raw.strip()
@@ -168,7 +170,7 @@ def parse_key(cipher: Cipher, raw: str | None) -> Any:
             try:
                 values.update(json.loads(text))
             except json.JSONDecodeError as error:
-                raise SystemExit(f"{PROGRAM}: bad JSON key: {error}")
+                raise SystemExit(f"{PROGRAM}: bad JSON key: {error}") from None
         else:
             for part in text.split(","):
                 name, _, value = part.partition("=")
@@ -246,9 +248,7 @@ def make_progress(pal: Palette, verbose: bool, started: float) -> Callable[[str,
 
 
 def verdict_line(report: CrackReport, pal: Palette) -> str:
-    if report.solved and report.confidence >= 0.86:
-        badge = pal.green(pal.bold("SOLVED"))
-    elif report.solved:
+    if report.solved:
         badge = pal.green(pal.bold("SOLVED"))
     elif report.best is not None and report.confidence >= 0.35:
         badge = pal.yellow(pal.bold("BEST GUESS"))
@@ -852,10 +852,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"\n{PROGRAM}: interrupted", file=sys.stderr)
         return 130
     except BrokenPipeError:  # `| head` is a normal thing to do
-        try:
+        with contextlib.suppress(OSError):
             sys.stdout.close()
-        finally:
-            return 0
+        return 0
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -22,7 +22,8 @@ permutation.
 from __future__ import annotations
 
 import random
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ..lang import CERTAIN_CONFIDENCE, get_model
 from ..results import Candidate
@@ -190,7 +191,7 @@ class Substitution(Cipher):
         results.sort(key=lambda r: (-r[3], -r[2]))
         seen: set[str] = set()
         emitted = 0
-        for key_str, plain, fit, conf, evals, used in results:
+        for key_str, plain, _fit, _conf, evals, used in results:
             if key_str in seen:
                 continue
             seen.add(key_str)
