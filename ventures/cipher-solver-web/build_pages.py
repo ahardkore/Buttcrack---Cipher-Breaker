@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -51,6 +52,73 @@ def analytics() -> str:
         f'\n  <script defer data-domain="{CFG["plausible_domain"]}" '
         'src="https://plausible.io/js/script.js"></script>'
     )
+
+
+#: Ownership tokens are pasted in by hand from a dashboard, and the two ways to
+#: get that wrong are pasting the whole ``<meta>`` tag and pasting the *file*
+#: method's contents into the *tag* field. Both are caught here rather than
+#: producing a page that looks fine and fails verification a week later.
+_META_CONTENT = re.compile(r"""content\s*=\s*["']([^"']+)["']""", re.I)
+
+
+def verification_token(raw: str, field: str) -> str:
+    """Normalise a pasted ownership token to the bare value for ``content``."""
+    text = (raw or "").strip()
+    if not text:
+        return ""
+
+    tag = _META_CONTENT.search(text)
+    if tag:                                  # they pasted the entire <meta> tag
+        text = tag.group(1).strip()
+
+    # "google-site-verification: google1234.html" is the *body of the HTML file*,
+    # not a meta token. Used as a tag it verifies nothing.
+    if text.lower().startswith("google-site-verification:"):
+        filename = text.split(":", 1)[1].strip()
+        raise SystemExit(
+            f"site.json: {field} holds the contents of Google's verification *file*, "
+            f"not the meta tag's token.\n"
+            f"Either paste the token from the 'HTML tag' method instead, or use the "
+            f'file method:\n    "verification_files": {{"{filename}": "{text}"}}'
+        )
+
+    if "<" in text or '"' in text:
+        raise SystemExit(f"site.json: {field} contains markup that is not a token: {text!r}")
+    return text
+
+
+def verification_meta() -> str:
+    """Ownership meta tags for every indexable page."""
+    tags = []
+    google = verification_token(CFG.get("google_site_verification", ""), "google_site_verification")
+    if google:
+        tags.append(("google-site-verification", google))
+    for name, raw in (CFG.get("verification") or {}).items():
+        if name.startswith("_"):
+            continue
+        token = verification_token(raw, f"verification.{name}")
+        if token:
+            tags.append((name, token))
+    if not tags:
+        return ""
+    return "\n" + "\n".join(
+        f'<meta name="{html_escape(name)}" content="{html_escape(token)}">' for name, token in tags
+    )
+
+
+def write_verification_files() -> list[str]:
+    """Write the 'HTML file' style ownership proofs to the site root."""
+    written = []
+    for name, body in (CFG.get("verification_files") or {}).items():
+        if name.startswith("_"):
+            continue
+        # Keep these at the site root and out of subdirectories: a verifier only
+        # ever fetches https://host/<name>, and "../" here would escape the site.
+        if "/" in name or "\\" in name or name in {".", ".."}:
+            raise SystemExit(f"site.json: verification_files key {name!r} must be a bare filename")
+        (HERE / name).write_text(body if body.endswith("\n") else body + "\n")
+        written.append(name)
+    return written
 
 
 def ad_slot() -> str:
@@ -152,7 +220,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<link rel="canonical" href="{CFG['base_url']}/{slug}">
+<link rel="canonical" href="{CFG['base_url']}/{slug}">{verification_meta()}
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="website">
@@ -685,9 +753,15 @@ def main() -> None:
         ],
     ))
 
+    meta = verification_meta()
     urls = []
     for spec in PAGES:
         html = page(**spec)
+        # A token configured but missing from a page means a silently unverified
+        # property, which shows up as a Search Console failure days later. Fail
+        # the build here instead, where the cause is obvious.
+        if meta and meta.strip() not in html:
+            raise SystemExit(f"verification tags missing from {spec['slug']}")
         (HERE / spec["slug"]).write_text(html)
         urls.append(spec["slug"])
         print(f"wrote {spec['slug']:38} {len(html):>6} bytes")
@@ -707,6 +781,18 @@ def main() -> None:
         f"User-agent: *\nAllow: /\nSitemap: {CFG['base_url']}/sitemap.xml\n"
     )
     print(f"wrote sitemap.xml and robots.txt ({len(urls)} pages)")
+
+    for name in write_verification_files():
+        print(f"wrote {name:38} (ownership proof)")
+
+    # Ownership verification is the gate in front of every other SEO step, so
+    # say plainly whether this build produced a verifiable site.
+    names = re.findall(r'<meta name="([^"]+)"', meta)
+    if names:
+        print(f"\nverification tags on all {len(urls)} pages: {', '.join(names)}")
+    elif not CFG.get("verification_files"):
+        print("\nno ownership verification configured — set google_site_verification in "
+              "site.json, then push (see ventures/README.md step 3)")
 
     # The delivery URLs are what you paste into each Stripe Payment Link as its
     # "after payment" redirect, so print them where you cannot miss them.
