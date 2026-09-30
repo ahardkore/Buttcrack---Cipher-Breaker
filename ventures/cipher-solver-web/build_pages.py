@@ -32,6 +32,7 @@ KRYPTOS_HREF = "kryptos/"
 NAV = [
     ("index.html", "Solver"),
     ("cipher-wiki.html", "Cipher wiki"),
+    ("history-of-codebreaking.html", "History"),
     ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
@@ -152,7 +153,9 @@ def support_block() -> str:
             f'<a class="btn" rel="noopener" target="_blank" '
             f'href="https://ko-fi.com/{CFG["kofi_handle"]}">Buy me a coffee</a>'
         )
-    tip = CFG.get("stripe", {}).get("tip_jar_url", "")
+    # Validated like the product links: the tip button is on every page, so a
+    # broken URL here is the most visible dead link on the site.
+    tip = payment_url(CFG.get("stripe", {}).get("tip_jar_url", ""), "stripe.tip_jar_url")
     if tip:
         buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{tip}">Leave a tip</a>')
     buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{CFG["repo_url"]}">Star on GitHub</a>')
@@ -284,7 +287,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -555,7 +558,7 @@ PAGES = [
             ("What is single-byte XOR and why is it everywhere in CTFs?",
              "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
             ("How deep can the layers go?",
-             "The browser version peels up to three encoding layers. The full version goes deeper, searches 36 ciphers and scores in six languages, which is what you want for harder challenges."),
+             "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges."),
             ("Can it handle flag formats?",
              "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."),
             ("Why does it sometimes pick the wrong layer to unwrap?",
@@ -613,7 +616,7 @@ WIKI_PAGES = [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 36 ciphers — the M-94 wheel cipher among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
             ("How much ciphertext is enough?",
              "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
         ],
@@ -625,13 +628,17 @@ WIKI_PAGES = [
     distribution because one plaintext letter can encrypt several ways. Playfair works in pairs,
     so it leaves a different set of fingerprints again.</p>
 
-    <h2>The field guide</h2>
+    <h2>Every cipher, by family</h2>
+    <p>One page each, generated from the solver's own cipher registry: the same
+    descriptions, keyspaces and minimum text lengths the tool works from, so a page cannot
+    quietly disagree with the code it documents.</p>
+    __CIPHER_INDEX__
+
+    <h2>The history</h2>
     <ul>
-      <li><a href="caesar-cipher-wiki.html">Caesar cipher</a> — one fixed rotation; 26 possibilities.</li>
-      <li><a href="vigenere-cipher-wiki.html">Vigenère cipher</a> — a repeating keyword creates interleaved Caesar shifts.</li>
-      <li><a href="substitution-cipher-wiki.html">Monoalphabetic substitution</a> — a scrambled alphabet, solved by language statistics.</li>
-      <li><a href="playfair-cipher-wiki.html">Playfair cipher</a> — a 5×5 grid that transforms letter pairs.</li>
-      <li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a> — twenty-five mixed alphabets on a spindle, one per position.</li>
+      <li><a href="history-of-codebreaking.html">A history of codebreaking</a> — al-Kindi to Colossus, and where each technique in this solver came from.</li>
+      <li><a href="famous-cryptanalysts.html">The codebreakers</a> — who broke what, and what it cost them.</li>
+      <li><a href="famous-ciphers.html">Famous ciphers</a> — the ones that changed history, and the handful still unread.</li>
     </ul>
 
     <h2>Three measurements worth knowing</h2>
@@ -898,6 +905,45 @@ WIKI_PAGES = [
 ]
 
 
+#: Surfaced as cards on the home page alongside the hand-written guides. The
+#: fifty generated cipher pages are reached through the field guide instead --
+#: fifty cards would bury everything else on the page.
+HISTORY_CARDS: list[dict] = []
+
+
+def cipher_index_html() -> str:
+    """Every registered cipher, grouped by family, linked to its page.
+
+    Generated from the registry rather than maintained by hand, so a cipher
+    added to the solver appears here without anyone remembering to add it --
+    and a link can never point at a page that was not written.
+    """
+    from wiki_ciphers import FAMILY_BLURBS, FAMILY_TITLES, HAND_WRITTEN
+
+    from buttcrack.ciphers import all_ciphers
+
+    groups: dict[str, list] = {}
+    for cipher in all_ciphers():
+        groups.setdefault(cipher.info.family.value, []).append(cipher)
+
+    out = []
+    for family, ciphers in groups.items():
+        items = []
+        for cipher in sorted(ciphers, key=lambda c: c.info.name):
+            info = cipher.info
+            slug = (f"{info.name}-cipher-wiki.html" if info.name in HAND_WRITTEN
+                    else f"{info.name.replace('_', '-')}-cipher-wiki.html")
+            items.append(
+                f'        <li><a href="{slug}">{info.title}</a> — {info.description}</li>'
+            )
+        out.append(
+            f'    <h3>{FAMILY_TITLES.get(family, family)}</h3>\n'
+            f'    <p>{FAMILY_BLURBS.get(family, "")}</p>\n'
+            f'    <ul class="cipher-index">\n' + "\n".join(items) + "\n    </ul>"
+        )
+    return "\n".join(out)
+
+
 def wiki_index_section() -> str:
     """The wiki surfaced on the home page as article cards, not just a nav pill.
 
@@ -914,7 +960,7 @@ def wiki_index_section() -> str:
         f'        <p>{spec["tagline"]}</p>\n'
         f'        <span class="wiki-more">Read the guide →</span>\n'
         f'      </a>'
-        for spec in WIKI_PAGES if spec["slug"] != "cipher-wiki.html"
+        for spec in WIKI_PAGES + HISTORY_CARDS if spec["slug"] != "cipher-wiki.html"
     ]
     return f"""    <section class="wiki-index" aria-label="Cipher wiki">
     <h2>Cipher wiki</h2>
@@ -1024,6 +1070,58 @@ def build_products() -> tuple[list[dict], str]:
     return built, sampler_rel
 
 
+#: Hosts a live Stripe Payment Link can legitimately be served from. Custom
+#: domains are possible, so an unknown host warns rather than fails; the checks
+#: that *do* fail are the ones that mean "this button takes no money".
+_STRIPE_HOSTS = ("buy.stripe.com", "pay.stripe.com", "checkout.stripe.com")
+
+
+def payment_url(raw: str, field: str) -> str:
+    """Validate a pasted Stripe URL. Returns "" when the field is unset.
+
+    A wrong payment URL is the most expensive kind of typo on this site: the
+    page looks finished, the button is there, and every click is a lost sale.
+    So each known way of getting it wrong is refused at build time, where the
+    message can say what to paste instead.
+    """
+    url = (raw or "").strip()
+    if not url:
+        return ""
+
+    if url.startswith("http://"):
+        raise SystemExit(f"site.json: {field} must be https, not http: {url}")
+    if not url.startswith("https://"):
+        raise SystemExit(
+            f"site.json: {field} is not a URL: {url!r}\n"
+            f"Paste the whole link Stripe shows, starting with https://buy.stripe.com/"
+        )
+
+    host = url[len("https://"):].split("/", 1)[0].split("?", 1)[0].lower()
+    path = url[len("https://") + len(host):]
+
+    # The dashboard URL is what your browser shows while you *edit* the link;
+    # it is behind your login and useless to a customer.
+    if host.endswith("dashboard.stripe.com"):
+        raise SystemExit(
+            f"site.json: {field} is a Stripe dashboard URL, not the public payment link.\n"
+            f"Open the payment link in the dashboard and copy the URL under "
+            f'"Share" / the copy-link button instead (https://buy.stripe.com/...).'
+        )
+
+    # Test mode takes fake cards and pays you nothing. Shipping one to a live
+    # site is silent: the checkout works perfectly and no money ever arrives.
+    if path.startswith("/test_") or "/test_" in path:
+        raise SystemExit(
+            f"site.json: {field} is a TEST-mode payment link ({url}).\n"
+            f"Toggle off test mode in Stripe, recreate the link, and paste the live one."
+        )
+
+    if not any(host == h or host.endswith("." + h) for h in _STRIPE_HOSTS):
+        print(f"  note: {field} is not a stripe.com host ({host}) — assuming a custom domain")
+
+    return url
+
+
 def store_page(products: list[dict], sampler: str) -> str:
     pk = CFG.get("stripe", {}).get("publishable_key", "")
     if pk.startswith("sk_"):
@@ -1035,8 +1133,16 @@ def store_page(products: list[dict], sampler: str) -> str:
 
     cards = []
     for product in products:
-        link = product.get("payment_link", "")
+        link = payment_url(product.get("payment_link", ""), f"stripe.products[{product['sku']}].payment_link")
         button_id = product.get("buy_button_id", "")
+        # A button id without the key it needs renders nothing at all, which
+        # looks exactly like a product with no checkout. Say so instead.
+        if button_id and not pk:
+            raise SystemExit(
+                f"site.json: {product['sku']} sets buy_button_id but stripe.publishable_key "
+                f"is empty. Stripe's embedded button needs both; add the pk_live_... key or "
+                f"clear buy_button_id to use the plain payment link."
+            )
         if pk and button_id:
             # Stripe's embedded button: checkout happens in an overlay, so the
             # visitor never leaves the page. Publishable keys are meant to ship
@@ -1117,8 +1223,20 @@ def main() -> None:
     # The storefront is appended above because its body depends on generated
     # products; the wiki is static and deliberately kept as a separate list so
     # a rebuild never appends duplicate reference pages in a long-lived process.
-    for spec in PAGES + WIKI_PAGES:
+    from wiki_ciphers import cipher_page_specs
+    from wiki_history import HISTORY_PAGES
+
+    HISTORY_CARDS.extend(
+        {"slug": h["slug"], "h1": h["h1"], "tagline": h["tagline"]} for h in HISTORY_PAGES
+    )
+    generated = cipher_page_specs()
+    print(f"generated {len(generated)} cipher wiki pages from the registry")
+    for spec in PAGES + WIKI_PAGES + HISTORY_PAGES + generated:
         body = spec["body"]
+        # The field guide lists every cipher; built here so the list is made by
+        # the same run that writes the pages it points at.
+        if spec["slug"] == "cipher-wiki.html":
+            body = body.replace("__CIPHER_INDEX__", cipher_index_html())
         # The home page is the site's front door, and the wiki used to be one
         # nav pill deep. Surface the articles as the first content block under
         # the solver. Composed at render time rather than folded into the spec
@@ -1139,6 +1257,26 @@ def main() -> None:
     # but it is part of this site once build_site.py mounts it, so it belongs in
     # the sitemap like everything else.
     urls.append(KRYPTOS_HREF)
+
+    # Every registered cipher must have a page, and every page must be linked
+    # from the field guide. Checked here rather than in a test so that adding a
+    # cipher to the solver and forgetting its page fails the build that would
+    # have published the gap.
+    from wiki_ciphers import HAND_WRITTEN as _HAND
+
+    from buttcrack.ciphers import all_ciphers as _all_ciphers
+
+    written = set(urls)
+    index_html = (HERE / "cipher-wiki.html").read_text()
+    for _cipher in _all_ciphers():
+        _name = _cipher.info.name
+        _slug = (f"{_name}-cipher-wiki.html" if _name in _HAND
+                 else f"{_name.replace('_', '-')}-cipher-wiki.html")
+        if _slug not in written:
+            raise SystemExit(f"no wiki page for cipher {_name!r} (expected {_slug})")
+        if _slug not in index_html:
+            raise SystemExit(f"{_slug} is not linked from the cipher wiki index")
+    print(f"checked: every cipher has a linked wiki page ({len(list(_all_ciphers()))} of them)")
 
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'

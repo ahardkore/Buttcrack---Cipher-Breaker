@@ -356,6 +356,51 @@ class VariantBeaufort(PeriodicCipher):
         return (p - k) % 26
 
 
+class Porta(PeriodicCipher):
+    """Porta (1563): 13 reciprocal alphabets, one per pair of key letters.
+
+    The plaintext half of the alphabet maps into the other half and back, so the
+    cipher is its own inverse -- and no letter ever encrypts to itself, which is
+    the structural tell the identifier uses.  Key letters come in pairs (A and B
+    select the same alphabet), so the effective per-column keyspace is 13 rather
+    than 26 and a Porta column is *easier* to solve than a Vigenere one.
+    """
+
+    info = CipherInfo(
+        name="porta",
+        title="Porta",
+        family=Family.POLYALPHABETIC,
+        key_type="keyword",
+        min_length=24,
+        cost=MODERATE,
+        aliases=("porta_cipher", "della_porta"),
+        description="Reciprocal polyalphabetic over 13 half-alphabet tables. Same period finding as Vigenere, 13 shifts per column.",
+        example_key="LEMON",
+    )
+
+    def _decrypt_letter(self, c: int, k: int) -> int:
+        half = (k % 26) // 2
+        if c < 13:
+            return (c + half) % 13 + 13
+        return (c - 13 - half) % 13
+
+    #: Reciprocal, exactly like Beaufort.
+    _encrypt_letter = _decrypt_letter
+
+    def likelihood(self, text: str, ctx: CrackContext) -> float:
+        base = super().likelihood(text, ctx)
+        stream = self.prepare(text)
+        if len(stream) < self.info.min_length:
+            return base
+        # Porta never maps a letter to itself and never maps across the halves
+        # in the same direction twice, so the first-half/second-half balance of
+        # the ciphertext mirrors the plaintext's.  A flat-IC text whose halves
+        # are badly unbalanced is more likely Vigenere than Porta.
+        first = sum(1 for c in stream if A26.index(c) < 13) / len(stream)
+        balance = 1.0 - min(1.0, abs(first - 0.5) * 4)
+        return round(min(1.0, base * (0.75 + 0.25 * balance)), 4)
+
+
 class Gronsfeld(PeriodicCipher):
     """Gronsfeld: Vigenere with a numeric key (shifts 0-9 only)."""
 

@@ -358,3 +358,234 @@ class Polybius(_Encoding):
             yield ctx.candidate(
                 self.name, transposed, {"grid": A25, "order": "column-row"}, steps=ctx.steps
             )
+
+
+#: Tap (or "knock") code: the Polybius square struck out as counts of taps.
+#: C shares K's cell, which is why a decoded ``K`` is reported as ``C/K``-safe
+#: ``C`` -- the convention used by the prisoners who invented it.
+TAP_GRID = A25.replace("K", "")  # 24 letters: C doubles for K, J folded into I
+
+
+class TapCode(_Encoding):
+    """Tap code: two runs of taps per letter, row then column of a 5x5 grid."""
+
+    info = CipherInfo(
+        name="tap_code",
+        title="Tap code",
+        family=Family.CODE,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=6,
+        cost=CHEAP,
+        layer=True,
+        aliases=("knock_code", "tap", "prisoner_code"),
+        description="Row and column of a 5x5 grid struck as groups of taps (C=K, I=J).",
+    )
+
+    @staticmethod
+    def _groups(text: str) -> list[int]:
+        """Tap runs as counts. Accepts dots, middots, X, knocks and digits."""
+        normalised = (
+            text.replace("\u00b7", ".").replace("\u2022", ".").replace("*", ".")
+            .replace("x", ".").replace("X", ".").replace("o", ".").replace("O", ".")
+        )
+        runs = [g for g in re.split(r"[^.]+", normalised) if g]
+        return [len(g) for g in runs]
+
+    def decodable(self, text: str) -> bool:
+        runs = self._groups(text)
+        if len(runs) < 4 or len(runs) % 2:
+            return False
+        # Every run must be a legal coordinate, and a stream of single taps is
+        # not a tap code -- it is a stream of dots (Morse, or just punctuation).
+        return all(1 <= r <= 5 for r in runs) and len(set(runs)) > 1
+
+    def encode(self, text: str) -> str:
+        out = []
+        for ch in letters_only(text).replace("J", "I").replace("K", "C"):
+            if ch not in A25:
+                continue
+            idx = A25.index(ch)
+            out.append("." * (idx // 5 + 1) + " " + "." * (idx % 5 + 1))
+        return "  ".join(out)
+
+    def decode(self, text: str) -> str:
+        runs = self._groups(text)
+        out = []
+        for i in range(0, len(runs) - 1, 2):
+            row, col = runs[i] - 1, runs[i + 1] - 1
+            if 0 <= row < 5 and 0 <= col < 5:
+                out.append(A25[row * 5 + col])
+        return "".join(out)
+
+
+#: The NATO/ICAO spelling alphabet, plus the spellings that predate it or are
+#: simply misspelled in puzzles ("alfa"/"alpha", "juliett"/"juliet", "xray").
+NATO = {
+    "A": "Alfa", "B": "Bravo", "C": "Charlie", "D": "Delta", "E": "Echo",
+    "F": "Foxtrot", "G": "Golf", "H": "Hotel", "I": "India", "J": "Juliett",
+    "K": "Kilo", "L": "Lima", "M": "Mike", "N": "November", "O": "Oscar",
+    "P": "Papa", "Q": "Quebec", "R": "Romeo", "S": "Sierra", "T": "Tango",
+    "U": "Uniform", "V": "Victor", "W": "Whiskey", "X": "Xray", "Y": "Yankee",
+    "Z": "Zulu",
+    "0": "Zero", "1": "One", "2": "Two", "3": "Three", "4": "Four",
+    "5": "Five", "6": "Six", "7": "Seven", "8": "Eight", "9": "Nine",
+}
+NATO_DECODE = {v.lower(): k for k, v in NATO.items()}
+NATO_DECODE.update({
+    "alpha": "A", "juliet": "J", "x-ray": "X", "whisky": "W", "niner": "9",
+})
+
+
+class NatoPhonetic(_Encoding):
+    """The NATO spelling alphabet as a transport layer."""
+
+    info = CipherInfo(
+        name="nato",
+        title="NATO phonetic alphabet",
+        family=Family.CODE,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=10,
+        cost=CHEAP,
+        layer=True,
+        aliases=("nato_phonetic", "phonetic_alphabet", "icao"),
+        description="One spelling-alphabet word per letter (Alfa Bravo Charlie ...).",
+    )
+
+    @staticmethod
+    def _words(text: str) -> list[str]:
+        return [w for w in re.split(r"[^A-Za-z0-9-]+", text) if w]
+
+    def decodable(self, text: str) -> bool:
+        words = self._words(text)
+        if len(words) < 4:
+            return False
+        hits = sum(1 for w in words if w.lower() in NATO_DECODE)
+        return hits / len(words) >= 0.7
+
+    def encode(self, text: str) -> str:
+        return " ".join(NATO[c] for c in text.upper() if c in NATO)
+
+    def decode(self, text: str) -> str:
+        return "".join(NATO_DECODE.get(w.lower(), "") for w in self._words(text))
+
+
+#: Unicode braille patterns are a bit field: dot 1 = 0x01, dot 2 = 0x02, and so
+#: on, offset from U+2800.  Grade 1 braille letters are the standard assignment.
+BRAILLE_LETTERS = {
+    "A": 0x01, "B": 0x03, "C": 0x09, "D": 0x19, "E": 0x11, "F": 0x0B,
+    "G": 0x1B, "H": 0x13, "I": 0x0A, "J": 0x1A, "K": 0x05, "L": 0x07,
+    "M": 0x0D, "N": 0x1D, "O": 0x15, "P": 0x0F, "Q": 0x1F, "R": 0x17,
+    "S": 0x0E, "T": 0x1E, "U": 0x25, "V": 0x27, "W": 0x3A, "X": 0x2D,
+    "Y": 0x3D, "Z": 0x35,
+}
+BRAILLE_DECODE = {chr(0x2800 + bits): letter for letter, bits in BRAILLE_LETTERS.items()}
+BRAILLE_DECODE["\u2800"] = " "
+
+
+class Braille(_Encoding):
+    """Unicode braille patterns (grade 1, letters only)."""
+
+    info = CipherInfo(
+        name="braille",
+        title="Braille (Unicode patterns)",
+        family=Family.CODE,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=4,
+        cost=CHEAP,
+        layer=True,
+        aliases=("unicode_braille", "braille_unicode"),
+        description="Unicode braille cells U+2800..U+28FF, grade 1 letter assignments.",
+    )
+
+    @staticmethod
+    def _cells(text: str) -> list[str]:
+        return [c for c in text if 0x2800 <= ord(c) <= 0x28FF]
+
+    def decodable(self, text: str) -> bool:
+        cells = self._cells(text)
+        if len(cells) < 4:
+            return False
+        known = sum(1 for c in cells if c in BRAILLE_DECODE)
+        return known / len(cells) >= 0.7
+
+    def encode(self, text: str) -> str:
+        out = []
+        for ch in text.upper():
+            if ch in BRAILLE_LETTERS:
+                out.append(chr(0x2800 + BRAILLE_LETTERS[ch]))
+            elif ch.isspace():
+                out.append("\u2800")
+        return "".join(out)
+
+    def decode(self, text: str) -> str:
+        return "".join(BRAILLE_DECODE.get(c, "") for c in self._cells(text))
+
+
+#: ITA2 ("Baudot-Murray") letter shift.  Teleprinter tape is five bits per
+#: character; only the letters table is decoded here, because a puzzle that
+#: switches to the figures table mid-message is vanishingly rare and decoding
+#: it wrongly is worse than leaving the character out.
+ITA2_LETTERS = {
+    "00000": "", "00100": " ", "01000": "\n", "00010": "\n",
+    "11000": "A", "10011": "B", "01110": "C", "10010": "D", "10000": "E",
+    "10110": "F", "01011": "G", "00101": "H", "01100": "I", "11010": "J",
+    "11110": "K", "01001": "L", "00111": "M", "00110": "N", "00011": "O",
+    "01101": "P", "11101": "Q", "01010": "R", "10100": "S", "00001": "T",
+    "11100": "U", "01111": "V", "11001": "W", "10111": "X", "10101": "Y",
+    "10001": "Z",
+}
+ITA2_ENCODE = {v: k for k, v in ITA2_LETTERS.items() if v.strip()}
+ITA2_ENCODE[" "] = "00100"
+
+
+class Baudot(_Encoding):
+    """ITA2 / Baudot-Murray five-bit teleprinter code."""
+
+    info = CipherInfo(
+        name="baudot",
+        title="Baudot / ITA2 (5-bit)",
+        family=Family.CODE,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=15,
+        cost=CHEAP,
+        layer=True,
+        aliases=("ita2", "teletype", "baudot_murray"),
+        description="Five bits per character, ITA2 letters table. Distinguished from Bacon by its own letter assignment.",
+    )
+
+    @staticmethod
+    def _bits(text: str) -> str:
+        bits = "".join(c for c in text if c in "01")
+        return bits if len(bits) >= 15 and len(bits) % 5 == 0 else ""
+
+    def decodable(self, text: str) -> bool:
+        bits = self._bits(text)
+        if not bits:
+            return False
+        # A 5-bit stream is also valid Bacon, so require that this *table*
+        # explains it: mostly real characters, and not mostly unassigned codes.
+        groups = [bits[i : i + 5] for i in range(0, len(bits), 5)]
+        known = sum(1 for g in groups if ITA2_LETTERS.get(g, "").strip())
+        return known / len(groups) >= 0.8
+
+    def encode(self, text: str) -> str:
+        out = []
+        for ch in text.upper():
+            code = ITA2_ENCODE.get(ch)
+            if code:
+                out.append(code)
+        return " ".join(out)
+
+    def decode(self, text: str) -> str:
+        bits = self._bits(text)
+        if not bits:
+            return ""
+        return "".join(ITA2_LETTERS.get(bits[i : i + 5], "") for i in range(0, len(bits), 5))

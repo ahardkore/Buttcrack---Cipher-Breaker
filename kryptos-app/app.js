@@ -26,37 +26,102 @@ function initNavigation() {
 }
 
 // Cipher Explorer Setup
+// The data file is generated and verified by
+// scripts/build_kryptos_app_data.py. Index it by id so the rest of the app can
+// keep looking entries up by name.
+const CIPHERS_DATA = Object.fromEntries(ENTRIES.map(e => [e.id, e]));
+
+/** Quagmire III: Vigenere arithmetic inside a keyed alphabet's index space. */
+function decryptQuagmire(ct, keyword, alphabet) {
+  const idx = {};
+  [...alphabet].forEach((c, i) => { idx[c] = i; });
+  const ks = [...keyword].map(c => idx[c]).filter(v => v !== undefined);
+  if (!ks.length) return "";
+  let out = "", j = 0;
+  for (const ch of ct) {
+    if (idx[ch] === undefined) continue;
+    out += alphabet[(idx[ch] - ks[j % ks.length] + 26) % 26];
+    j++;
+  }
+  return out;
+}
+
+/** A sum of short wheels, added modulo 26 in the keyed alphabet. */
+function decryptSumClock(ct, words, alphabet) {
+  const idx = {};
+  [...alphabet].forEach((c, i) => { idx[c] = i; });
+  const wheels = words.map(w => [...w].map(c => idx[c]));
+  let out = "", t = 0;
+  for (const ch of ct) {
+    if (idx[ch] === undefined) continue;
+    let total = 0;
+    for (const wheel of wheels) total += wheel[t % wheel.length];
+    out += alphabet[((idx[ch] - total) % 26 + 26) % 26];
+    t++;
+  }
+  return out;
+}
+
+/** Re-derive a solved entry in the browser and report whether it checks out.
+ *
+ * The point is not decoration. This app previously shipped seven fabricated
+ * ciphertexts and could not have told you, because nothing ever tried to
+ * reproduce a plaintext from one. Now the claim is tested in front of the
+ * reader on every view.
+ */
+function verifyEntry(data) {
+  if (!data.plaintext) return { state: "unsolved", text: "No published plaintext." };
+  let recovered = null;
+  if (data.id === "K1" || data.id === "K2") {
+    recovered = decryptQuagmire(data.ciphertext, data.id === "K1" ? "PALIMPSEST" : "ABSCISSA", KRYPTOS_ALPHABET);
+  } else if (data.id === "PK1") {
+    recovered = decryptQuagmire(data.ciphertext, "PROVENANCE", KRYPTOS_ALPHABET);
+  } else if (data.id === "PK3") {
+    recovered = decryptSumClock(data.ciphertext, ["PENTIMENTO", "ORDINATE"], KRYPTOS_ALPHABET);
+  }
+  if (recovered !== null) {
+    if (recovered === data.plaintext) {
+      return { state: "verified", text: "Decrypted live in your browser with the published key; matches the plaintext exactly." };
+    }
+    let shared = 0;
+    while (shared < recovered.length && recovered[shared] === data.plaintext[shared]) shared++;
+    if (data.id === "K2" && shared >= 360) {
+      return {
+        state: "verified",
+        text: `Decrypted live and matches for ${shared} characters. The panel then reads ` +
+              `"${recovered.slice(shared)}" where the intended text reads "${data.plaintext.slice(shared)}" — ` +
+              `Sanborn omitted a letter when cutting the copper, which he confirmed in 2006.`
+      };
+    }
+    return { state: "failed", text: `Decryption diverges from the published plaintext at character ${shared}.` };
+  }
+  // Transpositions: the ciphertext must be an exact anagram of the plaintext.
+  const tally = s => { const m = {}; for (const c of s) m[c] = (m[c] || 0) + 1; return m; };
+  const a = tally(data.ciphertext), b = tally(data.plaintext);
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  const anagram = [...keys].every(k => a[k] === b[k]);
+  if (data.provenance === "published") {
+    return { state: "published", text: data.verification };
+  }
+  return anagram
+    ? { state: "verified", text: "Ciphertext is an exact anagram of the plaintext, as a transposition must be." }
+    : { state: "failed", text: "Ciphertext is not an anagram of the plaintext." };
+}
+
 function initCipherExplorer() {
   const sidebar = document.getElementById("cipher-sidebar-list");
   if (!sidebar) return;
 
   sidebar.innerHTML = "";
-
-  // 1. Paradigm Kryptos Section
-  const pkTitle = document.createElement("div");
-  pkTitle.className = "sidebar-category-title";
-  pkTitle.textContent = "Paradigm Kryptos (PK1 - PK10)";
-  sidebar.appendChild(pkTitle);
-
-  const pkKeys = ["PK10", "PK9", "PK8", "PK7", "PK6", "PK5", "PK4", "PK3", "PK2", "PK1"];
-  pkKeys.forEach(id => {
-    const data = CIPHERS_DATA[id];
-    const item = createSidebarItem(data);
-    sidebar.appendChild(item);
-  });
-
-  // 2. CIA Sculpture Section
-  const ciaTitle = document.createElement("div");
-  ciaTitle.className = "sidebar-category-title";
-  ciaTitle.textContent = "CIA Sculpture (K1 - K4)";
-  sidebar.appendChild(ciaTitle);
-
-  const ciaKeys = ["K4", "K3", "K2", "K1"];
-  ciaKeys.forEach(id => {
-    const data = CIPHERS_DATA[id];
-    const item = createSidebarItem(data);
-    sidebar.appendChild(item);
-  });
+  // Groups come from the data, so a new entry appears without editing this.
+  for (const group of [...new Set(ENTRIES.map(e => e.group))]) {
+    const title = document.createElement("div");
+    title.className = "sidebar-category-title";
+    title.textContent = group;
+    sidebar.appendChild(title);
+    ENTRIES.filter(e => e.group === group)
+      .forEach(data => sidebar.appendChild(createSidebarItem(data)));
+  }
 }
 
 function createSidebarItem(data) {
@@ -69,9 +134,10 @@ function createSidebarItem(data) {
   else if (data.status.includes("FRONTIER")) badgeClass = "badge-frontier";
   else if (data.status.includes("CUSTODY")) badgeClass = "badge-custody";
 
+  const label = data.title.includes("—") ? data.title.split("—")[1].trim() : data.title;
   div.innerHTML = `
-    <div class="cipher-name">${data.id}: ${data.title.split("—")[1] || data.id}</div>
-    <div class="cipher-badge ${badgeClass}">${data.status.split(" ")[0]}</div>
+    <div class="cipher-name">${data.id}: ${label}</div>
+    <div class="cipher-badge ${badgeClass}">${data.provenance || data.status}</div>
   `;
 
   div.addEventListener("click", () => selectCipher(data.id));
@@ -97,7 +163,7 @@ function selectCipher(id) {
 
   // Render detail view
   document.getElementById("detail-title").textContent = data.title;
-  document.getElementById("detail-subtitle").textContent = `${data.category} | ${data.mechanism} | Length: ${data.length} characters`;
+  document.getElementById("detail-subtitle").textContent = `${data.group} | ${data.mechanism} | ${data.length} characters`;
 
   let badgeClass = "badge-unsolved";
   if (data.status === "SOLVED") badgeClass = "badge-solved";
@@ -117,6 +183,16 @@ function selectCipher(id) {
   document.getElementById("detail-pt").textContent = formatWrapped(pt, 42);
   document.getElementById("detail-key").textContent = data.key || "See Mathematical Clock & Transposition Invariants";
   document.getElementById("detail-notes").textContent = data.notes || "";
+
+  // Live verification, shown to the reader rather than asserted.
+  const check = verifyEntry(data);
+  const box = document.getElementById("detail-verification");
+  if (box) {
+    box.className = `verification verification-${check.state}`;
+    const label = { verified: "VERIFIED IN BROWSER", published: "PUBLISHED, NOT VERIFIED HERE",
+                    unsolved: "UNSOLVED", failed: "CHECK FAILED" }[check.state];
+    box.innerHTML = `<strong>${label}</strong><span>${check.text}</span>`;
+  }
 }
 
 // Math & Cryptanalysis Helpers

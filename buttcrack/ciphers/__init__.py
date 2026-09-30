@@ -19,7 +19,7 @@ from .base import (
     Family,
     LayerCipher,
 )
-from .codes import A1Z26, Bacon, BaconCase, Morse, Polybius
+from .codes import A1Z26, Bacon, BaconCase, Baudot, Braille, Morse, NatoPhonetic, Polybius, TapCode
 from .encodings import (
     Base16,
     Base32,
@@ -29,19 +29,31 @@ from .encodings import (
     BinaryASCII,
     DecimalASCII,
     PercentEncoding,
+    QuotedPrintable,
+    UUEncode,
 )
+from .keyed import Quagmire3, SumClock
+from .matrix import Hill
 from .polyalphabetic import (
     Autokey,
     Beaufort,
     Gronsfeld,
+    Porta,
     Trithemius,
     VariantBeaufort,
     Vigenere,
 )
-from .polygraphic import Bifid, Playfair
+from .polygraphic import Bifid, FourSquare, Playfair, Trifid
 from .shift import ROT13, ROT47, Affine, Atbash, Caesar, Reverse
 from .substitution import KeywordSubstitution, Substitution
-from .transposition import ColumnarTransposition, RailFence, RouteTransposition, SkipTransposition
+from .transposition import (
+    Amsco,
+    ColumnarTransposition,
+    Myszkowski,
+    RailFence,
+    RouteTransposition,
+    SkipTransposition,
+)
 from .wheel import M94
 from .xor import RepeatingKeyXOR, SingleByteXOR
 
@@ -59,6 +71,9 @@ ALL_CIPHERS: list[Cipher] = [
     Beaufort(),
     VariantBeaufort(),
     Gronsfeld(),
+    Porta(),
+    Quagmire3(),
+    SumClock(),
     Trithemius(),
     Autokey(),
     # substitution
@@ -69,9 +84,14 @@ ALL_CIPHERS: list[Cipher] = [
     RailFence(),
     SkipTransposition(),
     RouteTransposition(),
+    Myszkowski(),
+    Amsco(),
     # polygraphic
     Playfair(),
     Bifid(),
+    Hill(),
+    FourSquare(),
+    Trifid(),
     # wheel ciphers
     M94(),
     # byte level
@@ -83,6 +103,10 @@ ALL_CIPHERS: list[Cipher] = [
     BaconCase(),
     A1Z26(),
     Polybius(),
+    TapCode(),
+    NatoPhonetic(),
+    Braille(),
+    Baudot(),
     # encodings
     Base64(),
     Base32(),
@@ -92,6 +116,8 @@ ALL_CIPHERS: list[Cipher] = [
     PercentEncoding(),
     BinaryASCII(),
     DecimalASCII(),
+    QuotedPrintable(),
+    UUEncode(),
 ]
 
 #: name/alias -> cipher

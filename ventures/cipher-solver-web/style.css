@@ -245,3 +245,29 @@ a.buy.ghostbuy { color: var(--forest); background: transparent; border: 1px soli
   .samples { margin-left: 0; }
   .solved-head { align-items: flex-start; flex-direction: column; }
 }
+
+/* --- cipher wiki and history articles ------------------------------------ */
+table.facts { width: 100%; border-collapse: collapse; margin: 14px 0 6px; font-size: 14px; }
+table.facts th { width: 150px; text-align: left; padding: 7px 10px; color: var(--ink-soft);
+  font: 600 13px var(--mono); vertical-align: top; background: rgba(12,104,79,.045); }
+table.facts td { padding: 7px 10px; border-bottom: 1px solid rgba(12,104,79,.10); }
+table.facts tr:first-child th, table.facts tr:first-child td { border-top: 1px solid rgba(12,104,79,.10); }
+p.note { color: var(--ink-soft); font-size: 13px; font-style: italic; }
+
+ul.cipher-index { margin: 6px 0 18px; padding-left: 20px; }
+ul.cipher-index li { margin: 5px 0; line-height: 1.5; }
+ul.cipher-index a { font-weight: 600; }
+
+ol.timeline { margin: 10px 0 24px; padding-left: 22px; }
+ol.timeline li { margin: 0 0 16px; line-height: 1.6; }
+ol.timeline strong { color: var(--forest); font: 700 13px var(--mono); }
+
+ul.people, ul.famous { list-style: none; margin: 10px 0 24px; padding: 0; }
+ul.people li, ul.famous li { margin: 0 0 16px; padding: 12px 14px; line-height: 1.6;
+  border-left: 3px solid rgba(12,104,79,.28); background: rgba(12,104,79,.035); border-radius: 0 8px 8px 0; }
+.dates { color: var(--ink-soft); font: 12px var(--mono); }
+.status { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px;
+  font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.status-solved { color: #0b6b52; background: rgba(12,104,79,.12); }
+.status-unsolved, .status-partly { color: #8a2b1e; background: rgba(176,58,40,.12); }
+.status-disputed, .status-unbroken, .status-proven { color: #6b5a0b; background: rgba(150,120,10,.14); }

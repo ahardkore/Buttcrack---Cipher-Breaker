@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decimal ASCII — How It Works and How It Is Broken</title>
+<meta name="description" content="Decimal ASCII: Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted). How to recognise it, a worked example, and the attack that breaks it.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/decimal-ascii-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Decimal ASCII — How It Works and How It Is Broken">
+<meta property="og:description" content="Decimal ASCII: Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted). How to recognise it, a worked example, and the attack that breaks it.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Decimal ASCII \u2014 How It Works and How It Is Broken", "description": "Decimal ASCII: Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted). How to recognise it, a worked example, and the attack that breaks it.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Decimal ASCII broken?", "acceptedAnswer": {"@type": "Answer", "text": "Decode it."}}, {"@type": "Question", "name": "What key does the Decimal ASCII use?", "acceptedAnswer": {"@type": "Answer", "text": "none. There are 1 possible keys."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 4 characters for this solver to attempt it; short messages can be readable and still not be proof."}}]}</script>
+</head>
+<body data-preset="caesar">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Decimal ASCII<span class="dot">.</span></h1>
+      <p class="tagline">Byte values in decimal.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>How it works</h2>
+    <p>Byte values in decimal.</p>
+    <p>Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted).</p>
+
+    <h2>A worked example</h2>
+    <p>Plaintext:</p>
+    <pre><code>MEET ME BY THE OLD CLOCK TOWER AT DAWN</code></pre>
+    <p>No key.</p>
+    <p>Ciphertext:</p>
+    <pre><code>77 69 69 84 32 77 69 32 66 89 32 84 72 69 32 79 76 68 32 67 76 79 67 75 32 84 79 87 69 82 32 65 84 32 68 65 87 78</code></pre>
+    <p class="note">This example is generated by running the cipher when the page is built,
+    and the round trip is checked, so it always matches what the solver does.</p>
+
+    <h2>How it is broken</h2>
+    <p>Decode it.</p>
+
+    <h2>History and context</h2>
+    <p>Distinguishable from A1Z26 by arithmetic alone: values above 26 mean bytes, not letter positions.</p>
+
+    <h2>At a glance</h2>
+    <table class="facts"><tbody><tr><th>Family</th><td>Encodings</td></tr><tr><th>Key</th><td>none</td></tr><tr><th>Keyspace</th><td>1</td></tr><tr><th>Search cost</th><td>cheap</td></tr><tr><th>Minimum text</th><td>4 characters</td></tr><tr><th>Also known as</th><td>ascii_decimal, byte_values</td></tr></tbody></table>
+    <p class="note">These figures come from the solver's cipher registry when this page is
+    built, so they describe the implementation you can run above rather than an idealised
+    version of the cipher.</p>
+
+    <h2>Related</h2>
+    <p><a href="base64-cipher-wiki.html">Base64</a> · <a href="base32-cipher-wiki.html">Base32</a> · <a href="base16-cipher-wiki.html">Hex / base16</a> · <a href="base58-cipher-wiki.html">Base58</a> · <a href="base85-cipher-wiki.html">ASCII85 / base85</a> · <a href="url-cipher-wiki.html">URL encoding</a></p>
+    <p>Back to the <a href="cipher-wiki.html">cipher wiki index</a>, or read the
+    <a href="history-of-codebreaking.html">history of codebreaking</a>.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>How is the Decimal ASCII broken?</summary><p>Decode it.</p></details><details class="faq"><summary>What key does the Decimal ASCII use?</summary><p>none. There are 1 possible keys.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 4 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

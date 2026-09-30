@@ -271,6 +271,18 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     url_likelihood, url_reason = _url_evidence(stripped)
     if url_likelihood:
         add("url", url_likelihood, url_reason)
+    # A NATO spelling alphabet message is made of real English words, so it
+    # sails past "this already reads as English" -- and the reading that matters
+    # is the one hiding in the initials.  It has to be settled before the short
+    # circuit below, not after it.
+    _nato_words = [w for w in re.split(r"[^A-Za-z0-9-]+", stripped) if w]
+    if len(_nato_words) >= 4:
+        from .ciphers.codes import NATO_DECODE
+
+        hits = sum(1 for w in _nato_words if w.lower() in NATO_DECODE)
+        if hits / len(_nato_words) >= 0.7:
+            add("nato", 0.93, f"{hits} of {len(_nato_words)} words are spelling-alphabet code words")
+
     if stats.confidence >= 0.62:
         add("none", min(1.0, stats.confidence), "text already reads as English")
         if not any(h.cipher != "none" for h in out):
@@ -279,8 +291,36 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     # 1. Structural detection: the character set often names the format outright.
     symbols = set(stripped)
     morse_only = bool(stripped) and symbols <= _MORSE_CHARS and (("." in symbols) or ("-" in symbols))
+    # Tap code is dots too, and with no dashes in sight the two are the same
+    # character set.  What separates them is arithmetic: tap code comes in pairs
+    # of runs, each run 1-5 long, because they are grid coordinates.  Morse
+    # without a single dash would be a message of E, I, S, H and 5 only.
+    tap_shaped = False
+    if morse_only and "-" not in symbols:
+        from .ciphers import try_get
+
+        tap = try_get("tap_code")
+        tap_shaped = tap is not None and tap.decodable(stripped)
     if morse_only:
-        add("morse", 0.95, f"input uses only Morse symbols ({stats.charset})")
+        add(
+            "morse",
+            0.45 if tap_shaped else 0.95,
+            "input uses only Morse symbols, but with no dashes and legal 1-5 runs "
+            "it is more likely tap code" if tap_shaped
+            else f"input uses only Morse symbols ({stats.charset})",
+        )
+    if tap_shaped:
+        add("tap_code", 0.92, "runs of taps, all 1-5, in pairs: a 5x5 knock grid")
+
+    # Braille is unambiguous: its code points belong to nothing else.
+    cells = [c for c in stripped if 0x2800 <= ord(c) <= 0x28FF]
+    if len(cells) >= 4:
+        add("braille", 0.95, f"{len(cells)} Unicode braille cells (U+2800 block)")
+
+    if re.search(r"^begin(-base64)?\s+[0-7]{3,4}\s", text, re.M | re.I):
+        add("uuencode", 0.9, "a uuencode 'begin <mode> <name>' header")
+    if re.search(r"=(?:[0-9A-Fa-f]{2}|\r?\n)", text) and len(re.findall(r"=[0-9A-Fa-f]{2}", text)) >= 2:
+        add("quoted_printable", 0.7, "repeated '=XX' escapes: MIME quoted-printable")
 
     digit_groups = [g for g in re.split(r"[\s,;|/_-]+", stripped) if g]
     # A digit stream with no separators at all is still a numeric code: read it
@@ -307,6 +347,29 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
 
     if compact and set(compact) <= set("01") and len(compact) % 8 == 0 and len(compact) >= 16:
         add("binary", 0.9, f"{len(compact)//8} groups of 8 bits")
+    # Five-bit groups are Bacon *or* ITA2 teleprinter code, and no amount of
+    # staring at the bits will say which: both tables accept the same stream.
+    # So both are decoded and the one that produces English wins.  This is the
+    # only honest discriminator, and it costs two table lookups per group.
+    if compact and set(compact) <= set("01") and len(compact) % 5 == 0 and len(compact) >= 15:
+        from .ciphers import try_get
+
+        baudot = try_get("baudot")
+        if baudot is not None and baudot.decodable(compact):
+            bacon_cipher = try_get("bacon")
+            baudot_text = baudot.decode(compact)
+            bacon_text = bacon_cipher.decode(compact) if bacon_cipher is not None else ""
+            baudot_fit = model.score(baudot_text).confidence if baudot_text else 0.0
+            bacon_fit = model.score(bacon_text).confidence if bacon_text else 0.0
+            if baudot_fit > bacon_fit + 0.1:
+                add(
+                    "baudot",
+                    0.93,
+                    f"{len(compact) // 5} five-bit groups; the ITA2 table reads as English "
+                    f"({baudot_fit:.2f}) and the Bacon table does not ({bacon_fit:.2f})",
+                )
+            else:
+                add("baudot", 0.5, f"{len(compact) // 5} five-bit groups also fit the ITA2 letters table")
     if (
         compact
         and len(compact) % 2 == 0

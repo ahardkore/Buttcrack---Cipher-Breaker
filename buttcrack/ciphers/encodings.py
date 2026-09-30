@@ -387,3 +387,124 @@ class DecimalASCII(_Encoding):
         for t in self._tokens(text):
             out.append(chr(int(t, 0) if t.lower().startswith("0x") else int(t)))
         return "".join(out)
+
+
+QP_RE = re.compile(r"=(?:[0-9A-Fa-f]{2}|\r?\n)")
+
+
+class QuotedPrintable(_Encoding):
+    """Quoted-printable (RFC 2045), the encoding email bodies arrive in."""
+
+    info = CipherInfo(
+        name="quoted_printable",
+        title="Quoted-printable",
+        family=Family.ENCODING,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=6,
+        cost=CHEAP,
+        layer=True,
+        aliases=("qp", "mime_qp", "quoted_printable_encoding"),
+        description="MIME quoted-printable: =XX escapes and =\\n soft line breaks.",
+    )
+
+    def decodable(self, text: str) -> bool:
+        escapes = QP_RE.findall(text)
+        if not escapes:
+            return False
+        # Percent-encoding uses %XX and hex uses bare pairs; the marker here is
+        # '=' followed by a hex pair, and one stray '=' in prose is not enough.
+        if len(escapes) < 2 and len(text) > 40:
+            return False
+        return all(ord(c) < 128 for c in text)
+
+    def encode(self, text: str) -> str:
+        import quopri
+
+        return quopri.encodestring(text.encode("utf-8", "replace")).decode("ascii")
+
+    def decode(self, text: str) -> bytes:
+        import quopri
+
+        return quopri.decodestring(text.encode("ascii", "ignore"))
+
+
+class UUEncode(_Encoding):
+    """uuencode, the pre-MIME binary transport still seen in old puzzle dumps."""
+
+    info = CipherInfo(
+        name="uuencode",
+        title="uuencode",
+        family=Family.ENCODING,
+        keyed=False,
+        key_type="none",
+        keyspace=1,
+        min_length=10,
+        cost=CHEAP,
+        layer=True,
+        aliases=("uu", "uuencoded"),
+        description="Classic uuencode: a 'begin' header, length-prefixed lines of printable ASCII, then 'end'.",
+    )
+
+    @staticmethod
+    def _body(text: str) -> list[str]:
+        """The payload lines between ``begin`` and ``end``, if the frame is there.
+
+        The header is required rather than guessed: uuencoded lines are ordinary
+        printable ASCII, so decoding an unframed blob 'succeeds' on almost any
+        text and produces bytes that mean nothing.
+        """
+        lines = text.splitlines()
+        start = None
+        for i, line in enumerate(lines):
+            if re.match(r"^begin(-base64)?\s+[0-7]{3,4}\s+\S*", line.strip(), re.I):
+                start = i + 1
+                break
+        if start is None:
+            return []
+        body = []
+        for line in lines[start:]:
+            stripped = line.rstrip()
+            if stripped.strip().lower() == "end":
+                return body
+            if stripped in {"", "`"}:
+                continue
+            body.append(stripped)
+        return []
+
+    def decodable(self, text: str) -> bool:
+        body = self._body(text)
+        if not body:
+            return False
+        # Each line declares its own decoded length in the first character.
+        for line in body:
+            declared = (ord(line[0]) - 32) & 0x3F
+            if not 0 < declared <= 45:
+                return False
+        return True
+
+    def encode(self, text: str) -> str:
+        import binascii as _binascii
+
+        data = text.encode("utf-8", "replace")
+        out = ["begin 644 payload"]
+        for i in range(0, len(data), 45):
+            out.append(_binascii.b2a_uu(data[i : i + 45]).decode("ascii").rstrip("\n"))
+        out += ["`", "end", ""]
+        return "\n".join(out)
+
+    def decode(self, text: str) -> bytes:
+        import binascii as _binascii
+
+        out = bytearray()
+        for line in self._body(text):
+            try:
+                out += _binascii.a2b_uu(line)
+            except _binascii.Error:
+                # A truncated final line is common in pasted puzzle text; decode
+                # what the length byte promises and keep going.
+                declared = (ord(line[0]) - 32) & 0x3F
+                padded = line[0] + line[1:].ljust((declared * 4 + 2) // 3, " ")
+                out += _binascii.a2b_uu(padded[: 1 + (declared * 4 + 2) // 3])
+        return bytes(out)

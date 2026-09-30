@@ -1,6 +1,6 @@
 # The cipher table
 
-36 ciphers, codes and encodings behind one interface. Each entry has its own
+50 ciphers, codes and encodings behind one interface. Each entry has its own
 attack — the interface exists so the engine can schedule, budget and report them
 uniformly, not so they can share a brute-force loop.
 
@@ -40,6 +40,9 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | `autokey`<br>Autokey | primer word<br>example `QUEEN` | unbounded | moderate | 40 | Key = short primer followed by the plaintext itself. Solved by chain decomposition. |
 | `beaufort`<br>Beaufort | keyword<br>example `LEMON` | unbounded | moderate | 24 | C = K - P. Reciprocal: encryption and decryption are the same operation. |
 | `gronsfeld`<br>Gronsfeld | digits 0-9<br>example `31415` | unbounded | moderate | 24 | Vigenere restricted to a digit key, so each column has only 10 possible shifts. |
+| `porta`<br>Porta | keyword<br>example `LEMON` | unbounded | moderate | 24 | Reciprocal polyalphabetic over 13 half-alphabet tables. Same period finding as Vigenere, 13 shifts per column. |
+| `quagmire3`<br>Quagmire III (keyed alphabet) | keyword + alphabet<br>example `{'key': 'PROVENANCE', 'alphabet': 'kryptos'}` | unbounded | moderate | 40 | Vigenere over a keyed alphabet (KRYPTOS by default). Period from IC, columns by chi-squared in keyed space. |
+| `sum_clock`<br>Sum-clock (additive wheels) | wheel periods + wheels<br>example `{'periods': [10, 8], 'alphabet': 'kryptos'}` | unbounded | expensive | 60 | Two or more short wheels summed mod 26 over a keyed alphabet. Solved by joint coordinate ascent over the wheels, not by columns. |
 | `trithemius`<br>Trithemius / progressive key | (start, step)<br>example `start=0, step=1` | 676 | cheap | 16 | Shift increases by a constant step per letter: key[i] = (start + i*step) mod 26. |
 | `variant_beaufort`<br>Variant Beaufort | keyword<br>example `LEMON` | unbounded | moderate | 24 | C = P - K: Vigenere encryption with the decryption rule. |
 | `vigenere`<br>Vigenère | keyword<br>example `LEMON` | unbounded | moderate | 24 | Repeating-key addition. Cracked by period finding (IC + Kasiski) then per-column Caesar solving. |
@@ -48,7 +51,9 @@ will attempt — below it there is not enough evidence to distinguish keys.
 
 | cipher | key | keyspace | cost | min text | how it is attacked |
 | --- | --- | --- | --- | --- | --- |
+| `amsco`<br>AMSCO transposition | permutation keyword<br>example `ZEBRA` | unbounded | expensive | 30 | Alternating 1-2 letter chunks written into a grid, columns read in key order. |
 | `columnar`<br>Columnar transposition | keyword or permutation<br>example `ZEBRA` | unbounded | expensive | 12 | Plaintext written into a grid by rows, read out by columns in key order. |
+| `myszkowski`<br>Myszkowski transposition | keyword with repeats<br>example `TOMATO` | unbounded | expensive | 24 | Columnar transposition where equal key letters are read together row by row. |
 | `rail_fence`<br>Rail fence | rails + offset<br>example `3` | unbounded | cheap | 8 | Plaintext written along a zigzag of N rails, then read off rail by rail. |
 | `route`<br>Route transposition | (columns, route)<br>example `cols=5, route=spiral_out_cw` | unbounded | moderate | 8 | Plaintext filled into a grid, read out along a fixed route. |
 | `skip`<br>Skip / scytale | stride<br>example `5` | unbounded | cheap | 6 | ct = pt[::k] + pt[1::k] + ... + pt[k-1::k] |
@@ -58,7 +63,10 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | cipher | key | keyspace | cost | min text | how it is attacked |
 | --- | --- | --- | --- | --- | --- |
 | `bifid`<br>Bifid | keyword + period<br>example `key=MONARCHY, period=7` | unbounded | brutal | 80 | Each letter becomes (row, column); the coordinates are recombined within a period. Experimental solver. |
+| `four_square`<br>Four-square | two keywords<br>example `{'top': 'EXAMPLE', 'bottom': 'KEYWORD'}` | unbounded | brutal | 60 | Digraph substitution across two keyed 5x5 grids. No padding and no reversible pairs, unlike Playfair. |
+| `hill`<br>Hill cipher (matrix) | matrix or keyword (n*n letters)<br>example `HILL` | unbounded | expensive | 40 | Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately. |
 | `playfair`<br>Playfair | keyword (5x5 grid)<br>example `MONARCHY` | unbounded | expensive | 50 | Digraph substitution on a 5x5 keyed grid. Solved by hill climbing the grid on quadgram fitness. |
+| `trifid`<br>Trifid | keyword + period<br>example `{'key': 'TRIFID', 'period': 5}` | unbounded | brutal | 90 | Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver. |
 
 ### Wheel
 
@@ -80,8 +88,12 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | `a1z26`<br>A1Z26 (numbered alphabet) | none<br>no key | 1 | cheap | 4 | Each letter replaced by its position in the alphabet, separated by spaces or dashes. |
 | `bacon`<br>Bacon cipher | none<br>no key | 2 | cheap | 10 | Five symbols per letter over a two-letter alphabet. Both the 24-letter (I=J, U=V) and 26-letter tables are tried. |
 | `bacon_case`<br>Bacon (letter case) | none<br>no key | 2 | cheap | 20 | Uppercase/lowercase of ordinary text encodes Bacon's five-bit letters. |
+| `baudot`<br>Baudot / ITA2 (5-bit) | none<br>no key | 1 | cheap | 15 | Five bits per character, ITA2 letters table. Distinguished from Bacon by its own letter assignment. |
+| `braille`<br>Braille (Unicode patterns) | none<br>no key | 1 | cheap | 4 | Unicode braille cells U+2800..U+28FF, grade 1 letter assignments. |
 | `morse`<br>Morse code | none<br>no key | 1 | cheap | 4 | Dots and dashes per letter; spaces between letters, ' / ' between words. |
+| `nato`<br>NATO phonetic alphabet | none<br>no key | 1 | cheap | 10 | One spelling-alphabet word per letter (Alfa Bravo Charlie ...). |
 | `polybius`<br>Polybius square | keyword (optional)<br>example `MONARCHY` | 2 | cheap | 6 | 5x5 coordinate grid (I/J merged). Both digit pairs and tap-code style separators are accepted. |
+| `tap_code`<br>Tap code | none<br>no key | 1 | cheap | 6 | Row and column of a 5x5 grid struck as groups of taps (C=K, I=J). |
 
 ### Encodings (peelable layers)
 
@@ -94,7 +106,9 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | `base85`<br>ASCII85 / base85 | none<br>no key | 1 | cheap | 6 | 5 bytes per 5 characters over the printable ASCII range; ``<~ ~>`` delimiters optional. |
 | `binary`<br>Binary ASCII | none<br>no key | 1 | cheap | 8 | Each byte as 8 bits, separated by spaces (or run together). |
 | `decimal_ascii`<br>Decimal ASCII | none<br>no key | 1 | cheap | 4 | Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted). |
+| `quoted_printable`<br>Quoted-printable | none<br>no key | 1 | cheap | 6 | MIME quoted-printable: =XX escapes and =\n soft line breaks. |
 | `url`<br>URL encoding | none<br>no key | 1 | cheap | 3 | Bytes as %XX hex escapes. |
+| `uuencode`<br>uuencode | none<br>no key | 1 | cheap | 10 | Classic uuencode: a 'begin' header, length-prefixed lines of printable ASCII, then 'end'. |
 
 ---
 
@@ -130,10 +144,31 @@ before comparing:
 ## Peelable layers and chains
 
 These are ciphers *and* layers: the solver can strip them off the outside of
-anything, then re-identify what is underneath, to `--depth` (default 3).
+anything, then re-identify what is underneath, to `--depth` (default 6).
 
-`morse` · `bacon` · `bacon_case` · `a1z26` · `polybius` · `base64` · `base32` ·
-`base16` · `base58` · `base85` · `url` · `binary` · `decimal_ascii`
+`morse` · `bacon` · `bacon_case` · `a1z26` · `polybius` · `tap_code` · `nato` ·
+`braille` · `baudot` · `base64` · `base32` · `base16` · `base58` · `base85` ·
+`url` · `binary` · `decimal_ascii` · `quoted_printable` · `uuencode`
+
+Ciphers stack on each other too, not just under encodings, and six of them is
+the advertised depth:
+`reverse -> rail_fence -> skip -> reverse -> rail_fence -> rot13`.
+
+That works because a transposition and a monoalphabetic substitution **commute**
+— one moves letters without reading them, the other rewrites letters without
+moving them — so a stack of them, in any order and to any depth, equals one
+permutation followed by one substitution. The substitution is recovered from the
+letter histogram before anything is unwrapped (transpositions cannot change
+which letters are present) and the rest is a permutation search. A gate keeps it
+off texts it could not explain: chi-squared per letter against English is 0.116
+for any transposition stack and 1.7 or more for Vigenère, Hill or a plain
+substitution.
+
+Chains of ciphers that do *not* commute — six stacked polyalphabetics, say — are
+not searched, because every intermediate state is indistinguishable from noise
+and nothing would prune the tree. Two non-commuting cipher steps are unwrapped
+(`skip -> vigenere`), and beyond that the honest answer is a bigger budget and a
+hint.
 
 A chain is reported outermost first — `base64 -> base16 -> xor_repeating` — and
 the key shown is the key of the cipher that actually hid the message, not of the
