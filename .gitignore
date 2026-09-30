@@ -47,3 +47,9 @@ kryptos/test_pk10_alt_factorizations
 kryptos/test_pk10_autokey_feedback
 *.bundle
 push_to_ahardkore.sh
+
+# Research tooling binaries: built locally from the adjacent .c sources
+# (gcc -O3 -fopenmp); keep the archive source-only.
+kryptos/pk8_parity_sieve
+kryptos/pk8_sa_cal2
+kryptos/pk9_sa_cal2

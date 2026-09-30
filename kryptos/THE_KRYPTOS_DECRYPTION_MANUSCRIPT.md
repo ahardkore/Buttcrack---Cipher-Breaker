@@ -583,6 +583,11 @@ python3 scripts/build_kryptos_app_data.py
 # Scan a corpus for a suspected plaintext (the annihilator of Chapter 7)
 python3 scripts/sumclock_corpus_scan.py PK8 --periods 4,5,6,7 some_book.txt
 
+# Test any claimed solution the way the retraction demanded (Chapter 9):
+# reproduction first, English band, dictionary coverage, non-degeneracy
+python3 scripts/pk_verify.py claim.json
+python3 scripts/pk_verify.py --selftest   # must reject the retracted reading
+
 # The solver's own honesty checks, and the test suite
 python3 -m buttcrack selftest
 python3 -m unittest discover -s tests -t .
@@ -603,11 +608,13 @@ crib must be *content*: a phrase actually in the plaintext. Failing that, the
 open structural question is whether the four-wheel hypothesis is right at all —
 it is inherited from prior analysis and has never been confirmed.
 
-**For PK9.** A discriminating statistic that survives transposition. One
-candidate: the inner text is not merely a permutation of English but a
-*columnar* permutation, so letters that were adjacent in the plaintext remain a
-fixed stride apart in the ciphertext. A statistic built on stride-k bigrams
-might survive where the histogram does not. Untested.
+**For PK9.** A discriminating statistic that survives transposition. The
+first candidate tried was stride-k bigrams — plaintext-adjacent letters stay
+a fixed stride apart in the pre-substitution stream — and it is now measured
+and ruled out: the max over ~144 strides hands wrong keys a
+multiple-comparison jackpot, and they beat the true key more often than the
+bare histogram does (kryptos/pk9_stride_statistic.py, and the wall itself
+now measured for the joint search: kryptos/PK8_PK9_PK10_CLOSING_MEASUREMENTS.md).
 
 **For PK10.** Establish coverage before comparing any score to any record.
 
