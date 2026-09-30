@@ -191,3 +191,34 @@ an exact permutation of PK9 (identical letter multiset, IoC 0.04448) that
 matches none of the published candidate transformations.  It is an
 unlabeled intermediate of the earlier analysis and should be treated as
 provenance, not data.*
+
+## Appendix: candidate "key document" scans (2026-09-30)
+
+Three PDFs provided as candidate key/plaintext source (Gearhart dissertation
+"heididi_1.pdf", 604,288 extracted letters; "theory_practice.pdf" fragment,
+2,732 letters; "de_diversis.pdf" is an image-only scan — no text layer, not
+testable). Both readings of "the manuscript is the key" were tested, each with
+a self-calibrating control:
+
+**1. Plaintext-corpus scan** (`sumclock_corpus_scan.py`, annihilator
+constraint counting; control: planted 153-letter window from the dissertation
+encrypted with the true {4,5,6,7} wheel structure recovered **86/86
+constraints at the planted offset**). PK8 {4,5,6,7} and PK10 {7,8,9}, both
+alphabets (kryptos/az), exact and partial modes: **0 exact hits; top partial
+constraint runs 4–6 everywhere — pure noise floor** (reportable signal starts
+~12 constraints; proof at ~20).
+
+**2. Running-key drag** (`kryptos/pk8_running_key_drag.c`: K[t] =
+corpus[o+t] for every offset o, quadgram-scored decrypts; control: planted
+running key recovered at exact offset, score −4.0505 vs. second-best
+−7.8300). PK8 and PK10, both alphabets, both corpora (8 combinations):
+**best scores all −7.9 to −8.6 with best-vs-second margins 0.05–0.10 — noise
+maxima; every top decrypt is gibberish.** A correct offset would score
+≈ −4.05 by a ~3.8-point margin.
+
+Conclusion: neither document carries the PK8/PK10 plaintext, and neither
+supplies the keystream as a simple running key, under either alphabet.
+Deeper "wheel entries copied from scattered book passages" recipes are not
+testable without an author-stated recipe — offsets × segmentations explode
+and any "hit" would be unfalsifiable. If an OCR'd/text-layer version of
+"de_diversis" becomes available it can run through both harnesses unchanged.
