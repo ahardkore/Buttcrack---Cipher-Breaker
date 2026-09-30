@@ -34,13 +34,13 @@ window.WIKI_INDEX = {
    "t": "The M-94 Wheel Cipher",
    "s": "m94-wheel-cipher.html",
    "f": "Wheel and rotor devices",
-   "d": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs."
+   "d": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing."
   },
   {
    "t": "A History of Codebreaking",
    "s": "history-of-codebreaking.html",
    "f": "History of codebreaking",
-   "d": "How cryptanalysis developed: frequency analysis in ninth-century Baghdad, the Kasiski examination, the index of coincidence, Enigma and Lorenz, and the statistical attacks that define the modern field"
+   "d": "How cryptanalysis grew up: frequency analysis in ninth-century Baghdad, the Kasiski examination, the index of coincidence, Enigma, Lorenz, and today's statistical attacks."
   },
   {
    "t": "The Codebreakers",
@@ -106,25 +106,25 @@ window.WIKI_INDEX = {
    "t": "Porta",
    "s": "porta-cipher-wiki.html",
    "f": "Polyalphabetic ciphers",
-   "d": "Porta: Reciprocal polyalphabetic over 13 half-alphabet tables. Same period finding as Vigenere, 13 shifts per column. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Porta: Reciprocal polyalphabetic over 13 half-alphabet tables. Same period finding as Vigenere, 13 shifts per column."
   },
   {
    "t": "Quagmire III (keyed alphabet)",
    "s": "quagmire3-cipher-wiki.html",
    "f": "Polyalphabetic ciphers",
-   "d": "Quagmire III (keyed alphabet): Vigenere over a keyed alphabet (KRYPTOS by default). Period from IC, columns by chi-squared in keyed space. How to recognise it, a worked example, and the attack that br"
+   "d": "Quagmire III (keyed alphabet): Vigenere over a keyed alphabet (KRYPTOS by default). Period from IC, columns by chi-squared in keyed space."
   },
   {
    "t": "Sum-clock (additive wheels)",
    "s": "sum-clock-cipher-wiki.html",
    "f": "Polyalphabetic ciphers",
-   "d": "Sum-clock (additive wheels): Two or more short wheels summed mod 26 over a keyed alphabet. Solved by joint coordinate ascent over the wheels, not by columns. How to recognise it, a worked example, and"
+   "d": "Sum-clock (additive wheels): Two or more short wheels summed mod 26 over a keyed alphabet. Solved by joint coordinate ascent over the wheels, not by columns."
   },
   {
    "t": "Trithemius / progressive key",
    "s": "trithemius-cipher-wiki.html",
    "f": "Polyalphabetic ciphers",
-   "d": "Trithemius / progressive key: Shift increases by a constant step per letter: key[i] = (start + i*step) mod 26. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Trithemius / progressive key: Shift increases by a constant step per letter: key[i] = (start + i*step) mod 26."
   },
   {
    "t": "Autokey",
@@ -142,7 +142,7 @@ window.WIKI_INDEX = {
    "t": "Columnar transposition",
    "s": "columnar-cipher-wiki.html",
    "f": "Transposition ciphers",
-   "d": "Columnar transposition: Plaintext written into a grid by rows, read out by columns in key order. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Columnar transposition: Plaintext written into a grid by rows, read out by columns in key order."
   },
   {
    "t": "Rail fence",
@@ -166,37 +166,37 @@ window.WIKI_INDEX = {
    "t": "Myszkowski transposition",
    "s": "myszkowski-cipher-wiki.html",
    "f": "Transposition ciphers",
-   "d": "Myszkowski transposition: Columnar transposition where equal key letters are read together row by row. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Myszkowski transposition: Columnar transposition where equal key letters are read together row by row."
   },
   {
    "t": "AMSCO transposition",
    "s": "amsco-cipher-wiki.html",
    "f": "Transposition ciphers",
-   "d": "AMSCO transposition: Alternating 1-2 letter chunks written into a grid, columns read in key order. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "AMSCO transposition: Alternating 1-2 letter chunks written into a grid, columns read in key order."
   },
   {
    "t": "Bifid",
    "s": "bifid-cipher-wiki.html",
    "f": "Polygraphic ciphers",
-   "d": "Bifid: Each letter becomes (row, column); the coordinates are recombined within a period. Experimental solver. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Bifid: Each letter becomes (row, column); the coordinates are recombined within a period. Experimental solver."
   },
   {
    "t": "Hill cipher (matrix)",
    "s": "hill-cipher-wiki.html",
    "f": "Polygraphic ciphers",
-   "d": "Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately. How to recognise it, a worked example, and the attack that brea"
+   "d": "Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately."
   },
   {
    "t": "Four-square",
    "s": "four-square-cipher-wiki.html",
    "f": "Polygraphic ciphers",
-   "d": "Four-square: Digraph substitution across two keyed 5x5 grids. No padding and no reversible pairs, unlike Playfair. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Four-square: Digraph substitution across two keyed 5x5 grids. No padding and no reversible pairs, unlike Playfair."
   },
   {
    "t": "Trifid",
    "s": "trifid-cipher-wiki.html",
    "f": "Polygraphic ciphers",
-   "d": "Trifid: Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Trifid: Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver."
   },
   {
    "t": "Single-byte XOR",
@@ -208,7 +208,7 @@ window.WIKI_INDEX = {
    "t": "Repeating-key XOR",
    "s": "xor-repeating-cipher-wiki.html",
    "f": "Byte-level ciphers",
-   "d": "Repeating-key XOR: XOR with a repeating byte key. Key length from normalised Hamming distance, then per-byte frequency analysis. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Repeating-key XOR: XOR with a repeating byte key. Key length from normalised Hamming distance, then per-byte frequency analysis."
   },
   {
    "t": "Morse code",
@@ -220,7 +220,7 @@ window.WIKI_INDEX = {
    "t": "Bacon cipher",
    "s": "bacon-cipher-wiki.html",
    "f": "Codes and alphabets",
-   "d": "Bacon cipher: Five symbols per letter over a two-letter alphabet. Both the 24-letter (I=J, U=V) and 26-letter tables are tried. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Bacon cipher: Five symbols per letter over a two-letter alphabet. Both the 24-letter (I=J, U=V) and 26-letter tables are tried."
   },
   {
    "t": "Bacon (letter case)",
@@ -232,13 +232,13 @@ window.WIKI_INDEX = {
    "t": "A1Z26 (numbered alphabet)",
    "s": "a1z26-cipher-wiki.html",
    "f": "Codes and alphabets",
-   "d": "A1Z26 (numbered alphabet): Each letter replaced by its position in the alphabet, separated by spaces or dashes. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "A1Z26 (numbered alphabet): Each letter replaced by its position in the alphabet, separated by spaces or dashes."
   },
   {
    "t": "Polybius square",
    "s": "polybius-cipher-wiki.html",
    "f": "Codes and alphabets",
-   "d": "Polybius square: 5x5 coordinate grid (I/J merged). Both digit pairs and tap-code style separators are accepted. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Polybius square: 5x5 coordinate grid (I/J merged). Both digit pairs and tap-code style separators are accepted."
   },
   {
    "t": "Tap code",
@@ -262,7 +262,7 @@ window.WIKI_INDEX = {
    "t": "Baudot / ITA2 (5-bit)",
    "s": "baudot-cipher-wiki.html",
    "f": "Codes and alphabets",
-   "d": "Baudot / ITA2 (5-bit): Five bits per character, ITA2 letters table. Distinguished from Bacon by its own letter assignment. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Baudot / ITA2 (5-bit): Five bits per character, ITA2 letters table. Distinguished from Bacon by its own letter assignment."
   },
   {
    "t": "Base64",
@@ -292,7 +292,7 @@ window.WIKI_INDEX = {
    "t": "ASCII85 / base85",
    "s": "base85-cipher-wiki.html",
    "f": "Encodings",
-   "d": "ASCII85 / base85: 5 bytes per 5 characters over the printable ASCII range; ``<~ ~>`` delimiters optional. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "ASCII85 / base85: 5 bytes per 5 characters over the printable ASCII range; ``<~ ~>`` delimiters optional."
   },
   {
    "t": "URL encoding",
@@ -310,7 +310,7 @@ window.WIKI_INDEX = {
    "t": "Decimal ASCII",
    "s": "decimal-ascii-cipher-wiki.html",
    "f": "Encodings",
-   "d": "Decimal ASCII: Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted). How to recognise it, a worked example, and the attack that breaks it."
+   "d": "Decimal ASCII: Byte values in decimal, separated by spaces or commas (0x.. and octal are also accepted)."
   },
   {
    "t": "Quoted-printable",
@@ -322,7 +322,7 @@ window.WIKI_INDEX = {
    "t": "uuencode",
    "s": "uuencode-cipher-wiki.html",
    "f": "Encodings",
-   "d": "uuencode: Classic uuencode: a 'begin' header, length-prefixed lines of printable ASCII, then 'end'. How to recognise it, a worked example, and the attack that breaks it."
+   "d": "uuencode: Classic uuencode: a 'begin' header, length-prefixed lines of printable ASCII, then 'end'."
   }
  ],
  "featured": [

@@ -247,9 +247,9 @@ HISTORY_PAGES = [
     {
         "slug": "history-of-codebreaking.html",
         "title": "A History of Codebreaking — From al-Kindi to Colossus and After",
-        "desc": "How cryptanalysis developed: frequency analysis in ninth-century Baghdad, "
-                "the Kasiski examination, the index of coincidence, Enigma and Lorenz, and "
-                "the statistical attacks that define the modern field.",
+        "desc": "How cryptanalysis grew up: frequency analysis in ninth-century "
+                "Baghdad, the Kasiski examination, the index of coincidence, "
+                "Enigma, Lorenz, and today's statistical attacks.",
         "h1": "A History of Codebreaking",
         "tagline": "Every technique in this solver has an inventor and a date. Here they are.",
         "preset": "vigenere",

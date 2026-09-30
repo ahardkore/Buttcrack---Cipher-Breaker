@@ -9,12 +9,14 @@
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Caesar Cipher Explained — History, Formula and How to Break It">
 <meta property="og:description" content="A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/caesar-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Caesar Cipher Explained \u2014 History, Formula and How to Break It", "description": "A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "The Caesar Cipher", "description": "A clear guide to the Caesar cipher: its alphabet rotation formula, why it has only 26 keys, how frequency analysis breaks it, and where ROT13 fits in.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Shift and reciprocal alphabets"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the Caesar cipher formula?", "acceptedAnswer": {"@type": "Answer", "text": "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C \u2212 k mod 26. The key k is the number of places rotated around the alphabet."}}, {"@type": "Question", "name": "Is ROT13 a Caesar cipher?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text."}}, {"@type": "Question", "name": "Why is it not secure?", "acceptedAnswer": {"@type": "Answer", "text": "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough."}}]}</script>
 </head>
 <body data-preset="caesar">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header site-header-compact">
   <div class="wrap wrap-wide">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,7 +28,7 @@
   </div>
 </header>
 
-<main class="wrap wrap-wide">
+<main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
 <aside class="wiki-side" aria-label="Wiki navigation">
       <div class="wiki-search" role="search">
@@ -37,7 +39,7 @@
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation</summary>
+          <summary>Navigation<span class="side-count">3</span></summary>
           <ul>
             <li><a href="cipher-wiki.html">Main page</a></li>
             <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
@@ -101,14 +103,14 @@
       </details>
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking</summary>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
           <ul>
 <li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
         <details class="wiki-side-group" open>
-          <summary>Solver &amp; shop</summary>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
 <li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
           </ul>
@@ -136,7 +138,7 @@
           
           <nav class="wiki-toc" aria-label="Contents">
         <div class="wiki-toc-title">Contents</div>
-        <ol><li><a href="#the-operation">The operation</a></li><li><a href="#a-tiny-keyspace">A tiny keyspace</a></li><li><a href="#recognising-a-caesar-shift">Recognising a Caesar shift</a></li><li><a href="#history-and-legacy">History and legacy</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ol>
+        <ul><li><a href="#the-operation">The operation</a></li><li><a href="#a-tiny-keyspace">A tiny keyspace</a></li><li><a href="#recognising-a-caesar-shift">Recognising a Caesar shift</a></li><li><a href="#history-and-legacy">History and legacy</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
       </nav>
     <h2 id="the-operation">The operation<a class="section-anchor" href="#the-operation" aria-label="Link to this section">§</a></h2>
     <p>Write the alphabet twice and slide the lower copy by a fixed number of places. With a
@@ -167,11 +169,8 @@
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
     <details class="faq"><summary>What is the Caesar cipher formula?</summary><p>With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet.</p></details><details class="faq"><summary>Is ROT13 a Caesar cipher?</summary><p>Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text.</p></details><details class="faq"><summary>Why is it not secure?</summary><p>There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough.</p></details>
         </div>
-<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a> | <a href="cipher-wiki.html#family-shift">Breakable in the browser</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
-        <div class="wiki-article-note">The facts in this article are generated from
-          <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>'s cipher registry when the site is built, so they
-          describe the implementation you can run on this page. Registry-generated content is
-          checked against the code; the history is editorial.</div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a> | <a href="cipher-wiki.html#families">Breakable in the browser</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
       </article>
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">

@@ -338,6 +338,7 @@ ul.people li, ul.famous li { margin: 0 0 16px; padding: 12px 14px; line-height: 
 }
 .wiki-search-hit:last-child { border-bottom: 0; }
 .wiki-search-hit:hover, .wiki-search-hit.first { background: #f4fbf5; }
+.wiki-search-hit.is-active { background: #e8efe4; }
 .wiki-search-hit-title { font-weight: 650; color: var(--forest-dark); }
 .wiki-search-hit-family { flex: 0 0 auto; color: var(--ink-soft); font: 11px var(--mono); }
 .wiki-search-empty { padding: 9px 11px; color: var(--ink-soft); font-size: 13px; }
@@ -356,16 +357,16 @@ ul.people li, ul.famous li { margin: 0 0 16px; padding: 12px 14px; line-height: 
   font-weight: 700; font-size: 13px; color: var(--ink);
 }
 .wiki-side-group summary::-webkit-details-marker { display: none; }
-.wiki-side-group summary::after { content: "▾"; margin-left: auto; color: var(--ink-soft); font-size: 11px; }
+.wiki-side-group summary::after { content: "▾"; margin-left: 4px; color: var(--ink-soft); font-size: 11px; }
 .wiki-side-group[open] summary::after { content: "▴"; }
 .wiki-side-group summary a { color: inherit; text-decoration: none; }
 .wiki-side-group summary a:hover { color: var(--forest); }
+/* The count pushes right; the disclosure arrow sits just after it, so every
+   group — with or without a link inside its summary — aligns the same way. */
 .side-count {
   margin-left: auto; padding-left: 8px;
   color: var(--ink-soft); font: 600 10.5px var(--mono);
 }
-.wiki-side-group[open] summary .side-count { margin-left: 0; }
-.wiki-side-group summary::after { margin-left: 4px; }
 .wiki-side-group ul { margin: 0; padding: 3px 0 8px; list-style: none; }
 .wiki-side-group li a {
   display: block; padding: 3.5px 11px;
@@ -458,7 +459,9 @@ ul.people li, ul.famous li { margin: 0 0 16px; padding: 12px 14px; line-height: 
   font-size: 13.5px;
 }
 .wiki-toc-title { margin-bottom: 5px; font-weight: 700; color: var(--ink); }
-.wiki-toc ol { margin: 0; padding-left: 20px; }
+.wiki-toc ul { margin: 0; padding-left: 18px; list-style: none; }
+.wiki-toc ul ul { padding-left: 16px; font-size: 12.5px; }
+.wiki-toc ul ul li::before { content: "· "; color: var(--ink-soft); }
 .wiki-toc li { margin: 3px 0; line-height: 1.45; }
 .wiki-toc a { color: #3366cc; }
 .wiki-toc a:visited { color: #6b4ba6; }
@@ -534,3 +537,44 @@ ul.people li, ul.famous li { margin: 0 0 16px; padding: 12px 14px; line-height: 
 }
 a.wiki-tab:hover { color: var(--forest-dark); background: #e8efe4; }
 .wiki-tab.is-here { background: #fff; color: var(--ink); font-weight: 700; }
+
+/* --- full-version chips in the family index ------------------------------- */
+/* The hub's intro promises "articles marked full version"; these are the
+   marks. Amber rather than the site green, so "not in the browser build"
+   reads as a caveat rather than a feature. */
+.chip {
+  display: inline-block; vertical-align: 1px;
+  padding: 1px 7px 2px; border-radius: 999px;
+  font: 600 10.5px/1.5 var(--mono);
+  letter-spacing: 0.02em; white-space: nowrap;
+}
+.chip-full {
+  background: #fdf3e0; color: #7a5314;
+  border: 1px solid #e8d5ae;
+}
+
+/* --- skip link -------------------------------------------------------------- */
+/* Hidden until keyboard focus, visible enough to read when it appears. */
+.skip-link {
+  position: absolute; left: 8px; top: -48px;
+  z-index: 60; padding: 9px 16px;
+  background: #05230f; color: #fff;
+  border-radius: 0 0 8px 8px;
+  font-weight: 700; font-size: 13.5px; text-decoration: none;
+  transition: top 0.12s ease-out;
+}
+.skip-link:focus { top: 0; }
+
+/* --- home page "all fifty" card + sidebar random link ---------------------- */
+.wiki-card.all-ciphers { background: #eef4e9; }
+.wiki-card.all-ciphers:hover { background: #e3ecdc; }
+.wiki-random { color: var(--forest-dark); }
+.wiki-random:hover { text-decoration: underline; }
+
+/* --- keyboard focus (visible rings on the wiki chrome) --------------------- */
+a:focus-visible, button:focus-visible, summary:focus-visible,
+input:focus-visible, .wiki-tab:focus-visible, .wiki-card:focus-visible {
+  outline: 2px solid var(--forest-dark);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

@@ -22,7 +22,6 @@ HERE = Path(__file__).parent
 PACKS = HERE.parent / "puzzle-packs"
 sys.path.insert(0, str(PACKS))
 CFG = json.loads((HERE / "site.json").read_text())
-SAMPLES = json.loads((HERE / "samples.json").read_text())
 
 #: The Kryptos research explorer lives in ``kryptos-app/`` and is mounted as a
 #: sub-directory of this site by ``scripts/build_site.py``. Keep the two in
@@ -256,6 +255,21 @@ def app_jsonld(title: str, desc: str) -> str:
     return f'<script type="application/ld+json">{json.dumps(data)}</script>'
 
 
+def article_jsonld(h1: str, desc: str, family_title: str) -> str:
+    """Wiki articles are articles, not applications: say so to the crawlers."""
+    data = {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": h1,
+        "description": desc,
+        "inLanguage": "en",
+        "isAccessibleForFree": True,
+    }
+    if family_title:
+        data["articleSection"] = family_title
+    return f'<script type="application/ld+json">{json.dumps(data)}</script>'
+
+
 def buy_button_script(body: str) -> str:
     """Stripe's script, included only on a page that actually uses the button."""
     if "<stripe-buy-button" not in body:
@@ -323,23 +337,47 @@ FEATURED_ARTICLES = [
      "The Great Cipher, the Zimmermann Telegram, Enigma and Lorenz — and the handful of messages nobody has read yet."),
 ]
 
-_H2_RE = re.compile(r"<h2([^>]*)>(.*?)</h2>", re.S)
+def wiki_article_note(wiki: dict) -> str:
+    """The Wikipedia-style 'this page was last edited' footer, honestly worded
+    for each kind of page: cipher articles carry registry-generated facts, the
+    history features are editorial, and the main page is both."""
+    repo = CFG["repo_url"]
+    if wiki.get("is_hub"):
+        return (
+            '<div class="wiki-article-note">Cipher articles on this wiki are generated from '
+            f'<a href="{repo}">buttcrack</a>&#39;s cipher registry when the site is built — their '
+            "facts tables, worked examples and infoboxes describe the implementation, not an "
+            "idealised cipher. The history features are editorial. The full source is on GitHub."
+            "</div>"
+        )
+    if wiki.get("family") == "history":
+        return (
+            '<div class="wiki-article-note">This feature is editorial. Where the record is '
+            "disputed — who invented the Vigenère cipher, whether the Beale papers are genuine "
+            "— the text says so rather than picking the tidy version.</div>"
+        )
+    return (
+        '<div class="wiki-article-note">The facts in this article are generated from '
+        f'<a href="{repo}">buttcrack</a>&#39;s cipher registry when the site is built, so they '
+        "describe the implementation you can run on this page. Registry-generated content is "
+        "checked against the code; the history is editorial.</div>"
+    )
 
 
-def with_toc(body: str) -> tuple[str, str]:
-    """Give every h2 an anchor id and build the contents box.
+_H_RE = re.compile(r"<h([23])([^>]*)>(.*?)</h\1>", re.S)
 
-    The table of contents is generated from the article body rather than
-    written by hand, so a section can never go missing from it — the same
-    discipline as the infobox, applied to navigation. A heading that already
-    carries an id (the wiki main page's family sections) keeps it, so links
-    from the sidebar and category bars stay stable.
+
+def _tocify(entries: list, seen: dict[str, int]):
+    """The heading rewriter: id it, anchor it, list it, in document order.
+
+    One regex for both levels (rather than one pass per level) so ``entries``
+    comes out in the order the headings appear in the body — the nesting pass
+    after it depends on that.
     """
-    entries: list[tuple[str, str]] = []
-    seen: dict[str, int] = {}
-
     def repl(m: re.Match) -> str:
-        attrs, text = m.group(1), m.group(2).strip()
+        level, attrs, text = m.group(1), m.group(2), m.group(3).strip()
+        if "data-notoc" in attrs:
+            return f"<h{level}{attrs}>{text}</h{level}>"
         plain = re.sub(r"<[^>]+>", "", text)
         existing = re.search(r'id="([^"]+)"', attrs)
         if existing:
@@ -349,18 +387,57 @@ def with_toc(body: str) -> tuple[str, str]:
             n = seen.get(base, 0)
             seen[base] = n + 1
             anchor = base if n == 0 else f"{base}-{n}"
-        entries.append((anchor, plain))
-        return (f'<h2 id="{anchor}">{text}'
-                f'<a class="section-anchor" href="#{anchor}" aria-label="Link to this section">§</a></h2>')
+        entries.append((int(level), anchor, plain))
+        return (f'<h{level} id="{anchor}">{text}'
+                f'<a class="section-anchor" href="#{anchor}" aria-label="Link to this section">§</a></h{level}>')
+    return repl
 
-    new_body = _H2_RE.sub(repl, body)
+
+def with_toc(body: str) -> tuple[str, str]:
+    """Give every h2/h3 an anchor id and build a nested contents box.
+
+    The table of contents is generated from the article body rather than
+    written by hand, so a section can never go missing from it — the same
+    discipline as the infobox, applied to navigation. A heading that already
+    carries an id (the wiki main page's family sections) keeps it, so links
+    from the sidebar and category bars stay stable. A heading marked
+    ``data-notoc`` (the main page's rotating featured-article title) is left
+    alone entirely: its text changes daily in the browser, so a TOC entry for
+    it would be stale by definition.
+    """
+    entries: list[tuple[int, str, str]] = []
+    seen: dict[str, int] = {}
+    new_body = _H_RE.sub(_tocify(entries, seen), body)
     if not entries:
         return new_body, ""
-    items = "".join(f'<li><a href="#{a}">{t}</a></li>' for a, t in entries)
+
+    # Nest h3s under the h2 that precedes them, Wikipedia-style. An h3 that
+    # appears before any h2 (none today, but the template is data-driven)
+    # becomes a top-level entry rather than being dropped.
+    root: list[list] = []
+    current_children: list = root
+    for level, anchor, plain in entries:
+        item = [anchor, plain, []]
+        if level == 2:
+            root.append(item)
+            current_children = item[2]
+        else:
+            current_children.append(item)
+
+    def render(items: list) -> str:
+        out = []
+        for anchor, plain, children in items:
+            link = f'<a href="#{anchor}">{plain}</a>'
+            if children:
+                out.append(f"<li>{link}<ul>{render(children)}</ul></li>")
+            else:
+                out.append(f"<li>{link}</li>")
+        return "".join(out)
+
     toc = (
         '<nav class="wiki-toc" aria-label="Contents">\n'
         '        <div class="wiki-toc-title">Contents</div>\n'
-        f'        <ol>{items}</ol>\n'
+        f'        <ul>{render(root)}</ul>\n'
         "      </nav>"
     )
     return new_body, toc
@@ -423,7 +500,7 @@ def wiki_sidebar(current: str) -> str:
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation</summary>
+          <summary>Navigation<span class="side-count">3</span></summary>
           <ul>
             {link("cipher-wiki.html", "Main page")}
             <li><a href="cipher-wiki.html#families">Contents — all {total}</a></li>
@@ -434,14 +511,14 @@ def wiki_sidebar(current: str) -> str:
 {chr(10).join(family_blocks)}
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking</summary>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
           <ul>
 {history_links}
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
         <details class="wiki-side-group" open>
-          <summary>Solver &amp; shop</summary>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
 {tool_links}
           </ul>
@@ -486,7 +563,7 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str,
             f'<span class="wiki-categories-label">Categories:</span> {cats}</div>'
         )
 
-    return f"""<main class="wrap wrap-wide">
+    return f"""<main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
 {wiki_sidebar(slug)}
     <div class="wiki-content">
@@ -505,10 +582,7 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str,
 {body_ids}
         </div>
 {categories}
-        <div class="wiki-article-note">The facts in this article are generated from
-          <a href="{CFG['repo_url']}">buttcrack</a>'s cipher registry when the site is built, so they
-          describe the implementation you can run on this page. Registry-generated content is
-          checked against the code; the history is editorial.</div>
+        {wiki_article_note(wiki)}
       </article>
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">
@@ -531,9 +605,11 @@ def cipher_index_html() -> str:
 
     Generated from the registry rather than maintained by hand, so a cipher
     added to the solver appears here without anyone remembering to add it --
-    and a link can never point at a page that was not written.
+    and a link can never point at a page that was not written. Ciphers the
+    browser build cannot break carry a "full version" chip, which is exactly
+    what the intro paragraph above the index promises.
     """
-    from wiki_ciphers import FAMILY_BLURBS, FAMILY_TITLES, wiki_slug
+    from wiki_ciphers import BROWSER_BREAKABLE, FAMILY_BLURBS, FAMILY_TITLES, wiki_slug
 
     from buttcrack.ciphers import all_ciphers
 
@@ -549,8 +625,12 @@ def cipher_index_html() -> str:
         items = []
         for cipher in sorted(ciphers, key=lambda c: c.info.title):
             info = cipher.info
+            chip = (
+                ' <span class="chip chip-full">full version</span>'
+                if info.name not in BROWSER_BREAKABLE else ""
+            )
             items.append(
-                f'        <li><a href="{wiki_slug(info.name)}">{info.title}</a>'
+                f'        <li><a href="{wiki_slug(info.name)}">{info.title}</a>{chip}'
                 f" — {info.description}</li>"
             )
         out.append(
@@ -558,7 +638,7 @@ def cipher_index_html() -> str:
             f'      <h3>{FAMILY_TITLES.get(family, family)}</h3>\n'
             f'      <p>{FAMILY_BLURBS.get(family, "")}</p>\n'
             f'      <ul class="cipher-index">\n' + "\n".join(items) + "\n      </ul>\n"
-            f"    </section>"
+            "    </section>"
         )
     return "\n".join(out)
 
@@ -758,7 +838,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
     {nav(slug)}
   </div>
 </header>"""
-        main = f"""<main class="wrap">
+        main = f"""<main class="wrap" id="main-content">
   {solver_html()}
 
   <div id="output" aria-live="polite"></div>
@@ -785,12 +865,14 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <link rel="canonical" href="{CFG['base_url']}/{slug}">{verification_meta()}
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{'article' if wiki else 'website'}">
+<meta property="og:url" content="{CFG['base_url']}/{slug}">
 <link rel="stylesheet" href="style.css">
-{app_jsonld(title, desc)}
+{article_jsonld(h1, desc, (wiki or {}).get('family_title', '')) if wiki else app_jsonld(title, desc)}
 {faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
 </head>
 <body data-preset="{preset}">
+<a class="skip-link" href="#main-content">Skip to content</a>
 {header}
 
 {main}
@@ -815,8 +897,8 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 PAGES = [
     {
         "slug": "index.html",
-        "title": "Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)",
-        "desc": "Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.",
+        "title": "Free Cipher Solver — Break Any Classical Cipher Automatically",
+        "desc": "Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse, layered. No upload.",
         "h1": "Cipher Solver",
         "tagline": "Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
         "preset": "caesar",
@@ -874,7 +956,7 @@ PAGES = [
     {
         "slug": "caesar-cipher-decoder.html",
         "title": "Caesar Cipher Decoder — Decrypt Without Knowing the Shift",
-        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.",
+        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.",
         "h1": "Caesar Cipher Decoder",
         "tagline": "Don't know the shift? It tries all 26 and picks the English one.",
         "preset": "caesar",
@@ -918,7 +1000,7 @@ PAGES = [
     {
         "slug": "vigenere-cipher-solver.html",
         "title": "Vigenère Cipher Solver — Recovers the Key Automatically",
-        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.",
+        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.",
         "h1": "Vigenère Solver",
         "tagline": "No keyword needed — it recovers the key from the ciphertext itself.",
         "preset": "vigenere",
@@ -969,7 +1051,7 @@ PAGES = [
     {
         "slug": "substitution-cipher-solver.html",
         "title": "Substitution Cipher Solver — Automatic Cryptogram Breaker",
-        "desc": "Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.",
+        "desc": "Solve substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without hints. Free, no upload.",
         "h1": "Substitution Solver",
         "tagline": "Cryptograms cracked by hill-climbing search — no crib, no hints.",
         "preset": "substitution",
@@ -1018,7 +1100,7 @@ PAGES = [
     {
         "slug": "morse-code-translator.html",
         "title": "Morse Code Translator & Decoder — Dots and Dashes to Text",
-        "desc": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.",
+        "desc": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath.",
         "h1": "Morse Decoder",
         "tagline": "Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.",
         "preset": "morse",
@@ -1061,7 +1143,7 @@ PAGES = [
     {
         "slug": "ctf-crypto-solver.html",
         "title": "CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings",
-        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.",
+        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte and repeating-key XOR, and stacked encoding layers. Identifies and peels each layer. Free.",
         "h1": "CTF Crypto Solver",
         "tagline": "Base64 around hex around XOR? It unwraps the whole stack.",
         "preset": "layered",
@@ -1145,7 +1227,7 @@ WIKI_PAGES = [
       <section class="mp-box mp-featured" aria-label="Featured article">
         <h2>Featured article</h2>
         <div id="mp-featured-slot">
-          <h3><a href="{FEATURED_HREF}">{FEATURED_TITLE}</a></h3>
+          <h3 data-notoc><a href="{FEATURED_HREF}">{FEATURED_TITLE}</a></h3>
           <p>{FEATURED_DESC}</p>
           <p class="mp-readmore"><a href="{FEATURED_HREF}">Read the article →</a></p>
         </div>
@@ -1366,8 +1448,8 @@ __CIPHER_INDEX__
     },
     {
         "slug": "m94-wheel-cipher.html",
-        "title": "M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls",
-        "desc": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.",
+        "title": "M-94 Wheel Cipher — The US Army's Disk Device, and How It Falls",
+        "desc": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing.",
         "h1": "The M-94 Wheel Cipher",
         "tagline": "Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.",
         "preset": "vigenere",
@@ -1648,6 +1730,86 @@ def html_escape(s: str) -> str:
              .replace(">", "&gt;").replace('"', "&quot;"))
 
 
+def not_found_page() -> str:
+    """The custom 404 GitHub Pages serves for any path that does not exist.
+
+    Written by hand rather than through page() because it is deliberately not
+    a normal page: noindex (a 404 in the sitemap or with a canonical would be
+    a lie), no solver markup, no structured data — just the wiki chrome, the
+    full sidebar so search still works, and links to the places people were
+    almost certainly trying to reach. It goes into the link checker like
+    every other page, but not into the sitemap.
+    """
+    header = f"""<header class="site-header site-header-compact">
+  <div class="wrap wrap-wide">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
+    {nav('404.html')}
+  </div>
+</header>"""
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page Not Found — Buttcrack Cipher Wiki</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css">
+{adsense_head()}{analytics()}
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+{header}
+
+<main class="wrap wrap-wide" id="main-content">
+  <div class="wiki-layout">
+{wiki_sidebar('404.html')}
+    <div class="wiki-content">
+      <article class="wiki-article">
+        <h1 class="wiki-title">Page not found</h1>
+        <p class="wiki-from">Buttcrack Cipher Wiki</p>
+        <div class="wiki-article-body">
+          <p>There is no page at this address. It may have been mistyped, or it
+          never existed — the wiki is a fixed set of articles, so nothing was
+          moved here.</p>
+          <ul>
+            <li><a href="cipher-wiki.html">The cipher wiki main page</a> — the
+            front door, with the featured article and the day's facts.</li>
+            <li><a href="cipher-wiki.html#families">All fifty cipher articles</a>,
+            grouped by family.</li>
+            <li><a href="index.html">The cipher solver</a> — paste a puzzle and
+            it works out the cipher, the key and the plaintext.</li>
+            <li><a href="downloads.html">Printable puzzle books</a>, if a
+            pencil-and-paper cryptogram was the errand.</li>
+          </ul>
+          <p>Or search the wiki from the box in the sidebar — every article on
+          the site is in it.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="wiki-index.js"></script>
+<script src="wiki.js"></script>
+</body>
+</html>
+"""
+
+
 def main() -> None:
     products, sampler = build_products()
     print(f"built {len(products)} puzzle book PDF(s)" + (" + free sampler" if sampler else ""))
@@ -1791,6 +1953,15 @@ def main() -> None:
         if f'href="{slug}"' not in hub_html:
             raise SystemExit(f"{slug} is not linked from the wiki main page")
     print(f"checked: every cipher has a linked wiki page ({n_ciphers} of them)")
+
+    # GitHub Pages serves a custom 404 for any path that does not exist,
+    # including mistyped cipher names. It is generated (so its links are
+    # checked like everything else) but noindex, so it stays out of the
+    # sitemap.
+    not_found = not_found_page()
+    (HERE / "404.html").write_text(not_found)
+    written["404.html"] = not_found
+    print(f"wrote {'404.html':38} {len(not_found):>6} bytes (custom not-found page)")
 
     # And the same guarantee for every internal link on every page: nothing
     # ships unless every href resolves.

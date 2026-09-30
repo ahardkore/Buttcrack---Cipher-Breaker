@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls</title>
-<meta name="description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.">
+<title>M-94 Wheel Cipher — The US Army's Disk Device, and How It Falls</title>
+<meta name="description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing.">
 <link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/m94-wheel-cipher.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
-<meta property="og:title" content="M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls">
-<meta property="og:description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.">
-<meta property="og:type" content="website">
+<meta property="og:title" content="M-94 Wheel Cipher — The US Army's Disk Device, and How It Falls">
+<meta property="og:description" content="The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/m94-wheel-cipher.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "M-94 Wheel Cipher \u2014 How the US Army's Disk Device Worked and How It Falls", "description": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "The M-94 Wheel Cipher", "description": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Wheel and rotor devices"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What was the M-94?", "acceptedAnswer": {"@type": "Answer", "text": "A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795."}}, {"@type": "Question", "name": "How does it differ from Vigen\u00e8re?", "acceptedAnswer": {"@type": "Answer", "text": "Vigen\u00e8re shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works \u2014 each column needs its full mixed alphabet recovered."}}, {"@type": "Question", "name": "Can this page break an M-94 message?", "acceptedAnswer": {"@type": "Answer", "text": "No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint."}}, {"@type": "Question", "name": "Why is disk 17 famous?", "acceptedAnswer": {"@type": "Answer", "text": "One of the standard disks spells ARMYOFTHEUS \u2014 'ARMY OF THE US' \u2014 around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret."}}, {"@type": "Question", "name": "How much ciphertext does a break need?", "acceptedAnswer": {"@type": "Answer", "text": "About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven \u2014 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds."}}]}</script>
 </head>
 <body data-preset="vigenere">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header site-header-compact">
   <div class="wrap wrap-wide">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,7 +28,7 @@
   </div>
 </header>
 
-<main class="wrap wrap-wide">
+<main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
 <aside class="wiki-side" aria-label="Wiki navigation">
       <div class="wiki-search" role="search">
@@ -37,7 +39,7 @@
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation</summary>
+          <summary>Navigation<span class="side-count">3</span></summary>
           <ul>
             <li><a href="cipher-wiki.html">Main page</a></li>
             <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
@@ -101,14 +103,14 @@
       </details>
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking</summary>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
           <ul>
 <li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
         <details class="wiki-side-group" open>
-          <summary>Solver &amp; shop</summary>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
 <li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
           </ul>
@@ -136,7 +138,7 @@
           
           <nav class="wiki-toc" aria-label="Contents">
         <div class="wiki-toc-title">Contents</div>
-        <ol><li><a href="#the-device">The device</a></li><li><a href="#why-it-is-stronger-than-it-looks">Why it is stronger than it looks</a></li><li><a href="#recognising-wheel-cipher-ciphertext">Recognising wheel-cipher ciphertext</a></li><li><a href="#how-the-orders-fall">How the orders fall</a></li><li><a href="#honest-limits">Honest limits</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ol>
+        <ul><li><a href="#the-device">The device</a></li><li><a href="#why-it-is-stronger-than-it-looks">Why it is stronger than it looks</a></li><li><a href="#recognising-wheel-cipher-ciphertext">Recognising wheel-cipher ciphertext</a></li><li><a href="#how-the-orders-fall">How the orders fall</a></li><li><a href="#honest-limits">Honest limits</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
       </nav>
     <h2 id="the-device">The device<a class="section-anchor" href="#the-device" aria-label="Link to this section">§</a></h2>
     <p>Twenty-five brass disks, each about an inch and a half across, threaded onto a spindle in a
@@ -191,11 +193,8 @@
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
     <details class="faq"><summary>What was the M-94?</summary><p>A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795.</p></details><details class="faq"><summary>How does it differ from Vigenère?</summary><p>Vigenère shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works — each column needs its full mixed alphabet recovered.</p></details><details class="faq"><summary>Can this page break an M-94 message?</summary><p>No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint.</p></details><details class="faq"><summary>Why is disk 17 famous?</summary><p>One of the standard disks spells ARMYOFTHEUS — 'ARMY OF THE US' — around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret.</p></details><details class="faq"><summary>How much ciphertext does a break need?</summary><p>About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven — 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds.</p></details>
         </div>
-<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a> | <a href="cipher-wiki.html#family-wheel">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
-        <div class="wiki-article-note">The facts in this article are generated from
-          <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>'s cipher registry when the site is built, so they
-          describe the implementation you can run on this page. Registry-generated content is
-          checked against the code; the history is editorial.</div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
       </article>
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">

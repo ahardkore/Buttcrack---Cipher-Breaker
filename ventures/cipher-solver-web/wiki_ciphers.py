@@ -514,6 +514,28 @@ def _html_escape(s: str) -> str:
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
+def _meta_description(title: str, description: str) -> str:
+    """A meta description crawlers will show whole: aim for <= 165 characters.
+
+    The full "How to recognise it, a worked example..." tail only fits when
+    the registry description is short; otherwise the first sentence or so of
+    the registry text stands alone, cut at a word boundary so the snippet
+    never ends mid-word.
+    """
+    tail = " How to recognise it, a worked example, and the attack that breaks it."
+    full = f"{title}: {description}{tail}"
+    if len(full) <= 165:
+        return full
+    short = f"{title}: {description}"
+    if len(short) <= 165:
+        return short
+    room = 163 - len(title) - 2
+    cut = short[: room + 1]
+    if " " in cut[room - 40:]:
+        cut = cut[: cut.rfind(" ")]
+    return f"{cut.rstrip(' ,;:.')}…".replace("….", "…")
+
+
 _COST_WORDS = {1.0: "cheap", 3.0: "moderate", 10.0: "expensive", 30.0: "brutal"}
 
 
@@ -574,7 +596,7 @@ def categories_for(info) -> list[tuple[str, str]]:
     cats.append((
         "Breakable in the browser" if info.name in BROWSER_BREAKABLE
         else "Full-version ciphers",
-        "cipher-wiki.html#family-" + info.family.value,
+        "cipher-wiki.html#families",
     ))
     cats.append(("Cipher wiki", "cipher-wiki.html"))
     return cats
@@ -688,8 +710,7 @@ def cipher_page_specs() -> list[dict]:
         specs.append({
             "slug": wiki_slug(info.name),
             "title": f"{info.title} — How It Works and How It Is Broken",
-            "desc": (f"{info.title}: {info.description} How to recognise it, "
-                     f"a worked example, and the attack that breaks it."),
+            "desc": _meta_description(info.title, info.description),
             "h1": info.title,
             "tagline": notes.get("how", info.description)[:150],
             "preset": FAMILY_PRESETS.get(family, "caesar"),

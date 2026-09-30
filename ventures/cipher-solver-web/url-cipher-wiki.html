@@ -9,12 +9,14 @@
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="URL encoding — How It Works and How It Is Broken">
 <meta property="og:description" content="URL encoding: Bytes as %XX hex escapes. How to recognise it, a worked example, and the attack that breaks it.">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/url-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "URL encoding \u2014 How It Works and How It Is Broken", "description": "URL encoding: Bytes as %XX hex escapes. How to recognise it, a worked example, and the attack that breaks it.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "URL encoding", "description": "URL encoding: Bytes as %XX hex escapes. How to recognise it, a worked example, and the attack that breaks it.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Encodings"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the URL encoding broken?", "acceptedAnswer": {"@type": "Answer", "text": "Decode it."}}, {"@type": "Question", "name": "What key does the URL encoding use?", "acceptedAnswer": {"@type": "Answer", "text": "none. There are 1 possible keys."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 3 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a URL encoding on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The full version of the solver searches it \u2014 pip install buttcrack, then buttcrack \"&lt;ciphertext&gt;\"."}}]}</script>
 </head>
 <body data-preset="layered">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header site-header-compact">
   <div class="wrap wrap-wide">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,7 +28,7 @@
   </div>
 </header>
 
-<main class="wrap wrap-wide">
+<main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
 <aside class="wiki-side" aria-label="Wiki navigation">
       <div class="wiki-search" role="search">
@@ -37,7 +39,7 @@
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation</summary>
+          <summary>Navigation<span class="side-count">3</span></summary>
           <ul>
             <li><a href="cipher-wiki.html">Main page</a></li>
             <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
@@ -101,14 +103,14 @@
       </details>
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking</summary>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
           <ul>
 <li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
         <details class="wiki-side-group" open>
-          <summary>Solver &amp; shop</summary>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
 <li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
           </ul>
@@ -137,7 +139,7 @@
     <p>Bytes as %XX hex escapes.</p>
           <nav class="wiki-toc" aria-label="Contents">
         <div class="wiki-toc-title">Contents</div>
-        <ol><li><a href="#a-worked-example">A worked example</a></li><li><a href="#how-it-is-broken">How it is broken</a></li><li><a href="#history-and-context">History and context</a></li><li><a href="#see-also">See also</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ol>
+        <ul><li><a href="#a-worked-example">A worked example</a></li><li><a href="#how-it-is-broken">How it is broken</a></li><li><a href="#history-and-context">History and context</a></li><li><a href="#see-also">See also</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
       </nav>
     <h2 id="a-worked-example">A worked example<a class="section-anchor" href="#a-worked-example" aria-label="Link to this section">§</a></h2>
     <p>Encrypting a sample with the cipher itself, at build time:</p>
@@ -163,11 +165,8 @@
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
     <details class="faq"><summary>How is the URL encoding broken?</summary><p>Decode it.</p></details><details class="faq"><summary>What key does the URL encoding use?</summary><p>none. There are 1 possible keys.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 3 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a URL encoding on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The full version of the solver searches it — pip install buttcrack, then buttcrack "&lt;ciphertext&gt;".</p></details>
         </div>
-<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-encoding">Encodings</a> | <a href="cipher-wiki.html#family-encoding">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
-        <div class="wiki-article-note">The facts in this article are generated from
-          <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>'s cipher registry when the site is built, so they
-          describe the implementation you can run on this page. Registry-generated content is
-          checked against the code; the history is editorial.</div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-encoding">Encodings</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
       </article>
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">

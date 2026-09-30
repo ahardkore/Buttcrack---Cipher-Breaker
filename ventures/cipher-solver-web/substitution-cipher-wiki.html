@@ -9,12 +9,14 @@
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Substitution Cipher Explained — Cryptogram Patterns and Hill Climbing">
 <meta property="og:description" content="How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Substitution Cipher Explained \u2014 Cryptogram Patterns and Hill Climbing", "description": "How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Substitution Ciphers", "description": "How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Monoalphabetic substitution"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many keys does a substitution cipher have?", "acceptedAnswer": {"@type": "Answer", "text": "A full mixed alphabet has 26 factorial possible permutations, about 4 \u00d7 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea."}}, {"@type": "Question", "name": "What patterns survive a substitution?", "acceptedAnswer": {"@type": "Answer", "text": "Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses."}}, {"@type": "Question", "name": "Why do solvers sometimes miss rare letters?", "acceptedAnswer": {"@type": "Answer", "text": "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity."}}]}</script>
 </head>
 <body data-preset="substitution">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header site-header-compact">
   <div class="wrap wrap-wide">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,7 +28,7 @@
   </div>
 </header>
 
-<main class="wrap wrap-wide">
+<main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
 <aside class="wiki-side" aria-label="Wiki navigation">
       <div class="wiki-search" role="search">
@@ -37,7 +39,7 @@
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation</summary>
+          <summary>Navigation<span class="side-count">3</span></summary>
           <ul>
             <li><a href="cipher-wiki.html">Main page</a></li>
             <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
@@ -101,14 +103,14 @@
       </details>
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking</summary>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
           <ul>
 <li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
         <details class="wiki-side-group" open>
-          <summary>Solver &amp; shop</summary>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
 <li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
           </ul>
@@ -136,7 +138,7 @@
           
           <nav class="wiki-toc" aria-label="Contents">
         <div class="wiki-toc-title">Contents</div>
-        <ol><li><a href="#a-scrambled-alphabet-used-consistently">A scrambled alphabet, used consistently</a></li><li><a href="#why-it-still-falls">Why it still falls</a></li><li><a href="#from-hand-solving-to-hill-climbing">From hand solving to hill climbing</a></li><li><a href="#use-enough-text">Use enough text</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ol>
+        <ul><li><a href="#a-scrambled-alphabet-used-consistently">A scrambled alphabet, used consistently</a></li><li><a href="#why-it-still-falls">Why it still falls</a></li><li><a href="#from-hand-solving-to-hill-climbing">From hand solving to hill climbing</a></li><li><a href="#use-enough-text">Use enough text</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
       </nav>
     <h2 id="a-scrambled-alphabet-used-consistently">A scrambled alphabet, used consistently<a class="section-anchor" href="#a-scrambled-alphabet-used-consistently" aria-label="Link to this section">§</a></h2>
     <p>In a monoalphabetic substitution cipher, each plaintext letter maps to one different
@@ -168,11 +170,8 @@
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
     <details class="faq"><summary>How many keys does a substitution cipher have?</summary><p>A full mixed alphabet has 26 factorial possible permutations, about 4 × 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea.</p></details><details class="faq"><summary>What patterns survive a substitution?</summary><p>Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses.</p></details><details class="faq"><summary>Why do solvers sometimes miss rare letters?</summary><p>A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity.</p></details>
         </div>
-<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a> | <a href="cipher-wiki.html#family-substitution">Breakable in the browser</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
-        <div class="wiki-article-note">The facts in this article are generated from
-          <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>'s cipher registry when the site is built, so they
-          describe the implementation you can run on this page. Registry-generated content is
-          checked against the code; the history is editorial.</div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a> | <a href="cipher-wiki.html#families">Breakable in the browser</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
       </article>
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">

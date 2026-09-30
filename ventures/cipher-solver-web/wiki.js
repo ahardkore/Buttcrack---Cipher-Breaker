@@ -63,29 +63,79 @@
     var go = root.querySelector('.wiki-search-go');
     if (!input || !box) return;
 
+    /* Arrow keys walk the results, Enter follows the highlighted one, Escape
+       closes — the combobox pattern keyboard users expect from a search box.
+       The highlighted row gets .is-active rather than reusing .first, because
+       .first is what mouse users see on a fresh query. */
+    var active = -1;
+
+    function rows() {
+      return box.querySelectorAll('.wiki-search-hit');
+    }
+
+    function setActive(n) {
+      var r = rows();
+      if (!r.length) { active = -1; return; }
+      active = (n + r.length) % r.length;
+      for (var i = 0; i < r.length; i++) {
+        r[i].classList.toggle('is-active', i === active);
+      }
+    }
+
+    function hideBox() {
+      box.hidden = true;
+      box.innerHTML = '';
+      active = -1;
+      input.setAttribute('aria-expanded', 'false');
+    }
+
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-expanded', 'false');
+    input.setAttribute('aria-autocomplete', 'list');
+    if (!box.id) box.id = 'wiki-search-results-' + Math.floor(Math.random() * 1e6).toString(36);
+    input.setAttribute('aria-controls', box.id);
+
     input.addEventListener('input', function () {
       var q = input.value;
-      if (!q.trim()) { box.hidden = true; box.innerHTML = ''; return; }
+      if (!q.trim()) { hideBox(); return; }
       render(box, search(q), q);
+      input.setAttribute('aria-expanded', 'true');
+      active = -1;
     });
     input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        var hits = search(input.value);
-        if (hits.length) window.location.href = hits[0].s;
+      var r = rows();
+      if (e.key === 'ArrowDown' && r.length) {
+        e.preventDefault();
+        setActive(active + 1);
+      } else if (e.key === 'ArrowUp' && r.length) {
+        e.preventDefault();
+        setActive(active - 1);
+      } else if (e.key === 'Enter') {
+        var all = search(input.value);
+        if (active >= 0 && r[active]) window.location.href = r[active].getAttribute('href');
+        else if (all.length) window.location.href = all[0].s;
       } else if (e.key === 'Escape') {
-        box.hidden = true;
+        hideBox();
       }
     });
-    input.addEventListener('focus', function () {
-      if (input.value.trim()) render(box, search(input.value), input.value);
+    input.addEventListener('blur', function () {
+      /* A click on a result fires blur first; give the click a beat. */
+      setTimeout(function () { hideBox(); }, 150);
     });
+    input.addEventListener('focus', function () {
+      if (input.value.trim()) {
+        render(box, search(input.value), input.value);
+        input.setAttribute('aria-expanded', 'true');
+      }
+    });
+    box.addEventListener('mousedown', function (e) { e.preventDefault(); });
     document.addEventListener('click', function (e) {
-      if (!root.contains(e.target)) box.hidden = true;
+      if (!root.contains(e.target)) hideBox();
     });
     if (go) {
       go.addEventListener('click', function () {
-        var hits = search(input.value);
-        if (hits.length) window.location.href = hits[0].s;
+        var found = search(input.value);
+        if (found.length) window.location.href = found[0].s;
         else input.focus();
       });
     }
