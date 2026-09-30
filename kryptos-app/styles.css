@@ -498,3 +498,22 @@ footer {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+/* --- provenance banner ---------------------------------------------------
+   Three states, and the difference between them is the point: "verified"
+   means this page re-derived the plaintext in front of you, "published"
+   means somebody else's answer that nothing here re-derives, "unsolved"
+   means unsolved. The app used to show all of them identically. */
+.verification { display: flex; flex-direction: column; gap: 4px; margin: 0 0 20px;
+  padding: 12px 14px; border-radius: 8px; border-left: 3px solid var(--border);
+  background: rgba(255,255,255,.03); font-size: 13px; line-height: 1.55; }
+.verification strong { font-size: 11px; letter-spacing: .09em; }
+.verification span { color: var(--text-dim); }
+.verification-verified { border-left-color: #3fb950; background: rgba(63,185,80,.08); }
+.verification-verified strong { color: #3fb950; }
+.verification-published { border-left-color: #d29922; background: rgba(210,153,34,.08); }
+.verification-published strong { color: #d29922; }
+.verification-unsolved { border-left-color: #8b949e; background: rgba(139,148,158,.08); }
+.verification-unsolved strong { color: #8b949e; }
+.verification-failed { border-left-color: #f85149; background: rgba(248,81,73,.10); }
+.verification-failed strong { color: #f85149; }

@@ -330,21 +330,30 @@ QUICK_BREAKS: tuple[tuple[str, str, Any, str, float, str | None], ...] = (
     ("variant Beaufort", "variant_beaufort", "KEYS", PROSE, 15.0, None),
     ("Gronsfeld", "gronsfeld", "31415", PROSE, 15.0, None),
     ("Trithemius", "trithemius", {"start": 2, "step": 3}, PROSE, 15.0, None),
+    ("Porta", "porta", "LANTERN", PROSE, 15.0, "porta"),
     ("autokey", "autokey", "PRIMER", PROSE, 20.0, None),
     ("columnar transposition", "columnar", "SPIES", PROSE, 20.0, None),
     ("rail fence", "rail_fence", 4, PROSE, 15.0, None),
     ("route transposition", "route", {"width": 7, "pattern": "spiral"}, PROSE, 20.0, None),
     ("skip / scytale", "skip", 3, PROSE, 15.0, None),
+    ("Myszkowski transposition", "myszkowski", "TOMATO", PROSE, 20.0, "myszkowski"),
+    ("AMSCO transposition", "amsco", "ZEBRA", PROSE, 20.0, "amsco"),
+    ("Hill cipher (2x2)", "hill", "HILL", PROSE, 20.0, "hill"),
     ("Morse code", "morse", None, PROSE, 15.0, "morse"),
     ("A1Z26", "a1z26", None, PROSE, 15.0, "a1z26"),
     ("Polybius square", "polybius", None, PROSE, 15.0, None),
     ("Bacon cipher", "bacon", None, PROSE, 15.0, "bacon"),
+    ("tap code", "tap_code", None, PROSE, 15.0, "tap_code"),
+    ("NATO spelling alphabet", "nato", None, PROSE, 15.0, "nato"),
+    ("braille", "braille", None, PROSE, 15.0, "braille"),
+    ("Baudot / ITA2", "baudot", None, PROSE, 15.0, "baudot"),
     ("base64", "base64", None, PROSE, 10.0, "base64"),
     ("base32", "base32", None, PROSE, 10.0, "base32"),
     ("hex", "base16", None, PROSE, 10.0, "base16"),
     ("base58", "base58", None, PROSE, 10.0, "base58"),
     ("base85", "base85", None, PROSE, 10.0, "base85"),
     ("URL encoding", "url", None, PROSE, 10.0, "url"),
+    ("uuencode", "uuencode", None, PROSE, 10.0, "uuencode"),
     ("binary", "binary", None, PROSE, 15.0, "binary"),
     ("single-byte XOR", "xor_single", 0x42, PROSE, 15.0, "base16 -> xor_single"),
     ("repeating-key XOR", "xor_repeating", "KEY", PROSE, 20.0, "base16 -> xor_repeating"),
@@ -362,6 +371,18 @@ STACK_BREAKS: tuple[tuple[str, str, Any, float], ...] = (
     ("base64 over hex over XOR", "base64+xor_repeating", "LAMP", 25.0),
     ("base64 over Morse", "base64+morse", None, 20.0),
     ("hex over Atbash", "base16+atbash", None, 15.0),
+    # Cipher-on-cipher: a transposition or a reflection leaves another cipher
+    # behind, which the solver has to unwrap rather than peel.
+    ("rail fence over Caesar", "rail_fence+caesar", 5, 25.0),
+    ("reverse over Vigenere", "reverse+vigenere", "LAMP", 25.0),
+    # The advertised depth, end to end: five steps, two of them ciphers.
+    ("five layers: hex, base64, Morse, reverse, Caesar",
+     "base16+base64+morse+reverse+caesar", 7, 25.0),
+    # Six *ciphers*, no encodings: five transpositions over a ROT13.  Solvable
+    # because transpositions and monoalphabetic substitutions commute, so the
+    # whole stack is one permutation plus one substitution.
+    ("six ciphers: reverse, rail fence, skip, reverse, rail fence, ROT13",
+     "reverse+rail_fence+skip+reverse+rail_fence+rot13", None, 30.0),
 )
 
 #: Expensive searches, only run with ``--slow``.  The last field is what the
@@ -381,6 +402,13 @@ SLOW_BREAKS: tuple[tuple[str, str, Any, str, float, str | None, str], ...] = (
     # useful; what must hold is that the cipher is named and that handing over
     # the key produces the exact plaintext.
     ("Bifid", "bifid", {"key": "MONARCHY", "period": 7}, LONG_PROSE * 2, 90.0, None, "hinted"),
+    # Four-square has fifty key cells -- two Playfair grids -- and trifid has a
+    # 27-cell cube *and* a period, so neither unhinted search finishes from
+    # scratch.  Both are graded like Bifid: name the cipher, and prove the
+    # exact plaintext comes back when the key is supplied.
+    ("Four-square", "four_square", {"top": "EXAMPLE", "bottom": "KEYWORD"},
+     LONG_PROSE * 2, 60.0, None, "hinted"),
+    ("Trifid", "trifid", {"key": "TRIFID", "period": 5}, LONG_PROSE * 2, 60.0, None, "hinted"),
     # The wheel cipher needs 250+ letters and a real slice of time: measured
     # ~2-in-3 solves inside a 20 s slice at 250 letters, better at 500.
     ("M-94 wheel cipher", "m94",

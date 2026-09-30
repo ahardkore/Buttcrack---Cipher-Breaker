@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import string
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -28,7 +29,20 @@ class Candidate:
 
     @property
     def key_repr(self) -> str:
-        """Human-readable key, e.g. ``shift=7``, ``key=LEMON``, ``a=5,b=8``."""
+        """Human-readable key, e.g. ``shift=7``, ``key=LEMON``, ``a=5,b=8``.
+
+        Memoised: `sort_key` includes the key's length as a tie-break, so this
+        was being rebuilt -- dict sort, per-value formatting, string join --
+        on every comparison of every ranking pass.
+        """
+        cached = self.__dict__.get("_key_repr")
+        if cached is not None:
+            return cached
+        rendered = self._render_key()
+        self.__dict__["_key_repr"] = rendered
+        return rendered
+
+    def _render_key(self) -> str:
         if self.key is None:
             return "-"
         if isinstance(self.key, dict):
@@ -147,17 +161,57 @@ def key_entropy_bits(key: Any) -> float:
 MIN_LETTERS_PER_COLUMN_TRUST = 6
 
 
-def evidence_shortfall(plaintext: str, key: Any, columns: int | None = None) -> tuple[float, int]:
+#: Bits of freedom charged for each *cipher* step in a decode chain.  A step is
+#: two choices the search made -- *which* cipher (about 5.5 bits with forty-six
+#: of them in the registry) and which key for it (4-9 bits for the cheap ones) --
+#: and choices spend evidence exactly as key material does.  Twelve bits is the
+#: sum of those two, rounded down.
+#:
+#: Without this, deep search quietly becomes dishonest: three cheap ciphers
+#: stacked on 35 characters of noise will find something English-shaped, because
+#: 20-odd rail fence readings times 676 progressive keys is far more freedom
+#: than eighteen letters can pay for.
+#:
+#: Encodings are not charged.  Base64 either decodes or it does not, so peeling
+#: one is a *verified* step rather than a guess, which is why a six-layer
+#: encoding stack stays believable while a three-cipher chain on 35 characters
+#: does not.
+CHAIN_STEP_BITS = 12.0
+
+#: Steps that cost nothing: self-verifying structural decodes.
+VERIFIED_STEPS = frozenset({
+    "base64", "base32", "base16", "base58", "base85", "url", "binary",
+    "decimal_ascii", "quoted_printable", "uuencode", "morse", "bacon",
+    "bacon_case", "a1z26", "polybius", "tap_code", "nato", "braille", "baudot",
+})
+
+
+def chain_bits(steps: Sequence[str] | None) -> float:
+    """Bits of freedom the decode chain itself used up."""
+    if not steps:
+        return 0.0
+    return CHAIN_STEP_BITS * sum(1 for step in steps if step not in VERIFIED_STEPS)
+
+
+def evidence_shortfall(
+    plaintext: str,
+    key: Any,
+    columns: int | None = None,
+    steps: Sequence[str] | None = None,
+) -> tuple[float, int]:
     """Return ``(key_bits, letters)`` when the text is too short to trust the key.
 
     ``(0.0, n)`` means the evidence is sufficient.  ``columns`` is the number of
     independently solved key symbols for a periodic cipher; when it is given, the
-    letters-per-column rule applies on top of the entropy rule.
+    letters-per-column rule applies on top of the entropy rule.  ``steps`` is the
+    decode chain, whose unverified steps are charged as extra key material --
+    without that, a deep search can stack three cheap ciphers on a short text,
+    find something English-shaped in the noise, and report it with confidence.
     """
     from .text import letters_only
 
     letters = len(letters_only(plaintext))
-    bits = key_entropy_bits(key)
+    bits = key_entropy_bits(key) + chain_bits(steps)
     if columns and columns > 0 and letters < MIN_LETTERS_PER_COLUMN_TRUST * columns:
         return max(bits, columns * _LETTER_BITS), letters
     if bits and letters < EVIDENCE_RATIO * bits:

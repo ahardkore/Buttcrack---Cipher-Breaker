@@ -704,3 +704,441 @@ class RouteTransposition(Cipher):
 
     def likelihood(self, text: str, ctx: CrackContext) -> float:
         return transposition_likelihood(text, ctx) * 0.8
+
+
+def climb_orders(
+    rebuild,
+    candidates,
+    ctx: CrackContext,
+    *,
+    restarts: int = 6,
+    seed: int = 4242,
+):
+    """Swap hill climbing over a space of transposition keys.
+
+    ``candidates`` supplies the starting keys (a generator of hashable keys) and
+    ``rebuild(key) -> str`` reconstructs the plaintext.  Neighbours are produced
+    by swapping two positions, which is the move that matters for every
+    permutation-shaped transposition key.
+
+    Shared by AMSCO and Myszkowski rather than reimplemented in each: the
+    interesting part of those ciphers is the grid geometry, not the search.
+    """
+    rng = random.Random(seed)
+    best_key, best_fit = None, float("-inf")
+    starts = list(candidates)
+    rng.shuffle(starts)
+    for start in starts[:restarts]:
+        if ctx.expired():
+            break
+        current = list(start)
+        fit = ctx.model.search_fitness(rebuild(tuple(current)))
+        improved = True
+        while improved and not ctx.expired():
+            improved = False
+            for i, j in combinations(range(len(current)), 2):
+                trial = list(current)
+                trial[i], trial[j] = trial[j], trial[i]
+                trial_fit = ctx.model.search_fitness(rebuild(tuple(trial)))
+                if trial_fit > fit + 1e-9:
+                    current, fit, improved = trial, trial_fit, True
+        if fit > best_fit:
+            best_key, best_fit = tuple(current), fit
+    return best_key, best_fit
+
+
+class Myszkowski(Cipher):
+    """Myszkowski transposition: a columnar key with *repeated* letters.
+
+    Emile Myszkowski's 1902 variant answers the obvious objection to columnar
+    transposition -- that a keyword with repeated letters has no defined column
+    order.  His rule: columns whose key letters are equal are read *together*,
+    left to right within each row, instead of one after the other.  A key like
+    ``TOMATO`` therefore has four read groups (A, M, O-O, T-T) rather than six
+    columns, and the doubled groups interleave their letters.
+
+    That interleaving is what makes it more than a relabelled columnar cipher:
+    the ciphertext is not a concatenation of whole columns, so an attack that
+    assumes segment boundaries at multiples of the column height fails.
+    """
+
+    info = CipherInfo(
+        name="myszkowski",
+        title="Myszkowski transposition",
+        family=Family.TRANSPOSITION,
+        key_type="keyword with repeats",
+        keyspace=None,
+        deterministic=False,
+        min_length=24,
+        cost=EXPENSIVE,
+        aliases=("myszkowski_transposition",),
+        description="Columnar transposition where equal key letters are read together row by row.",
+        example_key="TOMATO",
+    )
+
+    max_width = 10
+
+    # -- key handling ------------------------------------------------------- #
+    @staticmethod
+    def normalise_key(key: Any) -> tuple[int, ...]:
+        """Key -> a rank per column, ties preserved (``TOMATO`` -> 3,2,1,0,3,2)."""
+        if isinstance(key, dict):
+            key = key.get("key") or key.get("ranks")
+        if isinstance(key, str):
+            letters = letters_only(key.upper())
+            order = sorted(set(letters))
+            return tuple(order.index(c) for c in letters)
+        return tuple(int(r) for r in key)
+
+    @staticmethod
+    def _groups(ranks: tuple[int, ...]) -> list[list[int]]:
+        """Column indices per read group, in rank order."""
+        return [
+            [i for i, r in enumerate(ranks) if r == rank]
+            for rank in sorted(set(ranks))
+        ]
+
+    # -- transforms --------------------------------------------------------- #
+    def encrypt(self, plaintext: str, key: Any = "TOMATO") -> str:
+        stream = self.prepare(plaintext)
+        ranks = self.normalise_key(key)
+        width = len(ranks)
+        rows = [stream[i : i + width] for i in range(0, len(stream), width)]
+        out = []
+        for group in self._groups(ranks):
+            if len(group) == 1:
+                col = group[0]
+                out += [row[col] for row in rows if col < len(row)]
+            else:
+                for row in rows:
+                    out += [row[col] for col in group if col < len(row)]
+        return "".join(out)
+
+    def decrypt(self, ciphertext: str, key: Any = "TOMATO") -> str:
+        stream = self.prepare(ciphertext)
+        return self._rebuild(stream, self.normalise_key(key))
+
+    def _rebuild(self, stream: str, ranks: tuple[int, ...]) -> str:
+        width = len(ranks)
+        if width < 2:
+            return stream
+        n = len(stream)
+        full, rem = divmod(n, width)
+        # Which columns get the extra letter of a ragged last row.
+        heights = [full + 1 if col < rem else full for col in range(width)]
+        grid: list[list[str]] = [[""] * width for _ in range(full + (1 if rem else 0))]
+        pos = 0
+        for group in self._groups(ranks):
+            if len(group) == 1:
+                col = group[0]
+                for row in range(heights[col]):
+                    if pos < n:
+                        grid[row][col] = stream[pos]
+                        pos += 1
+            else:
+                for row in range(len(grid)):
+                    for col in group:
+                        if row < heights[col] and pos < n:
+                            grid[row][col] = stream[pos]
+                            pos += 1
+        return "".join("".join(row) for row in grid)
+
+    # -- cryptanalysis ------------------------------------------------------ #
+    #: Widths whose whole key space is enumerated.  The number of distinct
+    #: Myszkowski keys of width w is the ordered Bell number: 4,683 at w=6 and
+    #: 47,293 at w=7, so 6 is where enumeration stops paying.
+    exhaustive_width = 6
+
+    @staticmethod
+    def rank_vectors(width: int) -> Iterator[tuple[int, ...]]:
+        """Every distinct Myszkowski key of this width.
+
+        A key is an assignment of columns to *ordered groups*: which group each
+        column belongs to, and in what order the groups are read.  Two keys that
+        differ only in the labels they use are the same key, so the enumeration
+        is canonicalised -- the groups used are always 0..k-1.  That makes this
+        the ordered Bell number of ``width``, not ``width**width``.
+        """
+        for groups in range(2, width + 1):
+            wanted = set(range(groups))
+            for ranks in product(range(groups), repeat=width):
+                # Surjective onto 0..groups-1: a key that skips a group number
+                # is the same key with the groups relabelled, already emitted
+                # for a smaller ``groups``.
+                if set(ranks) == wanted:
+                    yield ranks
+
+    def _climb_ranks(
+        self, stream: str, width: int, ctx: CrackContext, rng: random.Random
+    ) -> tuple[tuple[int, ...] | None, float]:
+        """Hill climb for widths too large to enumerate.
+
+        The moves have to change the *grouping*, not just the order: swapping
+        two entries of the rank vector can never turn three groups into four.
+        So a step may swap two columns, move one column into another group, or
+        give a column a group of its own.
+        """
+        best_key, best_fit = None, float("-inf")
+        for _ in range(8):
+            if ctx.expired():
+                break
+            groups = rng.randint(max(2, width - 3), width)
+            current = [rng.randrange(groups) for _ in range(width)]
+            current = list(self._canonical(tuple(current)))
+            fit = ctx.model.search_fitness(self._rebuild(stream, tuple(current)))
+            improved = True
+            while improved and not ctx.expired():
+                improved = False
+                neighbours: list[list[int]] = []
+                for i, j in combinations(range(width), 2):
+                    trial = list(current)
+                    trial[i], trial[j] = trial[j], trial[i]
+                    neighbours.append(trial)
+                for i in range(width):
+                    for rank in range(max(current) + 2):
+                        if rank == current[i]:
+                            continue
+                        trial = list(current)
+                        trial[i] = rank
+                        neighbours.append(trial)
+                for trial in neighbours:
+                    canonical = list(self._canonical(tuple(trial)))
+                    trial_fit = ctx.model.search_fitness(
+                        self._rebuild(stream, tuple(canonical))
+                    )
+                    if trial_fit > fit + 1e-9:
+                        current, fit, improved = canonical, trial_fit, True
+            if fit > best_fit:
+                best_key, best_fit = tuple(current), fit
+        return best_key, best_fit
+
+    @staticmethod
+    def _canonical(ranks: tuple[int, ...]) -> tuple[int, ...]:
+        """Relabel groups to 0..k-1 preserving their read order."""
+        order = sorted(set(ranks))
+        return tuple(order.index(r) for r in ranks)
+
+    def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
+        stream = self.prepare(ciphertext)
+        if len(stream) < self.info.min_length:
+            return
+        hint = ctx.hints.get("key")
+        if hint is not None:
+            ranks = self.normalise_key(hint)
+            yield ctx.candidate(
+                self.name, self._rebuild(stream, ranks), {"key": hint, "ranks": list(ranks)},
+                steps=ctx.steps, method="hint",
+            )
+            return
+        rng = random.Random(ctx.hints.get("seed", 4242))
+        results: list[Candidate] = []
+        widths = range(3, min(self.max_width, max(3, len(stream) // 6)) + 1)
+        for width in widths:
+            if ctx.expired():
+                break
+            if width <= self.exhaustive_width:
+                best_key, best_fit = None, float("-inf")
+                for i, ranks in enumerate(self.rank_vectors(width)):
+                    if len(set(ranks)) == width:
+                        continue  # no repeats: that is plain columnar
+                    if i % 64 == 0 and ctx.expired():
+                        break
+                    fit = ctx.model.search_fitness(self._rebuild(stream, ranks))
+                    if fit > best_fit:
+                        best_key, best_fit = ranks, fit
+                method = "exhaustive ordered-partition search"
+            else:
+                best_key, best_fit = self._climb_ranks(stream, width, ctx, rng)
+                method = "group-aware hill climbing on quadgram fitness"
+            if best_key is None:
+                continue
+            plain = self._rebuild(stream, best_key)
+            results.append(
+                ctx.candidate(
+                    self.name,
+                    plain,
+                    {"ranks": list(best_key), "width": width},
+                    steps=ctx.steps,
+                    width=width,
+                    groups=len(set(best_key)),
+                    method=method,
+                )
+            )
+            if results and min(results, key=Candidate.sort_key).confidence >= 0.9:
+                break
+        results.sort(key=Candidate.sort_key)
+        yield from results
+
+    def likelihood(self, text: str, ctx: CrackContext) -> float:
+        # Same fingerprint as any transposition, discounted: a text that is
+        # plain columnar should be reported as columnar, and this attack is the
+        # more expensive of the two.
+        return round(0.8 * transposition_likelihood(text, ctx), 4)
+
+
+class Amsco(Cipher):
+    """AMSCO: columnar transposition of alternating one- and two-letter chunks.
+
+    Instead of one letter per cell, the plaintext is cut into alternating runs
+    of one and two letters as it fills the grid, and the alternation continues
+    across row boundaries.  The columns are then read in key order as usual.
+    Because the cells have different sizes, the columns have different lengths,
+    and the attacker no longer knows where in the ciphertext each column starts
+    until the key is guessed -- which is the whole point of the design.
+
+    Two unknowns therefore have to be searched together: the column order and
+    whether the first cell took one letter or two.
+    """
+
+    info = CipherInfo(
+        name="amsco",
+        title="AMSCO transposition",
+        family=Family.TRANSPOSITION,
+        key_type="permutation keyword",
+        keyspace=None,
+        deterministic=False,
+        min_length=30,
+        cost=EXPENSIVE,
+        aliases=("amsco_transposition",),
+        description="Alternating 1-2 letter chunks written into a grid, columns read in key order.",
+        example_key="ZEBRA",
+    )
+
+    max_width = 8
+
+    @staticmethod
+    def _chunks(length: int, width: int, start: int) -> list[list[int]]:
+        """Chunk sizes per cell, row by row, for a text of ``length`` letters.
+
+        ``start`` is 1 or 2: the size of the very first cell.  Sizes alternate
+        along each row and continue alternating into the next row, which is what
+        makes the column lengths uneven.
+        """
+        rows: list[list[int]] = []
+        used = 0
+        size = start
+        while used < length:
+            row: list[int] = []
+            for _ in range(width):
+                if used >= length:
+                    row.append(0)
+                    continue
+                take = min(size, length - used)
+                row.append(take)
+                used += take
+                size = 3 - size  # 1 <-> 2
+            rows.append(row)
+        return rows
+
+    def _layout(self, stream: str, width: int, start: int) -> list[list[str]]:
+        """Fill the grid row by row with the alternating chunks."""
+        rows = self._chunks(len(stream), width, start)
+        grid: list[list[str]] = []
+        pos = 0
+        for sizes in rows:
+            row = []
+            for size in sizes:
+                row.append(stream[pos : pos + size])
+                pos += size
+            grid.append(row)
+        return grid
+
+    def encrypt(self, plaintext: str, key: Any = "ZEBRA", start: int = 1) -> str:
+        stream = self.prepare(plaintext)
+        order = key_to_order(key)
+        grid = self._layout(stream, len(order), start)
+        return "".join("".join(row[col] for row in grid) for col in order)
+
+    def decrypt(self, ciphertext: str, key: Any = "ZEBRA", start: int = 1) -> str:
+        stream = self.prepare(ciphertext)
+        if isinstance(key, dict):
+            start = int(key.get("start", start))
+            key = key.get("key") or key.get("order")
+        return self._rebuild(stream, tuple(key_to_order(key)), start)
+
+    def _rebuild(self, stream: str, order: tuple[int, ...], start: int) -> str:
+        width = len(order)
+        sizes = self._chunks(len(stream), width, start)
+        column_len = [sum(row[col] for row in sizes) for col in range(width)]
+        cuts: dict[int, str] = {}
+        pos = 0
+        for col in order:
+            cuts[col] = stream[pos : pos + column_len[col]]
+            pos += column_len[col]
+        heads = dict.fromkeys(range(width), 0)
+        out = []
+        for row in sizes:
+            for col in range(width):
+                size = row[col]
+                if not size:
+                    continue
+                out.append(cuts[col][heads[col] : heads[col] + size])
+                heads[col] += size
+        return "".join(out)
+
+    def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
+        stream = self.prepare(ciphertext)
+        if len(stream) < self.info.min_length:
+            return
+        hint = ctx.hints.get("key")
+        results: list[Candidate] = []
+        if hint is not None:
+            for start in (1, 2):
+                order = tuple(key_to_order(hint))
+                results.append(
+                    ctx.candidate(
+                        self.name, self._rebuild(stream, order, start),
+                        {"order": list(order), "start": start}, steps=ctx.steps, method="hint",
+                    )
+                )
+            results.sort(key=Candidate.sort_key)
+            yield from results
+            return
+
+        for width in range(3, min(self.max_width, max(3, len(stream) // 8)) + 1):
+            if ctx.expired():
+                break
+            for start in (1, 2):
+                if ctx.expired():
+                    break
+                orders = list(permutations(range(width)))
+                if len(orders) <= 720:
+                    # Small widths are enumerated: 720 reconstructions are
+                    # cheaper than a climb and cannot miss the answer.
+                    best_order, best_fit = None, float("-inf")
+                    for order in orders:
+                        fit = ctx.model.search_fitness(self._rebuild(stream, order, start))
+                        if fit > best_fit:
+                            best_order, best_fit = order, fit
+                else:
+                    best_order, best_fit = climb_orders(
+                        lambda order, start=start: self._rebuild(stream, order, start),
+                        orders,
+                        ctx,
+                        restarts=8,
+                        seed=ctx.hints.get("seed", 4242) + width * 2 + start,
+                    )
+                if best_order is None:
+                    continue
+                results.append(
+                    ctx.candidate(
+                        self.name,
+                        self._rebuild(stream, best_order, start),
+                        {"order": list(best_order), "start": start},
+                        steps=ctx.steps,
+                        width=width,
+                        start=start,
+                        method=(
+                            "exhaustive permutation search"
+                            if len(orders) <= 720
+                            else "swap hill climbing on quadgram fitness"
+                        ),
+                    )
+                )
+            if results and min(results, key=Candidate.sort_key).confidence >= 0.9:
+                break
+        results.sort(key=Candidate.sort_key)
+        yield from results
+
+    def likelihood(self, text: str, ctx: CrackContext) -> float:
+        return round(0.75 * transposition_likelihood(text, ctx), 4)

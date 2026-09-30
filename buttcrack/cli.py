@@ -737,8 +737,8 @@ def build_parser() -> argparse.ArgumentParser:
                             help="seconds to spend searching (default: 30)")
         target.add_argument("--workers", "-w", type=int, default=os.cpu_count() or 1,
                             help="parallel workers (default: number of CPUs)")
-        target.add_argument("--depth", "-d", type=int, default=3,
-                            help="how many encoding layers to peel (default: 3)")
+        target.add_argument("--depth", "-d", type=int, default=6,
+                            help="how many layers to peel or unwrap (default: 6)")
         target.add_argument("--key", help="hint: the key, if you already know it")
         target.add_argument("--key-length", type=int, help="hint: period of a repeating key")
         target.add_argument("--width", type=int, help="hint: grid width for a transposition")

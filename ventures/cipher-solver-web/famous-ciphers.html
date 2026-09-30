@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Famous and Historical Ciphers — Solved, Unsolved and Disputed</title>
+<meta name="description" content="The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, ADFGVX, Enigma, Lorenz, Purple and the one-time pad — plus Voynich, Beale, Dorabella, Zodiac and Kryptos.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/famous-ciphers.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Famous and Historical Ciphers — Solved, Unsolved and Disputed">
+<meta property="og:description" content="The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, ADFGVX, Enigma, Lorenz, Purple and the one-time pad — plus Voynich, Beale, Dorabella, Zodiac and Kryptos.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Famous and Historical Ciphers \u2014 Solved, Unsolved and Disputed", "description": "The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, ADFGVX, Enigma, Lorenz, Purple and the one-time pad \u2014 plus Voynich, Beale, Dorabella, Zodiac and Kryptos.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the most famous unsolved cipher?", "acceptedAnswer": {"@type": "Answer", "text": "The Voynich Manuscript is the best known. Kryptos K4, the Beale ciphers and Elgar's Dorabella cipher are the other long-standing open cases."}}, {"@type": "Question", "name": "Has the Zodiac cipher been solved?", "acceptedAnswer": {"@type": "Answer", "text": "Z408 was solved within a week in 1969 by Donald and Bettye Harden. Z340 held out until December 2020, when David Oranchak, Sam Blake and Jarl Van Eycke showed it was a transposition over a homophonic substitution."}}, {"@type": "Question", "name": "What is Kryptos?", "acceptedAnswer": {"@type": "Answer", "text": "A sculpture by Jim Sanborn at CIA headquarters carrying four encrypted panels. Three are solved; the fourth, ninety-seven characters long, has resisted public solution since 1990 despite several clues released by the artist."}}, {"@type": "Question", "name": "Was any cipher never broken?", "acceptedAnswer": {"@type": "Answer", "text": "The Navajo code talkers' system was never broken during the war \u2014 though it was a language plus a code vocabulary rather than a cipher. A correctly used one-time pad is provably unbreakable."}}]}</script>
+</head>
+<body data-preset="layered">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Famous Ciphers<span class="dot">.</span></h1>
+      <p class="tagline">The ones that changed history, and the handful nobody has read yet.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <p>A cipher earns its place in history either by protecting something that mattered or
+    by failing to. Both kinds are here, along with the small set of messages that nobody has
+    yet read.</p>
+
+    <h2>The ciphers</h2>
+    <ul class="famous">
+    <li><strong>The Great Cipher</strong> <span class="dates">France, 1660s-1890s</span> <span class="status status-solved">solved</span><br>The Rossignol family's code of 587 numbers, many standing for syllables and some for nothing at all. It protected Louis XIV's secrets and then stayed unread for two hundred years, until Bazeries broke it in the 1890s.</li>
+    <li><strong>The Zimmermann Telegram</strong> <span class="dates">1917</span> <span class="status status-solved">solved</span><br>German code 0075, decrypted by Room 40. Britain's problem was not reading it but explaining how it came by the text without admitting it read neutral cable traffic.</li>
+    <li><strong>ADFGVX</strong> <span class="dates">Germany, 1918</span> <span class="status status-solved">solved</span><br>A Polybius square over six letters chosen to be unmistakable in Morse, followed by a columnar transposition. Painvin broke it in the field.</li>
+    <li><strong>Enigma</strong> <span class="dates">Germany, 1920s-45</span> <span class="status status-solved">solved</span><br>Rotors, a reflector and a plugboard. Its fatal property was that no letter could ever encrypt to itself, which turned a guessed crib into a mechanical test — the principle the bombe ran on.</li>
+    <li><strong>Lorenz SZ40/42 (Tunny)</strong> <span class="dates">Germany, 1940-45</span> <span class="status status-solved">solved</span><br>Hitler's strategic teleprinter cipher, twelve wheels, far stronger than Enigma. Broken by Tutte's analysis and Colossus's speed.</li>
+    <li><strong>Purple</strong> <span class="dates">Japan, 1939-45</span> <span class="status status-solved">solved</span><br>A stepping-switch machine for diplomatic traffic, reconstructed in Washington without a physical example ever being seen.</li>
+    <li><strong>Navajo code talkers</strong> <span class="dates">US, 1942-45</span> <span class="status status-unbroken">unbroken</span><br>Not a cipher at all: a natural language with no written form, spoken by people the enemy had no speakers of, with a coined vocabulary for military terms. Never broken.</li>
+    <li><strong>The one-time pad</strong> <span class="dates">Vernam, 1917; Shannon, 1949</span> <span class="status status-proven">proven</span><br>The only cipher with a proof of perfect secrecy — provided the key is truly random, as long as the message, and used exactly once. Venona is what happens when the last condition slips.</li>
+    <li><strong>The Voynich Manuscript</strong> <span class="dates">c. 1404-1438</span> <span class="status status-unsolved">unsolved</span><br>Two hundred and forty pages in an unknown script, carbon-dated to the early fifteenth century. Statistically it behaves somewhat like language and somewhat not. Hoax, unknown language and unknown cipher all remain live possibilities.</li>
+    <li><strong>The Beale Ciphers</strong> <span class="dates">published 1885</span> <span class="status status-disputed">disputed</span><br>Three number ciphers said to locate buried treasure in Virginia. The second decodes against the Declaration of Independence; the first and third do not decode against anything. Many researchers think the whole thing is a nineteenth-century fiction.</li>
+    <li><strong>The Dorabella Cipher</strong> <span class="dates">Elgar, 1897</span> <span class="status status-unsolved">unsolved</span><br>Eighty-seven squiggles in three orientations, sent by the composer to a young friend. Short enough that almost any proposed solution fits, which is precisely the problem.</li>
+    <li><strong>Zodiac Z408 and Z340</strong> <span class="dates">1969-70</span> <span class="status status-solved">solved</span><br>Z408 was a homophonic substitution broken in a week by two schoolteachers, Donald and Bettye Harden. Z340 held out until 2020, when it turned out to be a transposition wrapped around a homophonic substitution.</li>
+    <li><strong>Kryptos</strong> <span class="dates">Jim Sanborn, CIA headquarters, 1990</span> <span class="status status-partly">partly unsolved</span><br>Four panels. K1 and K2 are Quagmire III over a keyed alphabet, K3 is a transposition, and K4 — ninety-seven characters — has resisted public solution for over three decades despite published clues (BERLIN, CLOCK, NORTHEAST, EAST). Treat any claimed break as needing verification.</li>
+    </ul>
+
+    <h2>Why unsolved ciphers stay unsolved</h2>
+    <p>Rarely because the cipher is strong. Usually the message is too <em>short</em>: with
+    eighty-seven symbols, as in the Dorabella cipher, many different keys produce something
+    that reads plausibly, and nothing distinguishes the right one. That is a problem of
+    evidence rather than of computing power, and it does not go away with a faster machine
+    — which is why this solver caps its own confidence when a key is large relative to the
+    text it was recovered from.</p>
+
+    <p>The other common reason is a wrong assumption held collectively for years. Z340
+    resisted for half a century partly because analysts assumed the transposition ran one
+    way when it ran another.</p>
+
+    <p>More: <a href="history-of-codebreaking.html">the timeline of codebreaking</a> and
+    <a href="famous-cryptanalysts.html">the people who did it</a>. To try the classical
+    ciphers yourself, start at the <a href="cipher-wiki.html">cipher wiki</a>.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>What is the most famous unsolved cipher?</summary><p>The Voynich Manuscript is the best known. Kryptos K4, the Beale ciphers and Elgar's Dorabella cipher are the other long-standing open cases.</p></details><details class="faq"><summary>Has the Zodiac cipher been solved?</summary><p>Z408 was solved within a week in 1969 by Donald and Bettye Harden. Z340 held out until December 2020, when David Oranchak, Sam Blake and Jarl Van Eycke showed it was a transposition over a homophonic substitution.</p></details><details class="faq"><summary>What is Kryptos?</summary><p>A sculpture by Jim Sanborn at CIA headquarters carrying four encrypted panels. Three are solved; the fourth, ninety-seven characters long, has resisted public solution since 1990 despite several clues released by the artist.</p></details><details class="faq"><summary>Was any cipher never broken?</summary><p>The Navajo code talkers' system was never broken during the war — though it was a language plus a code vocabulary rather than a cipher. A correctly used one-time pad is provably unbreakable.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

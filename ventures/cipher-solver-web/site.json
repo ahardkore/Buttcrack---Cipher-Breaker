@@ -19,9 +19,9 @@
   "verification_files": {},
   "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
   "stripe": {
-    "tip_jar_url": "",
-    "delivery_salt": "change-me-once-then-never-again-7Kq2xR",
-    "_buy_button_note": "Optional. Fill BOTH publishable_key (pk_live_... \u2014 publishable keys are safe in public HTML by design) and a product's buy_button_id to embed Stripe's checkout on the page instead of linking out. Leave blank to use plain Payment Links. NEVER put a secret key (sk_live_...) here.",
+    "tip_jar_url": "https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04",
+    "delivery_salt": "bc-Vvn8rtM9jCaejm_NHyYdTLYe",
+    "_buy_button_note": "Optional. Fill BOTH publishable_key (pk_live_... — publishable keys are safe in public HTML by design) and a product's buy_button_id to embed Stripe's checkout on the page instead of linking out. Leave blank to use plain Payment Links. NEVER put a secret key (sk_live_...) here.",
     "publishable_key": "",
     "products": [
       {
@@ -31,7 +31,7 @@
         "price": "$5",
         "seed": 1,
         "puzzles": 60,
-        "payment_link": "",
+        "payment_link": "https://buy.stripe.com/28E9AM2vd5GZ0ylaWJbsc01",
         "buy_button_id": ""
       },
       {
@@ -41,7 +41,7 @@
         "price": "$7",
         "seed": 42,
         "puzzles": 90,
-        "payment_link": "",
+        "payment_link": "https://buy.stripe.com/aFa28k6Lt6L34OBc0Nbsc02",
         "buy_button_id": ""
       }
     ],

@@ -1,4 +1,15 @@
 # PK9 DEFINITIVE DECRYPTION & MATHEMATICAL AUDIT REPORT
+
+> **STATUS NOTE (September 2026).** This document dates from an earlier phase of
+> work and in places reports PK8, PK9 or PK10 as solved, or presents recovered
+> plaintext for them. **Those claims are withdrawn.** PK8, PK9 and PK10 are
+> unsolved in this repository; PK9 and PK10 have no public solve by anyone.
+> The readings offered here are the output of searches that maximised a score,
+> and they do not survive scrutiny — see the retraction and the evidence in
+> [`THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md),
+> Chapter 9. The file is kept because the methods tried, and the negative
+> results, remain a useful record.
+
 **Target**: Paradigm Kryptos Challenge PK9 ($N = 144$)  
 **Status**: Decrypted & Audited (All-Time Record Score: **`-5.2493`**)  
 **Word Coverage**: **58.3%** (Exceeds natural English baseline of 56.4%)  

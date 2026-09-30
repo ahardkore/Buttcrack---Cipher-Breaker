@@ -112,8 +112,18 @@ over a shared keyspace interface — that would be both slower and dumber:
   for the period, then chi-squared per column; Gronsfeld restricts columns to
   ten shifts, autokey decomposes the chain.
 * **transposition** — anagram scoring over key permutations (columnar), rail
-  counts (rail fence), route patterns and widths (route), coprime skips (skip).
-* **polygraphic** — a genetic algorithm over 5×5 grids (see below).
+  counts (rail fence), route patterns and widths (route), coprime skips (skip),
+  ordered set partitions (Myszkowski — its key space is the ordered Bell number
+  of the width, 4,683 at width 6, so widths up to 6 are enumerated exactly and
+  wider ones climb with moves that merge and split groups, because swapping two
+  entries can never turn three read groups into four), and permutations paired
+  with the starting chunk size (AMSCO).
+* **polygraphic** — a genetic algorithm over 5×5 grids (see below); the Hill
+  cipher instead exploits linearity. Decryption is row-separable —
+  `p[i] = sum_j D[i][j] * c[j]` depends only on row `i` — so each row is scored
+  against English monograms on its own and only the best few per position are
+  combined into whole matrices. That turns 157,248 invertible 2×2 keys into 676
+  row evaluations, and makes 3×3 (about 1.6e12 keys) tractable at all.
 * **wheel** — the M-94 attack hill climbs over pairwise spindle-slot swaps.
   A swap re-decodes only the text positions whose index mod 25 hits one of the
   two slots, and each candidate order is scored by its best of 26 read rows
@@ -131,10 +141,82 @@ over a shared keyspace interface — that would be both slower and dumber:
 **Peeling.** Every encoding and code is also a *layer*. After each attack round
 the solver asks the layer ciphers whether the current text looks like something
 they can strip (`likelihood ≥ STRONG_LAYER = 0.6`), peels it, and recurses — to
-`--depth` (default 3, `max_depth` in the Python API). Peeling uses latin-1 rather than UTF-8 so that a
+`--depth` (default 6, `max_depth` in the Python API). Peeling uses latin-1 rather than UTF-8 so that a
 decoded byte ≥ 0x80 survives the round trip as one byte; re-encoding it as UTF-8
 would turn it into two and destroy every XOR key alignment underneath. The report
 shows the whole chain, outermost first: `base64 -> base16 -> xor_repeating`.
+
+Depth is not free, and three things pay for it:
+
+* **Evidence rises with depth.** Almost any text is *technically* valid base64
+  or base85. At the outermost node those readings are worth one look; by depth 3
+  a layer needs a likelihood of 0.5 before it is peeled at all. Structural
+  decodes score 0.8–0.95 when they are right and the coincidental readings land
+  near 0.4, so the ramp separates them by depth 2 — which is why a genuine
+  `base32 -> base16 -> base64 -> morse -> ...` chain still goes all the way down
+  while a string of Polybius digits no longer sprouts a base64 branch.
+* **Budget follows evidence.** A child node gets
+  `0.6 + 0.06 * depth + 0.3 * likelihood` of the time remaining, capped at 0.92;
+  a layer the identifier is 92% sure of is not handed the same share as one it
+  half believes. Attacks within a phase are funded the same way, in proportion
+  to likelihood with a floor of 0.15 so nothing is ever vetoed outright.
+* **Nodes are capped.** `MAX_NODES = 400` bounds a single solve however the
+  branching works out.
+
+**Six layers of ciphers.** The deepest cipher-on-cipher stacks are handled by a
+dedicated search that exists because of one algebraic fact: a transposition and
+a monoalphabetic substitution **commute**. A transposition moves letters without
+reading them; a substitution rewrites letters without moving them. So any stack
+of rail fences, skips, reversals, Caesars, Atbashes and ROT13s — in any order,
+however deep — equals *one* permutation followed by *one* substitution.
+
+That collapses "every ordering of six ciphers" into two tractable problems:
+
+1. **The substitution, first and for free.** No transposition changes which
+   letters are present, so the ciphertext's letter histogram is the plaintext's
+   histogram after whatever substitution was applied. Twenty-six rotations and
+   Atbash, scored by chi-squared, name it before a single transposition is
+   undone; the correction is applied once to the whole text.
+2. **The permutation, breadth first.** What remains is a search over composed
+   transposition readings, each state costing one n-gram scoring (full
+   dictionary scoring is gated behind it, because it is five times the price).
+   Measured at ~13,000 states a second: 13 compositions at one step, 182 at
+   two, 2,380 at three, 30,927 at four. Breadth first, so the shallowest
+   explanation wins, and fingerprinted, because different stacks frequently
+   compose to the same permutation.
+
+A gate decides when it runs at all. Chi-squared per letter against English,
+best of the rotations, is 0.116 for English and for *any* transposition of it —
+rail fence, columnar, Myszkowski, AMSCO, a six-cipher stack — against 1.711 for
+Vigenère, 2.214 for Hill and 3.658 for a simple substitution. The separation is
+not subtle, so the search never spends budget on a text it could not explain.
+It also runs *after* the expensive attacks: Myszkowski and AMSCO pass the gate
+too, and their permutations are not reachable by composing rail fences, so going
+first would take the budget from the attacks that were going to solve them.
+
+Six stacked *polyalphabetics* are deliberately not searched: nothing commutes
+there, every intermediate state is indistinguishable from noise, and no test
+exists to prune the tree.
+
+**Unwrapping ciphers, not just encodings.** A transposition or a reflection
+usually leaves *another cipher* behind rather than plaintext, so those results
+are explored as nodes of their own: `rail_fence -> caesar` and
+`reverse -> vigenere` come apart the same way an encoding chain does. Two
+details make it work:
+
+* Every reading has to be tried, not ranked. A transposition permutes letters,
+  so all of its keys give the same letter statistics and the same chi-squared
+  score; when what is underneath is still enciphered, the correct reading is as
+  likely to be last in the list as first. So the solver enumerates the readings
+  of the small transpositions (reverse, rail fence, skip) and *probes* each with
+  a fixed handful of ciphers — no identification, no peeling, no recursion — at
+  a cost bounded by the probe list rather than by the branching factor.
+* Unwrapping *non-commuting* ciphers (a transposition over a Vigenère, say)
+  stops at two steps per chain. Past that the extra freedom explains any text at
+  all, which is a property of the search, not of the message. Commuting stacks
+  are exempt because the algebra above collapses them rather than guessing, and
+  encoding layers are exempt because they are verified rather than guessed:
+  base64 either decodes or it does not.
 
 **Playfair, honestly.** A 5×5 grid has 25! arrangements and one misplaced cell
 costs about 0.9 log10 per character of fitness — five times what a wrong
@@ -183,6 +265,15 @@ more stable signal), then applies evidence rules:
   with a 12-letter key wants 72 letters, a Playfair grid (25 cells) wants 150,
   Bifid (36) wants 216. Fewer than that and the confidence is capped at
   `EVIDENCE_CAP = 0.61`, i.e. "reads correctly, evidence thin".
+* `CHAIN_STEP_BITS = 12` — every *cipher* step in a decode chain is charged as
+  key material, because a step is two choices the search made: which cipher
+  (about 5.5 bits with forty-six of them) and which key for it. Without this,
+  depth quietly becomes dishonest — three cheap ciphers stacked on 35 characters
+  of noise will always find something English-shaped, and
+  `rail_fence -> reverse -> trithemius` on eighteen letters came back at 0.71
+  before the rule existed. Encoding layers are charged nothing: base64 either
+  decodes or it does not, which is exactly why a six-layer encoding stack stays
+  believable while a three-cipher chain on a short text does not.
 
 **Layout.** Where the cipher maps letter *i* to letter *i* (shift, substitution,
 polyalphabetic, polygraphic families) and nothing was peeled underneath, the
