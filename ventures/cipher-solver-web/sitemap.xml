@@ -13,5 +13,53 @@
   <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-wiki.html</loc><priority>0.8</priority></url>
   <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/playfair-cipher-wiki.html</loc><priority>0.8</priority></url>
   <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/m94-wheel-cipher.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/history-of-codebreaking.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/famous-cryptanalysts.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/famous-ciphers.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/rot13-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/atbash-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/affine-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/rot47-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/reverse-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/beaufort-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/variant-beaufort-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/gronsfeld-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/porta-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/quagmire3-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/sum-clock-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/trithemius-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/autokey-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/keyword-substitution-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/columnar-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/rail-fence-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/skip-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/route-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/myszkowski-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/amsco-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/bifid-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/hill-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/four-square-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/trifid-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/xor-single-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/xor-repeating-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/morse-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/bacon-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/bacon-case-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/a1z26-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/polybius-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/tap-code-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/nato-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/braille-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/baudot-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/base64-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/base32-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/base16-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/base58-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/base85-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/url-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/binary-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/decimal-ascii-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/quoted-printable-cipher-wiki.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/uuencode-cipher-wiki.html</loc><priority>0.8</priority></url>
   <url><loc>https://ahardkore.github.io/Buttcrack---Cipher-Breaker/kryptos/</loc><priority>0.8</priority></url>
 </urlset>

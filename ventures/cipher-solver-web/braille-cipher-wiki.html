@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Braille (Unicode patterns) — How It Works and How It Is Broken</title>
+<meta name="description" content="Braille (Unicode patterns): Unicode braille cells U+2800..U+28FF, grade 1 letter assignments. How to recognise it, a worked example, and the attack that breaks it.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/braille-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Braille (Unicode patterns) — How It Works and How It Is Broken">
+<meta property="og:description" content="Braille (Unicode patterns): Unicode braille cells U+2800..U+28FF, grade 1 letter assignments. How to recognise it, a worked example, and the attack that breaks it.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/braille-cipher-wiki.html">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Braille (Unicode patterns)", "description": "Braille (Unicode patterns): Unicode braille cells U+2800..U+28FF, grade 1 letter assignments. How to recognise it, a worked example, and the attack that breaks it.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Codes and alphabets"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Braille (Unicode patterns) broken?", "acceptedAnswer": {"@type": "Answer", "text": "A reading system, not a cipher \u2014 but puzzles use it as a layer."}}, {"@type": "Question", "name": "What key does the Braille (Unicode patterns) use?", "acceptedAnswer": {"@type": "Answer", "text": "none. There are 1 possible keys."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 4 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Braille (Unicode patterns) on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The full version of the solver searches it \u2014 pip install buttcrack, then buttcrack \"&lt;ciphertext&gt;\"."}}]}</script>
+</head>
+<body data-preset="morse">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header site-header-compact">
+  <div class="wrap wrap-wide">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+  </div>
+</header>
+
+<main class="wrap wrap-wide" id="main-content">
+  <div class="wiki-layout">
+<aside class="wiki-side" aria-label="Wiki navigation">
+      <div class="wiki-search" role="search">
+        <input class="wiki-search-input" type="search" placeholder="Search the wiki"
+          autocomplete="off" aria-label="Search the cipher wiki">
+        <button class="wiki-search-go" type="button">Go</button>
+        <div class="wiki-search-results" hidden></div>
+      </div>
+      <nav class="wiki-side-nav">
+        <details class="wiki-side-group" open>
+          <summary>Navigation<span class="side-count">3</span></summary>
+          <ul>
+            <li><a href="cipher-wiki.html">Main page</a></li>
+            <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
+            <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Cipher families</h3>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a><span class="side-count">6</span></summary>
+        <ul>
+<li><a href="affine-cipher-wiki.html">Affine</a></li><li><a href="atbash-cipher-wiki.html">Atbash</a></li><li><a href="caesar-cipher-wiki.html">Caesar (ROT-N)</a></li><li><a href="rot13-cipher-wiki.html">ROT13</a></li><li><a href="rot47-cipher-wiki.html">ROT47</a></li><li><a href="reverse-cipher-wiki.html">Reverse</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a><span class="side-count">2</span></summary>
+        <ul>
+<li><a href="keyword-substitution-cipher-wiki.html">Keyword substitution</a></li><li><a href="substitution-cipher-wiki.html">Simple substitution</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-polyalphabetic">Polyalphabetic ciphers</a><span class="side-count">9</span></summary>
+        <ul>
+<li><a href="autokey-cipher-wiki.html">Autokey</a></li><li><a href="beaufort-cipher-wiki.html">Beaufort</a></li><li><a href="gronsfeld-cipher-wiki.html">Gronsfeld</a></li><li><a href="porta-cipher-wiki.html">Porta</a></li><li><a href="quagmire3-cipher-wiki.html">Quagmire III (keyed alphabet)</a></li><li><a href="sum-clock-cipher-wiki.html">Sum-clock (additive wheels)</a></li><li><a href="trithemius-cipher-wiki.html">Trithemius / progressive key</a></li><li><a href="variant-beaufort-cipher-wiki.html">Variant Beaufort</a></li><li><a href="vigenere-cipher-wiki.html">Vigenère</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-transposition">Transposition ciphers</a><span class="side-count">6</span></summary>
+        <ul>
+<li><a href="amsco-cipher-wiki.html">AMSCO transposition</a></li><li><a href="columnar-cipher-wiki.html">Columnar transposition</a></li><li><a href="myszkowski-cipher-wiki.html">Myszkowski transposition</a></li><li><a href="rail-fence-cipher-wiki.html">Rail fence</a></li><li><a href="route-cipher-wiki.html">Route transposition</a></li><li><a href="skip-cipher-wiki.html">Skip / scytale</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-polygraphic">Polygraphic ciphers</a><span class="side-count">5</span></summary>
+        <ul>
+<li><a href="bifid-cipher-wiki.html">Bifid</a></li><li><a href="four-square-cipher-wiki.html">Four-square</a></li><li><a href="hill-cipher-wiki.html">Hill cipher (matrix)</a></li><li><a href="playfair-cipher-wiki.html">Playfair</a></li><li><a href="trifid-cipher-wiki.html">Trifid</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a><span class="side-count">1</span></summary>
+        <ul>
+<li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-xor">Byte-level ciphers</a><span class="side-count">2</span></summary>
+        <ul>
+<li><a href="xor-repeating-cipher-wiki.html">Repeating-key XOR</a></li><li><a href="xor-single-cipher-wiki.html">Single-byte XOR</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-code">Codes and alphabets</a><span class="side-count">9</span></summary>
+        <ul>
+<li><a href="a1z26-cipher-wiki.html">A1Z26 (numbered alphabet)</a></li><li><a href="bacon-case-cipher-wiki.html">Bacon (letter case)</a></li><li><a href="bacon-cipher-wiki.html">Bacon cipher</a></li><li><a href="baudot-cipher-wiki.html">Baudot / ITA2 (5-bit)</a></li><li><a href="braille-cipher-wiki.html" aria-current="page">Braille (Unicode patterns)</a></li><li><a href="morse-cipher-wiki.html">Morse code</a></li><li><a href="nato-cipher-wiki.html">NATO phonetic alphabet</a></li><li><a href="polybius-cipher-wiki.html">Polybius square</a></li><li><a href="tap-code-cipher-wiki.html">Tap code</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-encoding">Encodings</a><span class="side-count">10</span></summary>
+        <ul>
+<li><a href="base85-cipher-wiki.html">ASCII85 / base85</a></li><li><a href="base32-cipher-wiki.html">Base32</a></li><li><a href="base58-cipher-wiki.html">Base58</a></li><li><a href="base64-cipher-wiki.html">Base64</a></li><li><a href="binary-cipher-wiki.html">Binary ASCII</a></li><li><a href="decimal-ascii-cipher-wiki.html">Decimal ASCII</a></li><li><a href="base16-cipher-wiki.html">Hex / base16</a></li><li><a href="quoted-printable-cipher-wiki.html">Quoted-printable</a></li><li><a href="url-cipher-wiki.html">URL encoding</a></li><li><a href="uuencode-cipher-wiki.html">uuencode</a></li>
+        </ul>
+      </details>
+        <h3 class="wiki-side-heading">History</h3>
+        <details class="wiki-side-group" open>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
+          <ul>
+<li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Tools</h3>
+        <details class="wiki-side-group" open>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
+          <ul>
+<li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
+    <div class="wiki-content">
+      <article class="wiki-article">
+        <nav class="wiki-breadcrumb" aria-label="Breadcrumb"><a href="cipher-wiki.html">Cipher wiki</a> <span aria-hidden="true">›</span> <a href="cipher-wiki.html#family-code">Codes and alphabets</a> <span aria-hidden="true">›</span> <span class="crumb-here">Braille (Unicode patterns)</span></nav>
+        <h1 class="wiki-title">Braille (Unicode patterns)</h1>
+        <p class="wiki-from">From the Buttcrack Cipher Wiki — the free field guide to classical ciphers</p>
+        <nav class="wiki-tabs" aria-label="Page sections">
+          <span class="wiki-tab is-here" aria-current="page">Article</span>
+          <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
+        </nav>
+        <div class="wiki-article-body">
+          <aside class="wiki-infobox" aria-label="Cipher facts">
+      <div class="wiki-infobox-title">Braille (Unicode patterns)</div>
+      <div class="wiki-infobox-sub">Codes and alphabets</div>
+      <table class="wiki-infobox-table"><tbody>
+        <tr><th>Family</th><td><a href="cipher-wiki.html#family-code">Codes and alphabets</a></td></tr><tr><th>Key</th><td>none</td></tr><tr><th>Keyspace</th><td>1</td></tr><tr><th>Search cost</th><td>cheap</td></tr><tr><th>Minimum text</th><td>4 characters</td></tr><tr><th>Also known as</th><td>unicode_braille, braille_unicode</td></tr><tr><th>Breaks in this browser</th><td>no — needs the <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">full solver</a></td></tr>
+      </tbody></table>
+      <div class="wiki-infobox-note">Generated from the solver's cipher registry — these figures describe the implementation, not an idealised cipher.</div>
+    </aside>
+          <p><b>Braille (Unicode patterns)</b> — Six-dot cells, one per letter, here in their Unicode form.</p>
+    <p>Unicode braille cells U+2800..U+28FF, grade 1 letter assignments.</p>
+          <nav class="wiki-toc" aria-label="Contents">
+        <div class="wiki-toc-title">Contents</div>
+        <ul><li><a href="#a-worked-example">A worked example</a></li><li><a href="#how-it-is-broken">How it is broken</a></li><li><a href="#history-and-context">History and context</a></li><li><a href="#see-also">See also</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
+      </nav>
+    <h2 id="a-worked-example">A worked example<a class="section-anchor" href="#a-worked-example" aria-label="Link to this section">§</a></h2>
+    <p>Encrypting a sample with the cipher itself, at build time:</p>
+    <pre><code>MEET ME BY THE OLD CLOCK TOWER AT DAWN</code></pre>
+    <p>No key — the transformation is fixed.</p>
+    <p>produces the ciphertext</p>
+    <pre><code>⠍⠑⠑⠞⠀⠍⠑⠀⠃⠽⠀⠞⠓⠑⠀⠕⠇⠙⠀⠉⠇⠕⠉⠅⠀⠞⠕⠺⠑⠗⠀⠁⠞⠀⠙⠁⠺⠝</code></pre>
+    <p class="note">This example is generated by running the cipher when the page is built,
+    and the round trip is checked, so it always matches what the solver does.</p>
+
+    <h2 id="how-it-is-broken">How it is broken<a class="section-anchor" href="#how-it-is-broken" aria-label="Link to this section">§</a></h2>
+    <p>A reading system, not a cipher — but puzzles use it as a layer.</p>
+
+    <h2 id="history-and-context">History and context<a class="section-anchor" href="#history-and-context" aria-label="Link to this section">§</a></h2>
+    <p>Louis Braille, 1824, aged fifteen, adapting a military night-writing system that Charles Barbier had designed so soldiers could read dispatches without a lamp.</p>
+
+    <h2 id="see-also">See also<a class="section-anchor" href="#see-also" aria-label="Link to this section">§</a></h2>
+    <p><a href="morse-cipher-wiki.html">Morse code</a> · <a href="bacon-cipher-wiki.html">Bacon cipher</a> · <a href="bacon-case-cipher-wiki.html">Bacon (letter case)</a> · <a href="a1z26-cipher-wiki.html">A1Z26 (numbered alphabet)</a> · <a href="polybius-cipher-wiki.html">Polybius square</a> · <a href="tap-code-cipher-wiki.html">Tap code</a></p>
+    <p class="wiki-seealso-more">Browse every cipher in the
+    <a href="cipher-wiki.html#family-code">Codes and alphabets</a> family, read the
+    <a href="history-of-codebreaking.html">history of codebreaking</a>, or return to the
+    <a href="cipher-wiki.html">wiki main page</a>.</p>
+    <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
+    <details class="faq"><summary>How is the Braille (Unicode patterns) broken?</summary><p>A reading system, not a cipher — but puzzles use it as a layer.</p></details><details class="faq"><summary>What key does the Braille (Unicode patterns) use?</summary><p>none. There are 1 possible keys.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 4 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Braille (Unicode patterns) on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The full version of the solver searches it — pip install buttcrack, then buttcrack "&lt;ciphertext&gt;".</p></details>
+        </div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-code">Codes and alphabets</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
+      </article>
+
+      <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">
+        <h2 class="wiki-solver-title">Try it live — break a real puzzle</h2>
+        <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+      </section>
+
+      <div id="output" aria-live="polite"></div>
+
+      <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+    </div>
+  </div>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+<script src="wiki-index.js"></script>
+<script src="wiki.js"></script>
+</body>
+</html>

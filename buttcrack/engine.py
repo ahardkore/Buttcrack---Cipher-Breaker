@@ -17,9 +17,17 @@ treats the input as a node in a decoding graph and explores it:
 4. **Peel after attacking.**  A candidate whose *plaintext* is itself base64 or
    hex gets peeled too, which covers stacks in the other order
    (``vigenere(base64(flag))``).
+5. **Attack after attacking.**  A candidate from a cipher that rearranges or
+   reflects text rather than encoding it (reverse, rail fence, skip, route) is
+   explored as a node in its own right, so ``reverse(vigenere(...))`` and
+   ``rail_fence(caesar(...))`` come apart one cipher at a time.
 
-Visited nodes are fingerprinted so a stack of reversible layers
-(reverse -> reverse -> ...) cannot loop, and every stage checks the deadline.
+The default search depth is six steps, which is what a layered puzzle actually
+looks like (``base64 -> hex -> reverse -> morse -> caesar -> plaintext``).  Depth
+is affordable because three things bound it: visited nodes are fingerprinted so
+a stack of reversible layers cannot loop, the whole search shares one deadline
+that every stage checks, and :data:`MAX_NODES` caps how many nodes a single
+solve may open however the branching works out.
 """
 
 from __future__ import annotations
@@ -43,7 +51,7 @@ from .lang import (
     resolve_language,
 )
 from .results import AttackLog, Candidate, CrackReport
-from .text import letters_only, respaced, restore_shape, trim
+from .text import A26, letters_only, respaced, restore_shape, trim
 
 #: Families whose ciphers preserve character positions, so the original spacing
 #: and case can be laid back over the solution.
@@ -59,12 +67,172 @@ POSITION_PRESERVING = {Family.SHIFT, Family.SUBSTITUTION, Family.POLYALPHABETIC,
 #: ciphertext's shape over the plaintext for either of them produces noise.
 LAYOUT_HOSTILE = frozenset({"rot47", "reverse"})
 
+#: Ciphers whose output is worth exploring as a *node* rather than just scored.
+#: These rearrange or reflect the text instead of encoding it, so what comes out
+#: of them is frequently another cipher rather than the plaintext -- the classic
+#: ``reverse(vigenere(...))`` and ``rail_fence(caesar(...))`` constructions.
+#:
+#: Substitution-family ciphers are deliberately absent: two stacked shifts are
+#: just one shift, and a substitution on top of a substitution is a single
+#: substitution, so recursing into them can only re-find what the sweep at this
+#: node already found.
+RECURSIVE_CIPHERS = frozenset({"reverse", "rail_fence", "skip", "route",
+                               "columnar", "myszkowski", "amsco"})
+
+#: ROT47 is deliberately absent: it is an involution over printable ASCII, so
+#: applying it to a letters-only text produces punctuation, and a chain of them
+#: is noise.  It kept being followed because that noise scores unpredictably.
+
+#: The subset whose output is a *fact* rather than a search result.  Only
+#: `reverse` qualifies -- it is keyless, so its output is the one text it could
+#: possibly be.  Everything else here picked a key out of a search and is
+#: followed only after `reverse`.
+EXACT_RECURSIVE = frozenset({"reverse"})
+
+#: How many *cipher* unwraps one chain may contain.  Encoding layers are
+#: self-announcing and cheap to verify, so six of them stack happily; ciphers
+#: are not, and an unbounded cipher-on-cipher search finds a plausible-looking
+#: three-cipher chain for any input whatsoever.  Two is enough for the
+#: constructions that occur in practice (a transposition or a reflection
+#: wrapped around a real cipher) and is the point where the evidence for each
+#: extra step stops outweighing the extra freedom it buys.
+MAX_CIPHER_UNWRAPS = 2
+
+#: Ceiling on cipher unwraps across the whole solve, so a text with many
+#: plausible transposition readings cannot spend the budget on all of them.
+#: Cheap readings get their own, looser ceiling: they are the ones that come in
+#: dozens, and each costs a fraction of a second.
+MAX_CIPHER_NODES = 10
+MAX_CHEAP_CIPHER_NODES = 40
+
+#: How thorough an exploration of a node was.  A node first seen from the cheap
+#: pass may be revisited by a later pass that is allowed to try more; a node
+#: already explored as thoroughly is skipped.
+MODE_RANK = {"cheap": 0, "bounded": 1, "full": 2}
+
+#: Ciphers whose whole keyspace is small enough that the *correct* key cannot be
+#: recognised from the output alone.  A transposition permutes letters, so every
+#: key produces the same letter distribution and the same chi-squared score; if
+#: what is underneath is itself enciphered, the correct key's output is
+#: indistinguishable from the rest.  Several readings are therefore followed
+#: rather than just the best-scoring one.
+AMBIGUOUS_RECURSIVE = frozenset({"rail_fence", "skip", "reverse"})
+
+#: Ciphers used to probe a transposition reading on the first pass.  Three
+#: keyless-or-tiny sweeps over about twenty readings is roughly sixty
+#: decryptions -- small enough to run at every node without noticing.  Affine
+#: (312 keys) and the periodic ciphers are held back for the last-resort pass,
+#: because twenty readings times 312 keys is no longer free and would come out
+#: of the budget of the attack that was going to work.
+PROBE_CHEAP = ("caesar", "atbash", "rot13")
+
+def descent_evidence(depth: int) -> float:
+    """How convincing a layer must look to be peeled at this depth.
+
+    Zero at the top (try everything once), rising to a real bar further down.
+    The numbers are set against the sniffers: the structural decodes score
+    0.8-0.95 when they are right, and the "this is also valid base64" readings
+    land near 0.4, so the ramp separates the two by depth 2.
+    """
+    return (0.0, 0.2, 0.35, 0.5, 0.5, 0.5)[min(depth, 5)]
+
+
+#: Smallest share of a phase any cipher gets, however unlikely the identifier
+#: thinks it is.  Identification orders the search; it must never veto it.
+LIKELIHOOD_FLOOR = 0.15
+
+#: Attacks tried before any layer is peeled: keyless or 312-key, instant, and
+#: incapable of inventing a plausible-looking wrong answer.
+PRE_PEEL_CIPHERS = ("caesar", "rot13", "atbash", "rot47", "affine", "reverse")
+
+#: The expensive probe set, used only as a last resort (see `_probe_readings`).
+PROBE_PERIODIC = ("vigenere", "beaufort", "quagmire3", "porta", "affine", "variant_beaufort", "gronsfeld")
+
+#: Time that must remain before the last-resort probe is worth starting.
+LAST_RESORT_SECONDS = 4.0
+
+#: Absolute ceiling on states the deep chain search may open, and the rate it
+#: gets through them (measured on this machine: 12,700 states a second at 160
+#: letters, a state being one decryption plus one n-gram scoring).  The working cap is whichever is smaller, the
+#: ceiling or what the remaining time buys -- so a short budget stays short and
+#: a long one searches a level deeper instead of overrunning.
+CHAIN_STATE_CAP = 250_000
+CHAIN_STATES_PER_SECOND = 12_000
+
+#: Share of the remaining time the chain search may spend.  It is generous
+#: because of *when* it runs: the deep pass only starts after every attack has
+#: had its turn and none of them produced a certain answer, so what is left is
+#: better spent here than held back for nothing.
+CHAIN_SHARE = 0.7
+
+#: Share of that going to the best-ranked substitution.  The histogram nearly
+#: always ranks the true one first, so it gets the lion's share -- but not all
+#: of it, because "nearly always" is not "always".
+CHAIN_FIRST_SHARE = 0.6
+
+#: N-gram fitness a state must reach before it is worth a full scoring, and how
+#: much of the state to judge it on.  A transposition permutes the whole text,
+#: so its first 120 characters are as representative as any other slice.
+CHAIN_FITNESS_GATE = -5.6
+CHAIN_GATE_CHARS = 120
+
+#: How many composed transposition steps the deep chain search may stack.  With
+#: the substitution it tests for underneath, six is the advertised depth of a
+#: pure cipher stack.
+MAX_CHAIN_STEPS = 5
+
+#: Depth of the early pass, which runs before the expensive attacks.  Two steps
+#: is about two hundred states -- twenty milliseconds -- and covers the common
+#: `rail_fence(caesar)` shape without taking anything from the attacks.
+CHAIN_SHALLOW_STEPS = 2
+
+#: Chi-squared per letter, against English and best of 26 rotations plus
+#: Atbash, below which a text could be a transposition stack (see
+#: `_transposition_shaped`).  English scores 0.116, Vigenere 1.711.
+CHAIN_GATE_CHI = 0.6
+
+#: Per-probe time cap.  Deliberately tight: a periodic cipher that is going to
+#: fall on a 140-letter reading falls in well under a second, and the pass is
+#: judged on how many readings it covers before the clock runs out, not on how
+#: thoroughly it fails on the first few.
+PROBE_SECONDS = 1.5
+
+#: Share of the remaining time one cipher's sweep over all readings may take.
+PROBE_CIPHER_SHARE = 0.5
+
+#: How many readings to follow for those, and the per-reading time cap.  Many
+#: cheap children beat a few expensive ones here: the reading that matters is
+#: not the best-scoring one but *some* one of them, and a wrong reading is
+#: rejected in well under a second.
+AMBIGUOUS_FOLLOW = 8
+AMBIGUOUS_CHILD_SECONDS = 4.0
+
+#: Fraction of a node's remaining time held back from the expensive attacks so
+#: the recursion that follows them is not starved.
+RECURSION_RESERVE = 0.4
+
 #: Per-attack time slices by cost class.  Cheap attacks are so fast that a hard
 #: cap costs nothing; expensive ones divide what is left.  BRUTAL holds the
 #: searches that cannot promise anything in bounded time (Bifid, M-94); its cap
 #: is high because a wheel-cipher climb measured ~2-in-3 solves inside 20 s on
 #: 250 letters and essentially nothing inside 12.
 PHASE_SLICES = {CHEAP: 3.0, MODERATE: 6.0, EXPENSIVE: 25.0, BRUTAL: 20.0}
+
+#: Hard cap on decoding-graph nodes per solve.  Depth alone does not bound the
+#: search -- a text that is plausibly five different encodings at once branches
+#: five ways at every level -- and the deadline alone would spend the whole
+#: budget opening nodes it never gets to attack.  400 is far above what a real
+#: puzzle needs (a six-layer stack with two plausible readings per level is 63)
+#: and well below the point where bookkeeping shows up in a profile.
+MAX_NODES = 400
+
+#: Share of the remaining time a child node may take.  Deeper nodes get a
+#: larger share of a smaller pot: at depth 5 the answer is either down this
+#: branch or nowhere, so splitting the remainder evenly with hypothetical
+#: siblings wastes it.  With the ramp a six-deep chain still reaches its
+#: innermost node with ~9% of the original budget instead of 0.6**6 = 4.7%.
+def layer_share(depth: int) -> float:
+    return min(0.9, 0.6 + 0.06 * depth)
 
 
 def fingerprint(text: str) -> str:
@@ -80,6 +248,8 @@ class CandidatePool:
         self.keep = keep
         self._by_text: dict[str, Candidate] = {}
         self._order: list[str] = []
+        #: Cached leader, invalidated on every add (see `best`).
+        self._best: Candidate | None = None
 
     @staticmethod
     def _key(candidate: Candidate) -> str:
@@ -95,16 +265,28 @@ class CandidatePool:
         if existing is not None:
             if candidate.sort_key() < existing.sort_key():
                 self._by_text[key] = candidate
+                self._best = None
                 return True
             return False
         self._by_text[key] = candidate
         self._order.append(key)
+        self._best = None
         return True
 
     @property
     def best(self) -> Candidate | None:
-        items = list(self._by_text.values())
-        return min(items, key=Candidate.sort_key) if items else None
+        """The leading candidate, cached between additions.
+
+        This is read constantly -- every attack loop asks `pool.certain` after
+        each candidate, and the deep chain search asks it hundreds of thousands
+        of times -- and recomputing it walked the whole pool and rebuilt a
+        formatted key string per candidate through `sort_key`.  Profiling a
+        30-second solve found 7.4 of its 8 seconds in that one property.  The
+        pool only changes on `add`, so the answer is cached there.
+        """
+        if self._best is None and self._by_text:
+            self._best = min(self._by_text.values(), key=Candidate.sort_key)
+        return self._best
 
     @property
     def best_confidence(self) -> float:
@@ -142,7 +324,7 @@ class Solver:
         self,
         budget: float = 30.0,
         workers: int = 1,
-        max_depth: int = 3,
+        max_depth: int = 6,
         model: LanguageModel | None = None,
         progress: Callable[[str, float, dict], None] | None = None,
         ciphers: Iterable[Cipher] | None = None,
@@ -162,7 +344,12 @@ class Solver:
         self.hints = hints or {}
         self.exhaustive = exhaustive
         self._visited: set[str] = set()
+        #: fingerprint -> how thoroughly that text has already been explored.
+        self._explored: dict[str, int] = {}
         self._pending: list[tuple[str, tuple[str, ...], int]] = []
+        self._nodes = 0
+        self._cipher_nodes = 0
+        self._cheap_cipher_nodes = 0
         #: Set while the root node is a confidently identified encoding: the
         #: "no cipher" reading is deferred so the layer gets the credit.
         self._defer_identity = False
@@ -184,6 +371,10 @@ class Solver:
             report.elapsed = time.time() - started
             return report
 
+        self._nodes = 0
+        self._cipher_nodes = 0
+        self._cheap_cipher_nodes = 0
+        self._explored.clear()
         hypotheses, stats = identify(text, self.model)
         report.hypotheses = hypotheses
         report.stats = stats.as_dict()
@@ -253,8 +444,36 @@ class Solver:
         pool: CandidatePool,
         report: CrackReport,
         likelihoods: dict[str, float] | None = None,
+        mode: str = "full",
+        cipher_depth: int = 0,
     ) -> None:
+        """Explore one node of the decoding graph.
+
+        ``mode`` says how much this node is worth:
+
+        ``full``
+            the default, and what every node reached by peeling an *encoding*
+            gets.  Encodings are self-announcing, so what is inside one deserves
+            the whole attack set.
+        ``bounded``
+            reached by unwrapping a cipher whose key was searched for.  Cheap
+            and moderate attacks only -- the branching factor of cipher-on-cipher
+            recursion is high, and a Playfair climb at every such node would
+            spend the entire budget on the least likely branches.
+        ``cheap``
+            reached by unwrapping one *reading* of a transposition, of which
+            there are a dozen and eleven are wrong.  Cheap attacks only, so
+            being wrong costs milliseconds.  This is the pass that catches
+            ``rail_fence(caesar)``.
+        """
         if ctx.expired() or pool.certain:
+            return
+        self._explored[fingerprint(text)] = max(
+            self._explored.get(fingerprint(text), -1), MODE_RANK[mode]
+        )
+        self._nodes += 1
+        if self._nodes > MAX_NODES:
+            self._say(f"node budget reached ({MAX_NODES}); ranking what was found", 0.95)
             return
 
         # Identification is per node, not inherited: once a layer is peeled the
@@ -272,9 +491,9 @@ class Solver:
         if not (depth == 0 and self._defer_identity):
             pool.add(ctx.candidate("none", text, None))
 
-        # Strongly indicated encoding layers are peeled *first*: running a
-        # substitution hill climb on a base64 blob wastes the whole budget
-        # before the payload is ever seen.
+        # Strongly indicated encoding layers are peeled next, before the
+        # expensive attacks: running a substitution hill climb on a base64 blob
+        # wastes the whole budget before the payload is ever seen.
         # Layers are tried in the order the identifier ranked them, not in
         # registry order: a string of 0s and 1s is *also* technically valid
         # base64, and peeling it as base64 first sends the search down a long
@@ -292,12 +511,32 @@ class Solver:
             for layer in applicable
             if likelihoods.get(layer.info.name, 0.0) >= STRONG_LAYER
         ]
+        # A handful of keyless substitutions run before anything is peeled.
+        # They cost a millisecond each and they close a real hole: ROT47 output
+        # is punctuation-heavy ASCII, which is *also* valid base85, so the
+        # base85 layer was peeled first and something three levels down scraped
+        # past the solved threshold before the one-step answer was ever tried.
+        #
+        # Only these ciphers go first -- they have no key to search, so they
+        # cannot invent a plausible wrong answer -- and the search stops here
+        # only when nothing else is indicated.  When a layer *is* strongly
+        # indicated both readings are produced and the ranking decides between
+        # them, because "this is ROT47" and "this is a NATO spelling alphabet"
+        # can both look compelling and only one of them will read as English.
+        produced: list[Candidate] = []
+        self._quick_attacks(text, ctx, pool, report, produced, likelihoods)
+        if ctx.expired() or (pool.certain and not strong):
+            return
+
         before = pool.best.confidence if pool.best else 0.0
         if depth < self.max_depth and strong and not ctx.expired():
             for layer in strong:
                 if pool.certain or ctx.expired():
                     break
-                self._descend(layer, text, ctx, depth, pool, report)
+                self._descend(
+                    layer, text, ctx, depth, pool, report,
+                    likelihoods.get(layer.info.name, 0.0),
+                )
             if pool.certain:
                 return
             # A structural reading that produces English ends the question: no
@@ -310,10 +549,10 @@ class Solver:
             ):
                 return
 
-        # Cheap attacks are fast enough to run before peeling anything else, and
-        # they catch the common case where the outer layer is not an encoding at
-        # all (Caesar, Atbash, rail fence, Morse, A1Z26 ...).
-        self._attack(text, ctx, pool, likelihoods, report, costs=(CHEAP,))
+        # The rest of the cheap tier: fast enough to run before peeling
+        # anything else, and it catches the common case where the outer layer
+        # is not an encoding at all (rail fence, Morse, A1Z26, XOR ...).
+        self._attack(text, ctx, pool, likelihoods, report, costs=(CHEAP,), sink=produced)
         if pool.certain or ctx.expired():
             return
 
@@ -321,15 +560,101 @@ class Solver:
         if depth < self.max_depth and strong and pool.best and pool.best.confidence >= SOLVED_CONFIDENCE:
             return  # a strongly indicated layer already explained this text
         if depth < self.max_depth:
+            floor = descent_evidence(depth)
             for layer in applicable:
                 if ctx.expired() or pool.certain:
                     return
-                self._descend(layer, text, ctx, depth, pool, report)
+                # Deeper peels need better evidence.  Almost any text is
+                # *technically* valid base64 or base85, so at depth 0 those
+                # readings are worth a look and by depth 3 they are noise: a
+                # string of Polybius digits would otherwise sprout a base64
+                # branch, and that branch its own, until the budget was gone
+                # and the substitution search that would have solved it never
+                # ran.  A strongly indicated layer is never blocked, which is
+                # what keeps genuine six-deep stacks working -- every step of
+                # `base32 -> base16 -> base64 -> morse` sniffs above 0.75.
+                evidence = likelihoods.get(layer.info.name, 0.0)
+                if evidence < floor:
+                    continue
+                self._descend(layer, text, ctx, depth, pool, report, evidence)
 
-        # Everything else: the moderate and expensive attacks.
-        self._attack(text, ctx, pool, likelihoods, report, costs=(MODERATE, EXPENSIVE, BRUTAL))
+        # The moderate attacks (Vigenere, XOR, ...) come next: they are the most
+        # common answer by a wide margin, and anything that unwraps *this* text
+        # must be tried before anything that guesses at a second layer.
+        if mode != "cheap":
+            self._attack(text, ctx, pool, likelihoods, report, costs=(MODERATE,), sink=produced)
         if pool.certain or ctx.expired():
             return
+
+        # Attack-then-attack: stacks of transpositions with a substitution
+        # underneath, to five composed steps.  This subsumes the single-reading
+        # probe it replaced -- depth 1 of the chain search *is* that probe --
+        # and it is the pass that takes `rail_fence(caesar)` apart at one step
+        # and `reverse(rail_fence(skip(reverse(rail_fence(rot13)))))` at five.
+        # It runs before the expensive attacks because it costs a fraction of a
+        # second: see `_chain_search` for why the combinatorics collapse.
+        if depth < self.max_depth and not pool.certain and self._transposition_shaped(text, ctx):
+            self._chain_search(text, ctx, pool, CHAIN_SHALLOW_STEPS)
+        if pool.certain or ctx.expired():
+            return
+
+        # The expensive attacks: substitution, Playfair, columnar, Hill, M-94.
+        # They run against a *reduced* context so that finishing them does not
+        # leave the second recursion pass with nothing to spend.  Without the
+        # reserve a text with several plausible transposition readings spends
+        # every second on Hill and Playfair and never looks underneath.
+        if mode == "full":
+            reserve = ctx.remaining() * RECURSION_RESERVE if depth < self.max_depth else 0.0
+            attack_ctx = ctx.child(budget=max(1.0, ctx.remaining() - reserve))
+            self._attack(
+                text, attack_ctx, pool, likelihoods, report,
+                costs=(EXPENSIVE, BRUTAL), sink=produced,
+            )
+            if pool.certain or ctx.expired():
+                return
+
+        # Deep chain search: stacks of up to five composed transpositions with a
+        # substitution underneath.  It waits until here because it is the one
+        # pass that can spend a real share of the budget without any cipher
+        # having asked for it -- Myszkowski and AMSCO are transpositions of
+        # English too, they pass the gate, and their permutations are *not*
+        # reachable by composing rail fences, so running this first would take
+        # the budget from the attacks that were going to solve them.
+        if (
+            depth == 0
+            and not pool.certain
+            and (pool.best.confidence if pool.best else 0.0) < CERTAIN_CONFIDENCE
+            and self._transposition_shaped(text, ctx)
+        ):
+            self._chain_search(text, ctx, pool, MAX_CHAIN_STEPS)
+        if pool.certain or ctx.expired():
+            return
+
+        # Last resort: probe the transposition readings again, this time with
+        # the periodic ciphers.  A dozen Vigenere solves is seconds rather than
+        # milliseconds, so it happens only at the outermost node, only when
+        # nothing else has held up, and only with time left to spend -- the
+        # `skip(vigenere)` construction and its relatives.
+        #
+        # The bar here is *certainty*, not the solved threshold: a wrong answer
+        # that scrapes past 0.62 is exactly the situation where the reading
+        # underneath a transposition is worth another few seconds.
+        if (
+            depth == 0
+            and not pool.certain
+            and (pool.best.confidence if pool.best else 0.0) < CERTAIN_CONFIDENCE
+            and ctx.remaining() > LAST_RESORT_SECONDS
+        ):
+            self._say("no reading held up; trying periodic ciphers under each transposition", 0.9)
+            self._probe_readings(text, ctx, depth, pool, PROBE_PERIODIC)
+
+        # Second pass: the structural results worth a node of their own --
+        # `reverse` above all, which is keyless and so has exactly one reading.
+        if depth < self.max_depth and not pool.certain:
+            self._recurse_candidates(
+                produced, ctx, depth, pool, report, cipher_depth,
+                child_mode="bounded", limit=3,
+            )
 
         # Attack-then-peel: a candidate plaintext may itself be an encoding.
         if depth < self.max_depth and not pool.certain:
@@ -354,11 +679,499 @@ class Solver:
                     chain.append(layer.info.name)
                     child = ctx.with_steps(
                         tuple(chain),
-                        budget=max(2.0, ctx.remaining() * 0.4),
+                        budget=max(1.0, ctx.remaining() * layer_share(depth) * 0.7),
                         depth=depth + 1,
                     )
                     self._explore(inner, child, depth + 1, pool, report)
                     break
+
+    def _quick_attacks(
+        self,
+        text: str,
+        ctx: CrackContext,
+        pool: CandidatePool,
+        report: CrackReport,
+        sink: list[Candidate],
+        likelihoods: dict[str, float] | None = None,
+    ) -> None:
+        """Run the keyless substitutions: no key to search, no false positives.
+
+        Ordered by the identifier's opinion, exactly as the main attack phase
+        is.  Order matters even among equivalent answers: ROT13 *is* a Caesar
+        shift of 13, so whichever runs first claims the solve, and the report
+        should say ROT13 when the identifier recognised ROT13.
+        """
+        from .ciphers import try_get
+
+        letters = letters_only(text)
+        ranked = sorted(
+            PRE_PEEL_CIPHERS, key=lambda n: -(likelihoods or {}).get(n, 0.0)
+        )
+        for name in ranked:
+            if pool.certain or ctx.expired():
+                return
+            cipher = try_get(name)
+            if cipher is None:
+                continue
+            self._run(cipher, text, letters, ctx, pool, report, CHEAP, 1.0 / len(PRE_PEEL_CIPHERS), sink)
+
+    def _readings(self, text: str, limit: int = 24, wide: bool = True) -> list[tuple[str, Any, str]]:
+        """Every plausible way this text could be a small transposition.
+
+        Returns ``(cipher name, key, decrypted text)``.  The keys are
+        *enumerated*, not taken from the attacks that already ran, and that
+        distinction is the whole point: a transposition permutes letters, so
+        every key produces identical letter statistics and a cipher's own
+        ranking of its keys is meaningless when what is underneath is still
+        enciphered.  The correct reading is routinely nowhere near the top of
+        the list the attack returned.
+
+        Only ciphers with a keyspace small enough to walk are included.
+        ``wide`` sweeps every reading; the narrow set keeps the rail counts and
+        strides that actually occur in puzzles, and exists because the
+        last-resort pass pays a full Vigenere solve per reading and has seconds,
+        not minutes, to work with -- fourteen readings it can finish beat
+        nineteen it cannot.
+        """
+        from .ciphers import try_get
+
+        readings: list[tuple[str, Any, str]] = []
+        for name, keys in (
+            ("reverse", [None]),
+            ("rail_fence", [(rails, 0) for rails in range(2, 9 if wide else 7)]),
+            ("skip", list(range(2, 13 if wide else 10))),
+        ):
+            cipher = try_get(name)
+            if cipher is None:
+                continue
+            for key in keys:
+                try:
+                    plain = cipher.decrypt(text) if key is None else cipher.decrypt(text, key)
+                except Exception:
+                    continue
+                if len(letters_only(plain)) >= 16:
+                    readings.append((name, key, plain))
+        return readings[:limit]
+
+    def _probe_readings(
+        self,
+        text: str,
+        ctx: CrackContext,
+        depth: int,
+        pool: CandidatePool,
+        probes: tuple[str, ...],
+    ) -> None:
+        """Try a few small ciphers directly against each transposition reading.
+
+        This is deliberately *not* a recursive exploration.  Opening a node per
+        reading means re-running identification, the layer sniffers and the
+        whole cheap attack set twenty times over, which costs seconds and
+        crowds out the attacks that were going to work.  A probe runs the named
+        ciphers against the reading and stops -- no identification, no peeling,
+        no recursion -- so its cost is bounded by the probe list.
+        """
+        from .ciphers import try_get
+
+        ciphers = [c for c in (try_get(name) for name in probes) if c is not None]
+        seen: set[str] = set()
+        readings = []
+        for name, key, plain in self._readings(text, wide=False):
+            fp = fingerprint(plain)
+            if fp in seen:
+                continue
+            seen.add(fp)
+            readings.append((name, key, plain))
+
+        # Cipher-major, not reading-major: the probe list is ordered by how
+        # often each cipher turns up, so sweeping every reading with Vigenere
+        # before trying any of them with Porta means a deadline that lands
+        # mid-probe still covered the likely answers.  Reading-major order
+        # spends the whole budget on the first few readings.
+        for cipher in ciphers:
+            if ctx.expired() or pool.certain:
+                return
+            # Each cipher gets a share of what is left and spends it evenly
+            # across the readings, so a sweep always *finishes*.  A fixed
+            # per-probe cap does not work here: too generous and the clock runs
+            # out halfway through the first cipher (the right reading is as
+            # likely to be the last one as the first), too tight and a cipher
+            # that needed a second never lands at all.
+            sweep = ctx.remaining() * PROBE_CIPHER_SHARE
+            per_reading = max(0.25, min(PROBE_SECONDS, sweep / max(1, len(readings))))
+            for name, key, plain in readings:
+                if ctx.expired() or pool.certain:
+                    return
+                if len(cipher.prepare(plain)) < max(cipher.info.min_length, 2):
+                    continue
+                sub = ctx.with_steps(
+                    ctx.steps + (name,),
+                    budget=min(per_reading, max(0.2, ctx.remaining())),
+                    depth=depth + 1,
+                )
+                try:
+                    for result in cipher.crack(plain, sub):
+                        result.notes.setdefault("reading", f"{name} key {key}")
+                        pool.add(result)
+                        if result.certain:
+                            return
+                except Exception:  # a probe must never break the solve
+                    if STRICT_ATTACKS:
+                        raise
+
+    # -- deep cipher chains -------------------------------------------------- #
+    def _transposition_shaped(self, text: str, ctx: CrackContext) -> bool:
+        """Could this text be a transposition of English under one substitution?
+
+        A transposition does not change which letters are present, and a
+        monoalphabetic substitution renames them consistently, so a stack of
+        the two leaves a letter histogram that matches English under *some*
+        rotation or reflection.  Measured over this corpus the separation is
+        not subtle -- chi-squared per letter against English, best of the 26
+        rotations and Atbash:
+
+        ===============================  =============
+        text                             chi / letter
+        ===============================  =============
+        English, and any transposition          0.116
+        of it (rail fence, columnar,
+        Myszkowski, AMSCO, six stacked
+        ciphers)
+        Vigenere                                1.711
+        Hill                                    2.214
+        Simple substitution                     3.658
+        ===============================  =============
+
+        So the gate is cheap, exact in practice, and keeps the chain search off
+        the texts it could never explain -- which matters because the search is
+        the only pass that can spend a serious share of the budget without a
+        cipher having asked for it.
+        """
+        letters = letters_only(text).upper()
+        if len(letters) < 24:
+            return False
+        counts = [0] * 26
+        for ch in letters:
+            counts[A26.index(ch)] += 1
+        ref = ctx.model.monogram_reference()
+        expected = [ref[A26[i]] * len(letters) for i in range(26)]
+
+        def chi(mapped: list[int]) -> float:
+            return sum(
+                (mapped[i] - expected[i]) ** 2 / expected[i]
+                for i in range(26)
+                if expected[i] > 0
+            )
+
+        best = min(chi([counts[(i + shift) % 26] for i in range(26)]) for shift in range(26))
+        best = min(best, chi([counts[25 - i] for i in range(26)]))
+        return best / len(letters) <= CHAIN_GATE_CHI
+
+    def _monoalphabetic_candidates(
+        self, text: str, ctx: CrackContext, keep: int = 3
+    ) -> list[tuple[str, Any, str]]:
+        """The most likely monoalphabetic corrections for ``text``, applied.
+
+        Returns ``(cipher name, key, corrected text)``, always including the
+        identity.  The trick that makes this possible up front is that a
+        transposition does not change *which* letters are present, only where
+        they are: the letter distribution of the ciphertext is exactly the
+        distribution of the plaintext after whatever substitution was applied,
+        no matter how many transpositions were stacked on top.  So the shift
+        can be read off the histogram before a single transposition is undone.
+        """
+        letters = letters_only(text).upper()
+        out: list[tuple[str, Any, str]] = []
+        if len(letters) < 24:
+            return [("none", None, text)]
+        counts = [0] * 26
+        for ch in letters:
+            counts[A26.index(ch)] += 1
+        ref = ctx.model.monogram_reference()
+        expected = [ref[A26[i]] * len(letters) for i in range(26)]
+
+        def chi(mapped: list[int]) -> float:
+            total = 0.0
+            for i in range(26):
+                exp = expected[i]
+                if exp > 0:
+                    diff = mapped[i] - exp
+                    total += diff * diff / exp
+            return total
+
+        # Shift 0 is in the list on purpose: "no substitution at all" is a
+        # hypothesis like any other (an all-transposition stack), and it should
+        # win or lose on the same histogram evidence rather than by being tried
+        # first out of habit.  Ordering matters here -- each candidate gets a
+        # slice of the state allowance, so a wrong one tried first is states
+        # the right one never gets.
+        scored: list[tuple[float, str, Any]] = [
+            (chi([counts[(i + shift) % 26] for i in range(26)]),
+             "none" if shift == 0 else ("rot13" if shift == 13 else "caesar"), shift)
+            for shift in range(26)
+        ]
+        scored.append((chi([counts[25 - i] for i in range(26)]), "atbash", None))
+        scored.sort(key=lambda t: t[0])
+        for _, name, key in scored[:keep]:
+            if name == "none":
+                out.append(("none", None, text))
+                continue
+            if name == "atbash":
+                mapped = "".join(A26[25 - A26.index(c)] if c in A26 else c for c in text.upper())
+            else:
+                mapped = "".join(
+                    A26[(A26.index(c) - int(key)) % 26] if c in A26 else c for c in text.upper()
+                )
+            out.append((name, key, mapped))
+        return out
+
+    def _chain_search(
+        self,
+        text: str,
+        ctx: CrackContext,
+        pool: CandidatePool,
+        max_steps: int,
+    ) -> None:
+        """Search stacks of transpositions with one substitution underneath.
+
+        This is the "six layers of ciphers" case, and it is tractable because
+        of an algebraic fact worth stating plainly: **a transposition and a
+        monoalphabetic substitution commute**.  A transposition moves letters
+        without looking at them; a substitution rewrites letters without moving
+        them.  So any stack of rail fences, skips, reversals, Caesars, Atbashes
+        and ROT13s -- in any order, however deep -- equals *one* permutation
+        followed by *one* substitution.
+
+        Two consequences, and the search is built on both:
+
+        1. The substitution can be solved **first**, from the ciphertext's
+           letter histogram, because no transposition changes it
+           (:meth:`_monoalphabetic_candidates`).  It is then applied to the
+           whole text once, and what remains is a pure permutation problem.
+        2. Each state therefore costs a single quadgram scoring rather than a
+           re-analysis, so tens of thousands of compositions per second are
+           affordable and the depth that matters is reachable:
+
+           ==========  ==================  =========================
+           chain depth  compositions       what it covers
+           ==========  ==================  =========================
+           1                        13     one transposition + a shift
+           2                       182     two + a shift
+           3                     2,380     three + a shift
+           4                    30,927     four + a shift
+           ==========  ==================  =========================
+
+        Deduplication keeps those numbers honest -- different stacks often
+        compose to the same permutation (two reversals are the identity) and
+        every state is fingerprinted -- and the cap is set from the time left,
+        so a bigger budget searches deeper instead of the search overrunning.
+
+        What this deliberately does *not* do is chase six stacked
+        polyalphabetics.  Nothing commutes there, every intermediate state is
+        indistinguishable from noise, and no test exists to prune the tree; that
+        limit is real and is documented rather than papered over.
+        """
+        from .ciphers import try_get
+
+        transforms: list[tuple[str, Any, Any]] = []
+        for name, keys in (
+            ("reverse", [None]),
+            ("rail_fence", [(rails, 0) for rails in range(2, 7)]),
+            ("skip", list(range(2, 9))),
+        ):
+            cipher = try_get(name)
+            if cipher is None:
+                continue
+            for key in keys:
+                transforms.append((name, key, cipher))
+
+        # States are cheap but not free; spend a slice of what is left rather
+        # than a fixed number, so a 5-second run stays quick and a 5-minute one
+        # searches a level deeper.
+        allowance = min(
+            CHAIN_STATE_CAP,
+            int(max(0.0, ctx.remaining()) * CHAIN_SHARE * CHAIN_STATES_PER_SECOND),
+        )
+        if allowance < len(transforms):
+            return
+
+        candidates = self._monoalphabetic_candidates(text, ctx)
+        # Split the allowance rather than letting the first candidate spend it
+        # all: the histogram usually ranks the true substitution first, but
+        # "usually" is not "always", and a wrong guess must not be able to
+        # starve the right one.
+        rest = max(1, len(candidates) - 1)
+        for index, (sub_name, sub_key, base) in enumerate(candidates):
+            if ctx.expired() or pool.certain or allowance <= 0:
+                return
+            fraction = CHAIN_FIRST_SHARE if index == 0 else (1 - CHAIN_FIRST_SHARE) / rest
+            budget_states = min(allowance, max(len(transforms) * 2, int(allowance * fraction)))
+            allowance -= budget_states
+            seen: set[str] = {fingerprint(base)}
+            frontier: list[tuple[str, tuple[tuple[str, Any], ...]]] = [(base, ())]
+            # Breadth first, so the shallowest explanation wins: a two-step
+            # chain is a better answer than a six-step chain reaching the same
+            # plaintext, and likelier to be what the puzzle actually did.
+            for _ in range(max_steps):
+                if not frontier or ctx.expired() or pool.certain or budget_states <= 0:
+                    break
+                nxt: list[tuple[str, tuple[tuple[str, Any], ...]]] = []
+                for body, chain in frontier:
+                    for name, key, cipher in transforms:
+                        if budget_states <= 0 or ctx.expired() or pool.certain:
+                            break
+                        try:
+                            inner = cipher.decrypt(body) if key is None else cipher.decrypt(body, key)
+                        except Exception:
+                            continue
+                        fp = fingerprint(inner)
+                        if fp in seen:
+                            continue
+                        seen.add(fp)
+                        budget_states -= 1
+                        steps = chain + ((name, key),)
+                        nxt.append((inner, steps))
+                        # Two-stage scoring.  `score()` segments the text into
+                        # dictionary words, which is the honest measure and far
+                        # too slow to run on a quarter of a million states;
+                        # n-gram fitness alone is a fifth of the cost and never
+                        # rates real English below the gate (English averages
+                        # -4.3 per character, random text -7.7).
+                        if ctx.model.search_fitness(inner[:CHAIN_GATE_CHARS]) < CHAIN_FITNESS_GATE:
+                            continue
+                        if self.model.score(inner).confidence < SOLVED_CONFIDENCE:
+                            continue
+                        # Prefix the chain this node was already inside: the
+                        # search runs under peeled encodings too, and a report
+                        # that says `reverse -> rail_fence -> caesar` for a
+                        # base64-wrapped puzzle has lost two real steps.
+                        named = ctx.steps + tuple(step for step, _ in steps)
+                        if sub_name == "none":
+                            # An all-transposition stack: the last step is the
+                            # one that gets the credit and the key.
+                            self._say(f"chain found: {' -> '.join(named)}", 0.95, cipher=named[-1])
+                            pool.add(ctx.with_steps(named[:-1]).candidate(
+                                named[-1], inner, key, steps=named[:-1],
+                                method="chain search (composed transpositions)",
+                            ))
+                        else:
+                            self._say(
+                                f"chain found: {' -> '.join(named)} -> {sub_name}",
+                                0.95,
+                                cipher=sub_name,
+                            )
+                            pool.add(ctx.with_steps(named).candidate(
+                                sub_name, inner, sub_key, steps=named,
+                                method=(
+                                    "chain search: the substitution was read off the letter "
+                                    "histogram, which transpositions leave untouched, then the "
+                                    "permutation stack was composed"
+                                ),
+                            ))
+                        if pool.certain:
+                            return
+                frontier = nxt
+
+    def _recurse_candidates(
+        self,
+        produced: list[Candidate],
+        ctx: CrackContext,
+        depth: int,
+        pool: CandidatePool,
+        report: CrackReport,
+        cipher_depth: int = 0,
+        only: frozenset[str] | None = None,
+        child_mode: str = "bounded",
+        limit: int = 8,
+    ) -> None:
+        """Explore the output of structure-changing ciphers as new nodes.
+
+        Only the best few candidates are followed, and only when they are not
+        already readable -- a transposition that produced English has answered
+        the question, and re-attacking it would just rediscover the same text
+        under a no-op cipher.
+        """
+        # Ranking by confidence is exactly wrong here: the output of the
+        # middle step of a stack is *meant* to look like nonsense, so the
+        # candidate worth following is usually at the bottom of the pool.  Take
+        # the best attempt from each recursive cipher at this node instead, and
+        # order them by the cipher's own fitness rather than by how English
+        # they read.
+        if cipher_depth >= MAX_CIPHER_UNWRAPS:
+            return
+        cheap_pass = child_mode == "cheap"
+        if cheap_pass:
+            if self._cheap_cipher_nodes >= MAX_CHEAP_CIPHER_NODES:
+                return
+        elif self._cipher_nodes >= MAX_CIPHER_NODES:
+            return
+
+        by_cipher: dict[str, list[Candidate]] = {}
+        for candidate in produced:
+            if candidate.cipher not in (only or RECURSIVE_CIPHERS):
+                continue
+            # Following the same cipher twice in one chain is how you get
+            # `reverse -> reverse` (the identity) reported as a two-step
+            # solution.  Two stacked transpositions of the same kind are also
+            # almost always expressible as one, so the second step buys freedom
+            # rather than explanation.
+            if candidate.cipher in ctx.steps:
+                continue
+            by_cipher.setdefault(candidate.cipher, []).append(candidate)
+
+        shortlist: list[Candidate] = []
+        for name, candidates in by_cipher.items():
+            candidates.sort(key=lambda c: -c.fitness)
+            keep = AMBIGUOUS_FOLLOW if name in AMBIGUOUS_RECURSIVE else 1
+            if cheap_pass:
+                keep = max(keep, 12)  # every reading; each is nearly free
+            shortlist.extend(candidates[:keep])
+
+        # Order: the keyless structural ciphers first.  Their output is exact
+        # rather than a guess, they cost nothing to follow, and `reverse` in
+        # particular is the most common wrapper in puzzle stacks -- ranking it
+        # by how English its output reads would drop it, because its output is
+        # *meant* to still be enciphered.
+        def rank(candidate: Candidate) -> tuple[int, float]:
+            exact = candidate.cipher in EXACT_RECURSIVE
+            return (0 if exact else 1, -candidate.fitness)
+
+        followed = 0
+        for candidate in sorted(shortlist, key=rank):
+            if followed >= limit or ctx.expired() or pool.certain:
+                return
+            body = candidate.plaintext
+            letters = letters_only(body)
+            if len(letters) < 16:
+                continue
+            if self.model.score(body).confidence >= SOLVED_CONFIDENCE:
+                continue  # already readable: nothing left underneath
+            # Revisit a text only when this pass may do more with it than
+            # the pass that saw it first: the cheap pass deliberately leaves
+            # Vigenere and friends untried.
+            fp = fingerprint(body)
+            rank = MODE_RANK[child_mode]
+            if self._explored.get(fp, -1) >= rank:
+                continue
+            self._explored[fp] = rank
+            followed += 1
+            if cheap_pass:
+                self._cheap_cipher_nodes += 1
+            else:
+                self._cipher_nodes += 1
+            self._say(
+                f"exploring the {candidate.cipher} result as a cipher in its own right",
+                0.75,
+                cipher=candidate.cipher,
+            )
+            chain = tuple(candidate.steps) + (candidate.cipher,)
+            share = max(1.0, ctx.remaining() * layer_share(depth) * 0.4)
+            if candidate.cipher in AMBIGUOUS_RECURSIVE:
+                share = min(share, AMBIGUOUS_CHILD_SECONDS)
+            child = ctx.with_steps(chain, budget=share, depth=depth + 1)
+            self._explore(
+                body, child, depth + 1, pool, report,
+                mode=child_mode, cipher_depth=cipher_depth + 1,
+            )
 
     def _blend_priors(
         self, text: str, ctx: CrackContext, likelihoods: dict[str, float]
@@ -396,6 +1209,7 @@ class Solver:
         depth: int,
         pool: CandidatePool,
         report: CrackReport,
+        likelihood: float = 0.0,
     ) -> None:
         """Strip one layer and explore what is underneath."""
         inner = self._peel(layer, text)
@@ -411,8 +1225,15 @@ class Solver:
         )
         # child() appends to the chain, so pass only the new step: passing the
         # whole chain here records every ancestor layer twice.
+        # Budget follows evidence here as it does in the attack phases.  A
+        # layer the identifier is 92% sure about should not be handed the same
+        # 60% of the clock as one it half believes: the leftover is for
+        # readings that are probably wrong, and starving the likely branch is
+        # how a keyed Polybius (peel, then a substitution search underneath)
+        # ends up losing to a base64 reading of the same digits.
+        share = min(0.92, layer_share(depth) + 0.3 * max(0.0, min(1.0, likelihood)))
         child = ctx.child(
-            budget=max(2.0, ctx.remaining() * 0.6),
+            budget=max(1.0, ctx.remaining() * share),
             steps=(layer.info.name,),
             depth=depth + 1,
         )
@@ -449,6 +1270,7 @@ class Solver:
         likelihoods: dict[str, float],
         report: CrackReport,
         costs: tuple[float, ...] = (CHEAP, MODERATE, EXPENSIVE, BRUTAL),
+        sink: list[Candidate] | None = None,
     ) -> None:
         letters = letters_only(text)
         for cost in costs:
@@ -469,10 +1291,20 @@ class Solver:
                     c.info.name,
                 )
             )
-            for cipher in group:
+            # Time within a phase is shared out in proportion to how likely
+            # each cipher is, not equally.  An equal split sounds fair and is
+            # not: adding ten ciphers to the collection would silently take
+            # time away from the substitution hill climb that was going to
+            # solve the puzzle, and a keyed Polybius (which is a Polybius
+            # peel followed by a substitution search) would stop coming out.
+            # The floor keeps every cipher in the running, because a
+            # misidentification must never cost the user their plaintext.
+            weights = [max(LIKELIHOOD_FLOOR, likelihoods.get(c.info.name, 0.0)) for c in group]
+            for index, cipher in enumerate(group):
                 if ctx.expired() or pool.certain:
                     return
-                self._run(cipher, text, letters, ctx, pool, report, cost, len(group))
+                share = weights[index] / sum(weights[index:])
+                self._run(cipher, text, letters, ctx, pool, report, cost, share, sink)
 
     def _run(
         self,
@@ -483,7 +1315,8 @@ class Solver:
         pool: CandidatePool,
         report: CrackReport,
         cost: float,
-        group_size: int,
+        share: float,
+        sink: list[Candidate] | None = None,
     ) -> None:
         prepared = cipher.prepare(text)
         alphabet = cipher.info.alphabet
@@ -499,7 +1332,7 @@ class Solver:
         if remaining <= 0:
             return
         if cost >= EXPENSIVE:
-            slice_seconds = min(PHASE_SLICES[cost], remaining / max(1, group_size))
+            slice_seconds = min(PHASE_SLICES[cost], remaining * max(0.0, min(1.0, share)))
         else:
             slice_seconds = min(PHASE_SLICES[cost], remaining)
         if slice_seconds <= 0:
@@ -518,6 +1351,8 @@ class Solver:
             for candidate in cipher.crack(usable, sub):
                 tried += 1
                 pool.add(candidate)
+                if sink is not None:
+                    sink.append(candidate)
                 if candidate.certain:
                     log.status = "solved"
                     log.detail = f"key {candidate.key_repr}"
@@ -702,7 +1537,7 @@ def solve(
     *,
     budget: float = 30.0,
     workers: int = 1,
-    max_depth: int = 3,
+    max_depth: int = 6,
     hints: dict[str, Any] | None = None,
     progress: Callable[[str, float, dict], None] | None = None,
     model: LanguageModel | None = None,
@@ -732,7 +1567,7 @@ def solve_auto(
     *,
     budget: float = 30.0,
     workers: int = 1,
-    max_depth: int = 3,
+    max_depth: int = 6,
     hints: dict[str, Any] | None = None,
     progress: Callable[[str, float, dict], None] | None = None,
     exhaustive: bool = False,

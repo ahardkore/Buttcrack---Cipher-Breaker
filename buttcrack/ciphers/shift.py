@@ -69,6 +69,36 @@ class ShiftCipher(Cipher):
         penalty = (1.0 - ratio) * 50.0
         return ctx.model.chi_squared(letters, per_char=True) + penalty
 
+    #: A ROT47 reading below this letter density is not a plaintext.  English
+    #: prose is about 0.85 letters per non-space character even with heavy
+    #: punctuation; a wrong shift lands nearer 0.3.
+    MIN_LETTER_DENSITY = 0.55
+
+    def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
+        """The inherited sweep, minus the readings that are mostly punctuation.
+
+        The language model scores *letters*, which is the right thing to do for
+        every cipher that produces letters -- and a loophole for this one.  A
+        NATO spelling alphabet message ("Tango Hotel Echo ...") shifted by the
+        right amount leaves the initial of each word standing and turns the rest
+        into punctuation, so the letters that remain spell the hidden message
+        and the model calls it perfect English with confidence 1.00.  The reading
+        is nonsense: 70% of it is punctuation.
+
+        Density is therefore checked here rather than left to the scorer, and
+        only for ROT47, because it is the only cipher in the collection whose
+        output alphabet is wider than its input alphabet.
+        """
+        for candidate in super().crack(ciphertext, ctx):
+            stream = "".join(c for c in candidate.plaintext if not c.isspace())
+            if not stream:
+                continue
+            density = len(letters_only(stream)) / len(stream)
+            if density < self.MIN_LETTER_DENSITY:
+                continue
+            candidate.notes["letter_density"] = f"{density:.2f}"
+            yield candidate
+
     def likelihood(self, text: str, ctx: CrackContext) -> float:
         stream = self.prepare(text)
         if len(stream) < self.info.min_length:

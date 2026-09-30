@@ -4,17 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Caesar Cipher Decoder — Decrypt Without Knowing the Shift</title>
-<meta name="description" content="Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.">
+<meta name="description" content="Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.">
 <link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/caesar-cipher-decoder.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Caesar Cipher Decoder — Decrypt Without Knowing the Shift">
-<meta property="og:description" content="Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.">
+<meta property="og:description" content="Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/caesar-cipher-decoder.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Caesar Cipher Decoder \u2014 Decrypt Without Knowing the Shift", "description": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Caesar Cipher Decoder \u2014 Decrypt Without Knowing the Shift", "description": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I decode a Caesar cipher without the key?", "acceptedAnswer": {"@type": "Answer", "text": "There are only 26 possible shifts, so you try them all and pick the one that produces English. This page automates both halves: it generates all 26 candidates and scores each with a trigram language model, so the correct shift is chosen without you reading through the list."}}, {"@type": "Question", "name": "Is ROT13 the same thing?", "acceptedAnswer": {"@type": "Answer", "text": "ROT13 is a Caesar cipher with a shift of exactly 13. Because 13 is half of 26, applying it twice returns the original text, which is why it is used for hiding spoilers rather than for security."}}, {"@type": "Question", "name": "What is the difference between Caesar and Atbash?", "acceptedAnswer": {"@type": "Answer", "text": "Caesar rotates the alphabet by a fixed amount. Atbash reflects it, mapping A to Z, B to Y and so on. Atbash has no key at all, so there is only one possible decryption. This tool tests both."}}, {"@type": "Question", "name": "The shift looks right but some words are wrong. Why?", "acceptedAnswer": {"@type": "Answer", "text": "A Caesar cipher applies one shift to the whole message, so if part of it decodes and part does not, you are probably looking at a Vigen\u00e8re cipher, which uses a repeating sequence of shifts. Try the Vigen\u00e8re page."}}]}</script>
 </head>
 <body data-preset="caesar">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,11 +28,11 @@
       <h1>Caesar Cipher Decoder<span class="dot">.</span></h1>
       <p class="tagline">Don't know the shift? It tries all 26 and picks the English one.</p>
     </div>
-    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html" aria-current="page">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html" aria-current="page">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main-content">
   <section class="solver-shell" aria-label="Cipher solver">
     <div class="solver-heading">
       <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
@@ -42,7 +44,7 @@
     <div class="controls">
       <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
       <button class="ghost" id="clear">Clear</button>
-      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
     </div>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
   </section>
@@ -85,14 +87,14 @@
   <section class="support">
       <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
       <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
-      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
     </section>
 </main>
 
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -101,5 +103,6 @@
 
 <script src="model.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>

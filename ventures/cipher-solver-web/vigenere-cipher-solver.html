@@ -4,17 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vigenère Cipher Solver — Recovers the Key Automatically</title>
-<meta name="description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.">
+<meta name="description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.">
 <link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/vigenere-cipher-solver.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Vigenère Cipher Solver — Recovers the Key Automatically">
-<meta property="og:description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.">
+<meta property="og:description" content="Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/vigenere-cipher-solver.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Vigen\u00e8re Cipher Solver \u2014 Recovers the Key Automatically", "description": "Break a Vigen\u00e8re cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Vigen\u00e8re Cipher Solver \u2014 Recovers the Key Automatically", "description": "Break a Vigen\u00e8re cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Vigen\u00e8re cipher be broken without the key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases."}}, {"@type": "Question", "name": "What if the key is as long as the message?", "acceptedAnswer": {"@type": "Answer", "text": "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words."}}, {"@type": "Question", "name": "Why did it return a key that is a repeated word, like LAMPLAMP?", "acceptedAnswer": {"@type": "Answer", "text": "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."}}]}</script>
 </head>
 <body data-preset="vigenere">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,11 +28,11 @@
       <h1>Vigenère Solver<span class="dot">.</span></h1>
       <p class="tagline">No keyword needed — it recovers the key from the ciphertext itself.</p>
     </div>
-    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html" aria-current="page">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html" aria-current="page">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main-content">
   <section class="solver-shell" aria-label="Cipher solver">
     <div class="solver-heading">
       <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
@@ -42,7 +44,7 @@
     <div class="controls">
       <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
       <button class="ghost" id="clear">Clear</button>
-      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
     </div>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
   </section>
@@ -92,14 +94,14 @@
   <section class="support">
       <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
       <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
-      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
     </section>
 </main>
 
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -108,5 +110,6 @@
 
 <script src="model.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>

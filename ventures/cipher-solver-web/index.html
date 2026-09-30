@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)</title>
-<meta name="description" content="Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.">
+<title>Free Cipher Solver — Break Any Classical Cipher Automatically</title>
+<meta name="description" content="Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse, layered. No upload.">
 <link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/index.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
-<meta property="og:title" content="Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)">
-<meta property="og:description" content="Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.">
+<meta property="og:title" content="Free Cipher Solver — Break Any Classical Cipher Automatically">
+<meta property="og:description" content="Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse, layered. No upload.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/index.html">
 <link rel="stylesheet" href="style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Cipher Solver \u2014 Break Any Classical Cipher Automatically (Free, No Upload)", "description": "Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigen\u00e8re, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need to know which cipher was used?", "acceptedAnswer": {"@type": "Answer", "text": "No. The solver characterises the text first \u2014 index of coincidence, entropy, character set \u2014 then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button."}}, {"@type": "Question", "name": "Is my ciphertext uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."}}, {"@type": "Question", "name": "Which ciphers can it break?", "acceptedAnswer": {"@type": "Answer", "text": "Caesar and ROT13, Atbash, affine, Vigen\u00e8re with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text \u2014 including several of those stacked on top of each other."}}, {"@type": "Question", "name": "Why did it fail on my text?", "acceptedAnswer": {"@type": "Answer", "text": "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English \u2014 this browser build scores English only \u2014 or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."}}, {"@type": "Question", "name": "Can it break modern encryption like AES or RSA?", "acceptedAnswer": {"@type": "Answer", "text": "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Free Cipher Solver \u2014 Break Any Classical Cipher Automatically", "description": "Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext \u2014 Caesar, Vigen\u00e8re, substitution, XOR, base64, Morse, layered. No upload.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need to know which cipher was used?", "acceptedAnswer": {"@type": "Answer", "text": "No. The solver characterises the text first \u2014 index of coincidence, entropy, character set \u2014 then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button."}}, {"@type": "Question", "name": "Is my ciphertext uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."}}, {"@type": "Question", "name": "Which ciphers can it break?", "acceptedAnswer": {"@type": "Answer", "text": "Caesar and ROT13, Atbash, affine, the periodic family \u2014 Vigen\u00e8re, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery \u2014 plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other."}}, {"@type": "Question", "name": "Why did it fail on my text?", "acceptedAnswer": {"@type": "Answer", "text": "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English \u2014 this browser build scores English only \u2014 or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."}}, {"@type": "Question", "name": "Can it break modern encryption like AES or RSA?", "acceptedAnswer": {"@type": "Answer", "text": "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."}}]}</script>
 </head>
 <body data-preset="caesar">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
@@ -26,11 +28,11 @@
       <h1>Cipher Solver<span class="dot">.</span></h1>
       <p class="tagline">Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.</p>
     </div>
-    <nav class="tools"><a href="index.html" aria-current="page">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+    <nav class="tools"><a href="index.html" aria-current="page">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main-content">
   <section class="solver-shell" aria-label="Cipher solver">
     <div class="solver-heading">
       <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
@@ -42,7 +44,7 @@
     <div class="controls">
       <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
       <button class="ghost" id="clear">Clear</button>
-      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
     </div>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
   </section>
@@ -54,42 +56,66 @@
   <article>
     <section class="wiki-index" aria-label="Cipher wiki">
     <h2>Cipher wiki</h2>
-    <p>The solver above breaks the puzzle; these guides explain what was going
-    on underneath. Each one covers how a cipher works, how to recognise it in
-    the wild, and what actually breaks it — and every article page carries the
-    same solver, so you can test each idea on a real puzzle as you read.</p>
+    <p>The solver above breaks the puzzle; the wiki explains what was going on
+    underneath. Fifty cipher articles — one per cipher in the registry, each
+    with a worked example generated by running the cipher itself — plus
+    long-form guides and a three-part history of codebreaking. Every article
+    page carries the same solver, so you can test each idea on a real puzzle
+    as you read.</p>
     <div class="wiki-grid">
       <a class="wiki-card featured" href="cipher-wiki.html">
-        <h3>Start here: the field guide</h3>
-        <p>Recognise the shape. Understand the mechanism. Know what an answer is
-        worth — read a ciphertext's alphabet, frequencies and index of
-        coincidence before you guess at the cipher.</p>
-        <span class="wiki-more">Read the field guide →</span>
+        <h3>Start here: the wiki main page</h3>
+        <p>Browse all fifty ciphers by family, catch the featured article, and
+        read a ciphertext's alphabet, frequencies and index of coincidence
+        before you guess at the cipher.</p>
+        <span class="wiki-more">Open the cipher wiki →</span>
       </a>
       <a class="wiki-card" href="caesar-cipher-wiki.html">
         <h3>The Caesar Cipher</h3>
         <p>A rotation so small it teaches nearly every idea behind classical cryptanalysis.</p>
-        <span class="wiki-more">Read the guide →</span>
+        <span class="wiki-more">Read the article →</span>
       </a>
       <a class="wiki-card" href="vigenere-cipher-wiki.html">
         <h3>The Vigenère Cipher</h3>
         <p>Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.</p>
-        <span class="wiki-more">Read the guide →</span>
+        <span class="wiki-more">Read the article →</span>
       </a>
       <a class="wiki-card" href="substitution-cipher-wiki.html">
         <h3>Substitution Ciphers</h3>
         <p>A colossal keyspace with a very human leak: the shape of language remains.</p>
-        <span class="wiki-more">Read the guide →</span>
+        <span class="wiki-more">Read the article →</span>
       </a>
       <a class="wiki-card" href="playfair-cipher-wiki.html">
         <h3>The Playfair Cipher</h3>
         <p>A grid of 25 letters turns single-letter statistics into a pairwise problem.</p>
-        <span class="wiki-more">Read the guide →</span>
+        <span class="wiki-more">Read the article →</span>
       </a>
       <a class="wiki-card" href="m94-wheel-cipher.html">
         <h3>The M-94 Wheel Cipher</h3>
         <p>Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.</p>
-        <span class="wiki-more">Read the guide →</span>
+        <span class="wiki-more">Read the article →</span>
+      </a>
+      <a class="wiki-card" href="history-of-codebreaking.html">
+        <h3>A History of Codebreaking</h3>
+        <p>Every technique in this solver has an inventor and a date. Here they are.</p>
+        <span class="wiki-more">Read the article →</span>
+      </a>
+      <a class="wiki-card" href="famous-cryptanalysts.html">
+        <h3>The Codebreakers</h3>
+        <p>Who broke what, when, and what it cost them.</p>
+        <span class="wiki-more">Read the article →</span>
+      </a>
+      <a class="wiki-card" href="famous-ciphers.html">
+        <h3>Famous Ciphers</h3>
+        <p>The ones that changed history, and the handful nobody has read yet.</p>
+        <span class="wiki-more">Read the article →</span>
+      </a>
+      <a class="wiki-card all-ciphers" href="cipher-wiki.html#families">
+        <h3>All fifty cipher articles</h3>
+        <p>Shift, substitution, polyalphabetic, transposition, polygraphic,
+        wheel, XOR, codes and encodings — one encyclopedia page each, generated
+        from the solver's registry.</p>
+        <span class="wiki-more">Browse every cipher →</span>
       </a>
     </div>
     </section>
@@ -133,20 +159,20 @@
     coincidence says monoalphabetic; a 26-shift sweep finds the answer. The tool reports the
     chain <code>base64 → base16 → caesar</code> along with the key it recovered.</p>
     <h2>Frequently asked questions</h2>
-    <details class="faq"><summary>Do I need to know which cipher was used?</summary><p>No. The solver characterises the text first — index of coincidence, entropy, character set — then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button.</p></details><details class="faq"><summary>Is my ciphertext uploaded anywhere?</summary><p>No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works.</p></details><details class="faq"><summary>Which ciphers can it break?</summary><p>Caesar and ROT13, Atbash, affine, Vigenère with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text — including several of those stacked on top of each other.</p></details><details class="faq"><summary>Why did it fail on my text?</summary><p>The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext.</p></details><details class="faq"><summary>Can it break modern encryption like AES or RSA?</summary><p>No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search.</p></details>
+    <details class="faq"><summary>Do I need to know which cipher was used?</summary><p>No. The solver characterises the text first — index of coincidence, entropy, character set — then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button.</p></details><details class="faq"><summary>Is my ciphertext uploaded anywhere?</summary><p>No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works.</p></details><details class="faq"><summary>Which ciphers can it break?</summary><p>Caesar and ROT13, Atbash, affine, the periodic family — Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery — plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other.</p></details><details class="faq"><summary>Why did it fail on my text?</summary><p>The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext.</p></details><details class="faq"><summary>Can it break modern encryption like AES or RSA?</summary><p>No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search.</p></details>
   </article>
 
   <section class="support">
       <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
       <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
-      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
     </section>
 </main>
 
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -155,5 +181,6 @@
 
 <script src="model.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>

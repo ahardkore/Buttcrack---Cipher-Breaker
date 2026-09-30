@@ -25,24 +25,40 @@ slowly with traffic, and might eventually cover a bill or two.
 
 The one thing that genuinely changes the numbers is traffic, and traffic comes
 from the site ranking for searches like "vigenere cipher solver". That is why
-the site is built as six separate content pages rather than one tool — and why
+the site is built as sixty separate content pages rather than one tool — and why
 the weekly checklist below is mostly about content and links, not code.
 
 ## What's here
 
-### 1. `cipher-solver-web/` — the free browser solver
+### 1. `cipher-solver-web/` — the free browser solver and cipher wiki
 
 A complete static site. The full cipher-breaking engine runs client-side in a
 Web Worker, so there is no server, no API bill, and nothing to maintain. It can
 sit on GitHub Pages indefinitely at a cost of exactly zero.
 
-Six pages, each targeting a different search intent: general solver, Caesar,
-Vigenère, substitution, Morse, CTF crypto. Each has genuine explanatory content
-(AdSense rejects thin pages, and so does Google's ranking).
+Two layers of content, each targeting a different search intent:
 
-Accuracy is verified by `test.js` — 19 end-to-end cases covering every cipher
-and several layered combinations. It passes 19/19, and CI runs it on every
-deploy so a bad change cannot ship.
+* **Tool pages** — general solver, Caesar decoder, Vigenère solver,
+  substitution solver, Morse translator, CTF crypto solver, and the
+  puzzle-book storefront.
+* **The cipher wiki** — a Wikipedia-style encyclopedia with one article per
+  cipher in the registry (all fifty), a main page with featured-article and
+  "did you know" rotation, a left navigation rail with live search over every
+  article, infoboxes and tables of contents generated from the solver's own
+  cipher registry, and three long-form history features. The facts on every
+  cipher page — family, key type, keyspace, minimum text — are generated at
+  build time from the registry, and each worked example is produced by
+  actually running the cipher, so a page cannot quietly disagree with the tool
+  it documents. `build_pages.py` fails the build if any cipher lacks a page,
+  any page is unlinked, or any internal link is broken.
+
+Each page has genuine explanatory content (AdSense rejects thin pages, and so
+does Google's ranking).
+
+Accuracy is verified by `test.js` — 30 end-to-end cases covering every cipher
+family (including the periodic family: Beaufort, Variant Beaufort, Porta,
+Gronsfeld, Trithemius and autokey) and several layered combinations. It passes
+30/30, and CI runs it on every deploy so a bad change cannot ship.
 
 ```bash
 python3 ventures/cipher-solver-web/build_model.py   # compile the language model
@@ -158,22 +174,33 @@ that point; the rest is monetisation.
 5. **Apply to AdSense** once the site has a little traffic — applying with zero
    visitors usually gets rejected. Put the client and slot IDs in `site.json`.
    Note that AdSense requires a payment address and pays out at $100.
-6. **Wire up Stripe** (you have the account, so this is the short version):
-   1. Run `python3 ventures/cipher-solver-web/build_pages.py`. It prints a
-      delivery URL per product — copy them.
-   2. Change `delivery_salt` in `site.json` to anything you like. Do this
-      **before** your first sale, then leave it alone forever.
-   3. In Stripe → Product catalogue, create a product per volume, priced to
-      match `site.json` ($5 and $7 as shipped).
-   4. For each, create a **Payment Link**. Under "After payment", choose
-      *Don't show confirmation page* → **Redirect to your website**, and paste
-      that product's delivery URL.
-   5. Paste each Payment Link URL into the matching `payment_link` field in
-      `site.json`, and push. The Buy buttons go live on deploy.
-   6. Optional: make one more Payment Link with a customer-chosen amount and
-      put it in `tip_jar_url`. It appears as "Leave a tip" on every page.
-   7. Stripe needs your bank details before it will pay out — do that in the
+6. **Wire up Stripe.** Full click-path, with this repo's delivery URLs already
+   filled in: **[`STRIPE_SETUP.md`](STRIPE_SETUP.md)**. The short version:
+   1. `delivery_salt` has already been rotated off its placeholder, so the
+      delivery URLs are final. Never change it again — it would break the
+      download link of everyone who has already bought a book.
+   2. In Stripe (live mode, not test), create a product per volume priced to
+      match `site.json` ($5 and $7 as shipped), plus a customer-chooses-amount
+      link for the tip jar.
+   3. For each product link, set "After payment" → *Don't show confirmation
+      page* → **Redirect to your website**, pasting that product's delivery
+      URL from `set_payment_links.py --show`.
+   4. Paste all three URLs in at once, which validates them, writes
+      `site.json` and rebuilds:
+
+      ```bash
+      python3 ventures/cipher-solver-web/set_payment_links.py \
+          --vol1 https://buy.stripe.com/… --vol2 https://buy.stripe.com/… \
+          --tip  https://buy.stripe.com/…
+      ```
+   5. Push. The Buy buttons go live on deploy. Then buy your own $5 book with a
+      real card to prove the redirect works, and refund yourself.
+   6. Stripe needs your bank details before it will pay out — do that in the
       Stripe dashboard, not here.
+
+   Bad URLs fail the build rather than shipping a dead button: test-mode links,
+   `dashboard.stripe.com` editing URLs, `http`, and a `buy_button_id` with no
+   publishable key are each refused with an explanation.
 
 **On API keys.** Nothing in this setup requires one. Payment Links are
 self-contained URLs, which means there is no credential to leak, rotate or

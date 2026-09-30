@@ -22,7 +22,6 @@ HERE = Path(__file__).parent
 PACKS = HERE.parent / "puzzle-packs"
 sys.path.insert(0, str(PACKS))
 CFG = json.loads((HERE / "site.json").read_text())
-SAMPLES = json.loads((HERE / "samples.json").read_text())
 
 #: The Kryptos research explorer lives in ``kryptos-app/`` and is mounted as a
 #: sub-directory of this site by ``scripts/build_site.py``. Keep the two in
@@ -32,6 +31,7 @@ KRYPTOS_HREF = "kryptos/"
 NAV = [
     ("index.html", "Solver"),
     ("cipher-wiki.html", "Cipher wiki"),
+    ("history-of-codebreaking.html", "History"),
     ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
@@ -140,6 +140,58 @@ def ad_slot() -> str:
 <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>"""
 
 
+#: Hosts a live Stripe Payment Link can legitimately be served from. Custom
+#: domains are possible, so an unknown host warns rather than fails; the checks
+#: that *do* fail are the ones that mean "this button takes no money".
+_STRIPE_HOSTS = ("buy.stripe.com", "pay.stripe.com", "checkout.stripe.com")
+
+
+def payment_url(raw: str, field: str) -> str:
+    """Validate a pasted Stripe URL. Returns "" when the field is unset.
+
+    A wrong payment URL is the most expensive kind of typo on this site: the
+    page looks finished, the button is there, and every click is a lost sale.
+    So each known way of getting it wrong is refused at build time, where the
+    message can say what to paste instead.
+    """
+    url = (raw or "").strip()
+    if not url:
+        return ""
+
+    if url.startswith("http://"):
+        raise SystemExit(f"site.json: {field} must be https, not http: {url}")
+    if not url.startswith("https://"):
+        raise SystemExit(
+            f"site.json: {field} is not a URL: {url!r}\n"
+            f"Paste the whole link Stripe shows, starting with https://buy.stripe.com/"
+        )
+
+    host = url[len("https://"):].split("/", 1)[0].split("?", 1)[0].lower()
+    path = url[len("https://") + len(host):]
+
+    # The dashboard URL is what your browser shows while you *edit* the link;
+    # it is behind your login and useless to a customer.
+    if host.endswith("dashboard.stripe.com"):
+        raise SystemExit(
+            f"site.json: {field} is a Stripe dashboard URL, not the public payment link.\n"
+            f"Open the payment link in the dashboard and copy the URL under "
+            f'"Share" / the copy-link button instead (https://buy.stripe.com/).'
+        )
+
+    # Test mode takes fake cards and pays you nothing. Shipping one to a live
+    # site is silent: the checkout works perfectly and no money ever arrives.
+    if path.startswith("/test_") or "/test_" in path:
+        raise SystemExit(
+            f"site.json: {field} is a TEST-mode payment link ({url}).\n"
+            f"Toggle off test mode in Stripe, recreate the link, and paste the live one."
+        )
+
+    if not any(host == h or host.endswith("." + h) for h in _STRIPE_HOSTS):
+        print(f"  note: {field} is not a stripe.com host ({host}) — assuming a custom domain")
+
+    return url
+
+
 def support_block() -> str:
     buttons = []
     if CFG["github_sponsor"]:
@@ -152,7 +204,9 @@ def support_block() -> str:
             f'<a class="btn" rel="noopener" target="_blank" '
             f'href="https://ko-fi.com/{CFG["kofi_handle"]}">Buy me a coffee</a>'
         )
-    tip = CFG.get("stripe", {}).get("tip_jar_url", "")
+    # Validated like the product links: the tip button is on every page, so a
+    # broken URL here is the most visible dead link on the site.
+    tip = payment_url(CFG.get("stripe", {}).get("tip_jar_url", ""), "stripe.tip_jar_url")
     if tip:
         buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{tip}">Leave a tip</a>')
     buttons.append(f'<a class="btn" rel="noopener" target="_blank" href="{CFG["repo_url"]}">Star on GitHub</a>')
@@ -201,6 +255,21 @@ def app_jsonld(title: str, desc: str) -> str:
     return f'<script type="application/ld+json">{json.dumps(data)}</script>'
 
 
+def article_jsonld(h1: str, desc: str, family_title: str) -> str:
+    """Wiki articles are articles, not applications: say so to the crawlers."""
+    data = {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": h1,
+        "description": desc,
+        "inLanguage": "en",
+        "isAccessibleForFree": True,
+    }
+    if family_title:
+        data["articleSection"] = family_title
+    return f'<script type="application/ld+json">{json.dumps(data)}</script>'
+
+
 def buy_button_script(body: str) -> str:
     """Stripe's script, included only on a page that actually uses the button."""
     if "<stripe-buy-button" not in body:
@@ -208,51 +277,512 @@ def buy_button_script(body: str) -> str:
     return '\n  <script async src="https://js.stripe.com/v3/buy-button.js"></script>'
 
 
-def page(slug: str, title: str, desc: str, h1: str, tagline: str,
-         preset: str, body: str, faqs: list[tuple[str, str]]) -> str:
-    faq_html = "".join(
-        f"<details class=\"faq\"><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs
+# --------------------------------------------------------------------------
+# The cipher wiki
+#
+# Fifty-plus encyclopedia articles rendered in a Wikipedia-shaped layout:
+# left navigation sidebar with a live search box, an article card with a
+# serif title, an infobox of registry facts floated right, an auto-built
+# table of contents, blue in-article links and a category bar at the foot.
+# The solver rides along below the article so every page still breaks ciphers.
+# --------------------------------------------------------------------------
+
+#: The order families appear in across the wiki, matching the solver's own
+#: "ciphers" table (shifts first, encodings last).
+WIKI_FAMILY_ORDER = [
+    "shift", "substitution", "polyalphabetic", "transposition",
+    "polygraphic", "wheel", "xor", "code", "encoding",
+]
+
+#: "Did you know…" items for the wiki main page. Every claim is one the site
+#: can back: it comes from an article or from the solver's own registry.
+DYK_FACTS = [
+    "…that al-Kindi, in ninth-century Baghdad, wrote the first known account of cryptanalysis — and made every monoalphabetic cipher obsolete in the same stroke?",
+    "…that Charles Babbage broke the Vigenère cipher around 1854 and never published a word of it?",
+    "…that Marian Rejewski reconstructed the internal wiring of the Enigma machine in 1932 using mathematics alone, never having seen one?",
+    "…that Bill Tutte deduced the entire structure of the Lorenz SZ40 cipher machine from a single mis-sent message?",
+    "…that Colossus, built to break Lorenz traffic, was the first electronic digital computer — and stayed classified for thirty years?",
+    "…that the M-94's twenty-five disk alphabets were engraved on every device manufactured? Only the order the disks were threaded in was secret.",
+    "…that Johannes Trithemius's <em>Steganographia</em> looked so much like sorcery that it spent two centuries on the Index?",
+    "…that Morse code's letter lengths reportedly came from counting type in a printer's case — which is why E is a single dot?",
+    "…that the Atbash cipher appears in the Book of Jeremiah, where Babel is written as Sheshach?",
+    "…that the Playfair cipher is named for the man who promoted it, not the man who invented it? Charles Wheatstone designed it in 1854.",
+    "…that a correctly used one-time pad is the only cipher with a proof of perfect secrecy — and the Venona decrypts exist because Soviet clerks reused pad material?",
+    "…that Kryptos K4, ninety-seven characters on a sculpture at CIA headquarters, has resisted public solution since 1990?",
+    "…that the Zodiac killer's Z340 cipher fell only in 2020, and turned out to be a transposition wrapped around a homophonic substitution?",
+    "…that the tap code was taught through the walls of the Hanoi Hilton in 1965, and carried messages for years?",
+]
+
+#: The rotating "featured article" pool for the wiki main page.
+FEATURED_ARTICLES = [
+    ("The Caesar cipher", "caesar-cipher-wiki.html",
+     "A rotation so small it teaches nearly every idea behind classical cryptanalysis — and the first thing this solver tries on unknown text."),
+    ("The Vigenère cipher", "vigenere-cipher-wiki.html",
+     "Misattributed for centuries and called <em>le chiffre indéchiffrable</em>, until the repetition of its keyword gave the game away."),
+    ("The M-94 wheel cipher", "m94-wheel-cipher.html",
+     "Twenty-five mixed alphabets on a spindle: the US Army's field cipher from 1922, with a keyspace of 25! disk orders — and how they fall."),
+    ("The Playfair cipher", "playfair-cipher-wiki.html",
+     "A 5×5 keyed grid that encrypts letter pairs, flattening single-letter statistics three centuries before anyone called them that."),
+    ("The Hill cipher", "hill-cipher-wiki.html",
+     "Lester Hill's 1929 matrix cipher: the first built on linear algebra, and a standing lesson in why linearity and secrecy sit badly together."),
+    ("The Quagmire III cipher", "quagmire3-cipher-wiki.html",
+     "Vigenère arithmetic in a keyed alphabet — the form used on the Kryptos sculpture at CIA headquarters."),
+    ("The autokey cipher", "autokey-cipher-wiki.html",
+     "Vigenère's own 1586 idea, genuinely stronger than the cipher that took his name — and the one nobody used."),
+    ("The Bifid cipher", "bifid-cipher-wiki.html",
+     "Delastelle's fractionating cipher, smearing each plaintext letter across two ciphertext letters within a period."),
+    ("A history of codebreaking", "history-of-codebreaking.html",
+     "Frequency analysis in ninth-century Baghdad to Colossus in 1944 — every technique in this solver has an inventor and a date."),
+    ("Famous ciphers", "famous-ciphers.html",
+     "The Great Cipher, the Zimmermann Telegram, Enigma and Lorenz — and the handful of messages nobody has read yet."),
+]
+
+def wiki_article_note(wiki: dict) -> str:
+    """The Wikipedia-style 'this page was last edited' footer, honestly worded
+    for each kind of page: cipher articles carry registry-generated facts, the
+    history features are editorial, and the main page is both."""
+    repo = CFG["repo_url"]
+    if wiki.get("is_hub"):
+        return (
+            '<div class="wiki-article-note">Cipher articles on this wiki are generated from '
+            f'<a href="{repo}">buttcrack</a>&#39;s cipher registry when the site is built — their '
+            "facts tables, worked examples and infoboxes describe the implementation, not an "
+            "idealised cipher. The history features are editorial. The full source is on GitHub."
+            "</div>"
+        )
+    if wiki.get("family") == "history":
+        return (
+            '<div class="wiki-article-note">This feature is editorial. Where the record is '
+            "disputed — who invented the Vigenère cipher, whether the Beale papers are genuine "
+            "— the text says so rather than picking the tidy version.</div>"
+        )
+    return (
+        '<div class="wiki-article-note">The facts in this article are generated from '
+        f'<a href="{repo}">buttcrack</a>&#39;s cipher registry when the site is built, so they '
+        "describe the implementation you can run on this page. Registry-generated content is "
+        "checked against the code; the history is editorial.</div>"
     )
+
+
+_H_RE = re.compile(r"<h([23])([^>]*)>(.*?)</h\1>", re.S)
+
+
+def _tocify(entries: list, seen: dict[str, int]):
+    """The heading rewriter: id it, anchor it, list it, in document order.
+
+    One regex for both levels (rather than one pass per level) so ``entries``
+    comes out in the order the headings appear in the body — the nesting pass
+    after it depends on that.
+    """
+    def repl(m: re.Match) -> str:
+        level, attrs, text = m.group(1), m.group(2), m.group(3).strip()
+        if "data-notoc" in attrs:
+            return f"<h{level}{attrs}>{text}</h{level}>"
+        plain = re.sub(r"<[^>]+>", "", text)
+        existing = re.search(r'id="([^"]+)"', attrs)
+        if existing:
+            anchor = existing.group(1)
+        else:
+            base = re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-") or "section"
+            n = seen.get(base, 0)
+            seen[base] = n + 1
+            anchor = base if n == 0 else f"{base}-{n}"
+        entries.append((int(level), anchor, plain))
+        return (f'<h{level} id="{anchor}">{text}'
+                f'<a class="section-anchor" href="#{anchor}" aria-label="Link to this section">§</a></h{level}>')
+    return repl
+
+
+def with_toc(body: str) -> tuple[str, str]:
+    """Give every h2/h3 an anchor id and build a nested contents box.
+
+    The table of contents is generated from the article body rather than
+    written by hand, so a section can never go missing from it — the same
+    discipline as the infobox, applied to navigation. A heading that already
+    carries an id (the wiki main page's family sections) keeps it, so links
+    from the sidebar and category bars stay stable. A heading marked
+    ``data-notoc`` (the main page's rotating featured-article title) is left
+    alone entirely: its text changes daily in the browser, so a TOC entry for
+    it would be stale by definition.
+    """
+    entries: list[tuple[int, str, str]] = []
+    seen: dict[str, int] = {}
+    new_body = _H_RE.sub(_tocify(entries, seen), body)
+    if not entries:
+        return new_body, ""
+
+    # Nest h3s under the h2 that precedes them, Wikipedia-style. An h3 that
+    # appears before any h2 (none today, but the template is data-driven)
+    # becomes a top-level entry rather than being dropped.
+    root: list[list] = []
+    current_children: list = root
+    for level, anchor, plain in entries:
+        item = [anchor, plain, []]
+        if level == 2:
+            root.append(item)
+            current_children = item[2]
+        else:
+            current_children.append(item)
+
+    def render(items: list) -> str:
+        out = []
+        for anchor, plain, children in items:
+            link = f'<a href="#{anchor}">{plain}</a>'
+            if children:
+                out.append(f"<li>{link}<ul>{render(children)}</ul></li>")
+            else:
+                out.append(f"<li>{link}</li>")
+        return "".join(out)
+
+    toc = (
+        '<nav class="wiki-toc" aria-label="Contents">\n'
+        '        <div class="wiki-toc-title">Contents</div>\n'
+        f'        <ul>{render(root)}</ul>\n'
+        "      </nav>"
+    )
+    return new_body, toc
+
+
+def wiki_sidebar(current: str) -> str:
+    """The Wikipedia-style left rail: search, navigation, every cipher, tools."""
+    from wiki_ciphers import FAMILY_TITLES, wiki_slug
+
+    from buttcrack.ciphers import all_ciphers
+
+    by_family: dict[str, list] = {}
+    for cipher in all_ciphers():
+        by_family.setdefault(cipher.info.family.value, []).append(cipher)
+
+    def link(href: str, label: str) -> str:
+        cur = ' aria-current="page"' if href == current else ""
+        return f'<li><a href="{href}"{cur}>{label}</a></li>'
+
+    family_blocks = []
+    for family in WIKI_FAMILY_ORDER:
+        ciphers = sorted(by_family.get(family, []), key=lambda c: c.info.title)
+        if not ciphers:
+            continue
+        items = "".join(
+            link(wiki_slug(c.info.name), c.info.title) for c in ciphers
+        )
+        family_blocks.append(
+            f'      <details class="wiki-side-group" open>\n'
+            f'        <summary><a href="cipher-wiki.html#family-{family}">'
+            f'{FAMILY_TITLES.get(family, family)}</a><span class="side-count">'
+            f'{len(ciphers)}</span></summary>\n'
+            f'        <ul>\n{items}\n        </ul>\n'
+            f'      </details>'
+        )
+
+    history_links = (
+        link("history-of-codebreaking.html", "History of codebreaking")
+        + link("famous-cryptanalysts.html", "The codebreakers")
+        + link("famous-ciphers.html", "Famous ciphers")
+    )
+    tool_links = (
+        link("index.html", "Cipher solver")
+        + link("caesar-cipher-decoder.html", "Caesar decoder")
+        + link("vigenere-cipher-solver.html", "Vigenère solver")
+        + link("substitution-cipher-solver.html", "Substitution solver")
+        + link("morse-code-translator.html", "Morse translator")
+        + link("ctf-crypto-solver.html", "CTF crypto solver")
+        + link("downloads.html", "Puzzle books")
+        + link(KRYPTOS_HREF, "Kryptos explorer")
+    )
+    total = sum(len(v) for v in by_family.values())
+
+    return f"""<aside class="wiki-side" aria-label="Wiki navigation">
+      <div class="wiki-search" role="search">
+        <input class="wiki-search-input" type="search" placeholder="Search the wiki"
+          autocomplete="off" aria-label="Search the cipher wiki">
+        <button class="wiki-search-go" type="button">Go</button>
+        <div class="wiki-search-results" hidden></div>
+      </div>
+      <nav class="wiki-side-nav">
+        <details class="wiki-side-group" open>
+          <summary>Navigation<span class="side-count">3</span></summary>
+          <ul>
+            {link("cipher-wiki.html", "Main page")}
+            <li><a href="cipher-wiki.html#families">Contents — all {total}</a></li>
+            <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Cipher families</h3>
+{chr(10).join(family_blocks)}
+        <h3 class="wiki-side-heading">History</h3>
+        <details class="wiki-side-group" open>
+          <summary>Codebreaking<span class="side-count">3</span></summary>
+          <ul>
+{history_links}
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Tools</h3>
+        <details class="wiki-side-group" open>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
+          <ul>
+{tool_links}
+          </ul>
+        </details>
+      </nav>
+    </aside>"""
+
+
+def wiki_main(slug: str, h1: str, tagline: str, body: str,
+              faq_html: str, wiki: dict) -> str:
+    """The encyclopedia layout: sidebar, article card, then the solver."""
+    full_body = body
+    if faq_html:
+        full_body += f'\n    <h2>Frequently asked questions</h2>\n    {faq_html}'
+    body_ids, toc = with_toc(full_body)
+
+    from_line = tagline or ""
+    if wiki.get("is_hub"):
+        # The main page is the breadcrumb root: no trail above it, and the
+        # "From the …" line is redundant when the page *is* the wiki.
+        crumbs = ""
+    else:
+        crumbs = '<a href="cipher-wiki.html">Cipher wiki</a>'
+        if wiki.get("family") == "history":
+            crumbs += ' <span aria-hidden="true">›</span> <a href="history-of-codebreaking.html">History</a>'
+        elif wiki.get("family"):
+            crumbs += (f' <span aria-hidden="true">›</span> '
+                       f'<a href="cipher-wiki.html#family-{wiki["family"]}">{wiki["family_title"]}</a>')
+        crumbs += f' <span aria-hidden="true">›</span> <span class="crumb-here">{h1}</span>'
+        from_line = "From the Buttcrack Cipher Wiki — the free field guide to classical ciphers"
+
+    breadcrumb_html = (
+        f'<nav class="wiki-breadcrumb" aria-label="Breadcrumb">{crumbs}</nav>' if crumbs else ""
+    )
+    categories = ""
+    if wiki.get("categories"):
+        cats = " | ".join(
+            f'<a href="{href}">{label}</a>' for label, href in wiki["categories"]
+        )
+        categories = (
+            '<div class="wiki-categories">'
+            f'<span class="wiki-categories-label">Categories:</span> {cats}</div>'
+        )
+
+    return f"""<main class="wrap wrap-wide" id="main-content">
+  <div class="wiki-layout">
+{wiki_sidebar(slug)}
+    <div class="wiki-content">
+      <article class="wiki-article">
+        {breadcrumb_html}
+        <h1 class="wiki-title">{h1}</h1>
+        <p class="wiki-from">{from_line}</p>
+        <nav class="wiki-tabs" aria-label="Page sections">
+          <span class="wiki-tab is-here" aria-current="page">Article</span>
+          <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
+        </nav>
+        <div class="wiki-article-body">
+          {wiki.get("infobox", "")}
+          {wiki.get("lead", "")}
+          {toc}
+{body_ids}
+        </div>
+{categories}
+        {wiki_article_note(wiki)}
+      </article>
+
+      <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">
+        <h2 class="wiki-solver-title">Try it live — break a real puzzle</h2>
+        {solver_html()}
+      </section>
+
+      <div id="output" aria-live="polite"></div>
+
+      {ad_slot()}
+    </div>
+  </div>
+
+  {support_block()}
+</main>"""
+
+
+def cipher_index_html() -> str:
+    """Every registered cipher, grouped by family, linked to its page.
+
+    Generated from the registry rather than maintained by hand, so a cipher
+    added to the solver appears here without anyone remembering to add it --
+    and a link can never point at a page that was not written. Ciphers the
+    browser build cannot break carry a "full version" chip, which is exactly
+    what the intro paragraph above the index promises.
+    """
+    from wiki_ciphers import BROWSER_BREAKABLE, FAMILY_BLURBS, FAMILY_TITLES, wiki_slug
+
+    from buttcrack.ciphers import all_ciphers
+
+    groups: dict[str, list] = {}
+    for cipher in all_ciphers():
+        groups.setdefault(cipher.info.family.value, []).append(cipher)
+
+    out = []
+    for family in WIKI_FAMILY_ORDER:
+        ciphers = groups.get(family)
+        if not ciphers:
+            continue
+        items = []
+        for cipher in sorted(ciphers, key=lambda c: c.info.title):
+            info = cipher.info
+            chip = (
+                ' <span class="chip chip-full">full version</span>'
+                if info.name not in BROWSER_BREAKABLE else ""
+            )
+            items.append(
+                f'        <li><a href="{wiki_slug(info.name)}">{info.title}</a>{chip}'
+                f" — {info.description}</li>"
+            )
+        out.append(
+            f'    <section class="wiki-family" id="family-{family}">\n'
+            f'      <h3>{FAMILY_TITLES.get(family, family)}</h3>\n'
+            f'      <p>{FAMILY_BLURBS.get(family, "")}</p>\n'
+            f'      <ul class="cipher-index">\n' + "\n".join(items) + "\n      </ul>\n"
+            "    </section>"
+        )
+    return "\n".join(out)
+
+
+def wiki_stats_infobox() -> str:
+    """The main page's infobox: what this wiki contains, counted at build time."""
+    from wiki_ciphers import FAMILY_TITLES
+
+    from buttcrack.ciphers import all_ciphers
+
+    by_family: dict[str, int] = {}
+    for cipher in all_ciphers():
+        by_family[cipher.info.family.value] = by_family.get(cipher.info.family.value, 0) + 1
+    rows = [
+        ("Cipher articles", str(len(list(all_ciphers())))),
+        ("Families", ", ".join(
+            f'<a href="cipher-wiki.html#family-{f}">{FAMILY_TITLES[f]}</a>'
+            for f in WIKI_FAMILY_ORDER if f in by_family
+        )),
+        ("History features", "Timeline · Codebreakers · Famous ciphers"),
+        ("Written by", "the solver's registry, at build time"),
+        ("License", f'<a href="{CFG["repo_url"]}">Open source</a>'),
+    ]
+    body = "".join(f"<tr><th>{k}</th><td>{v}</td></tr>" for k, v in rows)
+    return (
+        '<aside class="wiki-infobox" aria-label="About this wiki">\n'
+        '      <div class="wiki-infobox-title">Buttcrack Cipher Wiki</div>\n'
+        '      <div class="wiki-infobox-sub">The free field guide</div>\n'
+        '      <table class="wiki-infobox-table"><tbody>\n'
+        f'        {body}\n'
+        "      </tbody></table>\n"
+        '      <div class="wiki-infobox-note">One article per cipher, generated from the '
+        "code that implements it — so a page cannot quietly disagree with the tool above it.</div>\n"
+        "    </aside>"
+    )
+
+
+def history_series_infobox(current: str) -> str:
+    """A small series box for the three history features."""
+    entries = [
+        ("history-of-codebreaking.html", "A history of codebreaking", "Timeline"),
+        ("famous-cryptanalysts.html", "The codebreakers", "People"),
+        ("famous-ciphers.html", "Famous ciphers", "Solved &amp; unsolved"),
+    ]
+    rows = "".join(
+        f'<tr><th>{label}</th><td><a href="{href}">{title}</a>'
+        + (" ← you are here" if href == current else "")
+        + "</td></tr>"
+        for href, title, label in entries
+    )
+    return (
+        '<aside class="wiki-infobox" aria-label="History series">\n'
+        '      <div class="wiki-infobox-title">History series</div>\n'
+        '      <div class="wiki-infobox-sub">Three features</div>\n'
+        '      <table class="wiki-infobox-table"><tbody>\n'
+        f"        {rows}\n"
+        "      </tbody></table>\n"
+        '      <div class="wiki-infobox-note">Every technique in this solver has an '
+        "inventor and a date; these are they.</div>\n"
+        "    </aside>"
+    )
+
+
+def write_wiki_index_js(wiki_specs: list[dict]) -> None:
+    """The search index and rotation data, consumed by wiki.js in the browser.
+
+    Written at build time from the same specs that generate the pages, so the
+    search box can never return a page that does not exist.
+    """
+    pages = []
+    for spec in wiki_specs:
+        fam = (spec.get("wiki") or {}).get("family_title", "")
+        pages.append({
+            "t": spec["h1"],
+            "s": spec["slug"],
+            "f": fam,
+            "d": spec.get("desc", "")[:200],
+        })
+    data = {
+        "pages": pages,
+        "featured": [
+            {"t": t, "s": s, "d": d} for t, s, d in FEATURED_ARTICLES
+        ],
+        "facts": DYK_FACTS,
+    }
+    (HERE / "wiki-index.js").write_text(
+        "window.WIKI_INDEX = " + json.dumps(data, ensure_ascii=False, indent=1) + ";\n",
+        encoding="utf-8",
+    )
+
+
+#: hrefs that point outside this generator's directory. The Kryptos explorer is
+#: mounted at the site root by scripts/build_site.py after this build runs.
+_EXTERNAL_HREFS = {KRYPTOS_HREF, "kryptos/index.html"}
+_HREF_RE = re.compile(r'''href="([^"]+)"''')
+
+
+def check_internal_links(written: dict[str, str]) -> None:
+    """Fail the build if any internal link on any page is broken.
+
+    "All fifty cipher wikis are accessible" is a build guarantee here, not a
+    hope: every href on every generated page must resolve to a file this build
+    wrote or shipped (or a known mount point), and every #fragment must resolve
+    to an id on the page it points at. A typo'd slug fails the deploy instead
+    of shipping a dead link.
+    """
+    problems: list[str] = []
+    for slug, html in written.items():
+        for m in _HREF_RE.finditer(html):
+            href = m.group(1)
+            if href.startswith(("http://", "https://", "mailto:", "javascript:", "data:")):
+                continue
+            if href in _EXTERNAL_HREFS:
+                continue
+            target_page, _, fragment = href.partition("#")
+            target_page = target_page.strip() or slug
+            # Assets and generated files (style.css, model.js, the PDFs) are
+            # not pages, but they must exist on disk or the link is dead.
+            if target_page in written:
+                if fragment and f'id="{fragment}"' not in written[target_page]:
+                    problems.append(f"{slug}: anchor #{fragment} not found on {target_page}")
+            elif (HERE / target_page).is_file():
+                continue
+            else:
+                problems.append(f"{slug}: links to missing page {href!r}")
+    if problems:
+        details = "\n  ".join(problems[:30])
+        raise SystemExit(
+            f"broken internal links ({len(problems)}):\n  {details}"
+            + ("\n  …" if len(problems) > 30 else "")
+        )
+
+
+def solver_html() -> str:
+    """The solver shell, shared by every page regardless of layout."""
     sample_buttons = "".join(
         f'<button data-sample="{key}">{label}</button>'
         for key, label in [
             ("caesar", "Caesar"), ("vigenere", "Vigenère"),
+            ("beaufort", "Beaufort"), ("porta", "Porta"), ("autokey", "Autokey"),
             ("substitution", "Substitution"), ("layered", "Layered"), ("morse", "Morse"),
         ]
     )
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title}</title>
-<meta name="description" content="{desc}">
-<link rel="canonical" href="{CFG['base_url']}/{slug}">{verification_meta()}
-<meta property="og:title" content="{title}">
-<meta property="og:description" content="{desc}">
-<meta property="og:type" content="website">
-<link rel="stylesheet" href="style.css">
-{app_jsonld(title, desc)}
-{faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
-</head>
-<body data-preset="{preset}">
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
-      <span class="brand-mark" aria-hidden="true">B</span>
-      <span>buttcrack<span class="brand-dot">.</span></span>
-    </a>
-    <div class="hero-copy">
-      <p class="eyebrow">Automatic classical cryptanalysis</p>
-      <h1>{h1}<span class="dot">.</span></h1>
-      <p class="tagline">{tagline}</p>
-    </div>
-    {nav(slug)}
-  </div>
-</header>
-
-<main class="wrap">
-  <section class="solver-shell" aria-label="Cipher solver">
+    return f"""<section class="solver-shell" aria-label="Cipher solver">
     <div class="solver-heading">
       <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
       <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
@@ -266,7 +796,51 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
       <span class="samples"><span class="sample-label">Try a sample</span>{sample_buttons}</span>
     </div>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
-  </section>
+  </section>"""
+
+
+def page(slug: str, title: str, desc: str, h1: str, tagline: str,
+         preset: str, body: str, faqs: list[tuple[str, str]],
+         wiki: dict | None = None) -> str:
+    faq_html = "".join(
+        f"<details class=\"faq\"><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs
+    )
+    if wiki:
+        # Wiki pages wear the encyclopedia layout: a compact site bar (the
+        # solver's big hero would push the article below the fold), then the
+        # Wikipedia-style two-column chrome with the article first. The solver
+        # follows the article rather than preceding it — the reader came for
+        # the article, and the solver is one scroll away with the same sample
+        # preloaded.
+        header = f"""<header class="site-header site-header-compact">
+  <div class="wrap wrap-wide">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
+    {nav(slug)}
+  </div>
+</header>"""
+        main = wiki_main(slug, h1, tagline, body, faq_html, wiki)
+        extra_scripts = '<script src="wiki-index.js"></script>\n<script src="wiki.js"></script>'
+    else:
+        header = f"""<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>{h1}<span class="dot">.</span></h1>
+      <p class="tagline">{tagline}</p>
+    </div>
+    {nav(slug)}
+  </div>
+</header>"""
+        main = f"""<main class="wrap" id="main-content">
+  {solver_html()}
 
   <div id="output" aria-live="polite"></div>
 
@@ -279,12 +853,35 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
   </article>
 
   {support_block()}
-</main>
+</main>"""
+        extra_scripts = ""
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{CFG['base_url']}/{slug}">{verification_meta()}
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:type" content="{'article' if wiki else 'website'}">
+<meta property="og:url" content="{CFG['base_url']}/{slug}">
+<link rel="stylesheet" href="style.css">
+{article_jsonld(h1, desc, (wiki or {}).get('family_title', '')) if wiki else app_jsonld(title, desc)}
+{faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
+</head>
+<body data-preset="{preset}">
+<a class="skip-link" href="#main-content">Skip to content</a>
+{header}
+
+{main}
 
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 36 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -293,16 +890,16 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 
 <script src="model.js"></script>
 <script src="app.js"></script>
+{extra_scripts}
 </body>
 </html>
 """
 
-
 PAGES = [
     {
         "slug": "index.html",
-        "title": "Cipher Solver — Break Any Classical Cipher Automatically (Free, No Upload)",
-        "desc": "Paste ciphertext and this free tool works out which cipher was used, recovers the key and shows the plaintext. Caesar, Vigenère, substitution, XOR, base64, Morse and layered puzzles. Runs entirely in your browser.",
+        "title": "Free Cipher Solver — Break Any Classical Cipher Automatically",
+        "desc": "Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse, layered. No upload.",
         "h1": "Cipher Solver",
         "tagline": "Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
         "preset": "caesar",
@@ -312,7 +909,7 @@ PAGES = [
             ("Is my ciphertext uploaded anywhere?",
              "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."),
             ("Which ciphers can it break?",
-             "Caesar and ROT13, Atbash, affine, Vigenère with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text — including several of those stacked on top of each other."),
+             "Caesar and ROT13, Atbash, affine, the periodic family — Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery — plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other."),
             ("Why did it fail on my text?",
              "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."),
             ("Can it break modern encryption like AES or RSA?",
@@ -360,7 +957,7 @@ PAGES = [
     {
         "slug": "caesar-cipher-decoder.html",
         "title": "Caesar Cipher Decoder — Decrypt Without Knowing the Shift",
-        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. No upload, runs in your browser.",
+        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.",
         "h1": "Caesar Cipher Decoder",
         "tagline": "Don't know the shift? It tries all 26 and picks the English one.",
         "preset": "caesar",
@@ -404,7 +1001,7 @@ PAGES = [
     {
         "slug": "vigenere-cipher-solver.html",
         "title": "Vigenère Cipher Solver — Recovers the Key Automatically",
-        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence, recovers the key letter by letter, and prints the plaintext. Runs in your browser.",
+        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.",
         "h1": "Vigenère Solver",
         "tagline": "No keyword needed — it recovers the key from the ciphertext itself.",
         "preset": "vigenere",
@@ -455,7 +1052,7 @@ PAGES = [
     {
         "slug": "substitution-cipher-solver.html",
         "title": "Substitution Cipher Solver — Automatic Cryptogram Breaker",
-        "desc": "Solve monoalphabetic substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without any hints. Free, no upload.",
+        "desc": "Solve substitution ciphers and cryptograms automatically. Hill-climbing search with an English trigram model recovers the key without hints. Free, no upload.",
         "h1": "Substitution Solver",
         "tagline": "Cryptograms cracked by hill-climbing search — no crib, no hints.",
         "preset": "substitution",
@@ -504,7 +1101,7 @@ PAGES = [
     {
         "slug": "morse-code-translator.html",
         "title": "Morse Code Translator & Decoder — Dots and Dashes to Text",
-        "desc": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath. Free, no upload.",
+        "desc": "Translate Morse code to plain text instantly. Handles slashes, pipes or double spaces as word separators, and keeps decoding if there is another cipher underneath.",
         "h1": "Morse Decoder",
         "tagline": "Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.",
         "preset": "morse",
@@ -547,7 +1144,7 @@ PAGES = [
     {
         "slug": "ctf-crypto-solver.html",
         "title": "CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings",
-        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte XOR, repeating-key XOR and stacked encoding layers. Identifies and peels each layer. Free, browser-only.",
+        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte and repeating-key XOR, and stacked encoding layers. Identifies and peels each layer. Free.",
         "h1": "CTF Crypto Solver",
         "tagline": "Base64 around hex around XOR? It unwraps the whole stack.",
         "preset": "layered",
@@ -555,7 +1152,7 @@ PAGES = [
             ("What is single-byte XOR and why is it everywhere in CTFs?",
              "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
             ("How deep can the layers go?",
-             "The browser version peels up to three encoding layers. The full version goes deeper, searches 36 ciphers and scores in six languages, which is what you want for harder challenges."),
+             "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges."),
             ("Can it handle flag formats?",
              "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."),
             ("Why does it sometimes pick the wrong layer to unwrap?",
@@ -613,25 +1210,50 @@ WIKI_PAGES = [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 36 ciphers — the M-94 wheel cipher among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+             "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
             ("How much ciphertext is enough?",
              "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
+            ("Who writes this wiki?",
+             "The facts — family, key type, keyspace, minimum text, worked examples — are generated from the solver's own cipher registry every time the site is built, and the round trips are verified, so an article cannot quietly disagree with the tool it documents. The history and context are editorial. The full source is on GitHub."),
         ],
-        "body": """    <h2>Start with the ciphertext, not a favourite cipher</h2>
-    <p>A useful first question is not <em>which trick do I know?</em> but <em>what survives the
-    transformation?</em> Spaces, punctuation, repeated letters, a restricted alphabet and the
-    frequency of letters are clues. A Caesar shift preserves every word shape. A substitution
-    preserves repeated patterns but changes the letter distribution. Vigenère flattens that
-    distribution because one plaintext letter can encrypt several ways. Playfair works in pairs,
-    so it leaves a different set of fingerprints again.</p>
+        "body": """    <section class="mp-banner">
+      <h2>Welcome to the Cipher Wiki</h2>
+      <p>A field guide to the fifty ciphers, codes and encodings this solver knows —
+      one article each, with the facts generated from the solver's own registry and
+      the worked examples produced by actually running the cipher. Read the article,
+      then paste a real puzzle into the solver below it.</p>
+    </section>
 
-    <h2>The field guide</h2>
+    <div class="mp-columns">
+      <section class="mp-box mp-featured" aria-label="Featured article">
+        <h2>Featured article</h2>
+        <div id="mp-featured-slot">
+          <h3 data-notoc><a href="{FEATURED_HREF}">{FEATURED_TITLE}</a></h3>
+          <p>{FEATURED_DESC}</p>
+          <p class="mp-readmore"><a href="{FEATURED_HREF}">Read the article →</a></p>
+        </div>
+      </section>
+      <section class="mp-box mp-dyk" aria-label="Did you know">
+        <h2>Did you know…</h2>
+        <div id="mp-dyk-slot">
+          <p>{DYK_FIRST}</p>
+        </div>
+      </section>
+    </div>
+
+    <h2 id="families">Every cipher, one article each</h2>
+    <p>Grouped by family, straight from the solver's registry: the same
+    descriptions, keyspaces and minimum text lengths the tool works from, so a page
+    cannot quietly disagree with the code it documents. Articles marked
+    <em>full version</em> describe ciphers the pip-installable solver breaks that the
+    browser build does not.</p>
+__CIPHER_INDEX__
+
+    <h2 id="history">The history</h2>
     <ul>
-      <li><a href="caesar-cipher-wiki.html">Caesar cipher</a> — one fixed rotation; 26 possibilities.</li>
-      <li><a href="vigenere-cipher-wiki.html">Vigenère cipher</a> — a repeating keyword creates interleaved Caesar shifts.</li>
-      <li><a href="substitution-cipher-wiki.html">Monoalphabetic substitution</a> — a scrambled alphabet, solved by language statistics.</li>
-      <li><a href="playfair-cipher-wiki.html">Playfair cipher</a> — a 5×5 grid that transforms letter pairs.</li>
-      <li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a> — twenty-five mixed alphabets on a spindle, one per position.</li>
+      <li><a href="history-of-codebreaking.html">A history of codebreaking</a> — al-Kindi to Colossus, and where each technique in this solver came from.</li>
+      <li><a href="famous-cryptanalysts.html">The codebreakers</a> — who broke what, and what it cost them.</li>
+      <li><a href="famous-ciphers.html">Famous ciphers</a> — the ones that changed history, and the handful still unread.</li>
     </ul>
 
     <h2>Three measurements worth knowing</h2>
@@ -827,8 +1449,8 @@ WIKI_PAGES = [
     },
     {
         "slug": "m94-wheel-cipher.html",
-        "title": "M-94 Wheel Cipher — How the US Army's Disk Device Worked and How It Falls",
-        "desc": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, why 25! disk orders still fall to hill climbing, and how much text a break needs.",
+        "title": "M-94 Wheel Cipher — The US Army's Disk Device, and How It Falls",
+        "desc": "The M-94 wheel cipher explained: 25 mixed-alphabet disks on a spindle, how the 25-letter period betrays it, and why 25! disk orders still fall to hill climbing.",
         "h1": "The M-94 Wheel Cipher",
         "tagline": "Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.",
         "preset": "vigenere",
@@ -901,36 +1523,49 @@ WIKI_PAGES = [
 def wiki_index_section() -> str:
     """The wiki surfaced on the home page as article cards, not just a nav pill.
 
-    Cards are generated from WIKI_PAGES, so adding an article there is all it
-    takes for it to appear here — the links cannot dangle, because the cards
-    and the pages they point at are written by the same loop in main(). The
-    hub page is pulled out as a full-width featured card (its h1 would
-    otherwise repeat the section heading), and each article's tagline doubles
-    as its card blurb.
+    Cards are generated from WIKI_PAGES and the history features, so adding an
+    article there is all it takes for it to appear here — the links cannot
+    dangle, because the cards and the pages they point at are written by the
+    same loop in main(). The hub page is pulled out as a full-width featured
+    card (its h1 would otherwise repeat the section heading), and each
+    article's tagline doubles as its card blurb. The fifty generated cipher
+    pages are one click deeper, through the hub — fifty cards would bury
+    everything else on this page.
     """
+    from wiki_history import HISTORY_PAGES
+
     cards = [
         f'      <a class="wiki-card" href="{spec["slug"]}">\n'
         f'        <h3>{spec["h1"]}</h3>\n'
         f'        <p>{spec["tagline"]}</p>\n'
-        f'        <span class="wiki-more">Read the guide →</span>\n'
+        f'        <span class="wiki-more">Read the article →</span>\n'
         f'      </a>'
-        for spec in WIKI_PAGES if spec["slug"] != "cipher-wiki.html"
+        for spec in WIKI_PAGES + HISTORY_PAGES if spec["slug"] != "cipher-wiki.html"
     ]
     return f"""    <section class="wiki-index" aria-label="Cipher wiki">
     <h2>Cipher wiki</h2>
-    <p>The solver above breaks the puzzle; these guides explain what was going
-    on underneath. Each one covers how a cipher works, how to recognise it in
-    the wild, and what actually breaks it — and every article page carries the
-    same solver, so you can test each idea on a real puzzle as you read.</p>
+    <p>The solver above breaks the puzzle; the wiki explains what was going on
+    underneath. Fifty cipher articles — one per cipher in the registry, each
+    with a worked example generated by running the cipher itself — plus
+    long-form guides and a three-part history of codebreaking. Every article
+    page carries the same solver, so you can test each idea on a real puzzle
+    as you read.</p>
     <div class="wiki-grid">
       <a class="wiki-card featured" href="cipher-wiki.html">
-        <h3>Start here: the field guide</h3>
-        <p>Recognise the shape. Understand the mechanism. Know what an answer is
-        worth — read a ciphertext's alphabet, frequencies and index of
-        coincidence before you guess at the cipher.</p>
-        <span class="wiki-more">Read the field guide →</span>
+        <h3>Start here: the wiki main page</h3>
+        <p>Browse all fifty ciphers by family, catch the featured article, and
+        read a ciphertext's alphabet, frequencies and index of coincidence
+        before you guess at the cipher.</p>
+        <span class="wiki-more">Open the cipher wiki →</span>
       </a>
 {chr(10).join(cards)}
+      <a class="wiki-card all-ciphers" href="cipher-wiki.html#families">
+        <h3>All fifty cipher articles</h3>
+        <p>Shift, substitution, polyalphabetic, transposition, polygraphic,
+        wheel, XOR, codes and encodings — one encyclopedia page each, generated
+        from the solver's registry.</p>
+        <span class="wiki-more">Browse every cipher →</span>
+      </a>
     </div>
     </section>"""
 
@@ -1035,8 +1670,16 @@ def store_page(products: list[dict], sampler: str) -> str:
 
     cards = []
     for product in products:
-        link = product.get("payment_link", "")
+        link = payment_url(product.get("payment_link", ""), f"stripe.products[{product['sku']}].payment_link")
         button_id = product.get("buy_button_id", "")
+        # A button id without the key it needs renders nothing at all, which
+        # looks exactly like a product with no checkout. Say so instead.
+        if button_id and not pk:
+            raise SystemExit(
+                f"site.json: {product['sku']} sets buy_button_id but stripe.publishable_key "
+                f"is empty. Stripe's embedded button needs both; add the pk_live_... key or "
+                f"clear buy_button_id to use the plain payment link."
+            )
         if pk and button_id:
             # Stripe's embedded button: checkout happens in an overlay, so the
             # visitor never leaves the page. Publishable keys are meant to ship
@@ -1088,6 +1731,86 @@ def html_escape(s: str) -> str:
              .replace(">", "&gt;").replace('"', "&quot;"))
 
 
+def not_found_page() -> str:
+    """The custom 404 GitHub Pages serves for any path that does not exist.
+
+    Written by hand rather than through page() because it is deliberately not
+    a normal page: noindex (a 404 in the sitemap or with a canonical would be
+    a lie), no solver markup, no structured data — just the wiki chrome, the
+    full sidebar so search still works, and links to the places people were
+    almost certainly trying to reach. It goes into the link checker like
+    every other page, but not into the sitemap.
+    """
+    header = f"""<header class="site-header site-header-compact">
+  <div class="wrap wrap-wide">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
+    {nav('404.html')}
+  </div>
+</header>"""
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page Not Found — Buttcrack Cipher Wiki</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css">
+{adsense_head()}{analytics()}
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+{header}
+
+<main class="wrap wrap-wide" id="main-content">
+  <div class="wiki-layout">
+{wiki_sidebar('404.html')}
+    <div class="wiki-content">
+      <article class="wiki-article">
+        <h1 class="wiki-title">Page not found</h1>
+        <p class="wiki-from">Buttcrack Cipher Wiki</p>
+        <div class="wiki-article-body">
+          <p>There is no page at this address. It may have been mistyped, or it
+          never existed — the wiki is a fixed set of articles, so nothing was
+          moved here.</p>
+          <ul>
+            <li><a href="cipher-wiki.html">The cipher wiki main page</a> — the
+            front door, with the featured article and the day's facts.</li>
+            <li><a href="cipher-wiki.html#families">All fifty cipher articles</a>,
+            grouped by family.</li>
+            <li><a href="index.html">The cipher solver</a> — paste a puzzle and
+            it works out the cipher, the key and the plaintext.</li>
+            <li><a href="downloads.html">Printable puzzle books</a>, if a
+            pencil-and-paper cryptogram was the errand.</li>
+          </ul>
+          <p>Or search the wiki from the box in the sidebar — every article on
+          the site is in it.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="wiki-index.js"></script>
+<script src="wiki.js"></script>
+</body>
+</html>
+"""
+
+
 def main() -> None:
     products, sampler = build_products()
     print(f"built {len(products)} puzzle book PDF(s)" + (" + free sampler" if sampler else ""))
@@ -1112,12 +1835,72 @@ def main() -> None:
         ],
     })
 
+    from wiki_ciphers import (
+        FAMILY_PRESETS,
+        FAMILY_TITLES,
+        HAND_WRITTEN,
+        _example,
+        categories_for,
+        cipher_page_specs,
+        infobox_html,
+        wiki_slug,
+    )
+    from wiki_history import HISTORY_PAGES
+
+    from buttcrack.ciphers import get as get_cipher
+
+    # The hand-written articles get the same encyclopedia chrome as the
+    # generated ones — an infobox of registry facts, a category bar — so the
+    # wiki reads as one publication rather than two glued together.
+    for name in sorted(HAND_WRITTEN):
+        slug = wiki_slug(name)
+        for spec in WIKI_PAGES:
+            if spec["slug"] == slug:
+                info = get_cipher(name).info
+                spec["wiki"] = {
+                    "family": info.family.value,
+                    "family_title": FAMILY_TITLES.get(info.family.value, info.family.value),
+                    "infobox": infobox_html(info, _example(name)),
+                    "categories": categories_for(info),
+                    "lead": "",
+                }
+                spec["preset"] = FAMILY_PRESETS.get(info.family.value, spec["preset"])
+                break
+
+    # History features share a series box and a category of their own.
+    for spec in HISTORY_PAGES:
+        spec["wiki"] = {
+            "family": "history",
+            "family_title": "History of codebreaking",
+            "infobox": history_series_infobox(spec["slug"]),
+            "categories": [
+                ("History of cryptography", "cipher-wiki.html#history"),
+                ("Cipher wiki", "cipher-wiki.html"),
+            ],
+        }
+
+    # The wiki main page: its infobox is the wiki's own stats, and it is the
+    # one page without a breadcrumb (it is the breadcrumb root).
+    for spec in WIKI_PAGES:
+        if spec["slug"] == "cipher-wiki.html":
+            spec["wiki"] = {
+                "family": "",
+                "family_title": "",
+                "infobox": wiki_stats_infobox(),
+                "categories": [],
+                "is_hub": True,
+            }
+
+    generated = cipher_page_specs()
+    print(f"generated {len(generated)} cipher wiki pages from the registry")
+
     meta = verification_meta()
-    urls = []
+    urls: list[str] = []
+    written: dict[str, str] = {}
     # The storefront is appended above because its body depends on generated
     # products; the wiki is static and deliberately kept as a separate list so
     # a rebuild never appends duplicate reference pages in a long-lived process.
-    for spec in PAGES + WIKI_PAGES:
+    for spec in PAGES + WIKI_PAGES + HISTORY_PAGES + generated:
         body = spec["body"]
         # The home page is the site's front door, and the wiki used to be one
         # nav pill deep. Surface the articles as the first content block under
@@ -1125,6 +1908,18 @@ def main() -> None:
         # so calling main() twice in one process cannot stack it twice.
         if spec["slug"] == "index.html":
             body = wiki_index_section() + "\n\n" + body
+        # The wiki main page is assembled last-minute from the same data that
+        # fills the sidebar and the search index, so all three agree by
+        # construction. The static first entries are the no-JS fallback; the
+        # browser rotates them daily.
+        if spec["slug"] == "cipher-wiki.html":
+            f_title, f_slug, f_desc = FEATURED_ARTICLES[0]
+            body = (body
+                    .replace("{FEATURED_TITLE}", f_title)
+                    .replace("{FEATURED_HREF}", f_slug)
+                    .replace("{FEATURED_DESC}", f_desc)
+                    .replace("{DYK_FIRST}", DYK_FACTS[0])
+                    .replace("__CIPHER_INDEX__", cipher_index_html()))
         html = page(**{**spec, "body": body})
         # A token configured but missing from a page means a silently unverified
         # property, which shows up as a Search Console failure days later. Fail
@@ -1133,7 +1928,46 @@ def main() -> None:
             raise SystemExit(f"verification tags missing from {spec['slug']}")
         (HERE / spec["slug"]).write_text(html)
         urls.append(spec["slug"])
+        written[spec["slug"]] = html
         print(f"wrote {spec['slug']:38} {len(html):>6} bytes")
+
+    # The browser-side search index: built from the pages this run actually
+    # wrote, so the search box can never offer a page that does not exist.
+    write_wiki_index_js(
+        WIKI_PAGES + HISTORY_PAGES + generated
+    )
+    print(f"wrote wiki-index.js ({len(WIKI_PAGES) + len(HISTORY_PAGES) + len(generated)} searchable pages)")
+
+    # Every registered cipher must have a page, and every page must be linked
+    # from the wiki main page. Checked here rather than in a test so that
+    # adding a cipher to the solver and forgetting its page fails the build
+    # that would have published the gap.
+    from buttcrack.ciphers import all_ciphers as _all_ciphers
+
+    hub_html = written["cipher-wiki.html"]
+    n_ciphers = 0
+    for cipher in _all_ciphers():
+        n_ciphers += 1
+        slug = wiki_slug(cipher.info.name)
+        if slug not in written:
+            raise SystemExit(f"no wiki page for cipher {cipher.info.name!r} (expected {slug})")
+        if f'href="{slug}"' not in hub_html:
+            raise SystemExit(f"{slug} is not linked from the wiki main page")
+    print(f"checked: every cipher has a linked wiki page ({n_ciphers} of them)")
+
+    # GitHub Pages serves a custom 404 for any path that does not exist,
+    # including mistyped cipher names. It is generated (so its links are
+    # checked like everything else) but noindex, so it stays out of the
+    # sitemap.
+    not_found = not_found_page()
+    (HERE / "404.html").write_text(not_found)
+    written["404.html"] = not_found
+    print(f"wrote {'404.html':38} {len(not_found):>6} bytes (custom not-found page)")
+
+    # And the same guarantee for every internal link on every page: nothing
+    # ships unless every href resolves.
+    check_internal_links(written)
+    print(f"checked: no broken internal links across {len(written)} pages")
 
     # The Kryptos explorer is a hand-written app rather than a generated page,
     # but it is part of this site once build_site.py mounts it, so it belongs in

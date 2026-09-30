@@ -60,6 +60,54 @@ function railEnc(p, rails) {
   }
   return rows.flat().join('');
 }
+/* Periodic-family encoders: the rule that combines key value k (0..25, or a
+ * digit for Gronsfeld) with plaintext letter p, over letters only, layout
+ * preserved — the same convention as vigEnc above. */
+function periodicEnc(p, key, rule) {
+  let out = '', i = 0;
+  for (const ch of p) {
+    const u = ch.toUpperCase();
+    if (u >= 'A' && u <= 'Z') {
+      out += String.fromCharCode(rule(u.charCodeAt(0) - 65, key[i % key.length]) % 26 + 65);
+      i++;
+    } else out += ch;
+  }
+  return out;
+}
+const beaufortEnc = (p, key) => periodicEnc(p, [...key].map(c => c.charCodeAt(0) - 65),
+  (p, k) => (k - p + 26) % 26);
+const variantBeaufortEnc = (p, key) => periodicEnc(p, [...key].map(c => c.charCodeAt(0) - 65),
+  (p, k) => (p - k + 26) % 26);
+const portaEnc = (p, key) => periodicEnc(p, [...key].map(c => (c.charCodeAt(0) - 65) >> 1),
+  (p, half) => p < 13 ? (p + half) % 13 + 13 : (((p - 13 - half) % 13) + 13) % 13);
+const gronsfeldEnc = (p, digits) => periodicEnc(p, [...digits].map(Number),
+  (p, k) => (p + k) % 26);
+function trithemiusEnc(p, start, step) {
+  let out = '', i = 0;
+  for (const ch of p) {
+    const u = ch.toUpperCase();
+    if (u >= 'A' && u <= 'Z') {
+      out += String.fromCharCode((u.charCodeAt(0) - 65 + ((start + i * step) % 26)) % 26 + 65);
+      i++;
+    } else out += ch;
+  }
+  return out;
+}
+function autokeyEnc(p, primer) {
+  let out = '';
+  const plain = [];
+  for (const ch of p) {
+    const u = ch.toUpperCase();
+    if (u >= 'A' && u <= 'Z') {
+      const i = plain.length;
+      const k = i < primer.length ? primer.charCodeAt(i) - 65 : plain[i - primer.length];
+      const c = (u.charCodeAt(0) - 65 + k) % 26;
+      plain.push(u.charCodeAt(0) - 65);
+      out += String.fromCharCode(c + 65);
+    } else out += ch;
+  }
+  return out;
+}
 const b64 = s => Buffer.from(s, 'binary').toString('base64');
 const hex = s => [...s].map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 const xor1 = (s, k) => [...s].map(c => String.fromCharCode(c.charCodeAt(0) ^ k)).join('');
@@ -85,6 +133,22 @@ const CASES = [
   ['reversed', [...PT2].reverse().join(''), PT2],
   ['morse', '.... . .-.. .-.. --- / - .... . .-. . / .. / .- -- / .-- .- .. - .. -. --. / ..-. --- .-. / -.-- --- ..-',
     'hello there i am waiting for you'],
+  // The periodic family. Beaufort, Porta, Trithemius and autokey are reported
+  // under their own names; Gronsfeld and Variant Beaufort are Vigenere with a
+  // restricted (digits) or negated key, so identical ciphertexts mean the
+  // solver legitimately reports vigenere with the equivalent key — the
+  // plaintext assertion is the contract.
+  ['beaufort LEMON', beaufortEnc(PT1, 'LEMON'), PT1],
+  ['beaufort TRIANGULAR', beaufortEnc(PT3, 'TRIANGULAR'), PT3],
+  ['variant beaufort LAMP', variantBeaufortEnc(PT2, 'LAMP'), PT2],
+  ['porta LEMON', portaEnc(PT1, 'LEMON'), PT1],
+  ['porta PRINTER', portaEnc(PT3, 'PRINTER'), PT3],
+  ['gronsfeld 31415', gronsfeldEnc(PT2, '31415'), PT2],
+  ['trithemius 2,3', trithemiusEnc(PT1, 2, 3), PT1],
+  ['trithemius 9,7', trithemiusEnc(PT3, 9, 7), PT3],
+  ['autokey QUEEN', autokeyEnc(PT1, 'QUEEN'), PT1],
+  ['autokey BRAVE', autokeyEnc(PT3, 'BRAVE'), PT3],
+  ['hex -> beaufort', hex(beaufortEnc(PT2, 'HARBOR')), PT2],
 ];
 
 let pass = 0;

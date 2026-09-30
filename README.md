@@ -117,30 +117,36 @@ Handy options on `crack`:
 | `--verbose` | live progress: what is being tried, and what it is scoring |
 | `--hint key=VALUE` | a known or suspected key; also `--hint key=hex:ff10` for raw bytes |
 | `--language LANG` | plaintext language: `english` (default), `french`, `german`, `italian`, `latin`, `spanish`, or `auto` |
-| `--depth N` | how many encoding layers to peel (default 3) |
+| `--depth N` | how many layers to peel or unwrap (default 6) |
 | `--exhaustive` | keep going after the first confident answer; report every candidate |
 
 ---
 
 ## What it breaks
 
-36 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
+50 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
 
 | family | members | how it is attacked |
 | --- | --- | --- |
 | **shift** | caesar, rot13, rot47, atbash, affine, reverse | exhaustive keyspace + chi-squared prescreen (26 / 94 / 312 keys) |
 | **substitution** | simple substitution, keyword substitution | simulated annealing over 25! alphabets on quadgram fitness |
-| **polyalphabetic** | vigenère, beaufort, variant beaufort, gronsfeld, autokey, trithemius | coset index-of-coincidence for the period, then chi-squared per column |
-| **transposition** | columnar, rail fence, route, skip/scytale | anagram scoring over key permutations and rail counts |
-| **polygraphic** | playfair, bifid | genetic algorithm over 5×5 / 6×6 grids (see *Limits*) |
+| **polyalphabetic** | vigenère, beaufort, variant beaufort, gronsfeld, porta, autokey, trithemius, quagmire III, sum-clock | coset index-of-coincidence for the period, then chi-squared per column — in the *keyed* alphabet's index space for Quagmire III, and jointly over the wheels for a sum-clock |
+| **transposition** | columnar, rail fence, route, skip/scytale, myszkowski, amsco | anagram scoring over key permutations, rail counts and ordered partitions |
+| **polygraphic** | playfair, bifid, hill (2×2 and 3×3), four-square, trifid | grid hill climbing; Hill is solved by scoring each row of the decryption matrix separately (see *Limits* for four-square and trifid) |
 | **wheel** | M-94 / CSP-488 | hill climb over 25! disk orders, quadgram-scored per read row |
 | **xor** | single-byte, repeating-key | byte-coset IC for the key length, per-byte chi-squared, then refinement |
-| **codes** | morse, bacon (+ case variant), a1z26, polybius | structural decode — these are recognised, not searched |
-| **encodings** | base64, base32, base16, base58, base85, url, binary, decimal ASCII | peeled as layers, in any order, to any depth |
+| **codes** | morse, bacon (+ case variant), a1z26, polybius, tap code, NATO alphabet, braille, baudot/ITA2 | structural decode — these are recognised, not searched |
+| **encodings** | base64, base32, base16, base58, base85, url, binary, decimal ASCII, quoted-printable, uuencode | peeled as layers, in any order, to any depth |
 
 `buttcrack ciphers --verbose` prints the table with keyspaces and search costs; `buttcrack show <name>` explains one cipher, gives a working example and states honestly what the solver can and cannot do with it.
 
-**Layered puzzles.** Every encoding above can wrap any cipher, and any cipher can wrap another. The solver peels a layer, re-identifies what is underneath, and keeps going to `--depth` (`max_depth` in the Python API), reporting the whole chain (`base64 -> base16 -> xor_repeating`) and the key of the cipher that actually hid the message.
+**Layered puzzles.** Every encoding above can wrap any cipher, and any cipher can wrap another. The solver peels a layer, re-identifies what is underneath, and keeps going to `--depth` (default **6**, `max_depth` in the Python API), reporting the whole chain and the key of the cipher that actually hid the message — `base16 -> base64 -> morse -> reverse -> caesar` is a five-step solve, and six steps is the default ceiling.
+
+**Six layers of ciphers, not just encodings.** Ciphers stack on each other too, and `reverse -> rail_fence -> skip -> reverse -> rail_fence -> rot13` — six ciphers, no encodings — comes apart in about twenty seconds. That is possible because of one algebraic fact: **a transposition and a monoalphabetic substitution commute.** A transposition moves letters without reading them; a substitution rewrites letters without moving them. So any stack of rail fences, skips, reversals, Caesars, Atbashes and ROT13s — in any order, however deep — equals *one* permutation followed by *one* substitution.
+
+The solver exploits that twice over. The substitution is read straight off the letter histogram before anything is unwrapped (no transposition can change which letters are present), and what remains is a pure permutation search where each state costs a single n-gram scoring. It also knows when *not* to bother: chi-squared per letter against English is 0.116 for any transposition stack and 1.7–3.7 for Vigenère, Hill or a substitution, so the search never runs on a text it could not explain.
+
+Mixed stacks work the same way — `base64 -> morse -> reverse -> rail_fence -> caesar` is reported in full. What this does *not* do is chase six stacked polyalphabetics: nothing commutes there, every intermediate state is indistinguishable from noise, and there is no test to prune the tree. That limit is documented rather than papered over.
 
 ---
 
@@ -202,12 +208,12 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 `buttcrack serve` starts a local server (stdlib `http.server`, no framework, no build step) with three panels:
 
 * **Break** — paste ciphertext, watch the identification hypotheses arrive, then the ranked readings with confidence, key, decode chain and evidence. Long searches run as background jobs and poll. The language dropdown sends `--language` (including *Auto-detect*).
-* **Playground** — pick any of the 36 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
+* **Playground** — pick any of the 50 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
 * **Reference** — the cipher table with keyspaces, search costs and each cipher's own notes on what breaks it.
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
 
-There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a field guide to the classical ciphers at **[ahardkore.github.io/Buttcrack---Cipher-Breaker](https://ahardkore.github.io/Buttcrack---Cipher-Breaker)**. It covers the common puzzle families; everything this README describes (36 ciphers, six languages, the M-94) is the full local tool.
+There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ahardkore.github.io/Buttcrack---Cipher-Breaker](https://ahardkore.github.io/Buttcrack---Cipher-Breaker)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (50 ciphers, six languages, the M-94) is the full local tool.
 
 ---
 
@@ -226,16 +232,57 @@ $ buttcrack ciphertext.txt --language auto          # probe all six, then commit
 
 ---
 
+## The Paradigm Kryptos CTF
+
+`kryptos/` holds the ciphertexts and published solutions for the ten Paradigm Kryptos challenges, and `scripts/kryptos_ctf.py` scores the solver against them:
+
+```
+python3 scripts/kryptos_ctf.py --budget 150
+```
+
+PK1–PK7 have published plaintexts, so they are a scorecard rather than a claim. From ciphertext alone, with no hints:
+
+| challenge | cipher | result |
+| --- | --- | --- |
+| PK1 | Quagmire III, KRYPTOS alphabet, period 10 | **solved**, ~15 s (recovers the key `PROVENANCE`) |
+| PK2 | complete columnar, 50×7 | **solved**, ~29 s |
+| PK3 | sum-clock, wheels of 10 and 8 over a keyed alphabet | **solved**, ~5 s (recovers the keywords `ORDINATE` + `PENTIMENTO`) |
+| PK4–PK6 | columnar or double-columnar *composed with* Quagmire III | not solved — the transposition's key cannot be scored while the text underneath is still enciphered |
+| PK7 | Quagmire III composed with a 3×3 affine Hill matrix | not solved |
+
+**Two-wheel clocks are solved exactly rather than searched.** Fixing the short wheel leaves a plain Vigenère of known period, so the long wheel is *derived* by chi-squared instead of guessed, and the key space collapses to an enumeration of the short wheel alone — exhaustive for three or four letters, word-keyed beyond that (PK3's wheels are literally words, and the author's public hint was that the key "has quite a lot of entropy, but some structure"). Each candidate costs a handful of table lookups rather than a pass over the message, so 456,976 of them take seconds. One caveat: the long wheel is solved a column at a time and needs roughly twenty letters per column to be reliable.
+
+PK8, PK9 and PK10 are **not solved here, and this tool does not claim them.** PK8 was solved externally in 2026 and its key was never published; PK9 and PK10 have zero solves on the leaderboard. What the solver can now do is the cipher family they are built from. Three measured findings, recorded so the next attempt need not repeat them:
+
+* **PK8 with a crib is easy; without one it is not.** Nineteen known letters recover a four-wheel key by linear algebra in 0.1 s. A sweep of ~1,800 candidate cribs — every 19-letter window of the same author's published PK1–PK7 plaintexts, plus the repository's own crib lists — across six wheel shapes and both alphabets found nothing. That is evidence about those cribs, not about the method.
+* **PK8 is not a two-wheel clock.** Because the two-wheel solver is exact, this is elimination rather than failure to find. The sweep covered every short wheel of three or four letters exhaustively (26³ and 26⁴ = 474,552 keys per shape), word lists for short wheels of five to ten, every long wheel from three to sixteen, and both alphabets — 851 seconds in total. The best reading scored −5.87 against English's −4.3, and it came from a {9,16} shape carrying 24 unknowns on 153 letters, which is overfitting rather than signal. The hypothesis class is closed.
+* **A letter histogram cannot identify a substitution laid over a transposition** — the PK9 shape. Measured on synthetic {4,7} instances: the true key scores −23.07 on monogram chi-squared while wrong local optima reach −18.44, and the true key is not even a local optimum. Monogram-guided search for PK9's outer layer is a dead end; it needs a statistic that survives transposition *and* discriminates, and letter frequencies are not it.
+
+---
+
 ## Limits — read this before you trust an answer
 
 buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography**. Being straight about the boundaries:
 
 * **It cannot break modern cryptography.** AES, RSA, ChaCha20, Ed25519 and anything else with a proper key schedule and a real key length are out of reach for *any* tool of this kind — that is a statement about mathematics, not about this code. If your ciphertext came from a real cipher with a real key, no amount of quadgram scoring will help.
+* **Four-square and trifid need the key.** Four-square has *two* keyed grids — fifty cells against Playfair's twenty-five — and trifid has a 27-cell cube and an unknown period, so neither from-scratch search finishes inside a sane budget. Both encrypt, decrypt and identify correctly, and `--hint key=...` recovers the plaintext exactly; the self-test grades them on precisely that contract rather than pretending otherwise.
 * **Playfair and Bifid are partial.** A 5×5 grid has 25! arrangements and one misplaced cell costs ~0.9 log10 per character of fitness — five times what a wrong substitution alphabet costs — so the truth's basin is only a few swaps wide. A pure-Python genetic algorithm recovers roughly nine letters in ten from ~1,500 letters of ciphertext in 90 seconds; whether the last few cells fall into place depends on the seed. The report tells you which case you got. With `--hint key=MONARCHY` both are exact immediately.
 * **Short text is weak evidence, and the tool says so.** Below ~50 letters the chi-squared distributions of "English under a shift" and "Vigenère" overlap almost completely (measured: English at n = 35 reaches 1.47 at p99 while Vigenère starts at 0.90). `identify` then reports several plausible families with low likelihoods instead of inventing certainty, and confidence is capped accordingly. The solver still attacks all of them.
 * **Some ciphers are lossy by design.** Playfair pads with `X` and splits doubled letters; Bacon merges U/V and I/J; Polybius and Bifid merge I/J. Comparisons in the tests and the selftest fold those away, and the report notes it — you get the letters back, not the typography.
 * **Attribution can be equivalent-but-different.** Atbash may be reported as `affine (25, 25)`; a Vigenère with a one-letter key may be reported as `caesar`. The plaintext is right and the `notes` field explains the equivalence.
 * **Non-English models have no dictionary.** Only English ships a word list; the other five languages judge on n-gram fitness alone. Two honest consequences, both measured: (1) a slightly wrong reading can outscore the true one — on a 197-letter German Caesar, a substitution near-miss disagreeing on 4 rare letters beat the true shift by 0.05 confidence — so foreign-language reports grade "solved" on fitness, not word-perfectness; (2) the English model *will* solve its sibling languages (French at 0.88 confidence, Italian 0.86) and report inflated confidence — the report's `reads as` note flags this and names the `--language` rerun that fixes it. `--language auto` probes all six models (up to half the budget) and is reliable for cheap ciphers, but for an expensive cipher it can only rank partial readings, so name the language when you know it.
+* **Keyed alphabets are a separate cipher, not a detail.** Quagmire III does Vigenère arithmetic in a keyed alphabet's index space (`KRYPTOS...`), so a solver that assumes A=0 recovers nothing. `quagmire3` searches the alphabet as well as the key, and reproduces the published Paradigm Kryptos PK1 answer (key `PROVENANCE`, period 10) from ciphertext alone in about 15 seconds.
+* **Sum-clocks need a crib, or luck.** `sum_clock` adds several short wheels (`K[t] = q4[t%4] + q5[t%5] + ...`). Four wheels of 4, 5, 6 and 7 give a key of period 420 — longer than a 153-letter message — so no column is ever repeated and chi-squared has nothing to work with. Every position's key is a *sum* of four unknowns, so moving one coordinate earns no partial credit either: the search landscape has almost no gradient. The keystream is, however, **linear** in the wheels, so known plaintext turns cryptanalysis into linear algebra. Measured on synthetic instances of exactly that shape (153 letters, four wheels, known answer):
+
+  | attack | recovery |
+  | --- | --- |
+  | annealing, 60 s per instance, no crib | **0 of 6** (plateaus at −6.09 against a true-key −4.25) |
+  | crib of 12 letters, hybrid, 25 s | 0 of 4 |
+  | crib of 14 letters, hybrid, 25 s | 2 of 4 |
+  | crib of 16 letters, hybrid, 25 s | **4 of 4** |
+  | crib of 19 letters, pure algebra | **5 of 5, 0.1 s each** |
+
+  Nineteen letters is the point where the equations outnumber the nineteen effective unknowns and no search is needed at all. Below it, the crib still collapses the dimension and the remainder is annealed. Use `--crib`.
 * **The M-94 is a genuine search.** 25! ≈ 1.5×10²⁵ disk orders; the hill climb over pairwise swaps lands from ~200 letters given a real slice of budget (measured: 2-in-3 solves at 250 letters inside 20 s with 2 workers; the true order's read row is always found once the order is). Below 150 letters the honest-evidence rule caps the verdict below *solved* — 25 wheels want ~6 letters each. `--budget 120 --workers 2` and 250+ letters is the reliable recipe; `--hint key=<order>` is exact immediately.
 
 ---
@@ -269,7 +316,7 @@ buttcrack/
   selftest.py    known-answer verification of the whole install
   server.py      REST API + static file serving
   cli.py         the command line
-  ciphers/       one module per family, 36 ciphers behind one interface
+  ciphers/       one module per family, 50 ciphers behind one interface
   data/          the language models (see NOTICE for provenance)
   static/        the web interface
 scripts/

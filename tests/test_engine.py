@@ -14,10 +14,10 @@ import time
 import unittest
 
 from buttcrack.ciphers import get
-from buttcrack.ciphers.base import EXPENSIVE, Cipher, CipherInfo, Family
+from buttcrack.ciphers.base import EXPENSIVE, Cipher, CipherInfo, CrackContext, Family
 from buttcrack.engine import STRONG_LAYER, CandidatePool, Solver, solve
 from buttcrack.lang import SOLVED_CONFIDENCE, get_model
-from buttcrack.results import Candidate
+from buttcrack.results import Candidate, CrackReport
 
 SLOW = os.environ.get("BUTTCRACK_SLOW") == "1"
 BUDGET = 25.0
@@ -149,6 +149,53 @@ class TestSingleCiphers(unittest.TestCase):
                 self.assertTrue(report.solved, f"{name}: {report.confidence:.3f}")
                 self.assertEqual(report.path, name)
 
+    def test_porta(self):
+        self.assert_solves(enc("porta", key="LANTERN"), "porta")
+
+    def test_myszkowski_and_amsco(self):
+        self.assert_solves(enc("myszkowski", key="TOMATO"), "myszkowski")
+        self.assert_solves(enc("amsco", key="ZEBRA"), "amsco")
+
+    def test_hill(self):
+        # Broken by scoring each row of the decryption matrix on its own: the
+        # 157,248 invertible 2x2 matrices collapse to 676 row evaluations.
+        self.assert_solves(enc("hill", key="HILL"), "hill")
+
+    def test_four_square_and_trifid_are_exact_with_a_hint(self):
+        """Both have key spaces past what a from-scratch search finishes, so
+        the contract is the one Bifid has: named, and exact when hinted."""
+        for name, key in (
+            ("four_square", {"top": "EXAMPLE", "bottom": "KEYWORD"}),
+            ("trifid", {"key": "TRIFID", "period": 5}),
+        ):
+            with self.subTest(cipher=name):
+                cipher = get(name)
+                ciphertext = cipher.encrypt(PARAGRAPH, key)
+                # Restricted to the cipher under test: the contract is "a
+                # hinted key gives the exact plaintext", not "this attack wins
+                # a race against forty-nine others for a 20-second budget",
+                # which is what made this flaky as the registry grew.
+                report = Solver(
+                    budget=20, workers=WORKERS, ciphers=[cipher], hints={"key": key}
+                ).solve(ciphertext)
+                self.assertTrue(report.solved, f"{name}: {report.confidence:.3f}")
+                self.assertEqual(report.cipher, name)
+                self.assertTrue(
+                    squash(report.plaintext, "").startswith(squash(PARAGRAPH, "")[:60])
+                )
+
+    def test_new_code_layers(self):
+        for name in ("tap_code", "nato", "braille", "baudot"):
+            with self.subTest(code=name):
+                self.assert_solves(code(name), name)
+
+    def test_new_encoding_layers(self):
+        for name in ("uuencode",):
+            with self.subTest(encoding=name):
+                report = solve(code(name), budget=15, workers=WORKERS)
+                self.assertTrue(report.solved, f"{name}: {report.confidence:.3f}")
+                self.assertEqual(report.path, name)
+
     @unittest.skipUnless(SLOW, "set BUTTCRACK_SLOW=1 to run the expensive searches")
     def test_substitution_family(self):
         # A keyword-generated alphabet *is* a mixed alphabet, and the recovered
@@ -221,6 +268,84 @@ class TestStacks(unittest.TestCase):
         report = solve(stacked, budget=BUDGET, workers=WORKERS)
         self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
         self.assertEqual(report.path, "base32 -> base64 -> caesar")
+
+    def test_cipher_under_a_transposition(self):
+        """A transposition wrapped around a substitution comes apart.
+
+        Every rail fence key produces the same letter statistics, so the
+        correct reading cannot be recognised before the inner cipher is
+        solved -- the solver has to try the readings, not rank them.
+        """
+        inner = enc("caesar", SENTENCE, key=5)
+        stacked = get("rail_fence").encrypt(inner, 4)
+        report = solve(stacked, budget=BUDGET, workers=WORKERS)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(report.path, "rail_fence -> caesar")
+
+    def test_cipher_under_a_reflection(self):
+        stacked = get("reverse").encrypt(enc("vigenere", SENTENCE, key="LAMP"))
+        report = solve(stacked, budget=BUDGET, workers=WORKERS)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(report.path, "reverse -> vigenere")
+
+    def test_five_layers(self):
+        """hex(base64(morse(reverse(caesar(text))))) -- five steps, two of them
+        ciphers rather than encodings."""
+        inner = enc("caesar", "The signal will be given at midnight from the north tower", key=7)
+        stacked = code("base16", code("base64", code("morse", get("reverse").encrypt(inner))))
+        report = solve(stacked, budget=BUDGET, workers=WORKERS, max_depth=6)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(report.path, "base16 -> base64 -> morse -> reverse -> caesar")
+
+    def test_six_layers(self):
+        """The full advertised depth: six steps peeled in one solve."""
+        inner = enc("caesar", "Meet the courier beneath the clock tower at dawn", key=11)
+        stacked = code("base32", code("base16", code("base64", code("morse", get("reverse").encrypt(inner)))))
+        report = solve(stacked, budget=BUDGET, workers=WORKERS, max_depth=6)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(
+            report.path, "base32 -> base16 -> base64 -> morse -> reverse -> caesar"
+        )
+
+    def test_three_ciphers_deep(self):
+        """Ciphers stacked on ciphers, not just encodings on ciphers."""
+        stacked = get("reverse").encrypt(
+            get("rail_fence").encrypt(enc("caesar", SENTENCE, key=5), 4)
+        )
+        report = solve(stacked, budget=BUDGET, workers=WORKERS)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(report.path, "reverse -> rail_fence -> caesar")
+
+    def test_six_ciphers_deep(self):
+        """Six ciphers, no encodings: five transpositions over a ROT13.
+
+        Tractable because transpositions and monoalphabetic substitutions
+        commute, so the stack equals one permutation plus one substitution --
+        see `Solver._chain_search`.
+        """
+        inner = enc("rot13", SENTENCE)
+        stacked = get("reverse").encrypt(
+            get("rail_fence").encrypt(
+                get("skip").encrypt(
+                    get("reverse").encrypt(get("rail_fence").encrypt(inner, 3)), 5
+                ), 4
+            )
+        )
+        report = solve(stacked, budget=30, workers=WORKERS)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(
+            report.path, "reverse -> rail_fence -> skip -> reverse -> rail_fence -> rot13"
+        )
+
+    def test_encodings_wrapped_around_a_cipher_chain(self):
+        """The chain search keeps the steps it was already inside."""
+        inner = get("reverse").encrypt(
+            get("rail_fence").encrypt(enc("caesar", SENTENCE, key=9), 3)
+        )
+        stacked = code("base64", code("morse", inner))
+        report = solve(stacked, budget=30, workers=WORKERS)
+        self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
+        self.assertEqual(report.path, "base64 -> morse -> reverse -> rail_fence -> caesar")
 
     def test_depth_limit_stops_the_peeler(self):
         stacked = code("base64", enc("caesar", key=5))
@@ -338,9 +463,47 @@ class TestSolverControls(unittest.TestCase):
         Solver(budget=1.0, ciphers=[first, second]).solve("QZXWVUTSRQPONMLKJIHGFEDCBA")
         self.assertEqual(len(first.slices), 1)
         self.assertEqual(len(second.slices), 1)
-        # Each of two expensive attacks receives at most half of the time left.
+        # Equally likely attacks split the phase, so the first of two gets half.
+        # The second may use what is left -- a slice is a cap against overrunning
+        # the user's deadline, not a reservation for attacks that never ran.
         self.assertLessEqual(first.slices[0], 0.5)
-        self.assertLessEqual(second.slices[0], 0.5)
+        self.assertLessEqual(second.slices[0], 1.0)
+        self.assertLessEqual(first.slices[0] + second.slices[0], 1.5)
+
+    def test_likely_attacks_get_more_of_the_phase_than_unlikely_ones(self):
+        """Budget follows evidence: identification orders *and* funds the search.
+
+        Regression: when every expensive attack got an equal slice, adding
+        ciphers to the registry silently took time away from the one that was
+        going to work, and a keyed Polybius stopped coming out.
+        """
+
+        class Probe(Cipher):
+            def __init__(self, name):
+                self.info = CipherInfo(
+                    name=name, title=name, family=Family.SUBSTITUTION,
+                    cost=EXPENSIVE, min_length=2, description="test-only budget probe",
+                )
+                self.slices = []
+
+            def crack(self, ciphertext, ctx):
+                self.slices.append(ctx.budget)
+                if False:
+                    yield None
+
+        likely, unlikely, tail = Probe("probe_a"), Probe("probe_b"), Probe("probe_c")
+        solver = Solver(budget=4.0, ciphers=[likely, unlikely, tail])
+        pool = CandidatePool(solver.model)
+        report = CrackReport(ciphertext="QZXWVUTSRQPONMLKJIHGFEDCBA")
+        ctx = CrackContext.create(budget=4.0, model=solver.model)
+        # The last attack in a phase may use whatever is left, so the comparison
+        # is between the two that still have a successor.
+        solver._attack(
+            "QZXWVUTSRQPONMLKJIHGFEDCBA", ctx, pool,
+            {"probe_a": 0.9, "probe_b": 0.0, "probe_c": 0.0}, report,
+            costs=(EXPENSIVE,),
+        )
+        self.assertGreater(likely.slices[0], unlikely.slices[0])
 
     def test_the_attack_set_can_be_restricted(self):
         solver = Solver(budget=10, ciphers=[get("caesar")])
@@ -414,3 +577,37 @@ class TestConstants(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestChainSearch(unittest.TestCase):
+    """The commuting-stack search and the gate that decides when it runs."""
+
+    def setUp(self):
+        self.solver = Solver(budget=5, workers=1)
+        self.ctx = CrackContext.create(budget=5, model=self.solver.model)
+
+    def test_gate_admits_transpositions_and_rejects_everything_else(self):
+        # A transposition cannot change which letters are present, so any stack
+        # of transpositions and monoalphabetic substitutions keeps an English
+        # histogram under some rotation.  Nothing else does.
+        for name, ciphertext in (
+            ("plain", SENTENCE),
+            ("rail_fence", enc("rail_fence", SENTENCE, key=4)),
+            ("columnar", enc("columnar", SENTENCE, key="ZEBRA")),
+            ("rail_fence over caesar", get("rail_fence").encrypt(enc("caesar", SENTENCE, key=5), 4)),
+        ):
+            with self.subTest(admits=name):
+                self.assertTrue(self.solver._transposition_shaped(ciphertext, self.ctx))
+        for name, ciphertext in (
+            ("vigenere", enc("vigenere", SENTENCE, key="LEMON")),
+            ("substitution", enc("substitution", SENTENCE)),
+            ("hill", enc("hill", SENTENCE, key="HILL")),
+        ):
+            with self.subTest(rejects=name):
+                self.assertFalse(self.solver._transposition_shaped(ciphertext, self.ctx))
+
+    def test_the_substitution_is_read_off_the_histogram(self):
+        """Transpositions do not disturb letter counts, so the shift is
+        recoverable *before* any transposition is undone."""
+        stacked = get("rail_fence").encrypt(enc("caesar", SENTENCE, key=5), 4)
+        candidates = self.solver._monoalphabetic_candidates(stacked, self.ctx)
+        self.assertEqual([(n, k) for n, k, _ in candidates][0], ("caesar", 5))
