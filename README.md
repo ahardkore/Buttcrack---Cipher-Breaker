@@ -48,22 +48,32 @@ SOLVED  confidence 1.00  in 0.32s
 
 ---
 
-## 🏛️ Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
+## Kryptos and the Paradigm Kryptos CTF
 
-This repository holds cryptanalytic notes, ciphertexts and records for **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos CTF (PK1–PK10)**.
+`kryptos/` holds the ciphertexts, solutions and working notes for Jim Sanborn's
+Kryptos sculpture (K1-K4) and Dan Robinson's Paradigm Kryptos CTF (PK1-PK10).
 
-> **Audited 2026-09-30.** Every stored record was re-checked against its ciphertext. Five of the ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5 keep their plaintext but lose their key claim; PK8, PK9 and PK10 are **unsolved**, and the PK8 "solution" previously stored here is not English (−6.43 log10/char). Much of the prose in `kryptos/` was written before that check and overstates its case — read [`kryptos/AUDIT.md`](kryptos/AUDIT.md) first, and verify anything you rely on with `python3 kryptos/verify_pk_records.py`.
+The records were audited on 2026-09-30, after one of them turned out to be
+fabricated. Five of the ten PK records reproduce their stated key exactly
+(PK1, PK2, PK3, PK6, PK7). PK4 and PK5 keep their plaintext but lose their key
+claim. PK8, PK9 and PK10 are unsolved, and the PK8 "solution" stored here
+before the audit is not English. [`kryptos/AUDIT.md`](kryptos/AUDIT.md) says
+what was checked and what failed.
 
-* 📖 **The Kryptos Decryption Manuscript**: 8 exhaustive chapters covering classical ciphers, polyalphabetic sum-clocks, coordinate geometry, and the 36-year sculpture history. See [`kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md).
-* 📑 **Executive Cryptanalytic Brief**: High-density executive summary on final cryptanalytic verdicts and open frontier guidance. See [`kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md).
-* ✅ **Record verification**: `python3 kryptos/verify_pk_records.py` re-encrypts each stored plaintext under the key its record names and compares the result with the published ciphertext. It is the only claim in this directory that is checked mechanically, and CI enforces it.
-* 🗄️ **Solutions manifest**: plaintexts, checksums and keys for PK1–PK7, each carrying its audit verdict. See [`kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
-* 🗺️ **"Dual-Cipher GPS" numerology** (*not* a proof): sums of hand-picked letters from PK9/PK10 that land on the sculpture's coordinates, one of them only after a modulo chosen afterwards. Kept for the record, labelled for what it is; nothing was broken with it. See [`kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`](kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg).
-* 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). It is published as the `/kryptos/` section of the project's single GitHub Pages site, alongside the browser cipher solver — see [`scripts/build_site.py`](scripts/build_site.py) and [`ventures/README.md`](ventures/README.md).
-* ⚡ **Reproducibility suite**: 12 modules, the first of which is the record verification above; the other eleven re-run analysis scripts and check they still print their own conclusions — a regression test, not evidence. (It previously printed "0 / 11 TESTS PASSED (100% SUCCESS)" from the repository root: the success string was hardcoded and the paths were relative. Both fixed.)
-  ```bash
-  python3 kryptos/test_full_suite_reproducibility.py
-  ```
+Anything you rely on can be checked in a second:
+
+```bash
+python3 kryptos/verify_pk_records.py   # re-encrypts each record under its own key
+```
+
+* [`kryptos/README.md`](kryptos/README.md) indexes the directory and the status of each challenge.
+* [`kryptos/PK7.md`](kryptos/PK7.md) is a worked account of the one this repository broke: a Quagmire III of period 6 followed by a 3x3 Hill, both over the KRYPTOS alphabet.
+* [`kryptos/PK8-PK10.md`](kryptos/PK8-PK10.md) covers the three unsolved challenges, including which hypotheses are eliminated and why the obvious statistics do not work.
+* [`kryptos/K1-K4.md`](kryptos/K1-K4.md) covers the sculpture itself.
+* [`kryptos-app/`](kryptos-app/) is a small zero-dependency browser view of the corpus, published as the `/kryptos/` section of the project's GitHub Pages site (see [`scripts/build_site.py`](scripts/build_site.py)).
+
+The rest of `kryptos/` is exploratory attack code, several hundred files of it,
+kept for the negative results rather than for its polish.
 
 ---
 

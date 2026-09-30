@@ -5,7 +5,8 @@ What this suite does and does not establish, stated plainly:
 * Most modules below re-run an analysis script and check that it still prints
   its own conclusion.  That is a *regression* check -- it catches a script
   that has stopped working -- and nothing more.  A module printing
-  "100% PROVEN" makes this suite print PASS; it does not make the claim true.
+  A module printing its own conclusion makes this suite print PASS; it does
+  not make the conclusion true.
 * The one module that tests a claim against the ciphertexts is
   ``verify_pk_records.py``, which re-encrypts each stored plaintext under the
   key its record names and compares the result with the published ciphertext.
@@ -37,7 +38,7 @@ tests = [
     {
         "name": "Theorem & GPS Coordinate Verification (prints its own conclusions)",
         "cmd": ["python3", "verify_all_mathematical_theorems.py"],
-        "expect_str": "ALL 5 MATHEMATICAL THEOREMS ARE 100% PROVEN"
+        "expect_str": "The five identities above hold arithmetically"
     },
     {
         "name": "Global PK1-PK10 Cryptosystem Taxonomy",

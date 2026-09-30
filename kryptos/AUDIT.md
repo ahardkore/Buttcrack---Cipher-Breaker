@@ -1,91 +1,101 @@
-# Audit of the Paradigm Kryptos records (2026-09-30)
+# Audit of the PK records, 2026-09-30
 
-Every claim in this directory was re-checked against the ciphertexts. The test
-is mechanical and has one question: **does the key a record names turn the
-plaintext it stores back into the published ciphertext?** Run it yourself:
+Every stored record was re-checked against its ciphertext. The test is
+mechanical: does the key a record names turn the plaintext it stores back into
+the published ciphertext?
 
 ```console
 $ python3 kryptos/verify_pk_records.py
 ```
 
-It exits non-zero if any record labelled SOLVED fails, and it is wired into
-`tests/test_kryptos_records.py` so CI keeps it honest.
+It exits non-zero if anything labelled solved fails, and
+`tests/test_kryptos_records.py` keeps it that way.
 
 ## Verdicts
 
-| challenge | verdict | stored status now | evidence |
-| --- | --- | --- | --- |
-| PK1 | **verified** | SOLVED (VERIFIED) | Quagmire III / `PROVENANCE` re-encrypts exactly |
-| PK2 | **verified** | SOLVED (VERIFIED) | columnar width 7, order `[1,3,4,0,5,2,6]`, re-encrypts exactly |
-| PK3 | **verified** | SOLVED (VERIFIED) | sum-clock `PENTIMENTO`/10 + `ORDINATE`/8 re-encrypts exactly |
-| PK4 | key not reproducible | PLAINTEXT ONLY | plaintext is English (−4.18); no convention reproduces the ciphertext |
-| PK5 | key **refuted** | PLAINTEXT ONLY | the stated order is impossible for this plaintext (see below) |
-| PK6 | **verified** | SOLVED (VERIFIED) | double columnar + Quagmire III `PORTAL` re-encrypts exactly |
-| PK7 | **verified** (corrected) | SOLVED (VERIFIED) | old record refuted; new key `ANNEAL` + `ALCHEMIST` re-encrypts exactly |
-| PK8 | not a solution | UNSOLVED HERE | stored candidate is not English (−6.43, 8% words) |
-| PK9 | unsolved | UNSOLVED | no plaintext; best reading −4.93 |
-| PK10 | unsolved | UNSOLVED | best readings −6.2 to −6.6; not English |
+| | verdict | evidence |
+| --- | --- | --- |
+| PK1 | verified | Quagmire III with `PROVENANCE` re-encrypts exactly |
+| PK2 | verified | columnar width 7, order `[1,3,4,0,5,2,6]` |
+| PK3 | verified | sum-clock `PENTIMENTO`/10 + `ORDINATE`/8 |
+| PK4 | key not reproducible | plaintext scores -4.18; no convention rebuilds the ciphertext |
+| PK5 | mechanism refuted | see below |
+| PK6 | verified | double columnar width 9, then Quagmire III `PORTAL` |
+| PK7 | verified, after correction | old record refuted; `ANNEAL` + `ALCHEMIST` re-encrypts exactly |
+| PK8 | not a solution | stored candidate scores -6.43 and is not English |
+| PK9 | unsolved | no plaintext; best stored reading -4.93 |
+| PK10 | unsolved | best stored readings -6.2 to -6.6 |
 
-Fitness is quadgram log10 per character: real English averages −4.3, and the
-five verified PK plaintexts sit between −4.2 and −4.45.
+Scores are quadgram fitness in log10 per character. English averages about
+-4.3, and the five verified plaintexts fall between -4.2 and -4.45.
 
-## What was wrong, and how it was caught
+## PK7 was fabricated
 
-**PK7 was fabricated.** The old record paired the ciphertext with
-"HEPOINTEDTOTHEHEARTH…". Three identical ciphertext blocks (`HTE` at blocks
-51, 55 and 91, all at the same phase) were mapped to three *different*
-plaintext trigrams — impossible for any composition of a period-6 substitution
-with a 3-letter block cipher, in either order. The real plaintext was
-recovered from ciphertext alone; see [`PK7_BREAK.md`](PK7_BREAK.md).
+The old record paired the ciphertext with a passage beginning
+"HEPOINTEDTOTHEHEARTH". It fails on its own terms. Three ciphertext blocks are
+identical (`HTE` at blocks 51, 55 and 91, all at the same phase) but the record
+maps them to three different plaintext trigrams: `MET`, `ENT`, `FOR`. No
+composition of a period-6 substitution with a 3-letter block cipher can do
+that, in either order.
 
-**PK5's stated mechanism is refuted for its stored plaintext.** Under
-"transposition, then a period-17 Quagmire III", each ciphertext residue class
-is a rotation of a subset of the plaintext's letters. No assignment of 17
-shifts makes the classes add up to this plaintext's letter multiset — and that
-holds whatever the transposition is, since the argument never uses it. Either
-the plaintext or the mechanism is wrong; the plaintext itself is coherent
-English and consistent with the narrative, so it is retained but demoted.
+The real plaintext was recovered from the ciphertext alone. See [PK7.md](PK7.md).
 
-**PK4's key is under-specified.** "Dual-Clock Substitution p5 + p9,
-Transposition Width 8" does not name the wheels or the column order. Every
-columnar convention at widths 8 and 28, with the keystream phased from either
-side and over both the KRYPTOS and plain alphabets, was searched against the
-stored plaintext. None reproduces the ciphertext. The plaintext is neither
-confirmed nor refuted.
+## PK5's stated mechanism cannot produce its plaintext
 
-**PK8 was never solved here.** It was solved externally by Kevin Hu and the key
-was not published. The record stored a four-wheel candidate as `plaintext` with
-the status "SOLVED (SEALED IN CUSTODY)". The candidate *is* internally
-consistent — the clock parameters it names do produce it from the ciphertext —
-but the output is not English: −6.43 log10/char and 8% coverage in words of
-four letters or more. The "71.2% lexical word coverage" previously reported
-counted two- and three-letter fragments of a Viterbi segmentation (`nr`, `hp`,
-`xx`, `oe`, …), a statistic random letters also score well on.
+The record says "columnar transposition, then Quagmire III with period 17".
+Under that order each ciphertext residue class is a rotation of a subset of the
+plaintext's letters, so some choice of 17 shifts has to make the classes add up
+to the plaintext's letter multiset. No such choice exists. The argument never
+uses the transposition, so no column order rescues it. Either the plaintext or
+the mechanism is wrong. The plaintext is coherent and fits the narrative, so it
+is kept, with the key claim withdrawn.
 
-**PK9/PK10 were labelled with confidence they had not earned.** "UNSOLVED
-EMPIRICAL FRONTIER (100% MATHEMATICALLY LOCKED)" described eliminated search
-space, not a recovered key. Both are now plainly UNSOLVED. The stored PK10
-readings score −6.2 to −6.6 and are not English.
+## PK4's key is under-specified
 
-## The "verification" tooling was not verifying
+"Dual-Clock Substitution p5 + p9, Transposition Width 8" names neither the
+wheels nor the column order. Every columnar convention at widths 8 and 28 was
+searched against the stored plaintext, with the keystream phased from either
+side and over both the KRYPTOS and plain alphabets. None rebuilds the
+ciphertext. The plaintext is neither confirmed nor refuted.
 
-* `test_full_suite_reproducibility.py` printed **"0 / 11 TESTS PASSED (100%
-  SUCCESS)"** — the success string was hardcoded — and every module failed
-  anyway because the script resolves its paths against the working directory
-  while the README tells you to run it from the repository root. Both are
-  fixed: the percentage is computed, paths resolve against the script, the exit
-  status is non-zero on failure, and the record verification above runs as the
-  first module.
-* Most of its modules check that an analysis script still prints its own
-  conclusion. That is a regression test, not evidence. The suite now says so.
-* `verify_all_mathematical_theorems.py` prints "100% PROVEN" for what are
-  numerical observations about hand-picked quantities — the GPS "theorem" sums
-  four chosen letters to 57, then takes another chosen sum mod 60 to reach 6.
-  Nothing there was used to break a cipher, and the file now carries a header
-  saying as much.
+## PK8 was never solved here
 
-## What is genuinely solved here
+PK8 was solved by Kevin Hu and the key was not published. This directory stored
+a four-wheel candidate as `plaintext`, with the status "SOLVED (SEALED IN
+CUSTODY)". The candidate is internally consistent, in that the clock parameters
+it names do produce it from the ciphertext, but it is not English: -6.43 log10
+per character, and 8% coverage in words of four letters or more.
 
-PK1, PK2, PK3, PK6 and PK7 — five of the ten — reproduce their ciphertexts
-from their stated keys. `scripts/kryptos_ctf.py` additionally shows which of
-them the solver can recover with no hints at all: PK1, PK2, PK3 and PK7.
+The "71.2% lexical word coverage" reported alongside it counted two- and
+three-letter fragments of a Viterbi segmentation (`nr`, `hp`, `xx`, `oe`), a
+statistic that random letters also score well on. The candidate is kept,
+labelled as a failed attempt.
+
+## PK9 and PK10 claimed confidence they had not earned
+
+"UNSOLVED EMPIRICAL FRONTIER (100% MATHEMATICALLY LOCKED)" described search
+space that had been eliminated, not a recovered key. Both are now recorded as
+unsolved. The stored PK10 readings score -6.2 to -6.6 and are not English.
+
+## The verification tooling was not verifying
+
+`test_full_suite_reproducibility.py` printed "0 / 11 TESTS PASSED (100%
+SUCCESS)". The success string was hardcoded, and every module failed anyway
+because the script resolved its paths against the caller's working directory
+while the README told you to run it from the repository root. The percentage
+is now computed, paths are anchored to the script, the exit status is non-zero
+on failure, and record verification runs as its first module.
+
+Most of its modules re-run an analysis script and check that it still prints
+its own conclusion. That is a regression test, not evidence, and the file now
+says so.
+
+`verify_all_mathematical_theorems.py` printed "100% PROVEN" for arithmetic on
+quantities chosen after the fact. The GPS section sums four selected letters to
+reach 57, then takes a different selected sum modulo 60 to reach 6. Nothing
+there was used to break a cipher. The file now carries a header saying as much.
+
+## What is genuinely solved
+
+PK1, PK2, PK3, PK6 and PK7 reproduce their ciphertexts from their stated keys.
+Of those, the solver recovers PK1, PK2, PK3 and PK7 from ciphertext alone.

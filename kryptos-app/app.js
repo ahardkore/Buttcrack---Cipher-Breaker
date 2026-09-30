@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initNavigation();
   initCipherExplorer();
   initWorkbench();
-  initBookReader();
   selectCipher("PK10");
 });
 
@@ -250,34 +249,3 @@ function decryptColumnar(ct, key) {
   return res;
 }
 
-// Book Reader Setup
-function initBookReader() {
-  const chapters = [
-    { title: "Prologue: The CIA Sculpture & The 36-Year Mystery", target: "book-ch-prologue" },
-    { title: "Chapter 1: The Narrative Arc of Paradigm Kryptos (PK1 – PK7)", target: "book-ch-1" },
-    { title: "Chapter 2: Decoupling and Breaking PK8 (N = 153)", target: "book-ch-2" },
-    { title: "Chapter 3: Cracking PK9 — The 135-Character Artisan Text (N = 144)", target: "book-ch-3" },
-    { title: "Chapter 4: Cracking PK10 — The Modular Copper Triptych (N = 504)", target: "book-ch-4" },
-    { title: "Chapter 5: The Dual-Cipher GPS Sculpture Theorem", target: "book-ch-5" },
-    { title: "Chapter 6: Grand Cryptosystem Synthesis & Universal Invariants", target: "book-ch-6" },
-    { title: "Chapter 7: Master Solutions Database & Verification Manifest", target: "book-ch-7" },
-    { title: "Epilogue: Complete Suite Reproducibility Assurance", target: "book-ch-epilogue" }
-  ];
-
-  const tocList = document.getElementById("book-toc-list");
-  if (!tocList) return;
-
-  tocList.innerHTML = "";
-  chapters.forEach((ch, idx) => {
-    const div = document.createElement("div");
-    div.className = `toc-item ${idx === 0 ? 'active' : ''}`;
-    div.textContent = ch.title;
-    div.addEventListener("click", () => {
-      document.querySelectorAll(".toc-item").forEach(item => item.classList.remove("active"));
-      div.classList.add("active");
-      const targetElem = document.getElementById(ch.target);
-      if (targetElem) targetElem.scrollIntoView({ behavior: 'smooth' });
-    });
-    tocList.appendChild(div);
-  });
-}

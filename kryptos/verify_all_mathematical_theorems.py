@@ -19,7 +19,7 @@ AUDIT.md.
 import math
 
 print("==========================================================================================")
-print("             COMPREHENSIVE MATHEMATICAL VERIFICATION OF ALL SUITE INVARIANTS               ")
+print("             ARITHMETIC IDENTITIES AMONG THE PK8-PK10 PARAMETERS (NOT EVIDENCE)               ")
 print("==========================================================================================\n")
 
 # Theorem 1: CRT Single-Cycle & Keystream Periods
@@ -105,4 +105,6 @@ print("5. Longitude Minutes (8 W):   PK10 Sum_Kr(Col 40) - Sum_Kr(Col 29) = 155 
 print("6. Longitude Seconds (44 W):  PK10 Sum_Std(Col 40) - Sum_Std(Col 5) = 152 - 108 = 44")
 print("7. Modular Null 1:            PK9  Sum_Kr(AUON) = 52 = 2 x 26 = 0 mod 26")
 print("8. Modular Null 2:            PK10 Sum_Std(Col 0) = 156 = 6 x 26 = 0 mod 26")
-print("\nALL 5 MATHEMATICAL THEOREMS ARE 100% PROVEN AND RIGOROUSLY VERIFIED.")
+print("\nThe five identities above hold arithmetically. None of them is evidence")
+print("about the ciphers: the quantities and moduli were chosen after the fact.")
+print("Checks that can fail live in verify_pk_records.py.")
