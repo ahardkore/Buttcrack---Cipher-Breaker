@@ -778,6 +778,7 @@ def solver_html() -> str:
         f'<button data-sample="{key}">{label}</button>'
         for key, label in [
             ("caesar", "Caesar"), ("vigenere", "Vigenère"),
+            ("beaufort", "Beaufort"), ("porta", "Porta"), ("autokey", "Autokey"),
             ("substitution", "Substitution"), ("layered", "Layered"), ("morse", "Morse"),
         ]
     )
@@ -908,7 +909,7 @@ PAGES = [
             ("Is my ciphertext uploaded anywhere?",
              "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."),
             ("Which ciphers can it break?",
-             "Caesar and ROT13, Atbash, affine, Vigenère with automatic key recovery, monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text — including several of those stacked on top of each other."),
+             "Caesar and ROT13, Atbash, affine, the periodic family — Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery — plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other."),
             ("Why did it fail on my text?",
              "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."),
             ("Can it break modern encryption like AES or RSA?",
@@ -1209,7 +1210,7 @@ WIKI_PAGES = [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the common puzzle families: shifts, Vigenère, monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+             "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
             ("How much ciphertext is enough?",
              "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
             ("Who writes this wiki?",

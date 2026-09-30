@@ -14,6 +14,15 @@ const SAMPLES = {
   substitution: "Zit egxfeos gy Ctfoet iql rtekttr ziqz qss dtkeiqfz ctlltsl dxlz hqn zit ftv iqkwgxk zqb wtygkt tfztkofu zit squggf Dttz dt wtiofr zit gsr sowkqkn qyztk lxfltz qfr rg fgz ztss qfngft qwgxz ziol dtllqut xfrtk qfn eokexdlzqfetl",
   layered: "NDY3OTc5NjY2ODcwMjA3OTZkNmEyMDczNzQ3Nzc5NmQ2YTc3NzMyMDZjNjY3OTZhMjA2Njc5MjA2OTY2NjI3MzIwNjY3MzY5MjA2Nzc3NmU3MzZjMjA2YTYxNmE3NzY0MjA2NjYxNjY2ZTcxNjY2NzcxNmEyMDc4NzQ3MTY5NmU2YTc3MjA2MjZlNzk2ZDIwNjQ3NDdhMjA2NzZhNjg2NjdhNzg2YTIwNzk2ZDZhMjA2YTczNmE3MjY0MjA2ZTc4MjA2MjY2NmU3OTZlNzM2YzIwNzk2ZDZhNzc2YQ==",
   morse: ".... . .-.. .-.. --- / - .... . .-. . / .. / .- -- / .-- .- .. - .. -. --. / ..-. --- .-. / -.-- --- ..-",
+  // The periodic family, each ciphertext produced by the reference Python
+  // implementation (see build_pages.py: the worked examples and these demos
+  // describe the same code the full solver runs).
+  beaufort: "Otn uodqtga pocydj ztihrwpny kznqc rmzddhyktbo wdizxd bd hnpuad qdcdol bkd pjvhbktgzx nqmtjn ogokovrqd",
+  variant_beaufort: "Ndn uaelebcn eyynwvrx bassu mqydlvyo njees pqirfxwh khvfa cve ecrnf sguunr pnmojplr zka hhr vwauef",
+  porta: "Auy rppoppsl olbt ipgrrl ecfar ond jxpkwej oa u uxgnrk bwwa ah arqiyum rfbyx mtww shm peigowc yxamccc",
+  gronsfeld: "Gjwqfwdl gwrn xij qpvumhsr pzwqsty wii stde vfrdjrt npqetxdcpf zqumm ykf wqwlok umdx eswlwit blul umh cmsiv",
+  trithemius: "Rwwrfvmpiyk tqnk vbweumr jaa znuplpvn lnh ycqe so y umto fe mdzv sw wsknbr nknbh aoq oipqurhqq htz wcea",
+  autokey: "Jbi uhpcgsc siyvg vcrh ckl msgkmlhqbuvrut delznvi lzbc a diu baht xitxy ogpi migsnviu miweej",
 };
 
 function esc(s) {

@@ -53,10 +53,16 @@ def wiki_slug(name: str) -> str:
 #: What the compact browser solver on every page can break by itself. Used for
 #: an honest category and infobox row: a visitor should be able to tell, from
 #: the article alone, whether to press the button or install the full tool.
+#: The periodic family (Beaufort, Variant Beaufort, Porta, Gronsfeld,
+#: Trithemius, autokey) rides the browser's coset-index-of-coincidence attack;
+#: Gronsfeld and Variant Beaufort are reported as Vigenere with the equivalent
+#: digit/negated key, which is the honest answer -- those ciphertexts *are*
+#: Vigenere ciphertexts.
 BROWSER_BREAKABLE = {
-    "caesar", "rot13", "atbash", "affine", "vigenere", "substitution",
-    "rail_fence", "xor_single", "base64", "base16", "binary", "decimal_ascii",
-    "morse", "reverse",
+    "caesar", "rot13", "atbash", "affine", "vigenere", "beaufort",
+    "variant_beaufort", "porta", "gronsfeld", "trithemius", "autokey",
+    "substitution", "rail_fence", "xor_single", "base64", "base16", "binary",
+    "decimal_ascii", "morse", "reverse",
 }
 
 #: Which preloaded sample fits each family, so an article about a Vigenere-type
@@ -71,6 +77,13 @@ FAMILY_PRESETS = {
     "xor": "layered",
     "code": "morse",
     "encoding": "layered",
+}
+
+#: Ciphers whose article preloads the solver with a puzzle in that same
+#: cipher rather than a generic family sample -- possible exactly when the
+#: browser build can break it and app.js carries a demo ciphertext for it.
+OWN_SOLVER_SAMPLES = {
+    "beaufort", "variant_beaufort", "porta", "gronsfeld", "trithemius", "autokey",
 }
 
 SAMPLE_PLAINTEXT = "MEET ME BY THE OLD CLOCK TOWER AT DAWN"
@@ -713,7 +726,7 @@ def cipher_page_specs() -> list[dict]:
             "desc": _meta_description(info.title, info.description),
             "h1": info.title,
             "tagline": notes.get("how", info.description)[:150],
-            "preset": FAMILY_PRESETS.get(family, "caesar"),
+            "preset": info.name if info.name in OWN_SOLVER_SAMPLES else FAMILY_PRESETS.get(family, "caesar"),
             "faqs": [
                 (f"How is the {info.title} broken?",
                  notes.get("breaking", info.description)),
