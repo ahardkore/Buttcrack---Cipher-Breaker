@@ -65,8 +65,11 @@
               <select id="depth">
                 <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="3" selected>3</option>
+                <option value="3">3</option>
                 <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6" selected>6</option>
+                <option value="8">8</option>
               </select>
             </label>
             <label class="check"><input type="checkbox" id="exhaustive"> exhaustive (ignore budget caps)</label>
@@ -273,7 +276,7 @@
             pick one, or let Auto-detect probe all six.</li>
           <li>Encodings and codes — base64/32/16/58/85, binary, URL, Morse, A1Z26, Polybius, Bacon, book ciphers.</li>
           <li>Byte-level XOR — single byte and repeating key, over hex or base64 payloads.</li>
-          <li>Stacks of the above, in any order, up to the configured depth.</li>
+          <li>Stacks of the above, in any order, up to the configured depth (six by default) — encodings wrapped around ciphers, and ciphers wrapped around ciphers.</li>
         </ul>
 
         <h2>How it is built</h2>

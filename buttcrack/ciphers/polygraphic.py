@@ -698,3 +698,345 @@ def _bifid_worker(payload: tuple) -> tuple:
         max_evals=max_evals,
     )
     return "".join(grid), conf, fit
+
+
+class FourSquare(Cipher):
+    """Four-square (Delastelle): digraphs read across two keyed grids.
+
+    Four 5x5 grids are laid out in a square.  The two on the diagonal hold the
+    plain alphabet, the other two hold keyed alphabets.  A plaintext pair is
+    located in the plain grids -- first letter top-left, second bottom-right --
+    and the ciphertext is read from the *opposite corners* of the rectangle
+    they make, one letter from each keyed grid.
+
+    It fixes Playfair's two embarrassments: a doubled letter needs no padding,
+    and no pair ever encrypts to itself reversed.  The cost is twice the key:
+    fifty cells instead of twenty-five, which is also why the search here is
+    marked experimental in the same way Playfair's is.  With either keyword
+    supplied as a hint the other half is a much smaller problem.
+    """
+
+    info = CipherInfo(
+        name="four_square",
+        title="Four-square",
+        family=Family.POLYGRAPHIC,
+        key_type="two keywords",
+        keyspace=None,
+        deterministic=False,
+        min_length=60,
+        cost=BRUTAL,
+        alphabet=A25,
+        aliases=("foursquare", "four_square_cipher"),
+        description="Digraph substitution across two keyed 5x5 grids. No padding and no reversible pairs, unlike Playfair.",
+        example_key={"top": "EXAMPLE", "bottom": "KEYWORD"},
+    )
+
+    # -- key handling ------------------------------------------------------- #
+    @staticmethod
+    def _grids(key: Any) -> tuple[str, str]:
+        """Normalise a key into the two *keyed* grids (top-right, bottom-left)."""
+        if isinstance(key, dict):
+            top = key.get("top") or key.get("first") or key.get("key") or ""
+            bottom = key.get("bottom") or key.get("second") or ""
+        elif isinstance(key, (tuple, list)) and len(key) >= 2:
+            top, bottom = key[0], key[1]
+        else:
+            text = str(key or "")
+            # One keyword is a legitimate (weaker) key: both grids share it.
+            top = bottom = text
+        first = top if len(set(str(top))) == 25 else make_grid(str(top))
+        second = bottom if len(set(str(bottom))) == 25 else make_grid(str(bottom))
+        return first, second
+
+    def prepare(self, text: str) -> str:
+        return prepare_playfair(text)
+
+    @staticmethod
+    def _pairs(stream: str) -> list[tuple[str, str]]:
+        if len(stream) % 2:
+            stream += "X"
+        return [(stream[i], stream[i + 1]) for i in range(0, len(stream), 2)]
+
+    # -- transforms --------------------------------------------------------- #
+    def _apply(self, stream: str, top: str, bottom: str, decrypt: bool) -> str:
+        plain_pos = {ch: divmod(i, 5) for i, ch in enumerate(A25)}
+        out: list[str] = []
+        if decrypt:
+            top_pos = {ch: divmod(i, 5) for i, ch in enumerate(top)}
+            bottom_pos = {ch: divmod(i, 5) for i, ch in enumerate(bottom)}
+            for a, b in self._pairs(stream):
+                r1, c2 = top_pos.get(a, (0, 0))
+                r2, c1 = bottom_pos.get(b, (0, 0))
+                out.append(A25[r1 * 5 + c1])
+                out.append(A25[r2 * 5 + c2])
+        else:
+            for a, b in self._pairs(stream):
+                r1, c1 = plain_pos.get(a, (0, 0))
+                r2, c2 = plain_pos.get(b, (0, 0))
+                out.append(top[r1 * 5 + c2])
+                out.append(bottom[r2 * 5 + c1])
+        return "".join(out)
+
+    def encrypt(self, plaintext: str, key: Any = None) -> str:
+        top, bottom = self._grids(key or self.info.example_key)
+        return self._apply(self.prepare(plaintext), top, bottom, decrypt=False)
+
+    def decrypt(self, ciphertext: str, key: Any = None) -> str:
+        top, bottom = self._grids(key or self.info.example_key)
+        return self._apply(self.prepare(ciphertext), top, bottom, decrypt=True)
+
+    # -- cryptanalysis ------------------------------------------------------ #
+    def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
+        stream = self.prepare(ciphertext)
+        if len(stream) < self.info.min_length:
+            return
+        hint = ctx.hints.get("key")
+        if hint:
+            top, bottom = self._grids(hint)
+            yield ctx.candidate(
+                self.name,
+                self._apply(stream, top, bottom, decrypt=True),
+                {"top": top, "bottom": bottom},
+                steps=ctx.steps,
+                columns=50,
+                method="hint",
+            )
+            return
+
+        rng = random.Random(ctx.hints.get("seed", 90210))
+        best_grids: tuple[str, str] | None = None
+        best_fit = float("-inf")
+        # Fifty cells is twice Playfair's key and the basin of attraction is
+        # correspondingly narrower, so this is a bounded, honest attempt rather
+        # than a promise: alternate climbs on one grid while the other is held,
+        # which at least makes each step's effect on the fitness legible.
+        while not ctx.expired() and ctx.remaining() > 0.5:
+            top = "".join(rng.sample(A25, 25))
+            bottom = "".join(rng.sample(A25, 25))
+            fit = ctx.model.search_fitness(self._apply(stream, top, bottom, decrypt=True))
+            improved = True
+            while improved and not ctx.expired():
+                improved = False
+                for which in (0, 1):
+                    grid = list(top if which == 0 else bottom)
+                    for i in range(25):
+                        for j in range(i + 1, 25):
+                            if ctx.expired():
+                                break
+                            grid[i], grid[j] = grid[j], grid[i]
+                            candidate_top = "".join(grid) if which == 0 else top
+                            candidate_bottom = bottom if which == 0 else "".join(grid)
+                            trial = ctx.model.search_fitness(
+                                self._apply(stream, candidate_top, candidate_bottom, decrypt=True)
+                            )
+                            if trial > fit + 1e-9:
+                                fit, improved = trial, True
+                                top, bottom = candidate_top, candidate_bottom
+                            else:
+                                grid[i], grid[j] = grid[j], grid[i]
+            if fit > best_fit:
+                best_fit, best_grids = fit, (top, bottom)
+        if best_grids is None:
+            return
+        top, bottom = best_grids
+        yield ctx.candidate(
+            self.name,
+            self._apply(stream, top, bottom, decrypt=True),
+            {"top": top, "bottom": bottom},
+            steps=ctx.steps,
+            columns=50,
+            method="alternating grid hill climbing (experimental: 50 cells)",
+        )
+
+    def likelihood(self, text: str, ctx: CrackContext) -> float:
+        stream = self.prepare(text)
+        if len(stream) < self.info.min_length:
+            return 0.0
+        ic = index_of_coincidence(stream)
+        # Digraphic substitution flattens single-letter statistics part way --
+        # less than a polyalphabetic, more than a simple substitution -- and an
+        # even length is a weak corroboration.
+        flat = max(0.0, min(1.0, (0.062 - ic) / 0.020))
+        return round(0.45 * flat * (1.0 if len(stream) % 2 == 0 else 0.7), 4)
+
+
+#: The trifid alphabet: 26 letters plus one filler to fill the 27 cells of a
+#: 3x3x3 cube.  A full stop is the traditional choice and stays out of the way
+#: of the plaintext.
+A27 = A26 + "."
+
+
+class Trifid(Cipher):
+    """Trifid (Delastelle, 1902): Bifid in three dimensions.
+
+    Each letter becomes three coordinates in a 3x3x3 cube instead of two in a
+    5x5 square.  Within each block of ``period`` letters the three coordinate
+    rows are written out one after another and re-read in threes, so every
+    output letter depends on three input letters rather than two -- the
+    strongest fractionation in this collection.
+
+    The attack is the same shape as Bifid's, and so are its limits: the period
+    and the 27-cell cube have to be recovered together, which is a hill climb
+    per period, and it is marked experimental for the same honest reason.
+    """
+
+    info = CipherInfo(
+        name="trifid",
+        title="Trifid",
+        family=Family.POLYGRAPHIC,
+        key_type="keyword + period",
+        keyspace=None,
+        deterministic=False,
+        min_length=90,
+        cost=BRUTAL,
+        alphabet=A27,
+        aliases=("trifid_cipher", "delastelle"),
+        description="Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver.",
+        example_key={"key": "TRIFID", "period": 5},
+    )
+    max_period = 12
+
+    def prepare(self, text: str) -> str:
+        """Keep the cube's alphabet, full stop included.
+
+        The filler is a real symbol of this cipher: the cube has 27 cells and
+        a 26-letter message will produce ``.`` in the ciphertext whenever the
+        fractionation lands there.  Stripping it -- which a letters-only
+        prepare does -- silently deletes a character and every block after it
+        decrypts one position out.
+        """
+        return "".join(c for c in text.upper() if c in A27)
+
+    def _params(self, key: Any) -> tuple[str, int]:
+        if isinstance(key, dict):
+            return make_grid(str(key.get("key", "")), A27), int(key.get("period", 5))
+        if isinstance(key, (tuple, list)):
+            return make_grid(str(key[0]), A27), int(key[1])
+        return make_grid(str(key), A27), 5
+
+    def encrypt(self, plaintext: str, key: Any = None) -> str:
+        cube, period = self._params(key or self.info.example_key)
+        stream = self.prepare(plaintext)
+        pos = {ch: i for i, ch in enumerate(cube)}
+        out: list[str] = []
+        for start in range(0, len(stream), period):
+            block = stream[start : start + period]
+            triples = [divmod(pos.get(c, 0), 9) for c in block]
+            layers = [t[0] for t in triples]
+            rows = [divmod(t[1], 3)[0] for t in triples]
+            cols = [t[1] % 3 for t in triples]
+            digits = layers + rows + cols
+            for i in range(0, len(digits) - 2, 3):
+                out.append(cube[digits[i] * 9 + digits[i + 1] * 3 + digits[i + 2]])
+        return "".join(out)
+
+    def decrypt(self, ciphertext: str, key: Any = None) -> str:
+        cube, period = self._params(key or self.info.example_key)
+        return self._decrypt_cube(self.prepare(ciphertext), cube, period)
+
+    def _decrypt_cube(self, stream: str, cube: str, period: int) -> str:
+        """Decrypt against an already-built cube (the hill climber's entry point)."""
+        pos = {ch: i for i, ch in enumerate(cube)}
+        out: list[str] = []
+        for start in range(0, len(stream), period):
+            block = stream[start : start + period]
+            digits: list[int] = []
+            for ch in block:
+                layer, rest = divmod(pos.get(ch, 0), 9)
+                digits.extend((layer, rest // 3, rest % 3))
+            third = len(digits) // 3
+            layers = digits[:third]
+            rows = digits[third : 2 * third]
+            cols = digits[2 * third :]
+            for i in range(third):
+                out.append(cube[layers[i] * 9 + rows[i] * 3 + cols[i]])
+        return "".join(out)
+
+    def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
+        stream = self.prepare(ciphertext)
+        if len(stream) < self.info.min_length:
+            return
+        hint = ctx.hints.get("key")
+        hint_period = ctx.hints.get("period")
+        if isinstance(hint, dict):
+            hint_period = hint.get("period", hint_period)
+            hint = hint.get("key") or hint.get("cube")
+        if hint:
+            text = str(hint)
+            cube = text if len(set(text)) == 27 else make_grid(text, A27)
+            periods = [int(hint_period)] if hint_period else list(range(2, self.max_period + 1))
+            for period in periods:
+                yield ctx.candidate(
+                    self.name,
+                    self._decrypt_cube(stream, cube, period),
+                    {"key": cube, "period": period},
+                    steps=ctx.steps,
+                    columns=27,
+                    period=period,
+                    method="hint",
+                )
+            return
+
+        results: list[Candidate] = []
+        for period in range(2, self.max_period + 1):
+            if ctx.expired() or ctx.remaining() < 1.5:
+                break
+            if len(stream) < period * 9:
+                continue
+            payloads = [
+                (
+                    stream,
+                    6 if len(stream) < 300 else 3,
+                    (ctx.hints.get("seed", 11) + i * 31 + period) % (2**31 - 1),
+                    period,
+                    2000,
+                    ctx.model.language,
+                )
+                for i in range(max(1, min(ctx.workers, 2)))
+            ]
+            found = [f for f in parallel_restarts(_trifid_worker, payloads, len(payloads), ctx.deadline) if f]
+            if not found:
+                continue
+            found.sort(key=lambda f: -f[1])
+            cube = found[0][0]
+            results.append(
+                ctx.candidate(
+                    self.name,
+                    self._decrypt_cube(stream, cube, period),
+                    {"key": cube, "period": period},
+                    steps=ctx.steps,
+                    columns=27,
+                    period=period,
+                    method="cube hill climbing per period (experimental)",
+                )
+            )
+        results.sort(key=Candidate.sort_key)
+        yield from results
+
+    def likelihood(self, text: str, ctx: CrackContext) -> float:
+        stream = self.prepare(text)
+        if len(stream) < 80:
+            return 0.0
+        ic = index_of_coincidence(stream)
+        ic_fit = max(0.0, min(1.0, (0.062 - ic) / (0.062 - 0.038)))
+        fit = ctx.model.ngram_score(stream)
+        unreadable = max(0.0, min(1.0, (-5.0 - fit) / 2.0))
+        return round(0.45 * ic_fit * unreadable, 4)
+
+
+def _trifid_worker(payload: tuple) -> tuple:
+    stream, restarts, seed, period, max_evals, language = payload
+    model = get_model(language)
+    rng = random.Random(seed)
+    trifid = Trifid()
+    cube, _plain, fit, conf, _evals, _used = restart_search(
+        stream,
+        fitness=model.search_fitness,
+        confidence=lambda t: model.score(t).confidence,
+        apply_key=lambda text, key: trifid._decrypt_cube(text, "".join(key), period),
+        restarts=restarts,
+        rng=rng,
+        alphabet=A27,
+        max_evals=max_evals,
+    )
+    return "".join(cube), conf, fit

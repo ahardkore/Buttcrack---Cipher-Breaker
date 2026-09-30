@@ -41,6 +41,9 @@ KRYPTOS_DIR = "kryptos"
 EXCLUDE_NAMES = {
     "build_pages.py",
     "build_model.py",
+    "set_payment_links.py",
+    "wiki_ciphers.py",
+    "wiki_history.py",
     "test.js",
     "site.json",
     "__pycache__",

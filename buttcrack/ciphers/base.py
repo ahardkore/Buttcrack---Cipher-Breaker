@@ -120,7 +120,7 @@ class CrackContext:
     """Decoding chain already applied to reach this text (outermost first)."""
     progress: Callable[[str, float, dict], None] | None = None
     depth: int = 0
-    max_depth: int = 4
+    max_depth: int = 6
     exhaustive: bool = False
     """When True, attacks enumerate whole keyspaces even if usually pruned."""
 
@@ -220,17 +220,22 @@ class CrackContext:
         a key of that size: an 88-bit mixed alphabet cannot be recovered from 40
         letters, so a candidate that claims otherwise is overfitting, not solving.
         ``columns`` is the period of a periodic cipher, which adds the sharper
-        letters-per-column rule (see :func:`evidence_shortfall`).
+        letters-per-column rule (see :func:`evidence_shortfall`).  The decode
+        chain counts too: every cipher step the search chose is freedom it had
+        to fit the text with, so a three-step chain has to explain more letters
+        than a one-step answer before it is believed.
         """
+        chain = tuple(steps if steps is not None else self.steps)
         s = self.model.score(plaintext, with_words=with_words)
         confidence = s.confidence
-        bits, letters = evidence_shortfall(plaintext, key, columns=columns)
+        bits, letters = evidence_shortfall(plaintext, key, columns=columns, steps=chain)
         if bits and confidence > EVIDENCE_CAP:
             confidence = EVIDENCE_CAP
             notes.setdefault(
                 "evidence",
-                f"{letters} letters is not enough to pin down a {bits:.0f}-bit key; "
-                "plausible but unproven",
+                f"{letters} letters is not enough to pin down a {bits:.0f}-bit key"
+                + (f" across a {len(chain)}-step chain" if len(chain) > 1 else "")
+                + "; plausible but unproven",
             )
         return Candidate(
             plaintext=plaintext,
@@ -239,7 +244,7 @@ class CrackContext:
             confidence=confidence,
             fitness=s.fitness,
             score=s,
-            steps=tuple(steps if steps is not None else self.steps),
+            steps=chain,
             notes=notes,
         )
 
