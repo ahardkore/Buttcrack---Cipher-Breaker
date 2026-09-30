@@ -222,3 +222,30 @@ Deeper "wheel entries copied from scattered book passages" recipes are not
 testable without an author-stated recipe — offsets × segmentations explode
 and any "hit" would be unfalsifiable. If an OCR'd/text-layer version of
 "de_diversis" becomes available it can run through both harnesses unchanged.
+
+### Follow-up: de_diversis / theory_practice identification and surrogate test
+
+Page images extracted by hand (PDFs are pure scans): `de_diversis.pdf` is
+**C. R. Dodwell's bilingual edition, *The Various Arts = De diversis artibus*
+(Oxford Medieval Texts, Nelson 1961 / OUP 1986)** — Latin left, English
+right — and `theory_practice.pdf` is the Gearhart monograph (2017), whose
+prose is an expanded revision of the dissertation already screened null.
+Neither PDF carries a usable text layer (the "BT" strings turn out to be
+random bytes inside JPEG streams; the 2,732 letters in the monograph are
+front matter). No OCR tooling or network exists in the sandbox, and
+Dodwell's exact translation is not openly available online (in copyright;
+not on archive.org), so the exact 1961 wording cannot be machine-tested.
+
+What *could* be tested exactly: the public-domain 1847 Hendrie edition of
+the same treatise (Latin facing English), OCR pulled from archive.org in a
+41,346-letter contiguous slab (Book I ch. 30–40 + translator's notes +
+Book II table of contents, prologue, and ch. 1–6). Both calibrated
+harnesses re-proved themselves on this corpus first — annihilator scan:
+planted window recovered 86/86 constraints at the exact offset; running-key
+drag: planted key recovered at the exact offset, −4.0505 vs. second-best
+−7.9043. Real results: **PK8/PK10 × both alphabets, annihilator scan 0 hits
+≥ 12 (top partial runs 4–5, noise floor); running-key drag best −8.03 to
+−8.59 with negligible margins — 8/8 null.** Hendrie's Latin is an
+independent collation of the same medieval text, so this additionally
+screens "the treatise text itself, as circulated in print" for the sampled
+sections — but it does **not** fully decide the Dodwell translation.
