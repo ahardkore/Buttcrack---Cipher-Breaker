@@ -44,6 +44,15 @@ LOSSY: dict[str, str] = {
     "bacon_case": "merges U/V and I/J in the 5-bit alphabet",
 }
 
+#: Ciphers that pad the final block, so a round trip hands back the padding as
+#: well as the message.  This is not the same kind of loss as a merged letter
+#: pair -- nothing inside the text is destroyed -- so these keep the strict
+#: letter-for-letter comparison everywhere except the trailing pad.
+PADDED: dict[str, str] = {
+    "hill": "pads the last block to n letters with X",
+    "keyed_hill": "pads the last block to n letters with X",
+}
+
 #: Text used for the break checks: long enough for honest statistics, and full of
 #: common English structure so a correct solve is unmistakable.
 PROSE = (
@@ -271,8 +280,14 @@ def check_round_trips(report: SelfTestReport, verbose: bool) -> None:
                 ok = got == expected or _lossy_match(name, expected, got)
                 detail = f"lossy by design: {LOSSY[name]}"
             else:
-                ok = letters_only(back) == letters_only(cipher.prepare(PROSE))
-                detail = "" if ok else f"got {letters_only(back)[:48]!r}"
+                expected = letters_only(cipher.prepare(PROSE))
+                got = letters_only(back)
+                ok, detail = got == expected, ""
+                if not ok and name in PADDED:
+                    ok = got.rstrip("X") == expected.rstrip("X")
+                    detail = f"block padding: {PADDED[name]}" if ok else ""
+                if not ok:
+                    detail = f"got {got[:48]!r}"
         except Exception as error:
             ok, detail = False, f"{type(error).__name__}: {error}"
         if not ok and verbose:
@@ -339,6 +354,16 @@ QUICK_BREAKS: tuple[tuple[str, str, Any, str, float, str | None], ...] = (
     ("Myszkowski transposition", "myszkowski", "TOMATO", PROSE, 20.0, "myszkowski"),
     ("AMSCO transposition", "amsco", "ZEBRA", PROSE, 20.0, "amsco"),
     ("Hill cipher (2x2)", "hill", "HILL", PROSE, 20.0, "hill"),
+    # Hill's linear algebra done in a keyed alphabet's index space, behind a
+    # period-6 Quagmire III -- the Paradigm Kryptos PK7 construction.
+    (
+        "keyed Hill (3x3) behind Quagmire III",
+        "keyed_hill",
+        {"matrix": "ALCHEMIST", "key": "ANNEAL", "alphabet": "kryptos"},
+        LONG_PROSE,
+        25.0,
+        "keyed_hill",
+    ),
     ("Morse code", "morse", None, PROSE, 15.0, "morse"),
     ("A1Z26", "a1z26", None, PROSE, 15.0, "a1z26"),
     ("Polybius square", "polybius", None, PROSE, 15.0, None),
@@ -463,6 +488,10 @@ def _fold_lossy(name: str, text: str) -> str:
         out = out.replace("J", "I").replace("V", "U")
         if name == "playfair":
             out = out.replace("X", "")
+    if name in PADDED:
+        # Only the trailing pad is forgiven; the message itself still has to
+        # come back letter for letter.
+        out = out.rstrip("X")
     return out
 
 

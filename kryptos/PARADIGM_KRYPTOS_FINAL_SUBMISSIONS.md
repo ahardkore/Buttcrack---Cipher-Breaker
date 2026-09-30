@@ -19,7 +19,7 @@
 | **PK4** | 224 | Columnar Transposition ($28 \times 8$) + Quagmire III | **SOLVED** | Official Plaintext Verified |
 | **PK5** | 272 | Columnar Transposition ($17 \times 16$) + Quagmire III | **SOLVED** | Official Plaintext Verified |
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Official Plaintext Verified |
-| **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Official Plaintext Verified |
+| **PK7** | 279 | Quagmire III ($p_6$, `ANNEAL`) then Hill $3 \times 3$ (`ALCHEMIST`), keyed alphabet | **SOLVED** | Official Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
 | **PK9** | 144 | Two-Stage Double Columnar + Keystream $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
 | **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |
@@ -82,14 +82,14 @@
   ```
 - **SHA256**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`
 
-### PK7: The Glowing White Hearth ($N = 279$)
-- **Cipher Mechanism**: Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix over $\mathbb{Z}_{26}$
-- **Key**: Period 6 + $3 \times 3$ Invertible Matrix
+### PK7: Three Weeks In ($N = 279$)
+- **Cipher Mechanism**: Quagmire III ($p_6$, keyword `ANNEAL`) then Hill $3 \times 3$ (matrix `ALCHEMIST`), both over the KRYPTOS alphabet
+- **Key**: Quagmire III keyword `ANNEAL` (period 6); Hill matrix `ALCHEMIST` $= [[7,17,9],[14,11,18],[15,6,4]]$ over the KRYPTOS alphabet, $\det = 17$
 - **Plaintext ($N = 279$)**:
   ```text
-  HEPOINTEDTOTHEHEARTHANDSAIDTHATTHEWORKCOULDONLYBEGINWHENTHEFIREREACHEDITSPROPERHEATWITHLONGTONGSHEHELDTHESTEELINTOCOALSTHATGLOWEDWHITEINTHEBELLOWSWARNINGMETHATONEMOMENTOFTEMPERINGCANDESTROYYEARSOFLABOURFORONLYANIRONPIECEPURIFIEDNINEDAYSINTHEFLAMEWILLHOLDAFINEENOUGHEDGETOBEFORGED
+  THREEWEEKSINWERISEBEFORETHESUNANDEACHNEEDLEISDONEBYNOONTHEWHITESMITHSHOWSMEHISTECHNIQUEFORPURIFYINGHISMETALBEFOREDRAWINGITINTOAFINEWIREHEHASMEREPEATTHESAMESTEPFOURTIMESWITHSLIGHTVARIATIONSSTILLMYHANDFALTERSIAMPATIENTBUTIKNOWTHISISNOTMYCALLINGIHAVEMADEPEACEWITHITANDWILLGOHOMESOON
   ```
-- **SHA256**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`
+- **SHA256**: `0147da64672740a2495a346c8b002051ae99193f7f20e9e1568265c3887525c3`
 
 ---
 

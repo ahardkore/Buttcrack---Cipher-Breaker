@@ -26,7 +26,7 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 | **PK4** | 224 | Transposition ($28 \times 8$) + Quagmire III ($p_{45}$) | **SOLVED** | Verbatim Plaintext Verified |
 | **PK5** | 272 | Transposition ($17 \times 16$) + Quagmire III ($p_{17}$) | **SOLVED** | Verbatim Plaintext Verified |
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Verbatim Plaintext Verified |
-| **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
+| **PK7** | 279 | Quagmire III ($p_6$, `ANNEAL`) then Hill $3 \times 3$ (`ALCHEMIST`), keyed alphabet | **SOLVED** | Verbatim Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
 | **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
 | **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |

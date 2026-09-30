@@ -19,7 +19,7 @@
 | **PK4** | 224 | Columnar Transposition + Substitution | **SOLVED** | Official Plaintext Verified |
 | **PK5** | 272 | Polyalphabetic Quagmire IV | **SOLVED** | Official Plaintext Verified |
 | **PK6** | 315 | Double Columnar Transposition | **SOLVED** | Official Plaintext Verified |
-| **PK7** | 279 | Periodic Autokey / Mixed Quagmire | **SOLVED** | Official Plaintext Verified |
+| **PK7** | 279 | Quagmire III ($p_6$, `ANNEAL`) then Hill $3\times3$ (`ALCHEMIST`), keyed alphabet | **SOLVED** | Official Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
 | **PK9** | 144 | Two-Stage Double Columnar + Keystream $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
 | **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |

@@ -1,6 +1,6 @@
 # The cipher table
 
-50 ciphers, codes and encodings behind one interface. Each entry has its own
+51 ciphers, codes and encodings behind one interface. Each entry has its own
 attack — the interface exists so the engine can schedule, budget and report them
 uniformly, not so they can share a brute-force loop.
 
@@ -65,6 +65,7 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | `bifid`<br>Bifid | keyword + period<br>example `key=MONARCHY, period=7` | unbounded | brutal | 80 | Each letter becomes (row, column); the coordinates are recombined within a period. Experimental solver. |
 | `four_square`<br>Four-square | two keywords<br>example `{'top': 'EXAMPLE', 'bottom': 'KEYWORD'}` | unbounded | brutal | 60 | Digraph substitution across two keyed 5x5 grids. No padding and no reversible pairs, unlike Playfair. |
 | `hill`<br>Hill cipher (matrix) | matrix or keyword (n*n letters)<br>example `HILL` | unbounded | expensive | 40 | Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately. |
+| `keyed_hill`<br>Hill over a keyed alphabet (+ Quagmire III) | matrix + keyword + alphabet<br>example `{'matrix': 'ALCHEMIST', 'key': 'ANNEAL', 'alphabet': 'kryptos'}` | unbounded | expensive | 72 | Hill blocks over a keyed (KRYPTOS-style) alphabet, optionally behind a Quagmire III keyword. Broken by phase-split row separation: one chi-squared histogram per row per phase, then quadgram assembly and key polish. |
 | `playfair`<br>Playfair | keyword (5x5 grid)<br>example `MONARCHY` | unbounded | expensive | 50 | Digraph substitution on a 5x5 keyed grid. Solved by hill climbing the grid on quadgram fitness. |
 | `trifid`<br>Trifid | keyword + period<br>example `{'key': 'TRIFID', 'period': 5}` | unbounded | brutal | 90 | Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver. |
 

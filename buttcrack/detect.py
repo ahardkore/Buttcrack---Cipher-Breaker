@@ -18,6 +18,7 @@ polyalphabetic ciphers before a single key is tried.
 
 from __future__ import annotations
 
+import math
 import re
 import string
 from dataclasses import dataclass, field
@@ -211,6 +212,49 @@ def _playfair_tells(text: str) -> tuple[float, str]:
         score += 0.25 * min(1.0, len(stream) / 150.0)
         reasons.append(f"IC {ic:.4f} is flatter than monoalphabetic")
     return min(1.0, score), "; ".join(reasons)
+
+
+def _block_repeat_tells(text: str, sizes: tuple[int, ...] = (3, 2)) -> tuple[float, int, str]:
+    """Look for repeats that line up on a block grid.
+
+    A polygraphic *block* cipher -- Hill, or a Hill behind a Quagmire -- leaks
+    one thing however flat its letter statistics are: equal plaintext blocks
+    encrypt to equal ciphertext blocks, and those repeats can only start on a
+    multiple of the block size.  Counting repeated blocks *on the grid* against
+    the number chance would give (``C(blocks, 2) / 26**n``) separates a block
+    cipher from a stream cipher or a long-period Vigenere, neither of which has
+    a grid to line up on.
+
+    Returns ``(score, block_size, reason)``.  The score is a rough sigma count
+    on the Poisson excess, capped into 0..1; it is evidence for ordering
+    attacks, not proof, because a periodic cipher whose period is a multiple of
+    ``n`` produces some aligned repeats too.
+    """
+    stream = letters_only(text)
+    best: tuple[float, int, str] = (0.0, 0, "")
+    for size in sizes:
+        count = len(stream) // size
+        if count < 24:
+            continue
+        seen: dict[str, int] = {}
+        for i in range(0, count * size, size):
+            block = stream[i : i + size]
+            seen[block] = seen.get(block, 0) + 1
+        pairs = sum(v * (v - 1) // 2 for v in seen.values())
+        expected = count * (count - 1) / 2 / (26.0**size)
+        if pairs <= expected:
+            continue
+        sigma = (pairs - expected) / (2 * math.sqrt(expected) + 1.0)
+        score = min(1.0, sigma / 2.0)
+        repeated = sorted((b for b, v in seen.items() if v > 1), key=lambda b: -seen[b])
+        reason = (
+            f"{pairs} repeated pair(s) of {size}-letter blocks land on the block grid "
+            f"({', '.join(repeated[:3])}{'...' if len(repeated) > 3 else ''}) where "
+            f"{expected:.2f} would be chance -- the signature of a polygraphic block cipher"
+        )
+        if score > best[0]:
+            best = (score, size, reason)
+    return best
 
 
 def _url_evidence(stripped: str) -> tuple[float, str]:
@@ -582,6 +626,20 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
                         f"IC {ic:.4f} is low for a monoalphabetic cipher, but at {len(stream)} letters IC is noisy",
                     )
                     add_stat("playfair", round(0.15 + 0.2 * weight, 2), "a polygraphic cipher flattens IC the same way")
+                    # Flat IC says "not monoalphabetic" and nothing more.  The
+                    # block grid says *which* kind of flat: repeats that can
+                    # only start on a multiple of n are a block cipher's
+                    # fingerprint, and they are the one statistic that survives
+                    # a keyed alphabet (relabelling letters cannot move a
+                    # repeat off the grid).
+                    block_score, block_size, block_reason = _block_repeat_tells(stream)
+                    if block_score >= 0.5 and len(stream) % block_size == 0:
+                        add_stat("hill", round(0.35 + 0.5 * block_score, 2), block_reason)
+                        add_stat(
+                            "keyed_hill",
+                            round(0.3 + 0.5 * block_score, 2),
+                            block_reason + "; the keyed-alphabet variant covers Kryptos-style constructions",
+                        )
 
     # 3. Fall back to each cipher's own likelihood estimate.
     if not out:
