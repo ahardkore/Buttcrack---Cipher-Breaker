@@ -50,14 +50,17 @@ SOLVED  confidence 1.00  in 0.32s
 
 ## 🏛️ Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
 
-This repository houses the complete, publication-grade cryptanalytic research, proofs, and reproducible verification suite for **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**:
+This repository holds cryptanalytic notes, ciphertexts and records for **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos CTF (PK1–PK10)**.
+
+> **Audited 2026-09-30.** Every stored record was re-checked against its ciphertext. Five of the ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5 keep their plaintext but lose their key claim; PK8, PK9 and PK10 are **unsolved**, and the PK8 "solution" previously stored here is not English (−6.43 log10/char). Much of the prose in `kryptos/` was written before that check and overstates its case — read [`kryptos/AUDIT.md`](kryptos/AUDIT.md) first, and verify anything you rely on with `python3 kryptos/verify_pk_records.py`.
 
 * 📖 **The Kryptos Decryption Manuscript**: 8 exhaustive chapters covering classical ciphers, polyalphabetic sum-clocks, coordinate geometry, and the 36-year sculpture history. See [`kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md).
 * 📑 **Executive Cryptanalytic Brief**: High-density executive summary on final cryptanalytic verdicts and open frontier guidance. See [`kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md).
-* 🗄️ **Master Solutions Manifest**: Verbatim plaintexts, SHA256 checksums, and mathematical keys for PK1–PK10. See [`kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
-* 🗺️ **Dual-Cipher GPS Sculpture Theorem**: Definitive mathematical proof that PK9 and PK10 padding nulls encode the exact coordinates of Jim Sanborn's CIA Kryptos sculpture ($38^\circ 57' 6'' \text{ N}, 77^\circ 8' 44'' \text{ W}$). See [`kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`](kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg).
+* ✅ **Record verification**: `python3 kryptos/verify_pk_records.py` re-encrypts each stored plaintext under the key its record names and compares the result with the published ciphertext. It is the only claim in this directory that is checked mechanically, and CI enforces it.
+* 🗄️ **Solutions manifest**: plaintexts, checksums and keys for PK1–PK7, each carrying its audit verdict. See [`kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
+* 🗺️ **"Dual-Cipher GPS" numerology** (*not* a proof): sums of hand-picked letters from PK9/PK10 that land on the sculpture's coordinates, one of them only after a modulo chosen afterwards. Kept for the record, labelled for what it is; nothing was broken with it. See [`kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`](kryptos/PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg).
 * 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). It is published as the `/kryptos/` section of the project's single GitHub Pages site, alongside the browser cipher solver — see [`scripts/build_site.py`](scripts/build_site.py) and [`ventures/README.md`](ventures/README.md).
-* ⚡ **1-Second Reproducibility Verification**: Automated test suite executing 11 modules with 100% pass rate:
+* ⚡ **Reproducibility suite**: 12 modules, the first of which is the record verification above; the other eleven re-run analysis scripts and check they still print their own conclusions — a regression test, not evidence. (It previously printed "0 / 11 TESTS PASSED (100% SUCCESS)" from the repository root: the success string was hardcoded and the paths were relative. Both fixed.)
   ```bash
   python3 kryptos/test_full_suite_reproducibility.py
   ```
@@ -124,7 +127,7 @@ Handy options on `crack`:
 
 ## What it breaks
 
-50 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
+51 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
 
 | family | members | how it is attacked |
 | --- | --- | --- |
@@ -132,7 +135,7 @@ Handy options on `crack`:
 | **substitution** | simple substitution, keyword substitution | simulated annealing over 25! alphabets on quadgram fitness |
 | **polyalphabetic** | vigenère, beaufort, variant beaufort, gronsfeld, porta, autokey, trithemius, quagmire III, sum-clock | coset index-of-coincidence for the period, then chi-squared per column — in the *keyed* alphabet's index space for Quagmire III, and jointly over the wheels for a sum-clock |
 | **transposition** | columnar, rail fence, route, skip/scytale, myszkowski, amsco | anagram scoring over key permutations, rail counts and ordered partitions |
-| **polygraphic** | playfair, bifid, hill (2×2 and 3×3), four-square, trifid | grid hill climbing; Hill is solved by scoring each row of the decryption matrix separately (see *Limits* for four-square and trifid) |
+| **polygraphic** | playfair, bifid, hill (2×2 and 3×3), keyed_hill (Hill over a keyed alphabet, with or without a Quagmire III layer), four-square, trifid | grid hill climbing; Hill is solved by scoring each row of the decryption matrix separately, and `keyed_hill` keeps that separability through a keyed alphabet and a periodic additive layer by scoring each row once per phase (see *Limits* for four-square and trifid) |
 | **wheel** | M-94 / CSP-488 | hill climb over 25! disk orders, quadgram-scored per read row |
 | **xor** | single-byte, repeating-key | byte-coset IC for the key length, per-byte chi-squared, then refinement |
 | **codes** | morse, bacon (+ case variant), a1z26, polybius, tap code, NATO alphabet, braille, baudot/ITA2 | structural decode — these are recognised, not searched |
@@ -208,12 +211,12 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 `buttcrack serve` starts a local server (stdlib `http.server`, no framework, no build step) with three panels:
 
 * **Break** — paste ciphertext, watch the identification hypotheses arrive, then the ranked readings with confidence, key, decode chain and evidence. Long searches run as background jobs and poll. The language dropdown sends `--language` (including *Auto-detect*).
-* **Playground** — pick any of the 50 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
+* **Playground** — pick any of the 51 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
 * **Reference** — the cipher table with keyspaces, search costs and each cipher's own notes on what breaks it.
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
 
-There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ahardkore.github.io/Buttcrack---Cipher-Breaker](https://ahardkore.github.io/Buttcrack---Cipher-Breaker)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (50 ciphers, six languages, the M-94) is the full local tool.
+There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty-one in all, generated from the solver's own registry) at **[ahardkore.github.io/Buttcrack---Cipher-Breaker](https://ahardkore.github.io/Buttcrack---Cipher-Breaker)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (51 ciphers, six languages, the M-94) is the full local tool.
 
 ---
 
@@ -248,7 +251,7 @@ PK1–PK7 have published plaintexts, so they are a scorecard rather than a claim
 | PK2 | complete columnar, 50×7 | **solved**, ~29 s |
 | PK3 | sum-clock, wheels of 10 and 8 over a keyed alphabet | **solved**, ~5 s (recovers the keywords `ORDINATE` + `PENTIMENTO`) |
 | PK4–PK6 | columnar or double-columnar *composed with* Quagmire III | not solved — the transposition's key cannot be scored while the text underneath is still enciphered |
-| PK7 | Quagmire III composed with a 3×3 affine Hill matrix | not solved |
+| PK7 | Quagmire III (period 6) composed with a 3×3 Hill matrix, both over the KRYPTOS alphabet | **solved**, ~14 s (recovers the keyword `ANNEAL` and the matrix `ALCHEMIST`; the key re-encrypts to the published ciphertext exactly) |
 
 **Two-wheel clocks are solved exactly rather than searched.** Fixing the short wheel leaves a plain Vigenère of known period, so the long wheel is *derived* by chi-squared instead of guessed, and the key space collapses to an enumeration of the short wheel alone — exhaustive for three or four letters, word-keyed beyond that (PK3's wheels are literally words, and the author's public hint was that the key "has quite a lot of entropy, but some structure"). Each candidate costs a handful of table lookups rather than a pass over the message, so 456,976 of them take seconds. One caveat: the long wheel is solved a column at a time and needs roughly twenty letters per column to be reliable.
 
@@ -271,7 +274,7 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 * **Some ciphers are lossy by design.** Playfair pads with `X` and splits doubled letters; Bacon merges U/V and I/J; Polybius and Bifid merge I/J. Comparisons in the tests and the selftest fold those away, and the report notes it — you get the letters back, not the typography.
 * **Attribution can be equivalent-but-different.** Atbash may be reported as `affine (25, 25)`; a Vigenère with a one-letter key may be reported as `caesar`. The plaintext is right and the `notes` field explains the equivalence.
 * **Non-English models have no dictionary.** Only English ships a word list; the other five languages judge on n-gram fitness alone. Two honest consequences, both measured: (1) a slightly wrong reading can outscore the true one — on a 197-letter German Caesar, a substitution near-miss disagreeing on 4 rare letters beat the true shift by 0.05 confidence — so foreign-language reports grade "solved" on fitness, not word-perfectness; (2) the English model *will* solve its sibling languages (French at 0.88 confidence, Italian 0.86) and report inflated confidence — the report's `reads as` note flags this and names the `--language` rerun that fixes it. `--language auto` probes all six models (up to half the budget) and is reliable for cheap ciphers, but for an expensive cipher it can only rank partial readings, so name the language when you know it.
-* **Keyed alphabets are a separate cipher, not a detail.** Quagmire III does Vigenère arithmetic in a keyed alphabet's index space (`KRYPTOS...`), so a solver that assumes A=0 recovers nothing. `quagmire3` searches the alphabet as well as the key, and reproduces the published Paradigm Kryptos PK1 answer (key `PROVENANCE`, period 10) from ciphertext alone in about 15 seconds.
+* **Keyed alphabets are a separate cipher, not a detail.** Quagmire III does Vigenère arithmetic in a keyed alphabet's index space (`KRYPTOS...`), so a solver that assumes A=0 recovers nothing. `quagmire3` searches the alphabet as well as the key, and reproduces the published Paradigm Kryptos PK1 answer (key `PROVENANCE`, period 10) from ciphertext alone in about 15 seconds. The same applies one level up: `keyed_hill` does Hill's linear algebra in keyed index space, so PK7 — a period-6 Quagmire III followed by a 3×3 Hill, both over the KRYPTOS alphabet — is invisible to the A–Z Hill attack (it returns noise) and falls to the phase-split row search in under a second, recovering `ANNEAL` and `ALCHEMIST`.
 * **Sum-clocks need a crib, or luck.** `sum_clock` adds several short wheels (`K[t] = q4[t%4] + q5[t%5] + ...`). Four wheels of 4, 5, 6 and 7 give a key of period 420 — longer than a 153-letter message — so no column is ever repeated and chi-squared has nothing to work with. Every position's key is a *sum* of four unknowns, so moving one coordinate earns no partial credit either: the search landscape has almost no gradient. The keystream is, however, **linear** in the wheels, so known plaintext turns cryptanalysis into linear algebra. Measured on synthetic instances of exactly that shape (153 letters, four wheels, known answer):
 
   | attack | recovery |
@@ -316,7 +319,7 @@ buttcrack/
   selftest.py    known-answer verification of the whole install
   server.py      REST API + static file serving
   cli.py         the command line
-  ciphers/       one module per family, 50 ciphers behind one interface
+  ciphers/       one module per family, 51 ciphers behind one interface
   data/          the language models (see NOTICE for provenance)
   static/        the web interface
 scripts/

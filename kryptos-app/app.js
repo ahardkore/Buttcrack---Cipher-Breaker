@@ -59,15 +59,23 @@ function initCipherExplorer() {
   });
 }
 
+// Status badges follow the audit verdicts in kryptos/pk_audit.json: a record
+// counts as SOLVED only when its stated key re-encrypts to the published
+// ciphertext (see kryptos/verify_pk_records.py).
+function badgeFor(status) {
+  if (status.startsWith("SOLVED")) return "badge-solved";
+  if (status.startsWith("PLAINTEXT ONLY")) return "badge-custody";
+  if (status.includes("FRONTIER") || status.startsWith("UNSOLVED")) return "badge-frontier";
+  if (status.includes("CUSTODY")) return "badge-custody";
+  return "badge-unsolved";
+}
+
 function createSidebarItem(data) {
   const div = document.createElement("div");
   div.className = "cipher-nav-item";
   div.dataset.id = data.id;
 
-  let badgeClass = "badge-unsolved";
-  if (data.status === "SOLVED") badgeClass = "badge-solved";
-  else if (data.status.includes("FRONTIER")) badgeClass = "badge-frontier";
-  else if (data.status.includes("CUSTODY")) badgeClass = "badge-custody";
+  const badgeClass = badgeFor(data.status);
 
   div.innerHTML = `
     <div class="cipher-name">${data.id}: ${data.title.split("—")[1] || data.id}</div>
@@ -99,10 +107,7 @@ function selectCipher(id) {
   document.getElementById("detail-title").textContent = data.title;
   document.getElementById("detail-subtitle").textContent = `${data.category} | ${data.mechanism} | Length: ${data.length} characters`;
 
-  let badgeClass = "badge-unsolved";
-  if (data.status === "SOLVED") badgeClass = "badge-solved";
-  else if (data.status.includes("FRONTIER")) badgeClass = "badge-frontier";
-  else if (data.status.includes("CUSTODY")) badgeClass = "badge-custody";
+  const badgeClass = badgeFor(data.status);
 
   const statusBadge = document.getElementById("detail-status-badge");
   statusBadge.className = `cipher-badge ${badgeClass}`;
@@ -114,9 +119,16 @@ function selectCipher(id) {
   document.getElementById("stat-rare").textContent = `${rareCount} (${(rareCount/ct.length*100).toFixed(1)}%)`;
 
   document.getElementById("detail-ct").textContent = formatWrapped(ct, 42);
-  document.getElementById("detail-pt").textContent = formatWrapped(pt, 42);
+  // A stored text that is not a verified solve is labelled as such rather than
+  // presented as plaintext -- PK8's four-wheel candidate is not English.
+  const verified = data.status.startsWith("SOLVED");
+  const ptLabel = pt && !verified
+    ? "CANDIDATE ONLY - not a verified solution:\n\n"
+    : "";
+  document.getElementById("detail-pt").textContent = ptLabel + formatWrapped(pt, 42);
   document.getElementById("detail-key").textContent = data.key || "See Mathematical Clock & Transposition Invariants";
-  document.getElementById("detail-notes").textContent = data.notes || "";
+  document.getElementById("detail-notes").textContent =
+    [data.notes, data.audit].filter(Boolean).join("\n\n");
 }
 
 // Math & Cryptanalysis Helpers

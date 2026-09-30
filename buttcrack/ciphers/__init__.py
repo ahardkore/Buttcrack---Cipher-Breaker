@@ -33,7 +33,7 @@ from .encodings import (
     UUEncode,
 )
 from .keyed import Quagmire3, SumClock
-from .matrix import Hill
+from .matrix import Hill, KeyedHill
 from .polyalphabetic import (
     Autokey,
     Beaufort,
@@ -90,6 +90,7 @@ ALL_CIPHERS: list[Cipher] = [
     Playfair(),
     Bifid(),
     Hill(),
+    KeyedHill(),
     FourSquare(),
     Trifid(),
     # wheel ciphers

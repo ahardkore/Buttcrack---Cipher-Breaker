@@ -1,4 +1,11 @@
 # UNIFIED CRYPTANALYTIC DOSSIER: PK8, PK9, AND PK10
+
+> **Audit (2026-09-30).** Every record here was re-checked against its ciphertext.
+> Five of ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5
+> keep their plaintext but lose their key claim; PK8, PK9 and PK10 are unsolved, and the
+> PK8 "solution" that used to be stored here is not English. See [`AUDIT.md`](AUDIT.md)
+> and run `python3 kryptos/verify_pk_records.py` to check it yourself.
+
 **Author**: Cryptanalytic Operations & Mathematical Research  
 **Target Challenges**: Paradigm Kryptos CTF — PK8 ($N=153$), PK9 ($N=144$), PK10 ($N=504$)  
 **Status**: Comprehensive Mathematical Ledger, Forensic Deconstruction, Exhaustive Verifications, and Active Frontiers  

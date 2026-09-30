@@ -1,5 +1,11 @@
 # Comprehensive Solutions & Cryptanalytic Dossier: Paradigm Kryptos CTF (PK1 – PK10)
 
+> **Audit (2026-09-30).** Every record here was re-checked against its ciphertext.
+> Five of ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5
+> keep their plaintext but lose their key claim; PK8, PK9 and PK10 are unsolved, and the
+> PK8 "solution" that used to be stored here is not English. See [`AUDIT.md`](AUDIT.md)
+> and run `python3 kryptos/verify_pk_records.py` to check it yourself.
+
 ## Executive Summary
 
 This document presents the definitive cryptanalytic ledger, architectural teardowns, mathematical proofs, and active candidate decryptions for the 10 challenges of the **Paradigm Kryptos CTF (PK1 – PK10)**, with dedicated breakthroughs on the unsolved worldwide challenge **PK9 ($N = 144$)** and **PK10 ($N = 504$)**, as well as the deep narrative and structural connections to **Kryptos K4 / K5** and the historical **"WW" (William Webster / Walter Womacka)** nexus.
@@ -16,7 +22,7 @@ This document presents the definitive cryptanalytic ledger, architectural teardo
 | **PK4** | 224 | `THESTRINGSMEASURETWOFUR...` | **$T(8) \to Q(5)Q(9)$**: Complete Columnar ($28 \times 8$) + Dual-Clock Quagmire III (Period 45) | **SOLVED** (`@98_akr`, Official) |
 | **PK5** | 272 | `WEEXAMINEDTHEFIBERSUNDER...` | **$T(16) \to Q(17)$**: Columnar Transposition ($17 \times 16$) + Quagmire III (`word_cov = 0.69`) | **SOLVED** (`@0xtanishk`, Official) |
 | **PK6** | 315 | `THEWHITESMITHSWORKSHOPISFILLEDWITHTHEOLDTOOLSOFHISTRADEMYEYES...` | **$T_1(9) \to T_2(9) \to Q(6)$**: Two-stage Columnar ($o_1, o_2$) + Quagmire III (`PORTAL`, p6) | **SOLVED** (`@98_akr`, Official) |
-| **PK7** | 279 | `HEPOINTEDTOTHEHEARTHAND...` | **$Q(6) \to H(3 \times 3)$**: Quagmire III period 6 composed with $3 \times 3$ Affine Hill Matrix | **SOLVED** (`@crook3dfingers`, Official) |
+| **PK7** | 279 | `THREEWEEKSINWERISEBEFORE...` | **$Q(6) \to H(3 \times 3)$**: Quagmire III period 6 (`ANNEAL`) composed with a $3 \times 3$ Hill matrix (`ALCHEMIST`), both over the KRYPTOS alphabet | **SOLVED** (`@crook3dfingers`, Official) |
 | **PK8** | 153 | `[CONFIDENTIAL_CUSTODY_UNPUBLISHED]` | **$Q(4)Q(5)Q(6)Q(7)$**: Quadruple-Clock Quagmire III Sum-Clock ($\text{lcm} = 420$) | **SOLVED** (`@_newhaiku`, 2026-09-06) |
 | **PK9** | 144 | *Unsolved / Active Frontier* | **Periodic Outer Substitution**: Strong period-7/14/28 harmonic lattice, $\mathbb{Z}_{13}$ halfabet IoC = 0.0989 (Dan Robinson: *"simple algorithm, structured entropy"*) | **UNSOLVED** (Leaderboard: 0 solves) |
 | **PK10**| 504 | *Active cryptanalysis below* | **Multilayer Grand Masterpiece**: $504 = \text{lcm}(7, 8, 9) = 24 \times 21$, Clocks $\{7, 8, 9\}$ | **UNSOLVED** (Leaderboard: 0 solves) |

@@ -1,7 +1,27 @@
-# Automated Master Reproducibility Test Suite for Paradigm Kryptos
+"""Automated reproducibility suite for the Paradigm Kryptos workspace.
+
+What this suite does and does not establish, stated plainly:
+
+* Most modules below re-run an analysis script and check that it still prints
+  its own conclusion.  That is a *regression* check -- it catches a script
+  that has stopped working -- and nothing more.  A module printing
+  "100% PROVEN" makes this suite print PASS; it does not make the claim true.
+* The one module that tests a claim against the ciphertexts is
+  ``verify_pk_records.py``, which re-encrypts each stored plaintext under the
+  key its record names and compares the result with the published ciphertext.
+  That one can fail, and does when a record is wrong.
+
+Run it from anywhere; paths resolve relative to this file.
+"""
+import os
 import subprocess
 import time
 import sys
+
+# The modules below are invoked by bare filename, so the suite has to run from
+# the directory that holds them -- otherwise every test "fails" with a missing
+# file, which is what happened when it was run the way the README documents.
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 print("==========================================================================================")
 print("             PARADIGM KRYPTOS AUTOMATED REPRODUCIBILITY TEST SUITE                        ")
@@ -9,7 +29,13 @@ print("=========================================================================
 
 tests = [
     {
-        "name": "Theorem & GPS Coordinate Verification",
+        # The only entry that checks a claim against the ciphertexts.
+        "name": "PK record verification (keys re-encrypt to the published ciphertexts)",
+        "cmd": ["python3", "verify_pk_records.py"],
+        "expect_str": "OK: every record labelled SOLVED reproduces its ciphertext",
+    },
+    {
+        "name": "Theorem & GPS Coordinate Verification (prints its own conclusions)",
         "cmd": ["python3", "verify_all_mathematical_theorems.py"],
         "expect_str": "ALL 5 MATHEMATICAL THEOREMS ARE 100% PROVEN"
     },
@@ -101,7 +127,9 @@ for idx, t in enumerate(tests, 1):
             print("      Missing expected string:", t["expect_str"])
 
 elapsed = time.time() - start_time
+share = total_passed / len(tests) if tests else 0.0
 print("\n==========================================================================================")
-print(f"REPRODUCIBILITY SUITE SUMMARY: {total_passed} / {len(tests)} TESTS PASSED (100% SUCCESS)")
+print(f"REPRODUCIBILITY SUITE SUMMARY: {total_passed} / {len(tests)} TESTS PASSED ({share:.0%})")
 print(f"Total Execution Time: {elapsed:.2f} seconds")
 print("==========================================================================================")
+sys.exit(0 if total_passed == len(tests) else 1)

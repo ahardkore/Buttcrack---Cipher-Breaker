@@ -1,5 +1,11 @@
 # Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
 
+> **Audit (2026-09-30).** Every record here was re-checked against its ciphertext.
+> Five of ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5
+> keep their plaintext but lose their key claim; PK8, PK9 and PK10 are unsolved, and the
+> PK8 "solution" that used to be stored here is not English. See [`AUDIT.md`](AUDIT.md)
+> and run `python3 kryptos/verify_pk_records.py` to check it yourself.
+
 [![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(11%2F11)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
 [![Manuscript](https://img.shields.io/badge/Book%20Manuscript-8%20Chapters%20Complete-d97736?style=for-the-badge&logo=gitbook)](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md)
 [![Web App](https://img.shields.io/badge/Web%20App-Interactive%20Suite-58a6ff?style=for-the-badge&logo=html5)](kryptos-app/)

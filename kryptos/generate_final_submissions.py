@@ -12,49 +12,49 @@ verified_pts = {
         "cipher": "Quagmire III (KRYPTOS alphabet)",
         "key": "PROVENANCE (Period 10)",
         "plaintext": "INVESTIGATIONLOGITEMEIGHTKNOTTIGHTLYWOUNDITSTHREADINSCRIBEDWITHLETTERSTHEACCESSIONLOGSAYSONCEUNRAVELEDITREVEALSTHEROUTETOTHELOSTARCHIVEOFPELLEGRINTWELVEPRIORARCHIVISTSTRIEDTOUNRAVELITALLFAILED",
-        "status": "SOLVED"
+        "status": "SOLVED (VERIFIED)"
     },
     "PK2": {
         "title": "PK2 — Pellegrin's Treatise",
         "cipher": "Complete Columnar Transposition (50x7)",
         "key": "MARGINS (Order: [1, 3, 4, 0, 5, 2, 6])",
         "plaintext": "IHAVEFOUNDREFERENCESTOTHEKNOTINSEVENOTHERRECORDSINOURARCHIVETHEMOSTINTRIGUINGISAPASSINGCOMMENTINATREATISEONTEXTILESWRITTENINPELLEGRINSOWNHANDWHICHSAYSUNAGOTANTOSOTTILEDALEGGEREQUALUNQUENODOIBELIEVEDTHISTOBEJUSTATURNOFPHRASEBUTTHEOTHERMENTIONSSCATTEREDTHROUGHMARGINALIAINBOOKSTHATSHARENOOTHERTOPICHAVELEDMETOSUSPECTTHEPASSAGEREFERSTOAREALOBJECTANEEDLE",
-        "status": "SOLVED"
+        "status": "SOLVED (VERIFIED)"
     },
     "PK3": {
         "title": "PK3 — The Viennese Anatomist",
         "cipher": "Quagmire III (Sum-Clock p10 + p8, period 40)",
         "key": "PENTIMENTO (10) + ORDINATE (8)",
         "plaintext": "SEVENTHMONTHIWROTETOFIFTEENCORRESPONDENTSINSIXCOUNTRIESSEEKINGANYWORDOFTHEITEMMOSTKNEWNOTHINGAFEWHADHEARDLEGENDSOFANEEDLEFINEENOUGHTOSPLITAHAIRORPIERCEGLASSATLASTAVIENNESEANATOMISTSAIDHESAWSUCHANINSTRUMENTUSEDATASURGICALDEMONSTRATIONINBERNIWROTETOHISADDRESSNOANSWERCAMEIWROTEAGAIN",
-        "status": "SOLVED"
+        "status": "SOLVED (VERIFIED)"
     },
     "PK4": {
         "title": "PK4 — The Furlongs of Thread",
         "cipher": "Columnar Transposition (28x8) + Dual-Clock Quagmire III (Period 45)",
         "key": "Dual-Clock Substitution p5 + p9, Transposition Width 8",
         "plaintext": "THESTRINGSMEASURETWOFURLONGSWEEXAMINEDTHEWEAVEANDTENSIONOFEACHINDIVIDUALSTRANDFINDINGMICROSCOPICCHARACTERSENGRAVEDALONGITSENTIRELENGTHEACHPULLOFTHETHREADREVEALEDFURTHERLETTERSWRITTENINSECTIONSRISINGINCOMPLEXITYTOWARDSTHECORE",
-        "status": "SOLVED"
+        "status": "PLAINTEXT ONLY (key not reproducible)"
     },
     "PK5": {
         "title": "PK5 — The Flax Fibers Under the Lens",
         "cipher": "Columnar Transposition (17x16) + Quagmire III",
         "key": "Quagmire III Period 17, Transposition Width 16",
         "plaintext": "WEEXAMINEDTHEFIBERSUNDERTHELENSTHEFLAXWASSPUNWITHEXCEPTIONALPRECISIONPRESERVINGTHEINSCRIPTIONSWITHOUTDISTORTIONEACHKNOTCONTAINEDATIGHTLYFOLDEDSEQUENCEOFLETTERSWHICHWHENPROJECTEDONTOTHEPLANEFORMEDANINTERLOCKINGGRIDOFCOORDINATESANDCIPHERTEXTWHICHPOINTEDUSDIRECTLYTOWARDSBERN",
-        "status": "SOLVED"
+        "status": "PLAINTEXT ONLY (key not reproducible)"
     },
     "PK6": {
         "title": "PK6 — The Whitesmith's Workshop",
         "cipher": "Double Columnar Transposition (9x35, 9x35) -> Quagmire III (p6)",
         "key": "PORTAL (Period 6); Col 1: [1, 3, 0, 4, 8, 2, 6, 7, 5]; Col 2: [4, 2, 8, 1, 6, 7, 0, 3, 5]",
         "plaintext": "THEWHITESMITHSWORKSHOPISFILLEDWITHTHEOLDTOOLSOFHISTRADEMYEYESAREDRAWNTOTHEGUTTERALONGTHEWALLWHICHISSTREWNWITHEXQUISITENEEDLESTHEWHITESMITHSAYSHEMAKESONEEVERYDAYANDLOSTCOUNTLONGAGOIASKWHATHEDOESWITHTHEMANDHESAYSTHEYAREONLYTHERESIDUEOFHISPRACTICEHETELLSMETHATIFISTUDYUNDERHIMFORTENYEARSHEWILLLETMETAKEONEOFMYOWNMAKING",
-        "status": "SOLVED"
+        "status": "SOLVED (VERIFIED)"
     },
     "PK7": {
-        "title": "PK7 — The Glowing White Hearth",
-        "cipher": "Quagmire III (p6) + Affine Hill 3x3 Matrix",
-        "key": "Quagmire III Period 6 + 3x3 Invertible Matrix over GF(26)",
-        "plaintext": "HEPOINTEDTOTHEHEARTHANDSAIDTHATTHEWORKCOULDONLYBEGINWHENTHEFIREREACHEDITSPROPERHEATWITHLONGTONGSHEHELDTHESTEELINTOCOALSTHATGLOWEDWHITEINTHEBELLOWSWARNINGMETHATONEMOMENTOFTEMPERINGCANDESTROYYEARSOFLABOURFORONLYANIRONPIECEPURIFIEDNINEDAYSINTHEFLAMEWILLHOLDAFINEENOUGHEDGETOBEFORGED",
-        "status": "SOLVED"
+        "title": "PK7 — Three Weeks In",
+        "cipher": "Quagmire III (p6, ANNEAL) then Hill 3x3 (ALCHEMIST), KRYPTOS alphabet",
+        "key": "Quagmire III keyword ANNEAL (period 6) + Hill matrix ALCHEMIST over the KRYPTOS alphabet",
+        "plaintext": "THREEWEEKSINWERISEBEFORETHESUNANDEACHNEEDLEISDONEBYNOONTHEWHITESMITHSHOWSMEHISTECHNIQUEFORPURIFYINGHISMETALBEFOREDRAWINGITINTOAFINEWIREHEHASMEREPEATTHESAMESTEPFOURTIMESWITHSLIGHTVARIATIONSSTILLMYHANDFALTERSIAMPATIENTBUTIKNOWTHISISNOTMYCALLINGIHAVEMADEPEACEWITHITANDWILLGOHOMESOON",
+        "status": "SOLVED (VERIFIED)"
     }
 }
 
@@ -73,6 +73,23 @@ for k, v in verified_pts.items():
         "sha256": hashlib.sha256(pt.encode()).hexdigest()
     }
 
+
+# --- audit overlay -------------------------------------------------------- #
+# kryptos/pk_audit.json carries the verdicts from verify_pk_records.py, which
+# checks each key against the published ciphertext.  Merging it here means a
+# regeneration cannot silently restore a claim the ciphertext does not support.
+def _apply_audit(mapping):
+    try:
+        with open("pk_audit.json") as _f:
+            _audit = json.load(_f)
+    except FileNotFoundError:
+        return mapping
+    for _k, _fields in _audit.items():
+        if _k in mapping and isinstance(mapping[_k], dict):
+            mapping[_k].update(_fields)
+    return mapping
+
+verified_json = _apply_audit(verified_json)
 with open("pk_verified_solutions.json", "w") as f:
     json.dump(verified_json, f, indent=2)
 
@@ -111,7 +128,7 @@ for k in [f"PK{i}" for i in range(1, 8)]:
 # PK8
 ct8 = cts["PK8"]
 master_manifest["PK8"] = {
-    "status": "SOLVED (SEALED IN CUSTODY)",
+    "status": "UNSOLVED HERE (solved externally; key unpublished)",
     "challenge_id": "PK8",
     "title": "PK8 — The Residue of Practice",
     "cipher_mechanism": "Additive 4-Clock {Q4, Q5, Q6, Q7} over Keyed Kryptos Alphabet",
@@ -138,7 +155,7 @@ master_manifest["PK8"] = {
 # PK9
 ct9 = cts["PK9"]
 master_manifest["PK9"] = {
-    "status": "UNSOLVED EMPIRICAL FRONTIER (100% MATHEMATICALLY LOCKED)",
+    "status": "UNSOLVED",
     "challenge_id": "PK9",
     "title": "PK9 — The Defunct Cord",
     "cipher_mechanism": "Two-Stage Double Columnar Transposition (18x8 -> 8x18) + Period-28 Polyalphabetic Keystream on Kryptos Alphabet",
@@ -164,7 +181,7 @@ master_manifest["PK9"] = {
 # PK10
 ct10 = cts["PK10"]
 master_manifest["PK10"] = {
-    "status": "UNSOLVED EMPIRICAL FRONTIER",
+    "status": "UNSOLVED",
     "challenge_id": "PK10",
     "title": "PK10 — The Unravelling of the Knot",
     "cipher_mechanism": "3-Clock CRT Additive System {Q7, Q8, Q9} (lcm=504) + 12x36 Modular Triptych Columnar Transposition",
@@ -190,6 +207,7 @@ master_manifest["PK10"] = {
     "embedded_coordinates": "Latitude: 38 deg N (Col 1 - Col 5 = 38); Longitude: 77 deg W (Row 0 pad = 77), 8 min W (Col 40 - Col 29 = 8), 44 sec W (Col 40 - Col 5 = 44); Mean ASCII = 77.14 (Decimal Longitude 77.14 deg W)"
 }
 
+master_manifest = _apply_audit(master_manifest)
 with open("pk_submission_manifest.json", "w") as f:
     json.dump(master_manifest, f, indent=2)
 

@@ -1,5 +1,11 @@
 # PK9 Cryptanalytic Ledger & Definitive Proof Compendium
 
+> **Audit (2026-09-30).** Every record here was re-checked against its ciphertext.
+> Five of ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5
+> keep their plaintext but lose their key claim; PK8, PK9 and PK10 are unsolved, and the
+> PK8 "solution" that used to be stored here is not English. See [`AUDIT.md`](AUDIT.md)
+> and run `python3 kryptos/verify_pk_records.py` to check it yourself.
+
 **Target**: Paradigm Kryptos Challenge 9 (PK9, $N=144$)  
 **Status**: Unsolved Master Puzzle ($0$ Solvers on Leaderboard, $98$ Official Attempts)  
 **Date**: September 21, 2026  

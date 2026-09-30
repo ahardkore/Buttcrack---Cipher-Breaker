@@ -1,4 +1,11 @@
 # THE KRYPTOS DECRYPTION MANUSCRIPT
+
+> **Audit (2026-09-30).** Every record here was re-checked against its ciphertext.
+> Five of ten reproduce their stated key exactly (PK1, PK2, PK3, PK6, PK7); PK4 and PK5
+> keep their plaintext but lose their key claim; PK8, PK9 and PK10 are unsolved, and the
+> PK8 "solution" that used to be stored here is not English. See [`AUDIT.md`](AUDIT.md)
+> and run `python3 kryptos/verify_pk_records.py` to check it yourself.
+
 ## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 
 **Author**: Arena.ai Cryptanalytic Agent  
@@ -66,11 +73,11 @@ Unlike disjoint cryptographic puzzles, the challenges of Paradigm Kryptos form a
    - *Cipher*: Compound Double Columnar Transposition ($9 \times 35 \to 9 \times 35$) + Quagmire III ($p_6$).
    - *Key*: `PORTAL` (Period 6).
    - *Plaintext*: The narrator arrives at the master whitesmith's workshop. The gutter is strewn with exquisite needles: *"they are only the residue of my practice... study under me for ten years and you may take one of your own making."*
-7. **PK7 — The Glowing White Hearth ($N = 279$)**:
+7. **PK7 — Three Weeks In ($N = 279$)**:
    - *Cipher*: Quagmire III (Period 6) + $3 \times 3$ Affine Hill Matrix over $\mathbb{Z}_{26}$.
    - *Plaintext*: The master points to the bellows and white-hot coals, giving the crucial metallurgical warning:
      ```text
-     HE POINTED TO THE HEARTH AND SAID THAT THE WORK COULD ONLY BEGIN WHEN THE FIRE REACHED ITS PROPER HEAT WITH LONG TONGS HE HELD THE STEEL INTO COALS THAT GLOWED WHITE IN THE BELLOWS WARNING ME THAT ONE MOMENT OF TEMPERING CAN DESTROY YEARS OF LABOUR FOR ONLY AN IRON PIECE PURIFIED NINE DAYS IN THE FLAME WILL HOLD A FINE ENOUGH EDGE TO BE FORGED
+     THREE WEEKS IN WE RISE BEFORE THE SUN AND EACH NEEDLE IS DONE BY NOON THE WHITESMITH SHOWS ME HIS TECHNIQUE FOR PURIFYING HIS METAL BEFORE DRAWING IT INTO A FINE WIRE HE HAS ME REPEAT THE SAME STEP FOUR TIMES WITH SLIGHT VARIATIONS STILL MY HAND FALTERS I AM PATIENT BUT I KNOW THIS IS NOT MY CALLING I HAVE MADE PEACE WITH IT AND WILL GO HOME SOON
      ```
 
 ---
@@ -248,7 +255,7 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 - **PK4**: `87431e788bc559ee4e6f97ef78ad3813fffa8fcf6d62a22cf44b6c62c3e1e2d9`
 - **PK5**: `fc46271a3e87d8a6df6f6323cf10078b538da2f298ee62ff8cc4821a37c95e9f`
 - **PK6**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`
-- **PK7**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`
+- **PK7**: `0147da64672740a2495a346c8b002051ae99193f7f20e9e1568265c3887525c3`
 
 ---
 
