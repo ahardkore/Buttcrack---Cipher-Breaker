@@ -11,7 +11,10 @@ self.onmessage = e => {
     const info = identify(text);
     self.postMessage({ type: 'identified', info });
     const result = solve(text, depth == null ? 3 : depth);
-    self.postMessage({ type: 'done', result, elapsed: (Date.now() - started) / 1000 });
+    // Diagnostics are observations about this exact input and the browser's
+    // coverage, not a claim that we know why an unknown ciphertext resisted.
+    const diagnostic = diagnose(text, info, result);
+    self.postMessage({ type: 'done', result, diagnostic, elapsed: (Date.now() - started) / 1000 });
   } catch (err) {
     self.postMessage({ type: 'error', message: String(err && err.message || err) });
   }

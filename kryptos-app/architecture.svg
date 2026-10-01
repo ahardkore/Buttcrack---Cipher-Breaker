@@ -1,151 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="100%" height="100%" style="background-color: #0d1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%" role="img" aria-labelledby="title description">
+  <title id="title">Paradigm Kryptos verification and research map</title>
+  <desc id="description">PK1 through PK8 are solved, with the verified PK8 Quagmire III construction shown. PK9 and PK10 are explicitly marked open research problems.</desc>
   <defs>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffd700"/>
-      <stop offset="100%" stop-color="#b8860b"/>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
-    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f2fe"/>
-      <stop offset="100%" stop-color="#4facfe"/>
+    <linearGradient id="solved" x1="0" x2="1">
+      <stop offset="0" stop-color="#238636"/>
+      <stop offset="1" stop-color="#3fb950"/>
     </linearGradient>
-    <linearGradient id="copperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d97736"/>
-      <stop offset="100%" stop-color="#8c3a00"/>
+    <linearGradient id="open" x1="0" x2="1">
+      <stop offset="0" stop-color="#9e6a03"/>
+      <stop offset="1" stop-color="#f0883e"/>
     </linearGradient>
-    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#161b22"/>
-      <stop offset="100%" stop-color="#21262d"/>
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
   </defs>
 
-  <!-- Title Banner -->
-  <rect x="40" y="30" width="1120" height="70" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-  <text x="600" y="65" text-anchor="middle" fill="#58a6ff" font-size="24" font-weight="700" letter-spacing="1.5">PARADIGM KRYPTOS: UNIFIED MASTER CRYPTANALYTIC ARCHITECTURE</text>
-  <text x="600" y="88" text-anchor="middle" fill="#8b949e" font-size="13">Mathematical Invariants, Keystream Progressions, and CIA Sculpture Physical Geometry</text>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <rect x="40" y="30" width="1120" height="92" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+  <text x="600" y="72" text-anchor="middle" fill="#f0f6fc" font-family="system-ui, sans-serif" font-size="25" font-weight="700">PARADIGM KRYPTOS: VERIFIED RESULTS &amp; OPEN FRONTIERS</text>
+  <text x="600" y="98" text-anchor="middle" fill="#8b949e" font-family="system-ui, sans-serif" font-size="14">A claim earns “solved” only when its complete construction re-encrypts to the published ciphertext.</text>
 
-  <!-- Row 1: The Clock 7 Universal Pivot -->
-  <rect x="40" y="120" width="1120" height="150" rx="8" fill="url(#panelGrad)" stroke="#30363d" stroke-width="1"/>
-  <text x="60" y="145" fill="#f0883e" font-size="14" font-weight="700" letter-spacing="1">SECTION I: THE CLOCK 7 UNIVERSAL CIPHER BRIDGE</text>
+  <rect x="40" y="150" width="340" height="225" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <rect x="40" y="150" width="340" height="42" rx="10" fill="url(#solved)"/>
+  <text x="210" y="178" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">SOLVED FOUNDATION: PK1–PK7</text>
+  <text x="65" y="225" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Classical Quagmire, columnar, and Hill constructions</text>
+  <text x="65" y="252" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">are reproduced with exact ciphertext round trips.</text>
+  <text x="65" y="304" fill="#7ee787" font-family="monospace" font-size="14">status: verified solutions</text>
+  <text x="65" y="332" fill="#8b949e" font-family="system-ui, sans-serif" font-size="12">These puzzle solutions provide context, not proof of PK9/PK10 methods.</text>
 
-  <!-- PK8 Block -->
-  <rect x="70" y="165" width="280" height="85" rx="6" fill="#0d1117" stroke="#388bfd" stroke-width="1.5"/>
-  <text x="85" y="190" fill="#58a6ff" font-size="14" font-weight="700">PK8 (N = 153)</text>
-  <text x="85" y="210" fill="#c9d1d9" font-size="11">Additive Clocks: {Q4, Q5, Q6, <tspan fill="#ffd700" font-weight="700">Q7</tspan>}</text>
-  <text x="85" y="228" fill="#8b949e" font-size="10">Period: lcm(4,5,6,7) = 420 | Solved (Custody)</text>
+  <rect x="430" y="150" width="340" height="225" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+  <rect x="430" y="150" width="340" height="42" rx="10" fill="#1f6feb"/>
+  <text x="600" y="178" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">PK8: VERIFIED (N = 153)</text>
+  <text x="455" y="226" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Four sequential Quagmire III layers</text>
+  <text x="455" y="262" fill="#7ee787" font-family="monospace" font-size="17" font-weight="700">METE → METER → METIER → MASTERY</text>
+  <text x="455" y="302" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="13">Public solution independently reproduced:</text>
+  <text x="455" y="329" fill="#7ee787" font-family="monospace" font-size="13">153 / 153 ciphertext characters match</text>
+  <text x="455" y="352" fill="#8b949e" font-family="system-ui, sans-serif" font-size="12">See kryptos/verify_pk8_solution.py</text>
 
-  <!-- Arrow 1 -->
-  <path d="M 360 207 L 430 207" stroke="#ffd700" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <polygon points="430,203 440,207 430,211" fill="#ffd700"/>
-  <text x="400" y="198" text-anchor="middle" fill="#ffd700" font-size="10" font-weight="700">{4, 7} Pivot</text>
+  <rect x="820" y="150" width="340" height="225" rx="10" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <rect x="820" y="150" width="340" height="42" rx="10" fill="url(#open)"/>
+  <text x="990" y="178" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">PK9: OPEN (N = 144)</text>
+  <text x="845" y="226" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">No verified plaintext, key, or layer order.</text>
+  <text x="845" y="260" fill="#f0883e" font-family="system-ui, sans-serif" font-size="13">Working lead only: Q(5)+Q(6)+Q(7) with T(8)</text>
+  <text x="845" y="285" fill="#f0883e" font-family="system-ui, sans-serif" font-size="13">This construction is unverified.</text>
+  <text x="845" y="332" fill="#8b949e" font-family="system-ui, sans-serif" font-size="12">Exact crib tests report bounded exclusions, not a break.</text>
 
-  <!-- PK9 Block -->
-  <rect x="450" y="165" width="280" height="85" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
-  <text x="465" y="190" fill="#3fb950" font-size="14" font-weight="700">PK9 (N = 144 / 135 Core)</text>
-  <text x="465" y="210" fill="#c9d1d9" font-size="11">Keystream Clocks: {Q4, <tspan fill="#ffd700" font-weight="700">Q7</tspan>} (p = 28)</text>
-  <text x="465" y="228" fill="#8b949e" font-size="10">93.9% Valid Quads | IoC: 0.06081 (Literary)</text>
+  <path d="M 210 420 L 990 420" stroke="#30363d" stroke-width="2" stroke-dasharray="7 8"/>
+  <text x="600" y="410" text-anchor="middle" fill="#8b949e" font-family="system-ui, sans-serif" font-size="13">Verification boundary</text>
 
-  <!-- Arrow 2 -->
-  <path d="M 740 207 L 810 207" stroke="#ffd700" stroke-width="2.5"/>
-  <polygon points="810,203 820,207 810,211" fill="#ffd700"/>
-  <text x="780" y="198" text-anchor="middle" fill="#ffd700" font-size="10" font-weight="700">{7, 8, 9} CRT</text>
+  <rect x="40" y="465" width="540" height="180" rx="10" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+  <rect x="40" y="465" width="540" height="42" rx="10" fill="#da3633"/>
+  <text x="310" y="493" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">PK10: OPEN (N = 504)</text>
+  <text x="65" y="545" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">No verified plaintext or construction is known.</text>
+  <text x="65" y="575" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Candidate grids, word fragments, and clock vectors remain hypotheses.</text>
+  <text x="65" y="614" fill="#f0883e" font-family="system-ui, sans-serif" font-size="13">The explorer intentionally withholds a “plaintext” field.</text>
 
-  <!-- PK10 Block -->
-  <rect x="830" y="165" width="300" height="85" rx="6" fill="#0d1117" stroke="#f0883e" stroke-width="1.5"/>
-  <text x="845" y="190" fill="#f0883e" font-size="14" font-weight="700">PK10 (N = 504 / 432 Core)</text>
-  <text x="845" y="210" fill="#c9d1d9" font-size="11">Additive Clocks: {<tspan fill="#ffd700" font-weight="700">Q7</tspan>, Q8, Q9}</text>
-  <text x="845" y="228" fill="#8b949e" font-size="10">Period: lcm(7,8,9) = 504 | Single CRT Cycle</text>
-
-  <!-- Row 2: The Physical Sculpture Triptych & PK10 Panels -->
-  <rect x="40" y="290" width="1120" height="270" rx="8" fill="url(#panelGrad)" stroke="#30363d" stroke-width="1"/>
-  <text x="60" y="315" fill="#58a6ff" font-size="14" font-weight="700" letter-spacing="1">SECTION II: THE 12x12 MODULAR TRIPTYCH THEOREM (3 x 144 = 432 CHARACTERS)</text>
-  <text x="60" y="333" fill="#8b949e" font-size="11">PK10's 432-character core maps 1-to-1 to Jim Sanborn's 3-panel copper screen sculpture. Each panel is an exact 12x12 square (144 chars), matching PK9 ($N=144$).</text>
-
-  <!-- Left Padding (Cols 0-1) -->
-  <rect x="60" y="350" width="60" height="185" rx="4" fill="#21262d" stroke="#f85149" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="90" y="440" text-anchor="middle" fill="#f85149" font-size="11" font-weight="700" transform="rotate(-90 90 440)">Left Pad (2 Cols)</text>
-  <text x="90" y="525" text-anchor="middle" fill="#8b949e" font-size="9">Sum=156=0(26)</text>
-
-  <!-- Panel A -->
-  <rect x="130" y="350" width="290" height="185" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
-  <rect x="130" y="350" width="290" height="26" rx="6" fill="#238636"/>
-  <text x="275" y="368" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">PANEL A (12x12 Square = 144 chars)</text>
-  <text x="145" y="395" fill="#58a6ff" font-size="11" font-weight="700">Cols 0..11 | Score: -6.5111</text>
-  <text x="145" y="413" fill="#3fb950" font-size="13" font-weight="700">70.4% Valid Quadgrams (Stationary)</text>
-  <text x="145" y="433" fill="#c9d1d9" font-size="10">Symmetry: x+y=11 bilateral reflection</text>
-  <text x="145" y="450" fill="#c9d1d9" font-size="10">Adjacent Pair: (4, 7) at positions 6-7</text>
-  <text x="145" y="475" fill="#ffd700" font-size="10" font-weight="700">SURFACED VOCABULARY:</text>
-  <text x="145" y="493" fill="#e6edf3" font-size="10">NOOK, RAP, PROW, DYER, YERK,</text>
-  <text x="145" y="510" fill="#e6edf3" font-size="10">TEA, FIR, GOD GOES, BIG LED, ISLAND</text>
-
-  <!-- Panel B -->
-  <rect x="430" y="350" width="290" height="185" rx="6" fill="#0d1117" stroke="#d29922" stroke-width="2"/>
-  <rect x="430" y="350" width="290" height="26" rx="6" fill="#9e6a03"/>
-  <text x="575" y="368" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">PANEL B (12x12 Square = 144 chars)</text>
-  <text x="445" y="395" fill="#58a6ff" font-size="11" font-weight="700">Cols 12..23 | Score: -6.7957</text>
-  <text x="445" y="413" fill="#d29922" font-size="13" font-weight="700">61.1% Valid Quadgrams (Stationary)</text>
-  <text x="445" y="433" fill="#c9d1d9" font-size="10">Symmetry: Complementary folding in Z_12</text>
-  <text x="445" y="450" fill="#c9d1d9" font-size="10">Adjacent Pair: (0, 11) at positions 6-7</text>
-  <text x="445" y="475" fill="#ffd700" font-size="10" font-weight="700">SURFACED VOCABULARY:</text>
-  <text x="445" y="493" fill="#e6edf3" font-size="10">GET BLEAR, A DAY FIR VE, PRE DAMP,</text>
-  <text x="445" y="510" fill="#e6edf3" font-size="10">BIG LED DAYS, ACT, ABYE APPS, GO MOTH</text>
-
-  <!-- Panel C -->
-  <rect x="730" y="350" width="290" height="185" rx="6" fill="#0d1117" stroke="#a371f7" stroke-width="2"/>
-  <rect x="730" y="350" width="290" height="26" rx="6" fill="#6e40c9"/>
-  <text x="875" y="368" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">PANEL C (12x12 Square = 144 chars)</text>
-  <text x="745" y="395" fill="#58a6ff" font-size="11" font-weight="700">Cols 24..35 | Score: -7.0865</text>
-  <text x="745" y="413" fill="#a371f7" font-size="13" font-weight="700">59.3% Valid Quadgrams (Stationary)</text>
-  <text x="745" y="433" fill="#c9d1d9" font-size="10">Symmetry: Pairs (4,7) &amp; (5,6) adjacent</text>
-  <text x="745" y="450" fill="#c9d1d9" font-size="10">Adjacent Pairs: Pos 7-8 and 9-10</text>
-  <text x="745" y="475" fill="#ffd700" font-size="10" font-weight="700">SURFACED VOCABULARY:</text>
-  <text x="745" y="493" fill="#e6edf3" font-size="10">ADD, PROP, DAY, TON, LOOKOUT,</text>
-  <text x="745" y="510" fill="#e6edf3" font-size="10">HUNK, WE SHALL PLOW, TRY BAG, RAFT, DAD</text>
-
-  <!-- Right Padding (Cols 38-41) -->
-  <rect x="1030" y="350" width="110" height="185" rx="4" fill="#21262d" stroke="#f85149" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="1085" y="440" text-anchor="middle" fill="#f85149" font-size="11" font-weight="700">Right Pad</text>
-  <text x="1085" y="460" text-anchor="middle" fill="#f85149" font-size="11" font-weight="700">(4 Columns)</text>
-  <text x="1085" y="525" text-anchor="middle" fill="#8b949e" font-size="9">Encodes 44'' W &amp; 8' W</text>
-
-  <!-- Row 3: The Dual-Cipher GPS Coordinate System -->
-  <rect x="40" y="580" width="1120" height="280" rx="8" fill="url(#panelGrad)" stroke="#30363d" stroke-width="1"/>
-  <text x="60" y="605" fill="#ffd700" font-size="14" font-weight="700" letter-spacing="1">SECTION III: DUAL-CIPHER GPS COORDINATE THEOREM (CIA HEADQUARTERS LANGLEY)</text>
-  <text x="60" y="623" fill="#8b949e" font-size="11">The boundary padding characters of PK9 and PK10 form a cryptographic key-pair encoding the exact sculpture GPS coordinates.</text>
-
-  <!-- Big Coordinate Callout -->
-  <rect x="60" y="640" width="1080" height="50" rx="6" fill="#0d1117" stroke="#ffd700" stroke-width="1.5"/>
-  <text x="600" y="672" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="700" letter-spacing="2">38° 57' 6" N,  77° 8' 44" W</text>
-
-  <!-- Coordinate Details Grid -->
-  <rect x="60" y="705" width="255" height="135" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-  <text x="80" y="730" fill="#58a6ff" font-size="13" font-weight="700">LATITUDE: 38° N</text>
-  <text x="80" y="750" fill="#3fb950" font-size="11">Source: PK10 Padding</text>
-  <text x="80" y="770" fill="#c9d1d9" font-size="10">Sum_Kr(Col 1) = 166</text>
-  <text x="80" y="787" fill="#c9d1d9" font-size="10">Sum_Kr(Col 5) = 128</text>
-  <text x="80" y="810" fill="#ffd700" font-size="11" font-weight="700">166 - 128 = 38° N</text>
-
-  <rect x="335" y="705" width="255" height="135" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-  <text x="355" y="730" fill="#58a6ff" font-size="13" font-weight="700">MINUTES &amp; SECONDS: 57' 6" N</text>
-  <text x="355" y="750" fill="#3fb950" font-size="11">Source: PK9 Padding</text>
-  <text x="355" y="770" fill="#c9d1d9" font-size="10">Sum_Kr(J V R M) = 16+22+1+18 = 57'</text>
-  <text x="355" y="787" fill="#c9d1d9" font-size="10">Sum_Kr,1(JVRMBAUON) = 126 = 6(60)</text>
-  <text x="355" y="810" fill="#ffd700" font-size="11" font-weight="700">Tail AUON = 52 = 0 mod 26</text>
-
-  <rect x="610" y="705" width="255" height="135" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-  <text x="630" y="730" fill="#58a6ff" font-size="13" font-weight="700">LONGITUDE: 77° W</text>
-  <text x="630" y="750" fill="#3fb950" font-size="11">Source: PK10 Padding</text>
-  <text x="630" y="770" fill="#c9d1d9" font-size="10">Row 0 Padding: LUJDPT</text>
-  <text x="630" y="787" fill="#c9d1d9" font-size="10">11 + 20 + 9 + 3 + 15 + 19</text>
-  <text x="630" y="810" fill="#ffd700" font-size="11" font-weight="700">Sum_Std = 77° W</text>
-
-  <rect x="885" y="705" width="255" height="135" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-  <text x="905" y="730" fill="#58a6ff" font-size="13" font-weight="700">MINUTES &amp; SECONDS: 8' 44" W</text>
-  <text x="905" y="750" fill="#3fb950" font-size="11">Source: PK10 Padding</text>
-  <text x="905" y="770" fill="#c9d1d9" font-size="10">Col 40 - Col 29 (Kr) = 155-147 = 8'</text>
-  <text x="905" y="787" fill="#c9d1d9" font-size="10">Col 40 - Col 5 (Std) = 152-108 = 44''</text>
-  <text x="905" y="810" fill="#ffd700" font-size="11" font-weight="700">Col 0: 156 = 0 mod 26</text>
+  <rect x="620" y="465" width="540" height="180" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+  <rect x="620" y="465" width="540" height="42" rx="10" fill="#6e40c9"/>
+  <text x="890" y="493" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">RESEARCH DISCIPLINE</text>
+  <text x="645" y="545" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">1. State every assumed layer, key space, and scoring model.</text>
+  <text x="645" y="575" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">2. Validate attacks on independent planted controls.</text>
+  <text x="645" y="605" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">3. Publish an answer only after complete round-trip verification.</text>
 </svg>

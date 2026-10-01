@@ -83,12 +83,6 @@ for k, v in verified_pts.items():
 with open("pk_verified_solutions.json", "w") as f:
     json.dump(verified_json, f, indent=2)
 
-# Load the still-unverified PK10 candidate record.
-with open("pk10_record_6943.txt") as f:
-    pt10_lines = [l.strip() for l in f if l.startswith("# Row") and "(" in l and "len" not in l]
-pt10_rows = [l.split(":")[1].split("(")[0].strip() for l in pt10_lines[:12]]
-pt10_core = "".join(r if len(r)==36 else r[2:38] for r in pt10_rows)
-
 master_manifest = {}
 for k in [f"PK{i}" for i in range(1, 9)]:
     v = verified_pts[k]
@@ -124,8 +118,7 @@ master_manifest["PK8"] = {
     "verification": "Local encryption and decryption match all 153 letters; see verify_pk8_solution.py"
 }
 
-# PK9 remains unsolved. The former `JVRMBLARDADEFUNCT...` candidate was
-# invalidated; do not serialize it as a solution or a mathematically proven core.
+# PK9 remains unsolved. Do not serialize incomplete leads as a solution.
 ct9 = cts["PK9"]
 master_manifest["PK9"] = {
     "status": "UNSOLVED",
@@ -133,38 +126,25 @@ master_manifest["PK9"] = {
     "title": "PK9",
     "ciphertext_length": len(ct9),
     "ciphertext": ct9,
-    "tested_hypothesis": "Q(5)+Q(6)+Q(7) then complete T(8), unverified",
-    "result": "No solution; bounded exact-crib exclusions only",
-    "report": "PK9_Q567_T8_EXACT_CRIB_REPORT.md"
+    "tested_hypothesis": "Q(5)+Q(6)+Q(7) with a complete T(8), unverified",
+    "result": "No solution; bounded exact-crib and global-phase bridge exclusions only",
+    "reports": [
+        "PK9_Q567_T8_EXACT_CRIB_REPORT.md",
+        "PK9_PK8_PHASE_BRIDGE_REPORT.md"
+    ],
+    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
 }
 
-# PK10
+# PK10 remains unsolved. Do not serialize an unverified research lead as a plaintext solution.
 ct10 = cts["PK10"]
 master_manifest["PK10"] = {
-    "status": "UNSOLVED EMPIRICAL FRONTIER",
+    "status": "UNSOLVED",
     "challenge_id": "PK10",
-    "title": "PK10 — The Unravelling of the Knot",
-    "cipher_mechanism": "3-Clock CRT Additive System {Q7, Q8, Q9} (lcm=504) + 12x36 Modular Triptych Columnar Transposition",
+    "title": "PK10",
     "ciphertext_length": len(ct10),
-    "core_length": 432,
-    "padding_length": 72,
     "ciphertext": ct10,
-    "clocks": {
-        "q7": [0, 9, 5, 17, 10, 2, 24],
-        "q8": [0, 8, 16, 15, 16, 3, 6, 20],
-        "q9": [16, 0, 19, 9, 7, 23, 6, 16, 18]
-    },
-    "core_36_columns": [34, 28, 15, 3, 0, 2, 21, 13, 38, 12, 30, 17, 23, 25, 26, 16, 20, 37, 39, 7, 31, 33, 32, 36, 22, 35, 27, 10, 9, 41, 8, 19, 11, 18, 14, 6],
-    "core_plaintext": pt10_core,
-    "core_metrics": {
-        "quadgram_score": -6.9030,
-        "valid_quadgram_pct": 61.4,
-        "panelA_valid_pct": 70.4,
-        "monogram_ioc": 0.04563,
-        "rare_letter_count": 12,
-        "lexical_word_coverage": "70.1% (303 / 432 characters)"
-    },
-    "embedded_coordinates": "Latitude: 38 deg N (Col 1 - Col 5 = 38); Longitude: 77 deg W (Row 0 pad = 77), 8 min W (Col 40 - Col 29 = 8), 44 sec W (Col 40 - Col 5 = 44); Mean ASCII = 77.14 (Decimal Longitude 77.14 deg W)"
+    "result": "No verified plaintext or construction",
+    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
 }
 
 with open("pk_submission_manifest.json", "w") as f:

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kryptos & Paradigm Kryptos — Master Cryptanalytic Suite</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="archive.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
 </head>
 <body>
@@ -22,16 +23,17 @@
     <div class="logo-container">
       <div class="logo-badge">KRYPTOS</div>
       <div class="logo-title">
-        <h1>PARADIGM & CIA KRYPTOS RESEARCH SUITE</h1>
-        <p>Comprehensive Decryption Engine, Verification Suite & Book Manuscript</p>
+        <h1><span class="title-wide">PARADIGM &amp; CIA KRYPTOS RESEARCH SUITE</span><span class="title-compact">Kryptos Research</span></h1>
+        <p>Verified Solutions, Reproducible Methods &amp; Open Research</p>
       </div>
     </div>
     <nav>
-      <button class="nav-tab active" data-target="cipher-explorer">Ciphers (PK1–10 & K1–4)</button>
-      <button class="nav-tab" data-target="sculpture-visualizer">Sculpture Architecture</button>
-      <button class="nav-tab" data-target="book-reader">Manuscript Reader</button>
-      <button class="nav-tab" data-target="workbench">Cryptanalytic Workbench</button>
-      <button class="nav-tab" data-target="github-guide">GitHub & Deploy Guide</button>
+      <button class="nav-tab active" data-target="cipher-explorer"><span class="nav-label-wide">Ciphers (PK1–10 &amp; K1–4)</span><span class="nav-label-compact">Ciphers</span></button>
+      <button class="nav-tab" data-target="sculpture-visualizer"><span class="nav-label-wide">Sculpture Architecture</span><span class="nav-label-compact">Map</span></button>
+      <button class="nav-tab" data-target="book-reader"><span class="nav-label-wide">Manuscript Reader</span><span class="nav-label-compact">Reader</span></button>
+      <button class="nav-tab" data-target="workbench"><span class="nav-label-wide">Cryptanalytic Workbench</span><span class="nav-label-compact">Workbench</span></button>
+      <button class="nav-tab" data-target="unsolved-archive"><span class="nav-label-wide">Unsolved Cipher Archive</span><span class="nav-label-compact">Archive</span></button>
+      <button class="nav-tab" data-target="github-guide"><span class="nav-label-wide">GitHub &amp; Deploy Guide</span><span class="nav-label-compact">Guide</span></button>
     </nav>
   </header>
 
@@ -52,6 +54,7 @@
             <div class="detail-title">
               <h2 id="detail-title">Loading Cipher...</h2>
               <p id="detail-subtitle">Mechanism details</p>
+              <a id="detail-challenge-link" class="challenge-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Open official challenge ↗</a>
             </div>
             <div>
               <span id="detail-status-badge" class="cipher-badge badge-frontier">FRONTIER</span>
@@ -92,8 +95,14 @@
 
           <!-- Plaintext Display -->
           <div class="text-section">
-            <h3>Plaintext (Verified Decryption / Frontier State)</h3>
-            <pre class="code-display plaintext-highlight" id="detail-pt">-</pre>
+            <h3 id="detail-pt-heading">Verified Plaintext</h3>
+            <pre class="code-display" id="detail-pt">-</pre>
+          </div>
+
+          <!-- Reproducible Method -->
+          <div class="text-section" id="detail-method-section" hidden>
+            <h3>Method &amp; Verification</h3>
+            <div class="code-display" id="detail-method">-</div>
           </div>
 
           <!-- Cryptanalytic Notes -->
@@ -110,7 +119,7 @@
       <div class="sculpture-container">
         <h2>Paradigm Kryptos Sculpture & Physical Architecture Map</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">
-          Vector schematic depicting the $12 	imes 42$ copper matrix panels, 3-clock harmonic gears, and CIA Langley GPS coordinate padding arithmetic.
+          Status and verification map for the solved PK1–PK8 sequence and the open PK9 and PK10 research frontiers.
         </p>
         <div class="sculpture-svg-wrapper">
           <img src="architecture.svg" alt="Paradigm Kryptos Architecture Map" style="max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; background: #0b0e14;">
@@ -142,7 +151,7 @@
 K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
 </code></pre>
 <div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">This manuscript provides the definitive, publication-ready mathematical and historical record explaining how the entire cryptosystem functions, from the opening accession log of PK1 to the final mathematical locks of PK9 and PK10.</p>
+<p style="margin-bottom: 10px; color: var(--text-main);">This research reader separates verified results from active investigation: it documents the solved PK1–PK8 sequence and the open PK9 and PK10 challenges without presenting speculation as a decryption.</p>
 <div style="height: 8px;"></div>
 <p style="margin-bottom: 10px; color: var(--text-main);">---</p>
 <div style="height: 8px;"></div>
@@ -192,208 +201,56 @@ K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
 <p style="margin-bottom: 10px; color: var(--text-main);">##</p>
 </div>
 <div id="book-ch-2" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 2: DECOUPLING AND BREAKING PK8 ($N = 153$)</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">2.1 The Cryptographic Engine &amp; Period Progression</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">Following the master smith&#x27;s instruction in PK7, **PK8** ($N = 153$) initiates the physical forging of the needle.</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Cipher Mechanism**: Additive 4-Clock Quagmire III system over the keyed Kryptos alphabet:</li>
-<p style="margin-bottom: 10px; color: var(--text-main);">  $$P_i = \left( C_i - (q_4[i \bmod 4] + q_5[i \bmod 5] + q_6[i \bmod 6] + q_7[i \bmod 7]) \right) \bmod 26$$</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Aggregate Keystream Period**: $\operatorname{lcm}(4, 5, 6, 7) = 420$.</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Degrees of Freedom**: $4 + 5 + 6 + 7 - 3 = 19$ independent parameters over $\mathbb{Z}_{26}$.</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Historical Solved Status**: On September 6, 2026, Kevin Hu (`@_newhaiku`) solved PK8 after 86 days; verified by Dan Robinson. Official plaintext sealed in custody.</li>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">2.2 The Orthogonal Sub-Lattice Stride Decoupling Theorem</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">Because $N = 153 &lt; 420$, naive statistical search encounters an unidentifiability barrier. However, by exploiting the **Least Common Multiples** of clock subsets, individual clocks can be completely isolated with zero crosstalk:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">1. **Stride $d = 60 = \operatorname{lcm}(4, 5, 6)$ (Isolates Clock 7)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $60 \equiv 0 \pmod{4}$, $60 \equiv 0 \pmod{5}$, $60 \equiv 0 \pmod{6}$.</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Clocks 4, 5, and 6 vanish identically ($\Delta = 0$). Evaluated all 4,826,809 parity-constrained states in $\mathbb{Z}_{26}^7$ via `solve_exact_q7_pk8.c`; uniquely identified global maximum-likelihood Clock 7:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$\mathbf{Q_7 = [0, 19, 5, 9, 12, 4, 4] \implies K \quad N \quad O \quad C \quad F \quad T \quad T} \quad (\text{Mnemonic: } \mathbf{KNOC} / \mathbf{KNOT})$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">2. **Stride $d = 84 = \operatorname{lcm}(4, 6, 7)$ (Isolates Clock 5)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Clocks 4, 6, and 7 vanish identically. Evaluated all 456,976 states in $\mathbb{Z}_{26}^5$; resolved global ML Clock 5:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$\mathbf{Q_5 = [0, 25, 12, 5, 18] \implies K \quad Z \quad F \quad O \quad M}$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">3. **Stride $d = 140 = \operatorname{lcm}(4, 5, 7)$ (Isolates Clock 6)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Clocks 4, 5, and 7 vanish identically. Evaluated all 11,881,376 states in $\mathbb{Z}_{26}^6$; resolved global ML Clock 6:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$\mathbf{Q_6 = [0, 0, 8, 17, 10, 18] \implies K \quad K \quad B \quad L \quad D \quad M}$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">4. **Decoupled Stream $Y = C - (Q_5 + Q_6 + Q_7)$ (Isolates Clock 4)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Subtracting the three isolated clocks reduces $Y$ to a pure period-4 monoalphabetic stream:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   - **Slice 1 Monogram IoC**: Measured at **`0.06117`** (**authentic literary English IoC**).</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   - Global ML Clock 4: $\mathbf{Q_4 = [17, 1, 7, 22] \implies L \quad R \quad A \quad V}$.</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">2.3 The Quadgram/Lexical Maximizer State</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">In parallel with orthogonal stride decoupling, simulated annealing on English quadgrams and dynamic programming word segmentation converged to the **stationary quadgram frontier**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\begin{aligned}</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">Q_4 &amp;= [0, 6, 13, 20] \quad (\text{Arithmetic progression: } +6, +7, +7, +6 = 26 \equiv 0 \bmod 26) \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">Q_5 &amp;= [3, 4, 15, 0, 10] \quad (\text{Proven unique global maximum out of } 11,881,376 \text{ states}) \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">Q_6 &amp;= [3, 18, 15, 25, 20, 4] \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">Q_7 &amp;= [10, 2, 24, 0, 9, 5, 17] = \operatorname{rot}_4(Q_7^{\text{PK10}}) \quad (\mathbf{q}_7 = [0, 1, 1, 1, 0, 0, 0]_2)</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\end{aligned}$$</p>
-<div style="height: 8px;"></div>
-<li style="margin-left: 20px; color: var(--text-main);">**Plaintext Candidate ($N = 153$)**:</li>
-<p style="margin-bottom: 10px; color: var(--text-main);">  ```text</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  NRHPXXOEICEJAANOSSOYBUIFLBVVOGFUNOITTHSETEHFANCPLBGLSNTEEVNVZBDELQBONIATIQBSFKTTTBAUGNTHEELHASOCENDFGTHSYORTSUODSEDAWPEYONHEACLITTDHUSSIKEYJMHELODYUDOPTN</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  ```</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Metrics**: Score `-7.3259` | **71.2% lexical word coverage** (109 / 153 chars) | Monogram IoC **`0.05022`** | 38 recovered English words (`ICE`, `FUN`, `SET`, `FAN`, `THEE`, `HEEL`, `HAS`, `END`, `ORTS`, `DAW`, `YON`, `LIT`, `KEY`, `MELODY`, `OPT`).</li>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-3" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 3: CRACKING PK9 — THE 135-CHARACTER ARTISAN TEXT ($N = 144$)</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.1 The Two-Stage Columnar Transposition &amp; Reflection Invariants</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">PK9 features an inner two-stage columnar transposition followed by an outer period-28 polyalphabetic substitution:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">1. **Stage 2 Invariant ($p_2$)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$p_2 = [7, 0, 5, 2, 4, 3, 6, 1]$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Governed by an exact alternating reflection law in $\mathbb{Z}_8$:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$\forall k \in \{0, 1, 2, 3\}, \quad p_2[2k] + p_2[2k+1] = 7$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Pairwise difference spans $|p_2[2k] - p_2[2k+1]|$ are the descending odd integers $\{7, 3, 1, 5\}$, proving an intentional geometric fold across the matrix centerline ($x = 3.5$).</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">2. **Stage 1 Invariant ($p_1$)**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   $$p_1 = [15, 1, 3, 7, 6, 0, 17, 9, 13, 12, 5, 4, 2, 10, 11, 14, 16, 8]$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">   Exhibits bilateral reflection symmetry of complementary pairs in $\mathbb{Z}_{18}$ ($x + y = 17$).</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.2 The 9-Character Boundary Padding Theorem ($144 - 9 = 135$)</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">Raw ciphertext length is $N = 144 = 18 \times 8$. Removing 5 null padding characters at the head (`JVRMB`) and 4 null padding characters at the tail (`AUON`) exposes the authentic **135-character artisan text**:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$144 - (5 + 4) = 135 = 15 \times 9 = 27 \times 5$$</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.3 Multi-Word Polyalphabetic Interlocking Proof (Phases 0 and 17)</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">The period-28 substitution schedule is governed by 28 shifts $s_{28}$. An exhaustive trace across all positions sharing Phase 0 and Phase 17 proves mathematical rigidity:</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Phase 17 ($s[17] = 23$)**: Simultaneously generates `&#x27;E&#x27;` in **`ORES`**, `&#x27;S&#x27;` in **`FAT SERED`**, `&#x27;H&#x27;` in **`THEE DAMES`**, and `&#x27;Q&#x27;` in **`ORD. Q. BOOM`**. Changing $s[17]$ from 23 to 6 destroys three confirmed English words.</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Phase 0 ($s[0] = 25$)**: Simultaneously generates `&#x27;U&#x27;` in **`DEFUNCT`**, `&#x27;A&#x27;` in **`PRAY`**, `&#x27;A&#x27;` in **`ALSO`**, `&#x27;R&#x27;` in **`ORES`**, `&#x27;Q&#x27;` in **`QUNGLAYIM`**, and `&#x27;J&#x27;` in **`SKWJER`**.</li>
-<li style="margin-left: 20px; color: var(--text-main);">*Mathematical Verdict*: The tokens **`ORD. Q. BOOM`** (Ordnance Quartermaster Boom), **`SKWJER`** (whitesmith phonetic `SKEWER`), and **`QUNGLAYIM`** (Theophilus Book III Ch. 19: `QUENCH LAY HIM`) are authentic intended Early Modern whitesmith orthography.</li>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.4 Plaintext Exegesis (*De Diversis Artibus*, Book III)</h3>
-<pre class="code-display"><code>
-Continuous Decrypted Core Plaintext:
-LARDADEFUNCTORDQBOOMRBETHSKWJEREASTYMARINPRAYIALMSOISEARVEMYLAILEBOTHEEDAMESQUNGLAYIMIRLOFATSEREDCISANTIDBYOUSCHESALSOMYRELIFORESSESTIA
-
-Verbatim Artisan Reading:
-LARD A DEFUNCT ORD. Q. BOOM R BETH SKWJER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY IM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA
-
-Regularized Modern English Reading (99.3% Valid Quadgrams, Score -4.7282):
-LARD A DEFUNCT ORDER BOOM R BETH SKEWER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY HIM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA
-</code></pre>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-4" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 4: CRACKING PK10 — THE MODULAR COPPER TRIPTYCH ($N = 504$)</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">4.1 The Chinese Remainder Theorem Single-Cycle Engine</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">PK10 is governed by a three-clock additive Quagmire III system whose clock lengths are pairwise coprime:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\operatorname{gcd}(7, 8) = \operatorname{gcd}(7, 9) = \operatorname{gcd}(8, 9) = 1$$</p>
-<li style="margin-left: 20px; color: var(--text-main);">Aggregate Period: $\operatorname{lcm}(7, 8, 9) = 7 \times 8 \times 9 = \mathbf{504 \text{ characters}}$.</li>
-<li style="margin-left: 20px; color: var(--text-main);">Because the ciphertext length equals the CRT period ($N = 504$), the keystream forms a **single non-repeating bijection**, maximizing diffusion ($99.1\%$ Shannon entropy).</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Proven Clocks**:</li>
-<p style="margin-bottom: 10px; color: var(--text-main);">  $$\begin{aligned}</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  Q_7 &amp;= [0, 9, 5, 17, 10, 2, 24] \quad \implies \quad \mathbf{K \quad C \quad O \quad L \quad D \quad Y \quad X \quad (COLD \; LOCK)} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  Q_8 &amp;= [0, 8, 16, 15, 16, 3, 6, 20] \quad \implies \quad \mathbf{K \quad B \quad J \quad I \quad J \quad P \quad S \quad Q \quad (SKIP)} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  Q_9 &amp;= [16, 0, 19, 9, 7, 23, 6, 16, 18] \quad \implies \quad \mathbf{J \quad K \quad N \quad C \quad A \quad W \quad S \quad J \quad M}</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  \end{aligned}$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  - **Mnemonic Anchor**: Clock 7 spells **`COLD LOCK`** (`KCOLD`), aligning with Sanborn&#x27;s K4 clue **`BERLIN CLOCK`** and Theophilus&#x27;s cold water quenching instructions.</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">  - **Information Metrics**: Monogram IoC = **`0.04563`** (97.7% of theoretical upper bound $\le 0.04788$); rare letters suppressed by **88%** ($66.5 \to 8$ in core, 1.85%).</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">4.2 The $12 \times 12$ Modular Triptych Theorem ($3 \times 144 = 432$)</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">The physical copper sculpture at CIA Langley consists of three curved panels. PK10&#x27;s core grid maps directly to this architecture:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\text{PK9 Dimension} = 144 = 12 \times 12$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\text{PK10 Core Dimension} = 432 = 3 \times 144 = 3 \times (12 \times 12)$$</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\text{PK10 Outer Padding} = 6 \text{ columns} \times 12 \text{ rows} = 72 \text{ characters} \implies 432 + 72 = 504$$</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">The 36 core columns partition into three $12 \times 12$ panels:</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Panel A (Cols 0..11)**: **70.4% valid quadgrams** (Score `-6.5111`, bilateral symmetry $x+y=11$).</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Panel B (Cols 12..23)**: 61.1% valid quadgrams (Score `-6.7957`, 2-opt/3-opt stationary).</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Panel C (Cols 24..35)**: 59.3% valid quadgrams (Score `-7.0865`, 2-opt/3-opt stationary).</li>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">4.3 Word-Boundary Dynamic Programming Segmentation (70.1% Coverage)</h3>
-<pre class="code-display"><code>
-Row  0 (63.9%): IK [NOOK] [RAP] [PROW] N S T S I V H N B M [DAG] A V J P P X E S [ADD]
-Row  1 (69.4%): W S C I L [MAT] [BY] [VAS] [GET] [BLEAR] P I L A K C N [PROP] N W Q P
-Row  2 (69.4%): [AD] [YER] [KUUP] [TEA] [ADAY] [FIR] V E [GRUNGE] W R F R R L X V P
-Row  3 (63.9%): T M [IE] [TIM] [MAE] [BY] [KET] E V [ORT] [DE] [HANT] T G R I V M P M K [NE]
-Row  4 (66.7%): C G K [KOL] [GOD] [GOES] [PREDAMP] I H C K Y K [LI] C F N [DAY] [MA]
-Row  5 (83.3%): [ID] [YE] K V [OCH] [LY] H [FOU] [BIG] [LED] [AY] [SLY] [TON] [DESI] F F C
-Row  6 (66.7%): [VERI] [SLANT] S P [ELD] H H N M N [MY] [PA] V P F [WER] C K [LOCOU]
-Row  7 (72.2%): K E [VIVA] [GRUN] [WAIT] [TH] I H C Z [CHEVR] D V R [PHI] [HUNK] R
-Row  8 (72.2%): [OH] [AVE] [WA] [PRIA] P Q V W [PO] C I C K [ACT] V [CUM] [BAUL] F [NIG]
-Row  9 (86.1%): X P [DAL] [WRY] [SWE] [FA] [BYE] [APPS] P B W [SAH] [TD] [IF] [WESHPL]
-Row 10 (63.9%): [TU] K [FLY] [CIG] [ER] N D [GOI] [MOTH] K W K G W V T T [BRA] F [TRY] B
-Row 11 (63.9%): [ER] U L [YARR] F [WY] I G J V G P G Y [IAN] [HO] [UP] [ID] [AD] [BU] [BY] S U
-</code></pre>
-<p style="margin-bottom: 10px; color: var(--text-main);">**Total Lexical Word Coverage**: **303 / 432 characters (70.1%)**.</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-5" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 5: THE DUAL-CIPHER GPS SCULPTURE THEOREM</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">The official geographical coordinates of the Kryptos sculpture at CIA Headquarters in Langley, Virginia, are:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\mathbf{38^\circ \; 57&#x27; \; 6.5&#x27;&#x27; \text{ N}, \quad 77^\circ \; 8&#x27; \; 44&#x27;&#x27; \text{ W} \quad (77.1455^\circ \text{ W})}$$</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">The boundary padding characters across PK9 (9 chars) and PK10 (72 chars) arithmetically embed every single component of this coordinate:</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\begin{aligned}</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Latitude Degrees (38° N)}:  &amp;\quad \text{PK10: } \text{Sum}_{\text{Kr}}(\text{Col } 1) - \text{Sum}_{\text{Kr}}(\text{Col } 5) = 166 - 128 = \mathbf{38} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Latitude Minutes (57&#x27; N)}:  &amp;\quad \text{PK9: }  \text{Sum}_{\text{Kr}}(\text{J V R M}) = 16 + 22 + 1 + 18 = \mathbf{57} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Latitude Seconds (6&#x27;&#x27; N)}:  &amp;\quad \text{PK9: }  \text{Sum}_{\text{Kr, 1-idx}}(\text{All 9: } \text{JVRMBAUON}) = 126 \equiv \mathbf{6 \pmod{60}} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Longitude Degrees (77° W)}: &amp;\quad \text{PK10: } \text{Sum}_{\text{Std}}(\text{Row } 0 \text{ Pad: } \text{LUJDPT}) = 11+20+9+3+15+19 = \mathbf{77} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Longitude Minutes (8&#x27; W)}:  &amp;\quad \text{PK10: } \text{Sum}_{\text{Kr}}(\text{Col } 40) - \text{Sum}_{\text{Kr}}(\text{Col } 29) = 155 - 147 = \mathbf{8} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Longitude Seconds (44&#x27;&#x27; W)}: &amp;\quad \text{PK10: } \text{Sum}_{\text{Std}}(\text{Col } 40) - \text{Sum}_{\text{Std}}(\text{Col } 5) = 152 - 108 = \mathbf{44} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Decimal Longitude Mean}:     &amp;\quad \text{PK10: } \text{Mean ASCII of 72 Padding Chars} = 5,554 / 72 = \mathbf{77.14} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Modular Null 1}:            &amp;\quad \text{PK9: }  \text{Tail AUON} = 52 = 2 \times 26 \equiv \mathbf{0 \pmod{26}} \\</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\text{Modular Null 2}:            &amp;\quad \text{PK10: } \text{Col } 0 = 156 = 6 \times 26 \equiv \mathbf{0 \pmod{26}}</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">\end{aligned}$$</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-6" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 6: GRAND CRYPTOSYSTEM SYNTHESIS &amp; UNIVERSAL INVARIANTS</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">6.1 The Clock 7 Universal Pivot</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">Across the entire suite, Clock 7 acts as the structural carrier bridge:</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">$$\text{PK8: } [4, 5, 6, \mathbf{7}] \;\longrightarrow\; \text{PK9: } [4, \mathbf{7}] \;\longrightarrow\; \text{PK10: } [\mathbf{7}, 8, 9]$$</p>
-<div style="height: 8px;"></div>
-<h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">6.2 The Universal Colophon Signature</h3>
-<p style="margin-bottom: 10px; color: var(--text-main);">Every branch of the Kryptos canon concludes with the identical artisan colophon formula:</p>
-<li style="margin-left: 20px; color: var(--text-main);">**K2 Plaintext**: *&quot;ID BY BROWSING...&quot;*</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK9 Plaintext (Row 6)**: *&quot;...AND ID BY US...&quot;*</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK10 Plaintext (Row 11)**: *&quot;...UP ID BY US...&quot;*</li>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-7" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 7: MASTER SOLUTIONS DATABASE &amp; VERIFICATION MANIFEST</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_manifest.json` and `pk_verified_solutions.json`:</p>
-<li style="margin-left: 20px; color: var(--text-main);">**PK1**: `d3d3b769668d2a67a0a6ebaa31d99d300ebca58509e51b1f8ebf9bf928509e44`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK2**: `144f8f413d29ae6f103b44bce9435b719468903c73bb859a5d13ba596f0e74b3`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK3**: `f233bebcce9f0d148e658baaa8b9c6a1cf8d6b8b15d9daea9e517a6a4c281df6`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK4**: `87431e788bc559ee4e6f97ef78ad3813fffa8fcf6d62a22cf44b6c62c3e1e2d9`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK5**: `fc46271a3e87d8a6df6f6323cf10078b538da2f298ee62ff8cc4821a37c95e9f`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK6**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**PK7**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`</li>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">---</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">##</p>
-</div>
-<div id="book-ch-epilogue" class="book-chapter-block" style="margin-bottom: 40px;">
-<p style="margin-bottom: 10px; color: var(--text-main);">EPILOGUE: COMPLETE SUITE REPRODUCIBILITY ASSURANCE</p>
-<div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">Every proof, equation, and parameter in this manuscript is backed by the automated master test suite:</p>
-<li style="margin-left: 20px; color: var(--text-main);">**Runner**: `test_full_suite_reproducibility.py`</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Execution Time**: **4.65 seconds**</li>
-<li style="margin-left: 20px; color: var(--text-main);">**Test Results**: **11 / 11 automated test suites passing with 100% success rate**.</li>
-</div>
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 2: PK8 — VERIFIED SOLUTION AND REPRODUCIBLE METHOD</p>
+            <h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">2.1 Exact construction</h3>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK8 is solved. It applies four sequential Quagmire III layers over the keyed alphabet <code>KRYPTOSABCDEFGHIJLMNQUVWXZ</code>, in encryption order:</p>
+            <pre class="code-display"><code>METE → METER → METIER → MASTERY</code></pre>
+            <p style="margin-bottom: 10px; color: var(--text-main);">The 153-character plaintext is:</p>
+            <pre class="code-display plaintext-highlight"><code>ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER</code></pre>
+            <h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">2.2 Checkable recovery and verification</h3>
+            <p style="margin-bottom: 10px; color: var(--text-main);">To decrypt, apply the same layers in reverse order. The repository verifier encrypts this plaintext in the displayed order and decrypts the official ciphertext in reverse; both operations match all 153 characters. Its plaintext SHA-256 is <code>4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c</code>.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">A retrospective ciphertext-only recovery is also included in <code>break_pk8_structured.c</code>: enumerate dictionary insertion ladders of lengths 4, 5, and 6; score each residual period-7 slice to recover the final wheel; then rank the resulting complete decryptions with English quadgrams. The rank-one chain is <code>METE → METER → METIER</code> and the recovered seven-letter wheel is <code>MASTERY</code>. This is a reproducible recovery method, not a claim that PK8 had been independently solved before the public answer appeared.</p>
+          </div>
+          <div id="book-ch-3" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 3: PK9 — OPEN RESEARCH FRONTIER (N = 144)</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK9 is unsolved. No PK9 plaintext, key, padding scheme, or transposition order presented in this application should be treated as established unless it comes with a full re-encryption check against the 144-letter source ciphertext.</p>
+            <h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.1 Current bounded work</h3>
+            <p style="margin-bottom: 10px; color: var(--text-main);">A public community lead models three Quagmire III wheels of lengths 5, 6, and 7 with a complete width-8 transposition. This is an <strong>unverified hypothesis</strong>, not an official construction. The exact crib tools test finite portions of that hypothesis with planted controls that recover known synthetic messages before they are used on PK9.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">Current negative results include an exhaustive direct PK8-wheel bridge: all rotations and reversals of <code>METER / METIER / MASTERY</code>, all 26 common KRYPTOS-index offsets, both layer orders around a complete width-8 transposition, and all <code>8!</code> column assignments. Insertion-ladder word families and generated narrative and short-letter crib corpora have also been tested. These results rule out only the tested combinations. They do not prove the proposed architecture, nor do they yield a plaintext.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">The research ledgers are <code>kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md</code> and <code>kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md</code>.</p>
+          </div>
+          <div id="book-ch-4" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 4: PK10 — OPEN RESEARCH FRONTIER (N = 504)</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK10 is unsolved. The application deliberately displays only the official ciphertext and an explicit unsolved status. It does not label high-scoring rearrangements, apparent word fragments, guessed clock vectors, panels, padding, or coordinate patterns as plaintext.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">A valid PK10 solution must provide a precise reversible construction and reproduce every ciphertext character. Until then, proposed arrangements remain hypotheses.</p>
+          </div>
+          <div id="book-ch-5" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 5: RESEARCH-INTEGRITY RULES</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">A candidate is not a solution merely because it has English-looking fragments, a favorable n-gram score, an appealing narrative, or a geometric coincidence. This explorer now maintains a strict distinction:</p>
+            <ul style="margin-left: 20px; color: var(--text-main);">
+              <li><strong>Solved:</strong> a complete method re-encrypts to the published ciphertext.</li>
+              <li><strong>Hypothesis:</strong> an architecture or key family with clear assumptions.</li>
+              <li><strong>Negative result:</strong> a tested finite subset that produced no verified answer.</li>
+            </ul>
+            <p style="margin-top: 10px; margin-bottom: 10px; color: var(--text-main);">PK9 and PK10 belong to the latter two categories, not the first.</p>
+          </div>
+          <div id="book-ch-6" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 6: NEXT PK9 STEPS</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">The most useful next work is hypothesis-led and reproducible: collect independent source evidence for a construction, extend exact tests with synthetic controls, and prefer methods that couple key structure to the transposition without assuming a guessed plaintext. Repeating unconstrained optimization is not evidence of a break; on short text it can overfit noise.</p>
+          </div>
+          <div id="book-ch-7" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 7: VERIFICATION COMMANDS</p>
+            <pre class="code-display"><code>python3 kryptos/verify_pk8_solution.py
+cc -O3 -march=native -fopenmp kryptos/break_pk8_structured.c -o /tmp/pk8 -lm
+/tmp/pk8 --self-test
+cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
+/tmp/pk9 --self-test</code></pre>
+            <p style="margin-top: 10px; margin-bottom: 10px; color: var(--text-main);">The PK8 commands verify a solution. The PK9 command validates a research tool and its synthetic control; it does not claim a PK9 solve.</p>
+          </div>
+          <div id="book-ch-epilogue" class="book-chapter-block" style="margin-bottom: 40px;">
+            <p style="margin-bottom: 10px; color: var(--text-main);">EPILOGUE: STATUS AS OF 2026-10-01</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK1–PK8 are solved. PK9 and PK10 remain open on the official Paradigm leaderboard. This reader will show future answers only after a complete, independently checkable round trip.</p>
+          </div>
         </article>
       </div>
     </div>
@@ -449,7 +306,19 @@ Row 11 (63.9%): [ER] U L [YARR] F [WY] I G J V G P G Y [IAN] [HO] [UP] [ID] [AD]
       </div>
     </div>
 
-    <!-- Tab 5: GitHub Deployment Guide -->
+    <!-- Tab 5: Famous Unsolved Ciphers & Scripts -->
+    <div id="unsolved-archive" class="tab-pane">
+      <section class="archive-shell" aria-labelledby="archive-heading">
+        <div class="archive-intro">
+          <p class="eyebrow">RESEARCH REFERENCE</p>
+          <h2 id="archive-heading">Famous Unsolved Ciphers &amp; Scripts</h2>
+          <p>This is a curated reading archive, not a solution leaderboard. Some entries are conventional ciphertexts; others are short inscriptions or undeciphered scripts. Each card states its evidence boundary and links to a source so that uncertainty is visible rather than hidden.</p>
+        </div>
+        <div id="unsolved-archive-grid" class="archive-grid" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- Tab 6: GitHub Deployment Guide -->
     <div id="github-guide" class="tab-pane">
       <div class="github-guide-card">
         <h2>GitHub Repository & Deployment Guide</h2>
@@ -503,6 +372,7 @@ git push -u origin main</pre>
   </footer>
 
   <script src="data.js"></script>
+  <script src="unsolved-archive.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

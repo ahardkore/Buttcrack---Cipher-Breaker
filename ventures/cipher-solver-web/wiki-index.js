@@ -7,6 +7,12 @@ window.WIKI_INDEX = {
    "d": "A practical field guide to classical ciphers: how to recognise Caesar, Vigenère, substitution and Playfair, how they work, and what actually breaks them."
   },
   {
+   "t": "Famous Unsolved Ciphers & Scripts",
+   "s": "unsolved-ciphers.html",
+   "f": "History of codebreaking",
+   "d": "A sourced archive of seven famous unresolved cipher problems, with clear verification boundaries that separate a candidate reading from an accepted decipherment."
+  },
+  {
    "t": "The Caesar Cipher",
    "s": "caesar-cipher-wiki.html",
    "f": "Shift and reciprocal alphabets",

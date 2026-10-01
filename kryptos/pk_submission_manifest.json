@@ -102,98 +102,21 @@
     "title": "PK9",
     "ciphertext_length": 144,
     "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    "tested_hypothesis": "Q(5)+Q(6)+Q(7) then complete T(8), unverified",
-    "result": "No solution; bounded exact-crib exclusions only",
-    "report": "PK9_Q567_T8_EXACT_CRIB_REPORT.md"
+    "tested_hypothesis": "Q(5)+Q(6)+Q(7) with a complete T(8), unverified",
+    "result": "No solution; bounded exact-crib and global-phase bridge exclusions only",
+    "reports": [
+      "PK9_Q567_T8_EXACT_CRIB_REPORT.md",
+      "PK9_PK8_PHASE_BRIDGE_REPORT.md"
+    ],
+    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
   },
   "PK10": {
-    "status": "UNSOLVED EMPIRICAL FRONTIER",
+    "status": "UNSOLVED",
     "challenge_id": "PK10",
-    "title": "PK10 \u2014 The Unravelling of the Knot",
-    "cipher_mechanism": "3-Clock CRT Additive System {Q7, Q8, Q9} (lcm=504) + 12x36 Modular Triptych Columnar Transposition",
+    "title": "PK10",
     "ciphertext_length": 504,
-    "core_length": 432,
-    "padding_length": 72,
     "ciphertext": "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
-    "clocks": {
-      "q7": [
-        0,
-        9,
-        5,
-        17,
-        10,
-        2,
-        24
-      ],
-      "q8": [
-        0,
-        8,
-        16,
-        15,
-        16,
-        3,
-        6,
-        20
-      ],
-      "q9": [
-        16,
-        0,
-        19,
-        9,
-        7,
-        23,
-        6,
-        16,
-        18
-      ]
-    },
-    "core_36_columns": [
-      34,
-      28,
-      15,
-      3,
-      0,
-      2,
-      21,
-      13,
-      38,
-      12,
-      30,
-      17,
-      23,
-      25,
-      26,
-      16,
-      20,
-      37,
-      39,
-      7,
-      31,
-      33,
-      32,
-      36,
-      22,
-      35,
-      27,
-      10,
-      9,
-      41,
-      8,
-      19,
-      11,
-      18,
-      14,
-      6
-    ],
-    "core_plaintext": "IKNOOKRAPROWNSTSIVHNBMDAGAVJPPXESADDWSCILMATBYVASGETBLEARPILAKCNPROPNWQPADYERKUUPTEAADAYFIRVEGRUNGEWRFRRLXVPTMIETIMAEBYKETEVORTDEHANTTGRIVMPMKNECGKKOLGODGOESPREDAMPIHCKYKLICFNDAYMAIDYEKVOCHLYHFOUBIGLEDAYSLYTONDESIFFCVERISLANTSPELDHHNMNMYPAVPFWERCKLOCOUKEVIVAGRUNWAITTHIHCZCHEVRDVRPHIHUNKROHAVEWAPRIAPQVWPOCICKACTVCUMBAULFNIGXPDALWRYSWEFABYEAPPSPBWSAHTDIFWESHPLTUKFLYCIGERNDGOIMOTHKWKGWVTTBRAFTRYBERULYARRFWYIGJVGPGYIANHOUPIDADBUBYSU",
-    "core_metrics": {
-      "quadgram_score": -6.903,
-      "valid_quadgram_pct": 61.4,
-      "panelA_valid_pct": 70.4,
-      "monogram_ioc": 0.04563,
-      "rare_letter_count": 12,
-      "lexical_word_coverage": "70.1% (303 / 432 characters)"
-    },
-    "embedded_coordinates": "Latitude: 38 deg N (Col 1 - Col 5 = 38); Longitude: 77 deg W (Row 0 pad = 77), 8 min W (Col 40 - Col 29 = 8), 44 sec W (Col 40 - Col 5 = 44); Mean ASCII = 77.14 (Decimal Longitude 77.14 deg W)"
+    "result": "No verified plaintext or construction",
+    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
   }
 }

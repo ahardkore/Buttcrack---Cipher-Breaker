@@ -1,10 +1,13 @@
 /*
- * Test whether PK9 literally reuses PK8's Q5/Q6/Q7 keyword coordinates after
- * independent cyclic phase changes and optional reversal of each wheel.
+ * Test whether PK9 reuses PK8's Q5/Q6/Q7 keyword coordinates after independent
+ * cyclic phase changes, optional reversal of each wheel, and one common offset
+ * in KRYPTOS-index space.
  *
- * Every 5-, 6-, and 7-wheel dihedral transform is combined with every one of
- * the 8! complete-columnar permutations. Both Q->T and T->Q layer orders are
- * scored. This is a finite PK8/PK9 bridge test, not a general PK9 attack.
+ * The common offset tests a shifted indicator/alphabet alignment while keeping
+ * the relative PK8 wheel pattern intact. Every transform is combined with every
+ * one of the 8! complete-columnar permutations. Both Q->T and T->Q layer
+ * orders are scored. This is a finite PK8/PK9 bridge test, not a general PK9
+ * attack.
  *
  * Build from repository root:
  *   cc -O3 -march=native -fopenmp -Wall -Wextra -Werror \
@@ -24,7 +27,7 @@
 #define W 8
 #define H 18
 #define NPERM 40320
-#define NVAR (2*5*2*6*2*7)
+#define NVAR (26*2*5*2*6*2*7)
 #define TOP 20
 #define QSIZE (A*A*A*A)
 
@@ -45,7 +48,7 @@ static int nperm;
 typedef struct {
     float score;
     int order; /* 0 = Q then T; 1 = T then Q */
-    int phase5, reverse5, phase6, reverse6, phase7, reverse7;
+    int common_offset, phase5, reverse5, phase6, reverse6, phase7, reverse7;
     unsigned char perm[W];
     char plain[N + 1];
 } Hit;
@@ -100,7 +103,8 @@ static inline int transformed(const int *wheel, int length, int phase, int rever
     return wheel[at];
 }
 
-static void make_key(int key[N], int p5, int r5, int p6, int r6, int p7, int r7) {
+static void make_key(int key[N], int common_offset,
+                     int p5, int r5, int p6, int r6, int p7, int r7) {
     static int w5[5], w6[6], w7[7], initialized;
     if (!initialized) {
         const char *s5 = "METER", *s6 = "METIER", *s7 = "MASTERY";
@@ -110,7 +114,7 @@ static void make_key(int key[N], int p5, int r5, int p6, int r6, int p7, int r7)
         initialized = 1;
     }
     for (int i = 0; i < N; i++) {
-        key[i] = (transformed(w5, 5, p5, r5, i) +
+        key[i] = (common_offset + transformed(w5, 5, p5, r5, i) +
                   transformed(w6, 6, p6, r6, i) +
                   transformed(w7, 7, p7, r7, i)) % A;
     }
@@ -148,7 +152,7 @@ static void insert(Hit top[TOP], const Hit *hit) {
 static int self_test(void) {
     int key[N], source[N], encrypted[N];
     unsigned char perm[W] = {3, 0, 7, 1, 6, 4, 2, 5};
-    make_key(key, 2, 1, 3, 0, 4, 1);
+    make_key(key, 17, 2, 1, 3, 0, 4, 1);
     for (int i = 0; i < N; i++) source[i] = kindex[(unsigned char)CONTROL[i]];
     for (int i = 0; i < N; i++) {
         int row = i / W, col = i % W;
@@ -200,15 +204,17 @@ int main(int argc, char **argv) {
             int r6 = x % 2; x /= 2;
             int p6 = x % 6; x /= 6;
             int r5 = x % 2; x /= 2;
-            int p5 = x % 5;
+            int p5 = x % 5; x /= 5;
+            int common_offset = x;
             int key[N];
-            make_key(key, p5, r5, p6, r6, p7, r7);
+            make_key(key, common_offset, p5, r5, p6, r6, p7, r7);
             for (int pi = 0; pi < NPERM; pi++) {
                 for (int order = 0; order < 2; order++) {
                     Hit hit;
                     hit.score = evaluate(ct, key, perms[pi], order, hit.plain);
                     if (hit.score <= local[order][TOP - 1].score) continue;
                     hit.order = order;
+                    hit.common_offset = common_offset;
                     hit.phase5 = p5; hit.reverse5 = r5;
                     hit.phase6 = p6; hit.reverse6 = r6;
                     hit.phase7 = p7; hit.reverse7 = r7;
@@ -224,15 +230,16 @@ int main(int argc, char **argv) {
     double elapsed = omp_get_wtime() - started;
     printf("variants=%d permutations=%d candidates_per_order=%lld elapsed=%.3fs\n",
            NVAR, NPERM, (long long)NVAR * NPERM, elapsed);
+    printf("common_offset: one KRYPTOS-index offset applied after summing Q5/Q6/Q7\n");
 
     for (int order = 0; order < 2; order++) {
         printf("\n%s\n", order == 0 ? "Q5+Q6+Q7 then T8" : "T8 then Q5+Q6+Q7");
         for (int rank = 0; rank < TOP; rank++) {
             Hit *h = &global[order][rank];
-            printf("#%d score=%.6f q5=(phase=%d reverse=%d) q6=(phase=%d reverse=%d) "
+            printf("#%d score=%.6f common_offset=%d q5=(phase=%d reverse=%d) q6=(phase=%d reverse=%d) "
                    "q7=(phase=%d reverse=%d) block_at_col=[",
-                   rank + 1, h->score, h->phase5, h->reverse5, h->phase6, h->reverse6,
-                   h->phase7, h->reverse7);
+                   rank + 1, h->score, h->common_offset, h->phase5, h->reverse5,
+                   h->phase6, h->reverse6, h->phase7, h->reverse7);
             for (int i = 0; i < W; i++) printf("%d%s", h->perm[i], i == W - 1 ? "]\n" : ",");
             printf("plaintext=%s\n", h->plain);
         }
