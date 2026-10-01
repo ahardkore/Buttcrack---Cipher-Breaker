@@ -742,8 +742,7 @@ def cipher_page_specs() -> list[dict]:
                   "ciphertext into the solver and press the button."
                   if browser else
                   "Not with the browser build, which targets the common puzzle families. "
-                  "The full version of the solver searches it — "
-                  "pip install buttcrack, then buttcrack \"&lt;ciphertext&gt;\".")),
+                  "The desktop version searches it: see the Windows app page.")),
             ],
             "body": body,
             "wiki": {

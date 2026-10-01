@@ -129,6 +129,37 @@ A free ten-puzzle sampler is generated alongside the paid volumes. It exists to
 convert visitors who would never click a Buy button, and to give you something
 to link when someone asks for a recommendation.
 
+### 3b. The Windows desktop app — `windows-app.html`
+
+Same machinery, one important difference: **the installer is never served from
+this site.**
+
+The puzzle-book PDFs are regenerated on every deploy, so they can live in
+`files/` and ship with the site. The Windows installer cannot be — it needs
+Windows, PyInstaller and Inno Setup to build — and, more to the point, this
+repository and the site it publishes are both public. A paid `.exe` sitting in
+either one is a paid `.exe` anybody can take. `scripts/build_site.py` fails the
+deploy if it finds an executable in the assembled tree, so this cannot happen by
+accident.
+
+The installer therefore lives on storage you control and the site only ever
+holds its URL:
+
+1. Build it: `packaging\windows\build.ps1` (see
+   [`docs/windows-installer.md`](../docs/windows-installer.md)). It prints a
+   SHA-256.
+2. Upload `buttcrack-setup-<version>.exe` somewhere private-by-obscurity and
+   cheap — **Cloudflare R2** is the usual answer: 10 GB free, no egress charge
+   ever, custom domain in two clicks. Give the file an unguessable name.
+3. Put that URL in `site.json` under `windows_app.delivery_url`, along with the
+   `version`, `size` and `sha256` the build printed.
+4. In Stripe, set the payment link's post-payment redirect to the `winapp`
+   delivery URL that `build_pages.py` prints.
+
+Until step 3 is done the build prints a loud warning, and the delivery page
+tells buyers their download is coming by email rather than showing them a dead
+button. The sales page works either way.
+
 ### 4. GitHub Sponsors
 
 `.github/FUNDING.yml` puts a Sponsor button on the repo. This earns roughly

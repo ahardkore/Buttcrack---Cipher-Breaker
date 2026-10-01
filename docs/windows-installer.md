@@ -160,29 +160,49 @@ turned around in a few days.
 
 ---
 
-## Hosting it without GitHub
+## Hosting it
 
-The installer is a single static file. Anything that can serve a file over
-HTTPS can serve it. The user never needs to know where it came from.
+The installer is sold for $39.99 through a Stripe Payment Link on
+[`windows-app.html`](../ventures/cipher-solver-web/windows-app.html). That
+changes where it can live, and the rule is short:
 
-### Your own site
+> **Never put the installer in this repository, and never serve it from the
+> site.** Both are public. A paid `.exe` in either one is a paid `.exe` anyone
+> can help themselves to, and once it is in Git history it is there for good.
 
-The project already publishes a static site from
-`ventures/cipher-solver-web/`. Drop the installer in `files/` next to the
-puzzle-book PDFs and link to it from
-[`windows-app.html`](../ventures/cipher-solver-web/windows-app.html), which is
-already built and linked into the nav.
+`scripts/build_site.py` enforces this: it refuses to assemble a site tree
+containing an `.exe` or `.msi`, so a stray copy fails the deploy instead of
+quietly publishing the product. (`BUTTCRACK_PUBLISH_BINARIES=1` overrides it,
+for the day you decide to give something away.)
 
-One caveat if the site stays on GitHub Pages: there is a **100 MB hard limit
-per file** and a soft 1 GB limit for the whole repository, plus a ~100 GB/month
-bandwidth guideline. A 25 MB installer is fine on all three, but it is a binary
-in Git history forever, and every clone pays for it. Prefer one of the below
-and point the link at it — the page stays where it is, only the `href` changes.
+### How the sale actually flows
+
+```
+windows-app.html  --Buy for $39.99-->  Stripe Payment Link
+                                              |
+                                      post-payment redirect
+                                              v
+                              thank-you-<token>.html   (noindex, unlinked)
+                                              |
+                                     windows_app.delivery_url
+                                              v
+                                 your object storage, unguessable name
+```
+
+The delivery page is generated from the SKU and `stripe.delivery_salt`, so its
+URL survives rebuilds. `build_pages.py` prints it on every run — that is the
+value you paste into Stripe as the payment link's "after payment" redirect.
+
+Protection is deliberately light, exactly as it is for the puzzle books: an
+unguessable URL on a `noindex` page stops casual sharing and nothing more. Real
+entitlement checks need a server; for a one-off download that trade is not worth
+making. If it ever becomes a problem, Gumroad or Lemon Squeezy enforce
+entitlements for a cut of the sale.
 
 ### Object storage with a custom domain
 
-The best option if you want the download on your own domain and off GitHub
-entirely:
+This is where the file should go — pick one, upload, paste the URL into
+`site.json` under `windows_app.delivery_url`:
 
 | Host | Free tier | Egress | Notes |
 | --- | --- | --- | --- |
@@ -197,21 +217,29 @@ With R2, publishing a new version is:
 rclone copy dist/installer/buttcrack-setup-1.1.0.exe r2:buttcrack-downloads/
 ```
 
-then point the download link at `https://downloads.yourdomain/buttcrack-setup-1.1.0.exe`.
+Give the object a name nobody would guess — the unguessable URL *is* the
+paywall:
 
-### Static hosts that take a whole site
+```
+buttcrack-setup-1.1.0-7f3a9c2e51b04d88.exe
+```
 
-**Netlify**, **Vercel** and **Cloudflare Pages** all have free tiers, custom
-domains and will serve a 25 MB file without complaint. If you move the whole
-site to one of them, `scripts/build_site.py` already assembles the tree —
-point the host at `_site/` and nothing else changes.
+then paste `https://downloads.yourdomain/buttcrack-setup-1.1.0-7f3a9c2e51b04d88.exe`
+into `site.json`. Only the post-payment page ever shows it.
 
-### Paid distribution
+If your bucket supports it, turn off directory listing and set a long
+`Cache-Control`. You do not need signed URLs for a $39.99 download — but R2 and
+S3 both offer them if you later decide you want links that expire.
 
-If you ever want to charge for the desktop build, the puzzle books already go
-through Stripe. [Stripe Payment Links can deliver a file after
-checkout](https://docs.stripe.com/payment-links), and **itch.io** and
-**Gumroad** both host and sell Windows builds with a download page included.
+### Selling it somewhere that enforces entitlements
+
+The Stripe + unguessable-URL arrangement is light protection by design. If the
+file starts circulating and you care, these host *and* police the download for
+a cut of each sale, and you would drop the `delivery_url` plumbing entirely:
+
+* **Gumroad** — ~10% + fees, handles VAT, gives buyers a library and a licence key API.
+* **Lemon Squeezy** — merchant of record, so they handle sales tax worldwide.
+* **itch.io** — a good fit for puzzle and CTF audiences; you set the revenue share.
 
 ### Serving it correctly
 
@@ -235,14 +263,14 @@ Whatever you use, check these three:
 Not needed, but they are the other way people install Windows software without
 touching a browser:
 
-* **winget** — a manifest PR to `microsoft/winget-pkgs`. Needs a publicly
-  reachable installer URL and its SHA-256, which you already have. (The
-  manifest repository is on GitHub, but your users are not: they type
-  `winget install buttcrack`.)
+* **winget** — a manifest PR to `microsoft/winget-pkgs`.
 * **Chocolatey** — a `.nuspec` package, same idea.
 * **Scoop** — a JSON manifest in a bucket.
 
-All three only need the URL you are already serving.
+All three need a **publicly reachable** installer URL and its SHA-256, which is
+precisely what a paid product does not have. They are listed here for the day
+there is a free or trial build to put in them; submitting the paid installer
+would publish it.
 
 ---
 
@@ -266,7 +294,7 @@ run on one core on Windows and benefit from a larger `--budget`. Exhaustive and
 analytic attacks — Caesar, affine, Vigenère, XOR, every encoding — are
 unaffected.
 
-This is not something the installer introduced; `pip install buttcrack` on
-Windows behaves the same way. Fixing it means making the worker callables
+This is not something the installer introduced; running from a source checkout
+on Windows behaves the same way. Fixing it means making the worker callables
 picklable and using the `spawn` context, which is a change to the search
 engine, not to the packaging.

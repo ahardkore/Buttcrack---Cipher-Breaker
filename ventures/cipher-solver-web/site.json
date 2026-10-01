@@ -17,10 +17,14 @@
   },
   "_verification_files_note": "For the 'HTML file' method instead of the meta tag (Google Search Console, Bing). Map the exact filename to its exact contents; each is written to the site root on every build. Google's file is named googleXXXX.html and contains the single line 'google-site-verification: googleXXXX.html'.",
   "verification_files": {},
-  "_windows_app_note": "The downloadable Windows installer produced by packaging/windows/build.ps1. Set download_url to wherever you host the .exe -- your own domain, Cloudflare R2, Netlify, anywhere that serves a static file over https -- and paste the version, size and SHA-256 that build.ps1 printed. Leave download_url empty and the page shows build-it-yourself instructions instead of a dead button, so the site is never broken by a missing upload.",
+  "_windows_app_note": "The paid Windows desktop build, produced by packaging/windows/build.ps1. 'payment_link' is the Stripe Payment Link shown on windows-app.html. 'delivery_url' is where the installer actually lives: an unguessable URL on storage you control (Cloudflare R2, Backblaze B2, S3). NEVER put the installer in this repository or in ventures/cipher-solver-web/files/ -- the repo and the site are public, so the paid file would be free to anyone who looked; scripts/build_site.py fails the deploy if it finds one. Set the Stripe Payment Link's post-payment redirect to the delivery URL that build_pages.py prints. version/size/sha256 are published so buyers can verify what they downloaded.",
   "windows_app": {
-    "download_url": "",
-    "version": "",
+    "sku": "winapp",
+    "title": "Buttcrack for Windows",
+    "price": "$39.99",
+    "payment_link": "https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05",
+    "delivery_url": "",
+    "version": "1.1.0",
     "size": "",
     "sha256": ""
   },

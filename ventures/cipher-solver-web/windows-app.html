@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/windows-app.html">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Buttcrack for Windows \u2014 Free Offline Cipher Solver, Installer Download", "description": "Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need Python installed?", "acceptedAnswer": {"@type": "Answer", "text": "No. The installer contains its own copy of Python, the language models and the web interface. Nothing else has to be present on the machine, and nothing is downloaded during installation."}}, {"@type": "Question", "name": "Does it need administrator rights?", "acceptedAnswer": {"@type": "Answer", "text": "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."}}, {"@type": "Question", "name": "Why does Windows say the publisher is unknown?", "acceptedAnswer": {"@type": "Answer", "text": "Because the installer is not code-signed. A Windows code-signing certificate costs several hundred dollars a year and must be renewed, which is hard to justify for a free tool. SmartScreen reports that absence rather than anything it found in the file. Click More info, then Run anyway \u2014 and check the published SHA-256 if you want independent confirmation of what you downloaded."}}, {"@type": "Question", "name": "Does it send my ciphertext anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."}}, {"@type": "Question", "name": "How is this different from the solver on this page?", "acceptedAnswer": {"@type": "Answer", "text": "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, deeper layered-puzzle unwrapping, and a search budget you can raise for hard problems."}}, {"@type": "Question", "name": "How do I uninstall it?", "acceptedAnswer": {"@type": "Answer", "text": "Settings, then Apps, then Buttcrack, then Uninstall \u2014 or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind because it never writes anything outside its own folder."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I get the file after paying?", "acceptedAnswer": {"@type": "Answer", "text": "Stripe sends you straight to a download page the moment the payment clears, and your receipt arrives by email. The download page stays valid, so bookmark it. If you lose it, reply to the Stripe receipt and it will be sent again."}}, {"@type": "Question", "name": "Do I need Python installed?", "acceptedAnswer": {"@type": "Answer", "text": "No. The installer contains its own copy of Python, the six language models and the interface. Nothing else has to be present on the machine and nothing is downloaded during installation."}}, {"@type": "Question", "name": "Does it need administrator rights?", "acceptedAnswer": {"@type": "Answer", "text": "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."}}, {"@type": "Question", "name": "Why does Windows say the publisher is unknown?", "acceptedAnswer": {"@type": "Answer", "text": "Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway \u2014 and check the published SHA-256 if you want independent confirmation of what you downloaded."}}, {"@type": "Question", "name": "Does it send my ciphertext anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."}}, {"@type": "Question", "name": "How is this different from the free solver on this page?", "acceptedAnswer": {"@type": "Answer", "text": "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including Playfair, Hill, the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, layered unwrapping six levels deep, and a search budget you can raise for hard problems."}}, {"@type": "Question", "name": "Can I install it on more than one machine?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. One payment covers your own machines \u2014 desktop, laptop, a virtual machine. There is no licence key and nothing to activate, so there is nothing to juggle."}}, {"@type": "Question", "name": "How do I uninstall it?", "acceptedAnswer": {"@type": "Answer", "text": "Settings, then Apps, then Buttcrack, then Uninstall \u2014 or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind, because it never writes anything outside its own folder."}}]}</script>
 </head>
 <body data-preset="layered">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -61,70 +61,75 @@
 
   <article>
     <h2>The desktop application</h2>
-    <p>The solver on this page runs in your browser and uses a compact trigram model. The desktop
-    build is the whole thing: <strong>50 ciphers</strong> including the M-94 wheel cipher,
-    quadgram models in <strong>six languages</strong>, layered-puzzle peeling to six levels deep,
-    and a time budget you control. It is the same program as <code>pip install buttcrack</code>,
-    packaged so that nobody has to install Python to use it.</p>
+    <p>The solver on this page runs in your browser on a compact trigram model, and it is free
+    for as long as this site exists. The desktop build is the full engine:
+    <strong>50 ciphers</strong> including the M-94 wheel cipher, Quagmire III and the
+    polyalphabetic sum-clock, quadgram models in <strong>six languages</strong>, layered-puzzle
+    unwrapping six levels deep, and a search budget you set yourself.</p>
 
     <div class="products">
   <div class="product">
       <h3>Buttcrack for Windows</h3>
-      <p class="blurb">The installer is built from the source tree rather than committed to it,
-      so there is no download link here yet. Building it takes one command on a Windows machine
-      with Python and Inno Setup — see the instructions below.</p>
-      <p class="spec">not yet published</p>
-      <a class="buy ghostbuy" href="#build-it">How to build it</a>
+      <p class="blurb">The complete cipher breaker as a Windows program. One installer, nothing
+      else to fetch — the language models and the interface are inside it. Install it on a
+      machine that has never seen Python and it works.</p>
+      <p class="spec">version 1.1.0 · Windows 10 / 11, 64-bit · no admin rights needed</p>
+      <a class="buy" href="https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05">Buy for $39.99</a>
     </div>
     </div>
+    <p class="spec" style="margin-top:22px">Payment is handled by Stripe. The download appears
+    immediately after checkout — no account, no licence key, no subscription. One payment, yours
+    to keep, on as many of your own machines as you like.</p>
 
     <h2>What you get</h2>
-    <p>Two programs that share one runtime:</p>
+    <p>Two programs sharing one runtime:</p>
     <ul>
-      <li><strong>Buttcrack</strong> — the Start-menu app. It starts a server on
-      <code>127.0.0.1</code>, opens the solver in your browser, and sits in the notification area
-      until you close it.</li>
+      <li><strong>Buttcrack</strong> — the Start-menu app. It starts a private server on
+      <code>127.0.0.1</code>, opens the solver in your browser, and sits in the notification
+      area until you close it.</li>
       <li><strong>buttcrack.exe</strong> — the command line, optionally added to your
-      <code>PATH</code> during setup, so
-      <code>buttcrack "Wkh txlfn eurzq ira"</code> works in any terminal.</li>
+      <code>PATH</code> during setup, so <code>buttcrack "Wkh txlfn eurzq ira"</code> works in
+      any terminal, reads files and pipes, and prints JSON for scripting.</li>
     </ul>
     <p>It installs per-user into <code>%LOCALAPPDATA%</code>, so there is <strong>no
-    administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything else.
-    No account, no licence key, no telemetry, no update checks.</p>
+    administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything
+    else. No account, no licence server, no telemetry, no update checks, no expiry.</p>
 
-    <h2>Still nothing leaves your machine</h2>
+    <h2>Nothing leaves your machine</h2>
     <p>The desktop build is a local web server, not a web service. The address it opens is bound
-    to loopback only — unreachable from your network, let alone the internet — and the language
-    model is inside the installer, so the whole thing works with the network cable out. That is
-    the entire reason it exists: a puzzle you are not allowed to paste into a website can still
-    be solved on hardware you control.</p>
+    to loopback only — unreachable from your own network, let alone the internet — and the
+    language models are inside the installer, so every feature works with the network cable
+    out. That is the entire reason it exists: a document you are not allowed to paste into a
+    website can still be worked on using hardware you control.</p>
+
+    <h2>What it breaks that the browser version does not</h2>
+    <ul>
+      <li><strong>All 50 ciphers</strong>, each with its own attack rather than a brute-force
+      loop — including Playfair, bifid, trifid, four-square, Hill, the M-94 wheel cipher,
+      Quagmire III, Myszkowski and AMSCO.</li>
+      <li><strong>Six languages.</strong> English with an 80,000-word dictionary distilled from
+      a 25-million-word corpus, plus French, German, Italian, Latin and Spanish n-gram models —
+      and <code>--language auto</code> to probe all six.</li>
+      <li><strong>Deeper layers.</strong> Encodings and ciphers stacked six deep, unwrapped and
+      reported as a chain, with the key of the cipher that actually hid the message.</li>
+      <li><strong>Your own time budget.</strong> Hard puzzles get minutes instead of the
+      seconds a web page can spare, and the search reports what it tried and what it scored.</li>
+    </ul>
 
 
     <h2>Windows will warn you the first time</h2>
     <p>The installer is not code-signed, so Windows SmartScreen shows a blue
-    <em>“Windows protected your PC”</em> dialog. This is a statement about a certificate that
-    costs several hundred dollars a year, not about the file. To continue, click
-    <strong>More info</strong> and then <strong>Run anyway</strong> — and verify the SHA-256 above
-    first if you would rather not take anyone's word for it.</p>
+    <em>“Windows protected your PC”</em> dialog. That is a statement about a certificate that
+    costs several hundred dollars a year, not about the file. Click <strong>More info</strong>,
+    then <strong>Run anyway</strong> — and check the SHA-256 above first if you would rather not
+    take anyone's word for it.</p>
 
-    <h2 id="build-it">Or build it yourself</h2>
-    <p>Everything needed to produce the installer is in the repository, and the build is
-    reproducible on any Windows machine with Python 3.9+ and
-    <a href="https://jrsoftware.org/isdl.php" rel="noopener" target="_blank">Inno Setup</a>:</p>
-    <pre class="spec">powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1</pre>
-    <p>That writes <code>dist\installer\buttcrack-setup-&lt;version&gt;.exe</code> and prints its
-    checksum. The build refuses to finish unless the frozen executable can actually break a test
-    cipher, so a bundle missing its language model fails the build instead of reaching you.</p>
-
-    <h2>macOS and Linux</h2>
-    <p>No installer is published for either, but both run the application natively, because it is
-    plain Python with no dependencies:</p>
-    <pre class="spec">pip install buttcrack
-buttcrack app</pre>
-    <p>The same packaging recipe produces unsigned binaries on both platforms if you would rather
-    not have Python involved.</p>
+    <h2>Requirements</h2>
+    <p>Windows 10 or 11, 64-bit. Roughly 60 MB of disk once installed. No internet connection is
+    required at any point after the download, and none is used. There is no macOS or Linux
+    installer.</p>
     <h2>Frequently asked questions</h2>
-    <details class="faq"><summary>Do I need Python installed?</summary><p>No. The installer contains its own copy of Python, the language models and the web interface. Nothing else has to be present on the machine, and nothing is downloaded during installation.</p></details><details class="faq"><summary>Does it need administrator rights?</summary><p>No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator.</p></details><details class="faq"><summary>Why does Windows say the publisher is unknown?</summary><p>Because the installer is not code-signed. A Windows code-signing certificate costs several hundred dollars a year and must be renewed, which is hard to justify for a free tool. SmartScreen reports that absence rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded.</p></details><details class="faq"><summary>Does it send my ciphertext anywhere?</summary><p>No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.</p></details><details class="faq"><summary>How is this different from the solver on this page?</summary><p>The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, deeper layered-puzzle unwrapping, and a search budget you can raise for hard problems.</p></details><details class="faq"><summary>How do I uninstall it?</summary><p>Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind because it never writes anything outside its own folder.</p></details>
+    <details class="faq"><summary>How do I get the file after paying?</summary><p>Stripe sends you straight to a download page the moment the payment clears, and your receipt arrives by email. The download page stays valid, so bookmark it. If you lose it, reply to the Stripe receipt and it will be sent again.</p></details><details class="faq"><summary>Do I need Python installed?</summary><p>No. The installer contains its own copy of Python, the six language models and the interface. Nothing else has to be present on the machine and nothing is downloaded during installation.</p></details><details class="faq"><summary>Does it need administrator rights?</summary><p>No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator.</p></details><details class="faq"><summary>Why does Windows say the publisher is unknown?</summary><p>Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded.</p></details><details class="faq"><summary>Does it send my ciphertext anywhere?</summary><p>No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.</p></details><details class="faq"><summary>How is this different from the free solver on this page?</summary><p>The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including Playfair, Hill, the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, layered unwrapping six levels deep, and a search budget you can raise for hard problems.</p></details><details class="faq"><summary>Can I install it on more than one machine?</summary><p>Yes. One payment covers your own machines — desktop, laptop, a virtual machine. There is no licence key and nothing to activate, so there is nothing to juggle.</p></details><details class="faq"><summary>How do I uninstall it?</summary><p>Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind, because it never writes anything outside its own folder.</p></details>
   </article>
 
   <section class="support">
@@ -137,9 +142,9 @@ buttcrack app</pre>
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
-    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
-    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>

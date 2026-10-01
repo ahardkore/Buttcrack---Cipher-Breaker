@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/polybius-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Polybius square", "description": "Polybius square: 5x5 coordinate grid (I/J merged). Both digit pairs and tap-code style separators are accepted.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Codes and alphabets"}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Polybius square broken?", "acceptedAnswer": {"@type": "Answer", "text": "Unkeyed, it is a decode. Keyed, it is a substitution cipher wearing coordinates, and falls to the same statistics."}}, {"@type": "Question", "name": "What key does the Polybius square use?", "acceptedAnswer": {"@type": "Answer", "text": "keyword (optional). There are 2 possible keys."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 6 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Polybius square on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The full version of the solver searches it \u2014 pip install buttcrack, then buttcrack \"&lt;ciphertext&gt;\"."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Polybius square broken?", "acceptedAnswer": {"@type": "Answer", "text": "Unkeyed, it is a decode. Keyed, it is a substitution cipher wearing coordinates, and falls to the same statistics."}}, {"@type": "Question", "name": "What key does the Polybius square use?", "acceptedAnswer": {"@type": "Answer", "text": "keyword (optional). There are 2 possible keys."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 6 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Polybius square on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page."}}]}</script>
 </head>
 <body data-preset="morse">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -164,7 +164,7 @@
     <a href="history-of-codebreaking.html">history of codebreaking</a>, or return to the
     <a href="cipher-wiki.html">wiki main page</a>.</p>
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
-    <details class="faq"><summary>How is the Polybius square broken?</summary><p>Unkeyed, it is a decode. Keyed, it is a substitution cipher wearing coordinates, and falls to the same statistics.</p></details><details class="faq"><summary>What key does the Polybius square use?</summary><p>keyword (optional). There are 2 possible keys.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 6 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Polybius square on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The full version of the solver searches it — pip install buttcrack, then buttcrack "&lt;ciphertext&gt;".</p></details>
+    <details class="faq"><summary>How is the Polybius square broken?</summary><p>Unkeyed, it is a decode. Keyed, it is a substitution cipher wearing coordinates, and falls to the same statistics.</p></details><details class="faq"><summary>What key does the Polybius square use?</summary><p>keyword (optional). There are 2 possible keys.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 6 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Polybius square on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page.</p></details>
         </div>
 <div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-code">Codes and alphabets</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
         <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
@@ -211,9 +211,9 @@
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
-    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
-    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>

@@ -24,6 +24,7 @@ harness, the raw corpus) are left out of the published tree.
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -75,6 +76,31 @@ def copy_tree(src: Path, dest: Path) -> int:
     return copied
 
 
+#: Extensions that must never reach the published tree. The Windows installer
+#: is a paid product delivered from storage the author controls; this site and
+#: the repository behind it are both public, so a copy that lands here is the
+#: product given away, quietly, to anyone who guesses the path or clones.
+PAID_BINARY_SUFFIXES = {".exe", ".msi"}
+
+
+def refuse_paid_binaries(tree: Path) -> None:
+    """Fail the deploy rather than publish something that is for sale."""
+    strays = sorted(
+        path for path in tree.rglob("*") if path.suffix.lower() in PAID_BINARY_SUFFIXES
+    )
+    if not strays:
+        return
+    listing = "\n  ".join(str(path.relative_to(tree)) for path in strays)
+    raise SystemExit(
+        f"refusing to publish executable(s) from the site tree:\n  {listing}\n\n"
+        "The Windows installer is sold through Stripe and must live on storage you\n"
+        "control (Cloudflare R2, Backblaze B2, S3), with its URL in site.json under\n"
+        "windows_app.delivery_url. Publishing it here hands the paid build to anyone\n"
+        "who finds the path.\n\n"
+        "If you genuinely mean to give a binary away, set BUTTCRACK_PUBLISH_BINARIES=1."
+    )
+
+
 def build(out: Path) -> Path:
     if out.exists():
         shutil.rmtree(out)
@@ -92,6 +118,9 @@ def build(out: Path) -> Path:
     for required in (out / "index.html", kryptos_out / "index.html"):
         if not required.is_file():
             raise SystemExit(f"assembled site is missing {required.relative_to(out)}")
+
+    if os.environ.get("BUTTCRACK_PUBLISH_BINARIES") != "1":
+        refuse_paid_binaries(out)
 
     return out
 
