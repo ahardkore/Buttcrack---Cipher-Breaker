@@ -84,134 +84,27 @@
     "sha256": "a18148505e9f05ef66b567f272c8c2b6407538751c0366f5ea9f89381ae82292"
   },
   "PK8": {
-    "status": "SOLVED (SEALED IN CUSTODY)",
+    "status": "SOLVED",
     "challenge_id": "PK8",
-    "title": "PK8 \u2014 The Residue of Practice",
-    "cipher_mechanism": "Additive 4-Clock {Q4, Q5, Q6, Q7} over Keyed Kryptos Alphabet",
-    "solver": "Kevin Hu (@_newhaiku, 86 days; verified by Dan Robinson)",
+    "title": "PK8 \u2014 Leaving the Whitesmith",
+    "cipher_mechanism": "Four sequential Quagmire III layers (KRYPTOS alphabet)",
+    "key": "METE -> METER -> METIER -> MASTERY",
     "ciphertext_length": 153,
     "plaintext_length": 153,
     "ciphertext": "COPVEJJVSVURTVIPYOTPLHGBTMAUCCPESIWIGZBWSJPKTRPUEKQFIFCLHMXTHIMHWOYIGURBOMPARCVXVKBDDVBVHDRHGCVNWWVLBMYWMWHICFIXZWBVZYCQGNOGJGUMLNPUTHQCXNWPQZOIRJZGSWVPY",
-    "proven_clock_parameters": {
-      "q4": [
-        0,
-        6,
-        13,
-        20
-      ],
-      "q5": [
-        3,
-        4,
-        15,
-        0,
-        10
-      ],
-      "q6": [
-        3,
-        18,
-        15,
-        25,
-        20,
-        4
-      ],
-      "q7": [
-        10,
-        2,
-        24,
-        0,
-        9,
-        5,
-        17
-      ]
-    },
-    "candidate_plaintext": "NRHPXXOEICEJAANOSSOYBUIFLBVVOGFUNOITTHSETEHFANCPLBGLSNTEEVNVZBDELQBONIATIQBSFKTTTBAUGNTHEELHASOCENDFGTHSYORTSUODSEDAWPEYONHEACLITTDHUSSIKEYJMHELODYUDOPTN",
-    "candidate_metrics": {
-      "monogram_ioc": 0.05022,
-      "lexical_word_coverage": "71.2% (109 / 153 characters)",
-      "recovered_word_count": 38,
-      "rare_letters": 7
-    },
-    "note": "Official plaintext confidential in custody. Candidate state derived via orthogonal stride decoupling."
+    "plaintext": "ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER",
+    "sha256": "4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c",
+    "verification": "Local encryption and decryption match all 153 letters; see verify_pk8_solution.py"
   },
   "PK9": {
-    "status": "UNSOLVED EMPIRICAL FRONTIER (100% MATHEMATICALLY LOCKED)",
+    "status": "UNSOLVED",
     "challenge_id": "PK9",
-    "title": "PK9 \u2014 The Defunct Cord",
-    "cipher_mechanism": "Two-Stage Double Columnar Transposition (18x8 -> 8x18) + Period-28 Polyalphabetic Keystream on Kryptos Alphabet",
+    "title": "PK9",
     "ciphertext_length": 144,
-    "core_length": 135,
-    "padding_length": 9,
     "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    "p2_permutation": [
-      7,
-      0,
-      5,
-      2,
-      4,
-      3,
-      6,
-      1
-    ],
-    "p1_permutation": [
-      15,
-      1,
-      3,
-      7,
-      6,
-      0,
-      17,
-      9,
-      13,
-      12,
-      5,
-      4,
-      2,
-      10,
-      11,
-      14,
-      16,
-      8
-    ],
-    "keystream_28": [
-      25,
-      15,
-      13,
-      18,
-      19,
-      6,
-      6,
-      16,
-      9,
-      25,
-      8,
-      25,
-      14,
-      7,
-      16,
-      10,
-      7,
-      23,
-      0,
-      6,
-      21,
-      3,
-      22,
-      5,
-      0,
-      10,
-      7,
-      6
-    ],
-    "core_plaintext": "LARDADEFUNCTORDQBOOMRBETHSKWJEREASTYMARINPRAYIALMSOISEARVEMYLAILEBOTHEEDAMESQUNGLAYIMIRLOFATSEREDCISANTIDBYOUSCHESALSOMYRELIFORESSESTIA",
-    "regularized_plaintext": "LARD A DEFUNCT ORDER BOOM R BETH SKEWER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY HIM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA",
-    "core_metrics": {
-      "quadgram_score": -5.0481,
-      "valid_quadgram_pct": 93.9,
-      "regularized_valid_pct": 99.3,
-      "monogram_ioc": 0.06081,
-      "rare_letter_count": 3
-    },
-    "embedded_coordinates": "Latitude: 57 minutes N (Sum_Kr JVRM = 57), 6 seconds N (Sum_Kr,1 = 126 = 6 mod 60); Tail AUON = 52 = 0 mod 26"
+    "tested_hypothesis": "Q(5)+Q(6)+Q(7) then complete T(8), unverified",
+    "result": "No solution; bounded exact-crib exclusions only",
+    "report": "PK9_Q567_T8_EXACT_CRIB_REPORT.md"
   },
   "PK10": {
     "status": "UNSOLVED EMPIRICAL FRONTIER",

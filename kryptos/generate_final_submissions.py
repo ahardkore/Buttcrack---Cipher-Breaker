@@ -5,7 +5,7 @@ import hashlib
 with open("pk_all_ciphertexts.json") as f:
     cts = json.load(f)
 
-# Full, exact verified plaintexts for PK1 - PK7
+# Full, exact verified plaintexts for PK1 - PK8
 verified_pts = {
     "PK1": {
         "title": "PK1 — The Accession Log",
@@ -55,6 +55,13 @@ verified_pts = {
         "key": "Quagmire III Period 6 + 3x3 Invertible Matrix over GF(26)",
         "plaintext": "HEPOINTEDTOTHEHEARTHANDSAIDTHATTHEWORKCOULDONLYBEGINWHENTHEFIREREACHEDITSPROPERHEATWITHLONGTONGSHEHELDTHESTEELINTOCOALSTHATGLOWEDWHITEINTHEBELLOWSWARNINGMETHATONEMOMENTOFTEMPERINGCANDESTROYYEARSOFLABOURFORONLYANIRONPIECEPURIFIEDNINEDAYSINTHEFLAMEWILLHOLDAFINEENOUGHEDGETOBEFORGED",
         "status": "SOLVED"
+    },
+    "PK8": {
+        "title": "PK8 — Leaving the Whitesmith",
+        "cipher": "Four sequential Quagmire III layers (KRYPTOS alphabet)",
+        "key": "METE -> METER -> METIER -> MASTERY",
+        "plaintext": "ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER",
+        "status": "SOLVED"
     }
 }
 
@@ -76,22 +83,14 @@ for k, v in verified_pts.items():
 with open("pk_verified_solutions.json", "w") as f:
     json.dump(verified_json, f, indent=2)
 
-# Load PK8, PK9, PK10 plaintexts from solution records
-with open("pk8_solution_pt.txt") as f:
-    pt8_lines = [l.strip() for l in f if not l.startswith("#") and len(l.strip()) > 0]
-pt8_cand = pt8_lines[0] if pt8_lines else ""
-
-with open("pk9_solution_pt.txt") as f:
-    pt9_lines = [l.strip() for l in f if not l.startswith("#") and len(l.strip()) > 0]
-pt9_core = pt9_lines[0] if pt9_lines else ""
-
+# Load the still-unverified PK10 candidate record.
 with open("pk10_record_6943.txt") as f:
     pt10_lines = [l.strip() for l in f if l.startswith("# Row") and "(" in l and "len" not in l]
 pt10_rows = [l.split(":")[1].split("(")[0].strip() for l in pt10_lines[:12]]
 pt10_core = "".join(r if len(r)==36 else r[2:38] for r in pt10_rows)
 
 master_manifest = {}
-for k in [f"PK{i}" for i in range(1, 8)]:
+for k in [f"PK{i}" for i in range(1, 9)]:
     v = verified_pts[k]
     ct = cts[k]
     pt = v["plaintext"]
@@ -108,57 +107,35 @@ for k in [f"PK{i}" for i in range(1, 8)]:
         "sha256": hashlib.sha256(pt.encode()).hexdigest()
     }
 
-# PK8
+# PK8 (externally published, independently re-encrypted 153/153 locally)
 ct8 = cts["PK8"]
+pt8 = verified_pts["PK8"]["plaintext"]
 master_manifest["PK8"] = {
-    "status": "SOLVED (SEALED IN CUSTODY)",
+    "status": "SOLVED",
     "challenge_id": "PK8",
-    "title": "PK8 — The Residue of Practice",
-    "cipher_mechanism": "Additive 4-Clock {Q4, Q5, Q6, Q7} over Keyed Kryptos Alphabet",
-    "solver": "Kevin Hu (@_newhaiku, 86 days; verified by Dan Robinson)",
+    "title": verified_pts["PK8"]["title"],
+    "cipher_mechanism": verified_pts["PK8"]["cipher"],
+    "key": verified_pts["PK8"]["key"],
     "ciphertext_length": len(ct8),
-    "plaintext_length": len(ct8),
+    "plaintext_length": len(pt8),
     "ciphertext": ct8,
-    "proven_clock_parameters": {
-        "q4": [0, 6, 13, 20],
-        "q5": [3, 4, 15, 0, 10],
-        "q6": [3, 18, 15, 25, 20, 4],
-        "q7": [10, 2, 24, 0, 9, 5, 17]
-    },
-    "candidate_plaintext": pt8_cand,
-    "candidate_metrics": {
-        "monogram_ioc": 0.05022,
-        "lexical_word_coverage": "71.2% (109 / 153 characters)",
-        "recovered_word_count": 38,
-        "rare_letters": 7
-    },
-    "note": "Official plaintext confidential in custody. Candidate state derived via orthogonal stride decoupling."
+    "plaintext": pt8,
+    "sha256": hashlib.sha256(pt8.encode()).hexdigest(),
+    "verification": "Local encryption and decryption match all 153 letters; see verify_pk8_solution.py"
 }
 
-# PK9
+# PK9 remains unsolved. The former `JVRMBLARDADEFUNCT...` candidate was
+# invalidated; do not serialize it as a solution or a mathematically proven core.
 ct9 = cts["PK9"]
 master_manifest["PK9"] = {
-    "status": "UNSOLVED EMPIRICAL FRONTIER (100% MATHEMATICALLY LOCKED)",
+    "status": "UNSOLVED",
     "challenge_id": "PK9",
-    "title": "PK9 — The Defunct Cord",
-    "cipher_mechanism": "Two-Stage Double Columnar Transposition (18x8 -> 8x18) + Period-28 Polyalphabetic Keystream on Kryptos Alphabet",
+    "title": "PK9",
     "ciphertext_length": len(ct9),
-    "core_length": 135,
-    "padding_length": 9,
     "ciphertext": ct9,
-    "p2_permutation": [7, 0, 5, 2, 4, 3, 6, 1],
-    "p1_permutation": [15, 1, 3, 7, 6, 0, 17, 9, 13, 12, 5, 4, 2, 10, 11, 14, 16, 8],
-    "keystream_28": [25, 15, 13, 18, 19, 6, 6, 16, 9, 25, 8, 25, 14, 7, 16, 10, 7, 23, 0, 6, 21, 3, 22, 5, 0, 10, 7, 6],
-    "core_plaintext": pt9_core,
-    "regularized_plaintext": "LARD A DEFUNCT ORDER BOOM R BETH SKEWER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY HIM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA",
-    "core_metrics": {
-        "quadgram_score": -5.0481,
-        "valid_quadgram_pct": 93.9,
-        "regularized_valid_pct": 99.3,
-        "monogram_ioc": 0.06081,
-        "rare_letter_count": 3
-    },
-    "embedded_coordinates": "Latitude: 57 minutes N (Sum_Kr JVRM = 57), 6 seconds N (Sum_Kr,1 = 126 = 6 mod 60); Tail AUON = 52 = 0 mod 26"
+    "tested_hypothesis": "Q(5)+Q(6)+Q(7) then complete T(8), unverified",
+    "result": "No solution; bounded exact-crib exclusions only",
+    "report": "PK9_Q567_T8_EXACT_CRIB_REPORT.md"
 }
 
 # PK10
