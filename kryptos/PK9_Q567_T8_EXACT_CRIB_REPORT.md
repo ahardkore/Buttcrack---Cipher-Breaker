@@ -1,6 +1,6 @@
 # PK9 `Q(5)+Q(6)+Q(7) -> complete T(8)` Exact-Crib Report
 
-**Date:** 2026-09-30
+**Date:** 2026-10-01
 
 **Status:** no solution; bounded negative results under an unverified architecture
 
@@ -210,8 +210,21 @@ T8 -> Q5+Q6+Q7: best score -7.726318 across 40,320 orders
 
 Both best plaintexts are noise. Literal reuse therefore fails even if the
 public architecture notation listed decryption order rather than encryption
-order. This does not exclude a transformed, phased, or otherwise PK8-derived
-key.
+order.
+
+A wider finite test independently rotated and optionally reversed each of the
+three PK8 wheels. There are `(2×5)(2×6)(2×7) = 1,680` such dihedral transforms.
+Combining each with every T8 permutation tested 67,737,600 states per layer
+order:
+
+```text
+Q5+Q6+Q7 -> T8: best score -6.744215
+T8 -> Q5+Q6+Q7: best score -6.878823
+```
+
+Again, every result is noise. This excludes literal PK8 coordinates under
+independent phase changes and reversals, but not arbitrary substitutions,
+anagrams, or a more general PK8-derived key schedule.
 
 ### Literal PK8 windows in PK9
 
@@ -252,6 +265,26 @@ when T8 belongs to the targeted set. It still does not exclude a non-targeted T8
 permutation away from the prefix, an ungenerated continuation, or a different
 PK9 construction.
 
+### The short-letter hypothesis
+
+PK8 ends with the unusually specific sentence, "I leave the Whitesmith a short
+letter." `generate_pk9_letter_from_pk8.py` therefore models PK9 as that letter:
+salutations, gratitude, departure explanations, the archive, the knot, taking
+one needle, warnings, and farewells. It produced 2,468 distinct 20-letter
+openings and 52,206 distinct windows. Unrestricted-Q exact tests found:
+
+| crib set | T8 assignments | placements | candidates | survivors | best score |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 2,468 openings | all 40,320 | prefix only | 99,509,760 | 236 | `-6.824992` |
+| 52,206 windows | all 40,320 | prefix only | 2,104,945,920 | 4,619 | `-6.708400` |
+| 52,206 windows | 284 Theophilus-word permutations | all 125 offsets | 1,853,313,000 | 4,042 | `-6.659011` |
+
+All survivor counts are consistent with chance after four check letters, and
+all whole-text decryptions are noise. Thus none of the generated letter
+language is present at the opening under arbitrary T8, or elsewhere under the
+Theophilus-word T8 set. The test does not exclude different wording or a
+non-Theophilus T8 permutation away from the opening.
+
 Because the public hint said PK9 would likely help with PK8, a separate corpus
 models explicit disclosure of `METE / METER / METIER / MASTERY`. Its 8,271
 20-letter windows produced only chance survivors at the PK9 prefix under every
@@ -272,6 +305,11 @@ From the repository root:
 ```bash
 python3 kryptos/verify_pk8_solution.py
 python3 kryptos/test_pk8_pk9_key_reuse.py
+
+cc -O3 -march=native -fopenmp kryptos/test_pk8_pk9_transformed_keys.c \
+  -o /tmp/test_pk8_pk9_transformed_keys -lm
+OMP_NUM_THREADS=32 /tmp/test_pk8_pk9_transformed_keys --self-test
+OMP_NUM_THREADS=32 /tmp/test_pk8_pk9_transformed_keys
 
 cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c \
   -o /tmp/crack_pk9_q567_t8_crib -lm
@@ -304,12 +342,19 @@ python3 kryptos/generate_pk9_from_pk8.py --key-disclosures \
   /tmp/pk8_key_disclosures_20.txt
 python3 kryptos/generate_pk9_from_pk8.py --key-sequences \
   /tmp/pk8_key_sequences_20.txt
+python3 kryptos/generate_pk9_letter_from_pk8.py --all-windows \
+  /tmp/pk8_letter_windows_20.txt
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
   --all-keys /tmp/pk9_from_pk8_20.txt
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
   --all-keys-t8-all-offsets T8_WORDS /tmp/pk9_from_pk8_20.txt
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
   --all-keys-all-offsets /tmp/pk8_key_sequences_20.txt
+OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
+  --all-keys /tmp/pk8_letter_windows_20.txt
+OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
+  --all-keys-t8-all-offsets kryptos/theophilus_w8.txt \
+  /tmp/pk8_letter_windows_20.txt
 ```
 
 ## Interpretation and next useful work
