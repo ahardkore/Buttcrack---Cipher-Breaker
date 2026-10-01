@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/columnar-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Columnar transposition", "description": "Columnar transposition: Plaintext written into a grid by rows, read out by columns in key order.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Transposition ciphers"}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Columnar transposition broken?", "acceptedAnswer": {"@type": "Answer", "text": "Anagramming. Score every ordering of the columns by how well adjacent letters form English bigrams, then refine the best."}}, {"@type": "Question", "name": "What key does the Columnar transposition use?", "acceptedAnswer": {"@type": "Answer", "text": "keyword or permutation. The keyspace is unbounded in practice."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 12 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Columnar transposition on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The full version of the solver searches it \u2014 pip install buttcrack, then buttcrack \"&lt;ciphertext&gt;\"."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Columnar transposition broken?", "acceptedAnswer": {"@type": "Answer", "text": "Anagramming. Score every ordering of the columns by how well adjacent letters form English bigrams, then refine the best."}}, {"@type": "Question", "name": "What key does the Columnar transposition use?", "acceptedAnswer": {"@type": "Answer", "text": "keyword or permutation. The keyspace is unbounded in practice."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 12 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Columnar transposition on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page."}}]}</script>
 </head>
 <body data-preset="layered">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -24,7 +24,7 @@
       <span>buttcrack<span class="brand-dot">.</span></span>
     </a>
     <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
-    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="windows-app.html">Windows app</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
   </div>
 </header>
 
@@ -113,7 +113,7 @@
         <details class="wiki-side-group" open>
           <summary>Solver &amp; shop<span class="side-count">8</span></summary>
           <ul>
-<li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
+<li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="windows-app.html">Windows app</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
           </ul>
         </details>
       </nav>
@@ -164,7 +164,7 @@
     <a href="history-of-codebreaking.html">history of codebreaking</a>, or return to the
     <a href="cipher-wiki.html">wiki main page</a>.</p>
     <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
-    <details class="faq"><summary>How is the Columnar transposition broken?</summary><p>Anagramming. Score every ordering of the columns by how well adjacent letters form English bigrams, then refine the best.</p></details><details class="faq"><summary>What key does the Columnar transposition use?</summary><p>keyword or permutation. The keyspace is unbounded in practice.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 12 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Columnar transposition on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The full version of the solver searches it — pip install buttcrack, then buttcrack "&lt;ciphertext&gt;".</p></details>
+    <details class="faq"><summary>How is the Columnar transposition broken?</summary><p>Anagramming. Score every ordering of the columns by how well adjacent letters form English bigrams, then refine the best.</p></details><details class="faq"><summary>What key does the Columnar transposition use?</summary><p>keyword or permutation. The keyspace is unbounded in practice.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 12 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Columnar transposition on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page.</p></details>
         </div>
 <div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-transposition">Transposition ciphers</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
         <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
@@ -211,9 +211,9 @@
 <footer>
   <div class="wrap">
     <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
-    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
-    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>

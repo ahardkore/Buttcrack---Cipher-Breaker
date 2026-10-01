@@ -32,6 +32,7 @@ NAV = [
     ("index.html", "Solver"),
     ("cipher-wiki.html", "Cipher wiki"),
     ("history-of-codebreaking.html", "History"),
+    ("windows-app.html", "Windows app"),
     ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
@@ -487,6 +488,7 @@ def wiki_sidebar(current: str) -> str:
         + link("substitution-cipher-solver.html", "Substitution solver")
         + link("morse-code-translator.html", "Morse translator")
         + link("ctf-crypto-solver.html", "CTF crypto solver")
+        + link("windows-app.html", "Windows app")
         + link("downloads.html", "Puzzle books")
         + link(KRYPTOS_HREF, "Kryptos explorer")
     )
@@ -889,9 +891,9 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
-    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
-    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>
@@ -902,6 +904,221 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 </body>
 </html>
 """
+
+def delivery_url(raw: str, field: str) -> str:
+    """Validate the post-purchase installer URL. Returns "" when unset.
+
+    Same discipline as ``payment_url``: this link is what somebody has just
+    paid $39.99 to reach, and a URL that 404s or downgrades to http looks
+    exactly like a working one until a customer clicks it.
+    """
+    url = (raw or "").strip()
+    if not url:
+        return ""
+    if url.startswith("http://"):
+        raise SystemExit(
+            f"site.json: windows_app.{field} must be https, not http: {url}\n"
+            f"Browsers block executable downloads served over plain http."
+        )
+    if not url.startswith("https://"):
+        raise SystemExit(f"site.json: windows_app.{field} is not a URL: {url!r}")
+    # The whole paywall is that this URL is not guessable and not linked from
+    # anywhere public. Hosting it on the site itself gives it away.
+    if CFG["base_url"].rstrip("/") in url:
+        raise SystemExit(
+            f"site.json: windows_app.{field} points back at this site ({url}).\n"
+            f"The installer is the paid product and this site is public — serving it from\n"
+            f"here means anyone can download it without paying. Put it on storage you\n"
+            f"control (Cloudflare R2, Backblaze B2, S3) and paste that URL instead."
+        )
+    if not url.lower().endswith(".exe"):
+        print(f"  note: windows_app.{field} does not end in .exe ({url}) — assuming a redirect")
+    return url
+
+
+def windows_app_config() -> dict:
+    """The Windows product, with its two URLs validated."""
+    cfg = dict(CFG.get("windows_app", {}) or {})
+    cfg["payment_link"] = payment_url(cfg.get("payment_link", ""), "windows_app.payment_link")
+    cfg["delivery_url"] = delivery_url(cfg.get("delivery_url", ""), "delivery_url")
+    cfg["token"] = hashlib.sha256(
+        f"{cfg.get('sku', 'winapp')}:{CFG.get('stripe', {}).get('delivery_salt', '')}".encode()
+    ).hexdigest()[:20]
+    cfg["delivery_page"] = f"thank-you-{cfg['token']}.html"
+    return cfg
+
+
+def write_windows_delivery(cfg: dict) -> None:
+    """The page Stripe redirects to after payment. Not linked, not indexed.
+
+    Written after ``build_products``, which clears every ``thank-you-*.html``
+    so a changed salt cannot leave a stale delivery page behind.
+    """
+    link = cfg["delivery_url"]
+    spec = " · ".join(filter(None, [
+        f"version {cfg.get('version', '')}" if cfg.get("version") else "",
+        "Windows 10/11, 64-bit",
+        cfg.get("size", ""),
+    ]))
+    if link:
+        action = f"""<p><a class="btn primary" style="display:inline-block;padding:11px 24px;border-radius:8px;
+       background:var(--accent);color:#05230f;font-weight:700;text-decoration:none"
+       href="{link}">Download the installer</a></p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:0">
+      Bookmark this page — the link stays valid. Lost it? Email the address on your
+      Stripe receipt and it will be sent again.</p>"""
+    else:
+        # A buyer must never see a broken button. Until the installer is
+        # uploaded, promise a human instead of linking to nothing.
+        action = """<p style="margin-bottom:0">Your payment went through and your copy is reserved.
+      The download link is being sent to the email address on your Stripe receipt — if it has
+      not arrived within a few hours, reply to that receipt and it will be sent straight away.</p>"""
+
+    sha = ""
+    if cfg.get("sha256"):
+        sha = f"""
+    <p style="font-size:13px;color:var(--muted);margin:14px 0 0">SHA-256, to check the file arrived
+      intact:<br><code style="font-size:12px;word-break:break-all">{html_escape(cfg['sha256'])}</code></p>"""
+
+    (HERE / cfg["delivery_page"]).write_text(f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Your download — {html_escape(cfg.get('title', 'Buttcrack for Windows'))}</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Thank you<span class="dot">.</span></h1>
+  <p class="tagline">Your copy of Buttcrack for Windows is ready.</p>
+</div></header>
+<main class="wrap">
+  <div class="card">
+    <h2 style="margin-top:0">{html_escape(cfg.get('title', 'Buttcrack for Windows'))}</h2>
+    <p style="color:var(--muted)">{html_escape(spec)}</p>
+    {action}{sha}
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Windows will warn you the first time</h3>
+    <p style="margin-bottom:0">The installer is not code-signed, so SmartScreen shows a blue
+      <em>“Windows protected your PC”</em> box. Click <strong>More info</strong>, then
+      <strong>Run anyway</strong>. It installs without administrator rights and uninstalls from
+      Add/Remove Programs.</p>
+  </div>
+  <div class="card">
+    <p style="margin:0">Installed? Open <strong>Buttcrack</strong> from the Start menu — it opens
+      the solver in your browser and runs entirely on your machine.</p>
+  </div>
+</main>
+<footer><div class="wrap"><p><a href="index.html">Back to the solver</a></p></div></footer>
+</body>
+</html>
+""")
+
+
+def windows_app_html() -> str:
+    """The storefront for the desktop build.
+
+    One product, one Stripe button. The installer itself is never served from
+    this site — ``delivery_url`` points at storage the author controls, and the
+    link is only ever shown on the post-payment page.
+    """
+    cfg = windows_app_config()
+    link = cfg["payment_link"]
+    price = html_escape(cfg.get("price") or "")
+    version = html_escape((cfg.get("version") or "").strip())
+    digest = (cfg.get("sha256") or "").strip().lower()
+
+    spec_bits = " · ".join(filter(None, [
+        f"version {version}" if version else "",
+        "Windows 10 / 11, 64-bit",
+        html_escape((cfg.get("size") or "").strip()),
+        "no admin rights needed",
+    ]))
+    if link:
+        button = f'<a class="buy" href="{link}">Buy for {price or "the listed price"}</a>'
+    else:
+        button = ('<span class="soon">Payment link not configured yet — '
+                  'see ventures/README.md</span>')
+
+    checksum = f"""
+    <h2>Verify what you downloaded</h2>
+    <p>The installer's SHA-256 is published before you buy, so you can confirm the file you
+    receive is byte-for-byte the one described here. In PowerShell:</p>
+    <pre class="spec">Get-FileHash .\\buttcrack-setup-{version or 'VERSION'}.exe -Algorithm SHA256</pre>
+    <p class="spec">{html_escape(digest)}</p>""" if digest else ""
+
+    return f"""    <h2>The desktop application</h2>
+    <p>The solver on this page runs in your browser on a compact trigram model, and it is free
+    for as long as this site exists. The desktop build is the full engine:
+    <strong>50 ciphers</strong> including the M-94 wheel cipher, Quagmire III and the
+    polyalphabetic sum-clock, quadgram models in <strong>six languages</strong>, layered-puzzle
+    unwrapping six levels deep, and a search budget you set yourself.</p>
+
+    <div class="products">
+  <div class="product">
+      <h3>{html_escape(cfg.get('title', 'Buttcrack for Windows'))}</h3>
+      <p class="blurb">The complete cipher breaker as a Windows program. One installer, nothing
+      else to fetch — the language models and the interface are inside it. Install it on a
+      machine that has never seen Python and it works.</p>
+      <p class="spec">{spec_bits}</p>
+      {button}
+    </div>
+    </div>
+    <p class="spec" style="margin-top:22px">Payment is handled by Stripe. The download appears
+    immediately after checkout — no account, no licence key, no subscription. One payment, yours
+    to keep, on as many of your own machines as you like.</p>
+
+    <h2>What you get</h2>
+    <p>Two programs sharing one runtime:</p>
+    <ul>
+      <li><strong>Buttcrack</strong> — the Start-menu app. It starts a private server on
+      <code>127.0.0.1</code>, opens the solver in your browser, and sits in the notification
+      area until you close it.</li>
+      <li><strong>buttcrack.exe</strong> — the command line, optionally added to your
+      <code>PATH</code> during setup, so <code>buttcrack "Wkh txlfn eurzq ira"</code> works in
+      any terminal, reads files and pipes, and prints JSON for scripting.</li>
+    </ul>
+    <p>It installs per-user into <code>%LOCALAPPDATA%</code>, so there is <strong>no
+    administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything
+    else. No account, no licence server, no telemetry, no update checks, no expiry.</p>
+
+    <h2>Nothing leaves your machine</h2>
+    <p>The desktop build is a local web server, not a web service. The address it opens is bound
+    to loopback only — unreachable from your own network, let alone the internet — and the
+    language models are inside the installer, so every feature works with the network cable
+    out. That is the entire reason it exists: a document you are not allowed to paste into a
+    website can still be worked on using hardware you control.</p>
+
+    <h2>What it breaks that the browser version does not</h2>
+    <ul>
+      <li><strong>All 50 ciphers</strong>, each with its own attack rather than a brute-force
+      loop — including Playfair, bifid, trifid, four-square, Hill, the M-94 wheel cipher,
+      Quagmire III, Myszkowski and AMSCO.</li>
+      <li><strong>Six languages.</strong> English with an 80,000-word dictionary distilled from
+      a 25-million-word corpus, plus French, German, Italian, Latin and Spanish n-gram models —
+      and <code>--language auto</code> to probe all six.</li>
+      <li><strong>Deeper layers.</strong> Encodings and ciphers stacked six deep, unwrapped and
+      reported as a chain, with the key of the cipher that actually hid the message.</li>
+      <li><strong>Your own time budget.</strong> Hard puzzles get minutes instead of the
+      seconds a web page can spare, and the search reports what it tried and what it scored.</li>
+    </ul>
+{checksum}
+
+    <h2>Windows will warn you the first time</h2>
+    <p>The installer is not code-signed, so Windows SmartScreen shows a blue
+    <em>“Windows protected your PC”</em> dialog. That is a statement about a certificate that
+    costs several hundred dollars a year, not about the file. Click <strong>More info</strong>,
+    then <strong>Run anyway</strong> — and check the SHA-256 above first if you would rather not
+    take anyone's word for it.</p>
+
+    <h2>Requirements</h2>
+    <p>Windows 10 or 11, 64-bit. Roughly 60 MB of disk once installed. No internet connection is
+    required at any point after the download, and none is used. There is no macOS or Linux
+    installer.</p>"""
+
 
 PAGES = [
     {
@@ -1199,6 +1416,36 @@ PAGES = [
     unwrap. Unwrapping produces a child node and the process repeats. The answer returned is the
     leaf with the highest confidence, reported with the complete chain that produced it — so you
     learn the structure of the challenge, not just the flag.</p>""",
+    },
+    {
+        "slug": "windows-app.html",
+        "title": "Buttcrack for Windows — Free Offline Cipher Solver, Installer Download",
+        "desc": "Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.",
+        "h1": "Windows App",
+        "tagline": "The full solver as a desktop program. Installs in seconds, runs offline, uploads nothing.",
+        "preset": "layered",
+        # Rendered in main()'s loop, not here: the storefront needs helpers
+        # defined further down the file, and composing it at render time keeps
+        # a second call to main() from stacking a second copy.
+        "body": "__WINDOWS_APP__",
+        "faqs": [
+            ("How do I get the file after paying?",
+             "Stripe sends you straight to a download page the moment the payment clears, and your receipt arrives by email. The download page stays valid, so bookmark it. If you lose it, reply to the Stripe receipt and it will be sent again."),
+            ("Do I need Python installed?",
+             "No. The installer contains its own copy of Python, the six language models and the interface. Nothing else has to be present on the machine and nothing is downloaded during installation."),
+            ("Does it need administrator rights?",
+             "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."),
+            ("Why does Windows say the publisher is unknown?",
+             "Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded."),
+            ("Does it send my ciphertext anywhere?",
+             "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."),
+            ("How is this different from the free solver on this page?",
+             "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including Playfair, Hill, the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, layered unwrapping six levels deep, and a search budget you can raise for hard problems."),
+            ("Can I install it on more than one machine?",
+             "Yes. One payment covers your own machines — desktop, laptop, a virtual machine. There is no licence key and nothing to activate, so there is nothing to juggle."),
+            ("How do I uninstall it?",
+             "Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind, because it never writes anything outside its own folder."),
+        ],
     },
 ]
 
@@ -1923,9 +2170,9 @@ def not_found_page() -> str:
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
-    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
-    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
   </div>
 </footer>
@@ -1940,6 +2187,12 @@ def not_found_page() -> str:
 def main() -> None:
     products, sampler = build_products()
     print(f"built {len(products)} puzzle book PDF(s)" + (" + free sampler" if sampler else ""))
+
+    # After build_products, which clears every thank-you-*.html so a changed
+    # salt cannot strand an old one.
+    windows_app = windows_app_config()
+    write_windows_delivery(windows_app)
+    print(f"wrote {windows_app['delivery_page']:38} (Windows installer delivery page)")
 
     PAGES.append({
         "slug": "downloads.html",
@@ -2050,6 +2303,10 @@ def main() -> None:
         # so calling main() twice in one process cannot stack it twice.
         if spec["slug"] == "index.html":
             body = wiki_index_section() + "\n\n" + body
+        # Same reason: the desktop storefront reads site.json and needs the
+        # escaping helpers, so it is composed here rather than at import.
+        if spec["slug"] == "windows-app.html":
+            body = windows_app_html()
         # The wiki main page is assembled last-minute from the same data that
         # fills the sidebar and the search index, so all three agree by
         # construction. The static first entries are the no-JS fallback; the
@@ -2146,11 +2403,25 @@ def main() -> None:
 
     # The delivery URLs are what you paste into each Stripe Payment Link as its
     # "after payment" redirect, so print them where you cannot miss them.
-    if products:
-        print("\nStripe setup — set each payment link's post-payment redirect to:")
-        for product in products:
-            state = "LINK SET" if product.get("payment_link") else "needs payment_link"
-            print(f"  {product['sku']:6} {CFG['base_url']}/{product['delivery']}   [{state}]")
+    print("\nStripe setup — set each payment link's post-payment redirect to:")
+    for product in products:
+        state = "LINK SET" if product.get("payment_link") else "needs payment_link"
+        print(f"  {product['sku']:6} {CFG['base_url']}/{product['delivery']}   [{state}]")
+    win_state = "LINK SET" if windows_app["payment_link"] else "needs payment_link"
+    print(f"  {windows_app.get('sku', 'winapp'):6} {CFG['base_url']}/{windows_app['delivery_page']}"
+          f"   [{win_state}]")
+
+    # The installer is the one thing this build cannot produce (it needs
+    # Windows) and the one thing a customer has paid for, so an unset
+    # delivery_url is a silent broken sale rather than a broken page.
+    if not windows_app["delivery_url"]:
+        print(
+            "\n  WARNING: windows_app.delivery_url is empty.\n"
+            "  Anyone who buys right now gets a page promising the file by email.\n"
+            "  Build the installer (packaging\\windows\\build.ps1), upload it to storage you\n"
+            "  control — Cloudflare R2, Backblaze B2, S3 — and paste the URL into site.json.\n"
+            "  Do not put it in this repository: the repo and the site are both public."
+        )
 
 
 if __name__ == "__main__":
