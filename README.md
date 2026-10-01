@@ -253,15 +253,15 @@ $ buttcrack ciphertext.txt --language auto          # probe all six, then commit
 python3 scripts/kryptos_ctf.py --budget 150
 ```
 
-PK1–PK7 have published plaintexts, so they are a scorecard rather than a claim. From ciphertext alone, with no hints:
+PK1–PK7 have published plaintexts, so they are a scorecard rather than a claim. From ciphertext alone, with no hints (measured on this machine with `--budget 60 --workers 2`; timings are hardware-dependent, the solved/not-solved column is not):
 
 | challenge | cipher | result |
 | --- | --- | --- |
-| PK1 | Quagmire III, KRYPTOS alphabet, period 10 | **solved**, ~15 s (recovers the key `PROVENANCE`) |
-| PK2 | complete columnar, 50×7 | **solved**, ~29 s |
-| PK3 | sum-clock, wheels of 10 and 8 over a keyed alphabet | **solved**, ~5 s (recovers the keywords `ORDINATE` + `PENTIMENTO`) |
+| PK1 | Quagmire III, KRYPTOS alphabet, period 10 | **solved**, ~8 s (recovers the key `PROVENANCE`) |
+| PK2 | complete columnar, 50×7 | **solved**, ~15 s |
+| PK3 | sum-clock, wheels of 10 and 8 over a keyed alphabet | **solved**, ~35 s (recovers the keywords `ORDINATE` + `PENTIMENTO`) |
 | PK4–PK6 | columnar or double-columnar *composed with* Quagmire III | not solved — the transposition's key cannot be scored while the text underneath is still enciphered |
-| PK7 | Quagmire III (period 6) composed with a 3×3 Hill matrix, both over the KRYPTOS alphabet | **solved**, ~14 s (recovers the keyword `ANNEAL` and the matrix `ALCHEMIST`; the key re-encrypts to the published ciphertext exactly) |
+| PK7 | Quagmire III (period 6) composed with a 3×3 Hill matrix, both over the KRYPTOS alphabet | **solved**, ~16 s (recovers the keyword `ANNEAL` and the matrix `ALCHEMIST`; the key re-encrypts to the published ciphertext exactly) |
 
 **Two-wheel clocks are solved exactly rather than searched.** Fixing the short wheel leaves a plain Vigenère of known period, so the long wheel is *derived* by chi-squared instead of guessed, and the key space collapses to an enumeration of the short wheel alone — exhaustive for three or four letters, word-keyed beyond that (PK3's wheels are literally words, and the author's public hint was that the key "has quite a lot of entropy, but some structure"). Each candidate costs a handful of table lookups rather than a pass over the message, so 456,976 of them take seconds. One caveat: the long wheel is solved a column at a time and needs roughly twenty letters per column to be reliable.
 
@@ -284,19 +284,24 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 * **Some ciphers are lossy by design.** Playfair pads with `X` and splits doubled letters; Bacon merges U/V and I/J; Polybius and Bifid merge I/J. Comparisons in the tests and the selftest fold those away, and the report notes it — you get the letters back, not the typography.
 * **Attribution can be equivalent-but-different.** Atbash may be reported as `affine (25, 25)`; a Vigenère with a one-letter key may be reported as `caesar`. The plaintext is right and the `notes` field explains the equivalence.
 * **Non-English models have no dictionary.** Only English ships a word list; the other five languages judge on n-gram fitness alone. Two honest consequences, both measured: (1) a slightly wrong reading can outscore the true one — on a 197-letter German Caesar, a substitution near-miss disagreeing on 4 rare letters beat the true shift by 0.05 confidence — so foreign-language reports grade "solved" on fitness, not word-perfectness; (2) the English model *will* solve its sibling languages (French at 0.88 confidence, Italian 0.86) and report inflated confidence — the report's `reads as` note flags this and names the `--language` rerun that fixes it. `--language auto` probes all six models (up to half the budget) and is reliable for cheap ciphers, but for an expensive cipher it can only rank partial readings, so name the language when you know it.
+* **The documented numbers are re-measurable, and were re-measured.** Every performance claim here was re-run on 2026-09-30; three were wrong and two of those were wrong because of bugs in the solver rather than drift in the prose. What was checked, what it measured and what got fixed is in [`docs/claims-audit.md`](docs/claims-audit.md), and `python3 scripts/bench_claims.py --all` reproduces the table.
 * **Keyed alphabets are a separate cipher, not a detail.** Quagmire III does Vigenère arithmetic in a keyed alphabet's index space (`KRYPTOS...`), so a solver that assumes A=0 recovers nothing. `quagmire3` searches the alphabet as well as the key, and reproduces the published Paradigm Kryptos PK1 answer (key `PROVENANCE`, period 10) from ciphertext alone in about 15 seconds. The same applies one level up: `keyed_hill` does Hill's linear algebra in keyed index space, so PK7 — a period-6 Quagmire III followed by a 3×3 Hill, both over the KRYPTOS alphabet — is invisible to the A–Z Hill attack (it returns noise) and falls to the phase-split row search in under a second, recovering `ANNEAL` and `ALCHEMIST`.
 * **Sum-clocks need a crib, or luck.** `sum_clock` adds several short wheels (`K[t] = q4[t%4] + q5[t%5] + ...`). Four wheels of 4, 5, 6 and 7 give a key of period 420 — longer than a 153-letter message — so no column is ever repeated and chi-squared has nothing to work with. Every position's key is a *sum* of four unknowns, so moving one coordinate earns no partial credit either: the search landscape has almost no gradient. The keystream is, however, **linear** in the wheels, so known plaintext turns cryptanalysis into linear algebra. Measured on synthetic instances of exactly that shape (153 letters, four wheels, known answer):
 
   | attack | recovery |
   | --- | --- |
   | annealing, 60 s per instance, no crib | **0 of 6** (plateaus at −6.09 against a true-key −4.25) |
-  | crib of 12 letters, hybrid, 25 s | 0 of 4 |
-  | crib of 14 letters, hybrid, 25 s | 2 of 4 |
-  | crib of 16 letters, hybrid, 25 s | **4 of 4** |
-  | crib of 19 letters, pure algebra | **5 of 5, 0.1 s each** |
+  | crib of 12 letters, hybrid, 25 s | 0 of 5 |
+  | crib of 14 letters, hybrid, 25 s | 0 of 5 |
+  | crib of 16 letters, hybrid, 25 s | 2 of 5 |
+  | crib of 19 letters, pure algebra | **5 of 5, under 10 ms each** |
+
+  Re-measure with `python3 scripts/bench_claims.py --cribs`: five trials per
+  crib length, 153-letter samples drawn from `examples/english_samples.txt`
+  with a fixed seed, wheels of 4, 5, 6 and 7 over the Kryptos alphabet.
 
   Nineteen letters is the point where the equations outnumber the nineteen effective unknowns and no search is needed at all. Below it, the crib still collapses the dimension and the remainder is annealed. Use `--crib`.
-* **The M-94 is a genuine search.** 25! ≈ 1.5×10²⁵ disk orders; the hill climb over pairwise swaps lands from ~200 letters given a real slice of budget (measured: 2-in-3 solves at 250 letters inside 20 s with 2 workers; the true order's read row is always found once the order is). Below 150 letters the honest-evidence rule caps the verdict below *solved* — 25 wheels want ~6 letters each. `--budget 120 --workers 2` and 250+ letters is the reliable recipe; `--hint key=<order>` is exact immediately.
+* **The M-94 is a genuine search.** 25! ≈ 1.5×10²⁵ disk orders; the hill climb over pairwise swaps lands from ~200 letters given a real slice of budget (measured: 6 of 6 solves at 250 letters inside 20 s with 2 workers, 2.4-12.0 s each, `scripts/bench_claims.py --m94`; the true order's read row is always found once the order is). Below 150 letters the honest-evidence rule caps the verdict below *solved* — 25 wheels want ~6 letters each. `--budget 120 --workers 2` and 250+ letters is the reliable recipe; `--hint key=<order>` is exact immediately.
 
 ---
 

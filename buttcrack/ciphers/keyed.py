@@ -1377,10 +1377,27 @@ class SumClock(_KeyedPeriodic):
             # message -- and those shapes are the *last* thing a sum-ordered
             # sweep reaches.  A pair of wheels, by contrast, the search solves
             # on its own.
+            solved = False
             ctx.hints["_stream"] = stream
             shapes = self._wheel_sets(ctx, len(stream))
+            # Determined shapes first.  A shape is *solved outright* by the
+            # crib when the known letters outnumber its effective unknowns
+            # (sum of the periods, less one per wheel for gauge freedom, plus
+            # one): that is linear algebra and costs milliseconds.  Everything
+            # else falls back to annealing inside a deadline, so putting a
+            # single under-determined shape ahead of a determined one spends
+            # the whole budget before reaching the answer.  Within each group
+            # the many-wheel shapes come first, because that is where search
+            # alone fails and the crib is worth most.
+            known = len(letters_only(str(crib)))
+
+            def _unknowns(shape: Sequence[int]) -> int:
+                return sum(shape) - len(shape) + 1
+
             if len(shapes) > 1:
-                shapes.sort(key=lambda shape: (-len(shape), -sum(shape)))
+                shapes.sort(
+                    key=lambda shape: (_unknowns(shape) > known, -len(shape), -sum(shape))
+                )
             for _name, alphabet in alphabets:
                 for periods in shapes:
                     if ctx.expired():
@@ -1394,10 +1411,10 @@ class SumClock(_KeyedPeriodic):
                                 self.name,
                                 plain,
                                 {
+                                    "keys": ["".join(alphabet[v] for v in w) for w in wheels],
                                     "periods": list(periods),
                                     "wheels": wheels,
                                     "alphabet": alphabet,
-                                    "keys": ["".join(alphabet[v] for v in w) for w in wheels],
                                 },
                                 steps=ctx.steps,
                                 columns=max(1, sum(periods) - len(periods) + 1),
@@ -1408,7 +1425,10 @@ class SumClock(_KeyedPeriodic):
                             )
                         )
                     if found and found[0][0] > SOLVED_FITNESS:
+                        solved = True
                         break
+                if solved:
+                    break
             if results:
                 results.sort(key=Candidate.sort_key)
                 yield from results[: self.top_candidates]
@@ -1420,10 +1440,10 @@ class SumClock(_KeyedPeriodic):
                     self.name,
                     self._apply(stream, alphabet, wheels, -1),
                     {
+                        "keys": ["".join(alphabet[v] for v in wheel) for wheel in wheels],
                         "periods": list(periods),
                         "wheels": wheels,
                         "alphabet": alphabet,
-                        "keys": ["".join(alphabet[v] for v in wheel) for wheel in wheels],
                     },
                     steps=ctx.steps,
                     columns=max(1, sum(periods) - len(periods) + 1),
@@ -1438,6 +1458,7 @@ class SumClock(_KeyedPeriodic):
         for name, alphabet in alphabets:
             if ctx.expired():
                 break
+            solved = False
             ctx.hints["_stream"] = stream
             shapes = self._wheel_sets(ctx, len(stream))
             if len(shapes) == 1:
@@ -1469,10 +1490,10 @@ class SumClock(_KeyedPeriodic):
                             self.name,
                             plain,
                             {
+                                "keys": ["".join(alphabet[v] for v in w) for w in wheels],
                                 "periods": [short, long],
                                 "wheels": wheels,
                                 "alphabet": alphabet,
-                                "keys": ["".join(alphabet[v] for v in w) for w in wheels],
                             },
                             steps=ctx.steps,
                             columns=max(1, short + long - 1),

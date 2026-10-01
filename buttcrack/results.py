@@ -71,11 +71,24 @@ class Candidate:
     #: any of those names with the same confidence and the same plaintext.  The
     #: name people recognise wins the tie; nothing but ties is affected, because
     #: this is the last element of :meth:`sort_key`.
+    #: Ciphers that can produce the *same* plaintext from the same input, in
+    #: the order their name should be preferred.  A 13-shift is ROT13 rather
+    #: than a Caesar, a reciprocal alphabet is Atbash rather than an affine
+    #: map, and a Vigenere is itself rather than one of its variant spellings.
+    EQUIVALENT_GROUPS = (
+        ("vigenere", "beaufort", "variant_beaufort", "gronsfeld"),
+        ("rot13", "atbash", "caesar", "affine"),
+    )
+
     EQUIVALENT_CIPHER_RANK = {
         "vigenere": 0,
         "beaufort": 1,
         "variant_beaufort": 2,
         "gronsfeld": 3,
+        "rot13": 0,
+        "atbash": 1,
+        "caesar": 2,
+        "affine": 3,
     }
 
     def sort_key(self) -> tuple:

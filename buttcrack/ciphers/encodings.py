@@ -409,6 +409,16 @@ class QuotedPrintable(_Encoding):
         description="MIME quoted-printable: =XX escapes and =\\n soft line breaks.",
     )
 
+    #: Minimum escapes per character before a text is treated as QP.  Real
+    #: quoted-printable escapes everything outside a small printable set, so
+    #: on anything long enough to matter the markers are dense.  Two stray
+    #: ``=XX`` pairs in four hundred bytes are a coincidence, and peeling them
+    #: is worse than useless: ``quopri`` drops those five bytes, the payload
+    #: underneath shifts, and a repeating-key XOR one layer down stops being
+    #: solvable.  Measured on the three-layer example puzzle, which is exactly
+    #: that case.
+    min_escape_density = 1 / 60
+
     def decodable(self, text: str) -> bool:
         escapes = QP_RE.findall(text)
         if not escapes:
@@ -416,6 +426,8 @@ class QuotedPrintable(_Encoding):
         # Percent-encoding uses %XX and hex uses bare pairs; the marker here is
         # '=' followed by a hex pair, and one stray '=' in prose is not enough.
         if len(escapes) < 2 and len(text) > 40:
+            return False
+        if len(text) > 40 and len(escapes) < self.min_escape_density * len(text):
             return False
         return all(ord(c) < 128 for c in text)
 
