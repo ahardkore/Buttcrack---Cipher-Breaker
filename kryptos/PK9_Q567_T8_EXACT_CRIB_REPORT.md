@@ -197,6 +197,22 @@ through the unrestricted PK8 crib solver, with whole-text score `-4.361307`.
 This confirms the crib equations, placement convention, and language scorer on
 a real challenge rather than only planted synthetic data.
 
+### Literal PK8 key reuse
+
+PK8's shared-length keys provide the most direct key hypothesis for PK9:
+`METER` (Q5), `METIER` (Q6), and `MASTERY` (Q7). Every width-8 complete-columnar
+read order was tested in both possible layer orders:
+
+```text
+Q5+Q6+Q7 -> T8: best score -7.130210 across 40,320 orders
+T8 -> Q5+Q6+Q7: best score -7.726318 across 40,320 orders
+```
+
+Both best plaintexts are noise. Literal reuse therefore fails even if the
+public architecture notation listed decryption order rather than encryption
+order. This does not exclude a transformed, phased, or otherwise PK8-derived
+key.
+
 ### Literal PK8 windows in PK9
 
 Every one of PK8's 136 overlapping 18-letter plaintext windows was tested at all
@@ -255,6 +271,7 @@ From the repository root:
 
 ```bash
 python3 kryptos/verify_pk8_solution.py
+python3 kryptos/test_pk8_pk9_key_reuse.py
 
 cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c \
   -o /tmp/crack_pk9_q567_t8_crib -lm
