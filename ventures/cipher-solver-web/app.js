@@ -44,29 +44,90 @@ function renderIdentify(info, text) {
   </div>`;
 }
 
-function renderResult(result, elapsed) {
-  if (!result) {
-    return `<div class="card">
-      <div class="solved-head"><span class="label low">NO CONFIDENT SOLUTION</span></div>
-      <p style="margin:0;color:var(--muted)">
-        Nothing scored well enough to call a solution. This usually means the text is
-        too short, is not English, or uses a cipher outside this tool's set — try the
-        full <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">command-line
-        version</a>, which searches a much larger space.
-      </p></div>`;
+function listItems(items) {
+  return items.map(item => `<li>${esc(typeof item === 'string' ? item : item.text)}</li>`).join('');
+}
+
+function fallbackDiagnostic(result) {
+  const score = result && Number.isFinite(result.confidence) ? result.confidence : 0;
+  return {
+    candidateStatus: result && score >= 0.70 ? 'high-confidence' : result && score >= 0.45 ? 'tentative' : 'no-high-confidence',
+    reasons: [{
+      text: result
+        ? `The best attempted candidate scored ${score.toFixed(2)} on the English-likeness scale, below the 0.45 display threshold.`
+        : 'No implemented attack produced a non-empty candidate to rank.',
+    }],
+    nextSteps: ['Check the cipher type, key material, transcription, and whether the plaintext is English.'],
+    attempted: [],
+  };
+}
+
+function renderDiagnostic(diagnostic) {
+  const reasons = diagnostic.reasons && diagnostic.reasons.length
+    ? `<ul>${listItems(diagnostic.reasons)}</ul>`
+    : '';
+  const steps = diagnostic.nextSteps && diagnostic.nextSteps.length
+    ? `<h4>Useful next checks</h4><ul>${listItems(diagnostic.nextSteps)}</ul>`
+    : '';
+  const attempted = diagnostic.attempted && diagnostic.attempted.length
+    ? `<details class="diagnostic-coverage"><summary>What this browser considered</summary><ul>${listItems(diagnostic.attempted)}</ul></details>`
+    : '';
+
+  return `<section class="card diagnostic-card" aria-label="Why there is no high-confidence answer">
+    <div class="solved-head">
+      <span class="label low">NO HIGH-CONFIDENCE ANSWER</span>
+    </div>
+    <p class="diagnostic-intro">These are evidence-based observations about this input and this browser solver’s coverage. They do not prove one exact reason the message resisted decryption.</p>
+    ${reasons}
+    ${steps}
+    ${attempted}
+  </section>`;
+}
+
+function renderUnverifiedCandidate(result, elapsed) {
+  if (!result) return '';
+  const pct = Math.max(0, Math.min(100, Math.round(result.confidence * 100)));
+  const chain = result.chain && result.chain.length
+    ? `<tr><td>decode chain</td><td><code>${esc(result.chain.join(' → '))} → ${esc(result.cipher)}</code></td></tr>`
+    : '';
+  return `<details class="card unverified-candidate">
+    <summary>Inspect the best statistical candidate — not a decryption</summary>
+    <p class="candidate-note">It scored ${result.confidence.toFixed(2)} for English-likeness after ${elapsed.toFixed(2)}s, below this page’s threshold. Treat it as a lead to test, not recovered plaintext.</p>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <p class="result-kicker">UNVERIFIED CANDIDATE TEXT</p>
+    <div class="plaintext">${esc(result.plaintext)}</div>
+    <table class="evidence">
+      <tr><td>cipher tried</td><td><code>${esc(result.cipher)}</code></td></tr>
+      <tr><td>key tried</td><td><code>${esc(result.key)}</code></td></tr>
+      ${chain}
+      <tr><td>method</td><td>${esc(result.method)}</td></tr>
+    </table>
+    <div class="controls" style="margin-top:14px">
+      <button class="ghost" id="copy">Copy candidate text</button>
+    </div>
+  </details>`;
+}
+
+function renderResult(result, diagnostic, elapsed) {
+  const report = diagnostic || fallbackDiagnostic(result);
+  if (!result || report.candidateStatus === 'no-high-confidence') {
+    return renderDiagnostic(report) + renderUnverifiedCandidate(result, elapsed);
   }
-  const pct = Math.round(result.confidence * 100);
-  const low = result.confidence < 0.45;
+
+  const high = report.candidateStatus === 'high-confidence';
+  const pct = Math.max(0, Math.min(100, Math.round(result.confidence * 100)));
+  const label = high ? 'HIGH-CONFIDENCE CANDIDATE' : 'TENTATIVE CANDIDATE';
   const chain = result.chain && result.chain.length
     ? `<tr><td>decode chain</td><td><code>${esc(result.chain.join(' → '))} → ${esc(result.cipher)}</code></td></tr>`
     : '';
   return `<div class="card">
     <div class="solved-head">
-      <span class="label ${low ? 'low' : ''}">${low ? 'BEST GUESS' : 'SOLVED'}</span>
-      <span class="meta">confidence ${result.confidence.toFixed(2)} · ${elapsed.toFixed(2)}s</span>
+      <span class="label ${high ? '' : 'low'}">${label}</span>
+      <span class="meta">English-likeness score ${result.confidence.toFixed(2)} · ${elapsed.toFixed(2)}s</span>
     </div>
     <div class="bar"><i style="width:${pct}%"></i></div>
-    <p style="margin:16px 0 6px;font-size:13px;color:var(--muted)">PLAINTEXT</p>
+    <p class="candidate-note">This score ranks output under an English language model; it is evidence, not independent proof. Verify the full method, key, and source context before relying on it.</p>
+    <p class="result-kicker">CANDIDATE PLAINTEXT</p>
     <div class="plaintext">${esc(result.plaintext)}</div>
     <table class="evidence">
       <tr><td>cipher</td><td><code>${esc(result.cipher)}</code></td></tr>
@@ -75,7 +136,7 @@ function renderResult(result, elapsed) {
       <tr><td>method</td><td>${esc(result.method)}</td></tr>
     </table>
     <div class="controls" style="margin-top:14px">
-      <button class="ghost" id="copy">Copy plaintext</button>
+      <button class="ghost" id="copy">Copy candidate text</button>
     </div>
   </div>`;
 }
@@ -104,14 +165,14 @@ function crack() {
       head = renderIdentify(m.info, text);
       output.innerHTML = head + '<div class="card"><span class="spinner"></span>Searching keyspaces…</div>';
     } else if (m.type === 'done') {
-      output.innerHTML = head + renderResult(m.result, m.elapsed);
+      output.innerHTML = head + renderResult(m.result, m.diagnostic, m.elapsed);
       goBtn.disabled = false;
       const copy = $('#copy');
       if (copy) {
         copy.onclick = () => {
           navigator.clipboard.writeText(m.result.plaintext);
           copy.textContent = 'Copied';
-          setTimeout(() => { copy.textContent = 'Copy plaintext'; }, 1500);
+          setTimeout(() => { copy.textContent = 'Copy candidate text'; }, 1500);
         };
       }
       worker.terminate();

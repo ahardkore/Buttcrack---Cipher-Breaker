@@ -167,5 +167,41 @@ for (const [name, ct, expected] of CASES) {
   );
   if (!ok && r) console.log(`      got: ${r.plaintext.slice(0, 70)}`);
 }
-console.log(`\n${pass}/${CASES.length} passed in ${Date.now() - t0}ms`);
-process.exit(pass === CASES.length ? 0 : 1);
+const DIAGNOSTIC_CASES = [
+  {
+    name: 'diagnostic: short text',
+    report: S.diagnose('QXJ', S.identify('QXJ'), null),
+    status: 'no-high-confidence',
+    code: 'short-text',
+  },
+  {
+    name: 'diagnostic: non-ASCII symbols',
+    report: S.diagnose('ЖЯ☿⚚', S.identify('ЖЯ☿⚚'), null),
+    status: 'no-high-confidence',
+    code: 'non-ascii',
+  },
+  {
+    name: 'diagnostic: encoded shape',
+    report: S.diagnose('SGVsbG8gdGhlcmU=', S.identify('SGVsbG8gdGhlcmU='), null),
+    status: 'no-high-confidence',
+    code: 'wrapper-shape',
+  },
+  {
+    name: 'diagnostic: high candidate is not failure',
+    report: S.diagnose(PT1, S.identify(PT1), { confidence: 0.85 }),
+    status: 'high-confidence',
+    code: null,
+  },
+];
+
+let diagnosticPass = 0;
+for (const test of DIAGNOSTIC_CASES) {
+  const codes = test.report.reasons.map(reason => reason.code);
+  const ok = test.report.candidateStatus === test.status && (!test.code || codes.includes(test.code));
+  if (ok) diagnosticPass++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${test.name}`);
+  if (!ok) console.log(`      status=${test.report.candidateStatus}; reasons=${codes.join(', ')}`);
+}
+
+console.log(`\n${pass}/${CASES.length} solver cases and ${diagnosticPass}/${DIAGNOSTIC_CASES.length} diagnostic cases passed in ${Date.now() - t0}ms`);
+process.exit(pass === CASES.length && diagnosticPass === DIAGNOSTIC_CASES.length ? 0 : 1);

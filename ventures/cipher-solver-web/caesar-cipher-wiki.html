@@ -39,9 +39,10 @@
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation<span class="side-count">3</span></summary>
+          <summary>Navigation<span class="side-count">4</span></summary>
           <ul>
             <li><a href="cipher-wiki.html">Main page</a></li>
+            <li><a href="unsolved-ciphers.html">Unsolved cipher archive</a></li>
             <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
             <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
           </ul>
@@ -103,9 +104,9 @@
       </details>
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking<span class="side-count">3</span></summary>
+          <summary>Codebreaking<span class="side-count">4</span></summary>
           <ul>
-<li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li>
+<li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li><li><a href="unsolved-ciphers.html">Unsolved cipher archive</a></li>
           </ul>
         </details>
         <h3 class="wiki-side-heading">Tools</h3>
@@ -188,6 +189,12 @@
       <button class="ghost" id="clear">Clear</button>
       <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
     </div>
+    <details class="solver-limits">
+      <summary>What this browser solver can—and cannot—do</summary>
+      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution.</p>
+      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. Its ranking model is tuned for English, so a high score is a lead to verify with the method, key, and source context—not a guarantee.</p>
+      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    </details>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
   </section>
       </section>

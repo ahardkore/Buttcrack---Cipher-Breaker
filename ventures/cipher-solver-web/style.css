@@ -160,6 +160,10 @@ button.ghost:hover { border-color: var(--forest); color: var(--forest); }
 .samples button { padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--forest-dark); background: var(--paper); font-size: 12px; cursor: pointer; }
 .samples button:hover { border-color: var(--forest); background: var(--mint); }
 .privacy { margin: 12px 0 0; color: var(--ink-soft); font-size: 12px; }
+.solver-limits { margin-top: 14px; padding: 12px 14px; border: 1px solid #c8dccd; border-radius: 10px; background: #f7fbf6; color: #385047; font-size: 13px; line-height: 1.5; }
+.solver-limits summary { color: var(--forest-dark); cursor: pointer; font-weight: 800; }
+.solver-limits p { margin: 9px 0 0; }
+.solver-limits strong { color: var(--ink); }
 
 #output { margin-top: 24px; }
 .card { padding: 20px; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: 0 8px 24px rgba(24, 42, 33, 0.04); }
@@ -172,6 +176,17 @@ button.ghost:hover { border-color: var(--forest); color: var(--forest); }
 .bar { height: 7px; overflow: hidden; border-radius: 99px; background: var(--paper-deep); }
 .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--forest), #44b879); }
 .plaintext { padding: 15px; border: 1px solid #bee2ca; border-left: 4px solid var(--forest); border-radius: 10px; background: #f5fcf6; font: 14px/1.7 var(--mono); white-space: pre-wrap; word-break: break-word; }
+.candidate-note, .diagnostic-intro { margin: 14px 0; color: var(--ink-soft); font-size: 13px; line-height: 1.55; }
+.result-kicker { margin: 16px 0 6px; color: var(--ink-soft); font: 700 12px var(--mono); letter-spacing: 0.06em; }
+.diagnostic-card { border-color: #dfca8a; background: #fffcf3; }
+.diagnostic-card ul { margin: 10px 0; padding-left: 20px; color: #4d4a3d; }
+.diagnostic-card li { margin: 7px 0; line-height: 1.45; }
+.diagnostic-card h4 { margin: 17px 0 4px; color: var(--ink); font-size: 14px; }
+.diagnostic-coverage { margin-top: 15px; padding-top: 12px; border-top: 1px solid #eadfb9; color: var(--ink-soft); font-size: 12px; }
+.diagnostic-coverage summary, .unverified-candidate > summary { cursor: pointer; color: var(--forest-dark); font-weight: 800; }
+.diagnostic-coverage ul { margin-bottom: 0; }
+.unverified-candidate { border-color: #d6d8cc; }
+.unverified-candidate[open] > summary { margin-bottom: 12px; }
 table.evidence { width: 100%; margin-top: 14px; border-collapse: collapse; font-size: 14px; }
 table.evidence td { padding: 7px 0; border-top: 1px solid #edf0e8; vertical-align: top; }
 table.evidence td:first-child { width: 130px; color: var(--ink-soft); font: 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -577,4 +592,49 @@ input:focus-visible, .wiki-tab:focus-visible, .wiki-card:focus-visible {
   outline: 2px solid var(--forest-dark);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* --- sourced unresolved-cipher archive ---------------------------------- */
+.unsolved-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 16px 0 8px;
+}
+.unsolved-entry {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcf8;
+}
+.unsolved-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink-soft);
+  font: 700 10.5px/1.2 var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.unsolved-entry h3 { margin: 11px 0 2px; color: var(--forest-dark); }
+.unsolved-date { margin: 0 0 9px; color: #6d7e74 !important; font: 12px var(--mono); }
+.unsolved-entry > p { font-size: 14px; line-height: 1.58; }
+.unsolved-boundary {
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-left: 3px solid #b36c22;
+  border-radius: 0 6px 6px 0;
+  background: #f8f2e8;
+  color: #536359 !important;
+  font-size: 13px !important;
+}
+.unsolved-boundary strong { color: #87501a; }
+.unsolved-source { margin: 11px 0 0; font-size: 13px !important; }
+.unsolved-source a { font-weight: 700; }
+
+@media (max-width: 640px) {
+  .unsolved-grid { grid-template-columns: 1fr; }
+  .unsolved-entry { padding: 14px; }
 }

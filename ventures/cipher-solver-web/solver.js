@@ -809,7 +809,7 @@ function xorSingle(bytes) {
  */
 // A result above this mark is good enough that another statistical search is
 // more likely to manufacture a competing reading than improve the answer.  It
-// is deliberately below the UI's "SOLVED" threshold: Caesar and Vigenere
+// is deliberately below the UI's presentation threshold: Caesar and Vigenere
 // samples with uncommon proper nouns still get to skip an unnecessary 25-restart
 // substitution climb.
 const FAST_ANSWER_CONFIDENCE = 0.58;
@@ -941,6 +941,134 @@ function identify(text) {
   return { ic, entropy: entropy(text), guesses };
 }
 
+/* ---------------------------------------------------------------- diagnosis */
+
+// These are presentation thresholds, not claims about a mathematical probability
+// of correctness.  The solver's score measures how English-like a candidate is;
+// a readable coincidence can still be the wrong decryption.
+const TENTATIVE_CANDIDATE_SCORE = 0.45;
+const HIGH_CONFIDENCE_CANDIDATE_SCORE = 0.70;
+
+/**
+ * Explain, using only things this browser can actually observe, why a run did
+ * not produce a strong candidate.  This deliberately reports contributing
+ * signals rather than pretending to identify the one true cause of a failure.
+ */
+function diagnose(text, info = identify(text), result = null) {
+  const letters = lettersOnly(text);
+  const compact = text.replace(/\s/g, '');
+  const nonAscii = [...text].filter(ch => ch.charCodeAt(0) > 127).length;
+  const letterShare = compact.length ? letters.length / compact.length : 0;
+  const score = result && Number.isFinite(result.confidence) ? result.confidence : 0;
+  const reasons = [];
+  const nextSteps = [];
+
+  let candidateStatus = 'no-high-confidence';
+  if (result && score >= HIGH_CONFIDENCE_CANDIDATE_SCORE) candidateStatus = 'high-confidence';
+  else if (result && score >= TENTATIVE_CANDIDATE_SCORE) candidateStatus = 'tentative';
+
+  if (candidateStatus === 'no-high-confidence') {
+    if (result) {
+      reasons.push({
+        code: 'below-threshold',
+        text: `The best attempted candidate scored ${score.toFixed(2)} on this tool's English-likeness scale, below the ${TENTATIVE_CANDIDATE_SCORE.toFixed(2)} display threshold.`,
+      });
+    } else {
+      reasons.push({
+        code: 'no-candidate',
+        text: 'None of the implemented attacks produced a non-empty candidate to rank.',
+      });
+    }
+  }
+
+  if (letters.length < 20) {
+    reasons.push({
+      code: 'short-text',
+      text: `Only ${letters.length} A–Z letters were available. Short ciphertext gives frequency and language scoring very little evidence.`,
+    });
+    nextSteps.push('Add more ciphertext if possible; 60 or more A–Z letters also enables this browser’s substitution search.');
+  } else if (letters.length < 60) {
+    reasons.push({
+      code: 'substitution-not-run',
+      text: `The input has ${letters.length} A–Z letters. This browser does not attempt its statistical substitution search below 60 letters.`,
+    });
+    nextSteps.push('If a monoalphabetic substitution is plausible, provide a longer sample or solve it with known words, a crib, or key context.');
+  }
+
+  if (nonAscii) {
+    reasons.push({
+      code: 'non-ascii',
+      text: `${nonAscii} character${nonAscii === 1 ? ' is' : 's are'} outside ASCII. The alphabetic attacks and English scorer only model unaccented A–Z text.`,
+    });
+    nextSteps.push('Check the transcription and use a tool that supports the original script or symbol alphabet.');
+  }
+
+  if (compact.length && letterShare < 0.45) {
+    reasons.push({
+      code: 'symbol-heavy',
+      text: `Only ${letters.length} of ${compact.length} non-space characters are A–Z, so the English text model has limited material to judge.`,
+    });
+    nextSteps.push('Preserve separators and symbols: the text may be an encoding, a symbol cipher, or data rather than alphabetic ciphertext.');
+  }
+
+  if (letters.length >= 20 && info.ic < 0.043) {
+    reasons.push({
+      code: 'low-ic',
+      text: `Its index of coincidence is ${info.ic.toFixed(4)}, which is low for ordinary English-like monoalphabetic text. It can fit a periodic cipher or random-looking data; it does not identify either one.`,
+    });
+  }
+
+  if (compact.length >= 20 && info.entropy >= 4.3) {
+    reasons.push({
+      code: 'high-entropy',
+      text: `Character diversity is high (entropy ${info.entropy.toFixed(2)} bits/character). That is compatible with encoding, encryption, compression, or a mixed symbol alphabet—not proof of any of them.`,
+    });
+  }
+
+  const shape = info.guesses && info.guesses[0] ? info.guesses[0][0] : 'unknown';
+  if (['binary', 'morse', 'base16', 'base64'].includes(shape)) {
+    reasons.push({
+      code: 'wrapper-shape',
+      text: `The input resembles ${shape}. Its applicable decoder was considered, but a decoded layer still needs to yield a plausible English candidate.`,
+    });
+    nextSteps.push('Check that the encoded text is complete and that padding, spacing, and line breaks were copied exactly.');
+  }
+
+  if (candidateStatus === 'no-high-confidence') {
+    reasons.push({
+      code: 'coverage-limit',
+      text: 'The browser implements a limited set of classical attacks, not every cipher family or modern cryptography. A failure cannot tell which unsupported method, missing key, or non-English plaintext may be involved.',
+    });
+  }
+
+  if (!nextSteps.some(step => step.includes('English'))) {
+    nextSteps.push('This tool ranks English-looking output. If the plaintext may be another language, use a language-appropriate scorer or known plaintext/context.');
+  }
+  nextSteps.push('For AES, RSA, or other modern encryption, ciphertext alone is not enough here; use the required key and the correct cryptographic tool.');
+
+  const attempted = [
+    'Caesar, Atbash, ROT13, affine, Trithemius, and rail-fence attacks',
+    'single-byte XOR when the input is 8–3,999 bytes',
+    'periodic Vigenère-family and autokey searches when a fast direct candidate did not already score well',
+    'recognised encoding layers (including Base64, hex, binary, decimal ASCII, Morse, and reverse) to the selected depth',
+    'statistical substitution only with 60+ A–Z letters and no faster strong candidate',
+  ];
+
+  return {
+    candidateStatus,
+    hasHighConfidenceCandidate: candidateStatus === 'high-confidence',
+    score,
+    letters: letters.length,
+    nonAscii,
+    reasons,
+    nextSteps: [...new Set(nextSteps)],
+    attempted,
+  };
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { solve, identify, plausibility, score, wordRate, indexOfCoincidence, entropy };
+  module.exports = {
+    solve, identify, diagnose, plausibility, score, wordRate, indexOfCoincidence, entropy,
+    TENTATIVE_CANDIDATE_SCORE, HIGH_CONFIDENCE_CANDIDATE_SCORE,
+  };
 }

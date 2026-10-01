@@ -1,13 +1,14 @@
 // Kryptos Cryptanalytic Suite Application Engine
 
-let currentCipherId = "PK10";
+let currentCipherId = "PK8";
 
 document.addEventListener("DOMContentLoaded", () => {
   initNavigation();
   initCipherExplorer();
   initWorkbench();
   initBookReader();
-  selectCipher("PK10");
+  initUnsolvedArchive();
+  selectCipher("PK8");
 });
 
 // Navigation Tab Management
@@ -114,9 +115,78 @@ function selectCipher(id) {
   document.getElementById("stat-rare").textContent = `${rareCount} (${(rareCount/ct.length*100).toFixed(1)}%)`;
 
   document.getElementById("detail-ct").textContent = formatWrapped(ct, 42);
-  document.getElementById("detail-pt").textContent = formatWrapped(pt, 42);
-  document.getElementById("detail-key").textContent = data.key || "See Mathematical Clock & Transposition Invariants";
+  document.getElementById("detail-key").textContent = data.key || "No verified key.";
   document.getElementById("detail-notes").textContent = data.notes || "";
+
+  const challengeLink = document.getElementById("detail-challenge-link");
+  challengeLink.hidden = !data.challengeUrl;
+  if (data.challengeUrl) {
+    challengeLink.href = data.challengeUrl;
+    challengeLink.textContent = `Open official ${data.id} challenge ↗`;
+  }
+
+  const plaintextHeading = document.getElementById("detail-pt-heading");
+  const plaintextDisplay = document.getElementById("detail-pt");
+  if (pt) {
+    plaintextHeading.textContent = "Verified Plaintext";
+    plaintextDisplay.classList.remove("frontier-display");
+    plaintextDisplay.classList.add("plaintext-highlight");
+    plaintextDisplay.textContent = formatWrapped(pt, 42);
+  } else {
+    plaintextHeading.textContent = "Plaintext Status";
+    plaintextDisplay.classList.remove("plaintext-highlight");
+    plaintextDisplay.classList.add("frontier-display");
+    plaintextDisplay.textContent = data.frontier || "No verified plaintext has been recovered.";
+  }
+
+  const methodSection = document.getElementById("detail-method-section");
+  methodSection.hidden = !data.method;
+  document.getElementById("detail-method").textContent = data.method || "";
+}
+
+// Famous Unsolved Cipher & Script Archive
+function initUnsolvedArchive() {
+  const grid = document.getElementById("unsolved-archive-grid");
+  if (!grid || typeof UNSOLVED_CIPHER_ARCHIVE === "undefined") return;
+
+  grid.innerHTML = "";
+  UNSOLVED_CIPHER_ARCHIVE.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "archive-card";
+
+    const meta = document.createElement("div");
+    meta.className = "archive-meta";
+    const kind = document.createElement("span");
+    kind.textContent = item.kind;
+    const status = document.createElement("span");
+    status.className = "cipher-badge badge-unsolved";
+    status.textContent = "UNSOLVED";
+    meta.append(kind, status);
+
+    const title = document.createElement("h3");
+    title.textContent = item.title;
+    const date = document.createElement("p");
+    date.className = "archive-date";
+    date.textContent = item.date;
+    const summary = document.createElement("p");
+    summary.textContent = item.summary;
+
+    const boundary = document.createElement("p");
+    boundary.className = "archive-boundary";
+    const label = document.createElement("strong");
+    label.textContent = "Verification boundary: ";
+    boundary.append(label, item.boundary);
+
+    const source = document.createElement("a");
+    source.className = "archive-source";
+    source.href = item.sourceUrl;
+    source.target = "_blank";
+    source.rel = "noopener noreferrer";
+    source.textContent = `${item.sourceLabel} ↗`;
+
+    card.append(meta, title, date, summary, boundary, source);
+    grid.appendChild(card);
+  });
 }
 
 // Math & Cryptanalysis Helpers
@@ -243,13 +313,13 @@ function initBookReader() {
   const chapters = [
     { title: "Prologue: The CIA Sculpture & The 36-Year Mystery", target: "book-ch-prologue" },
     { title: "Chapter 1: The Narrative Arc of Paradigm Kryptos (PK1 – PK7)", target: "book-ch-1" },
-    { title: "Chapter 2: Decoupling and Breaking PK8 (N = 153)", target: "book-ch-2" },
-    { title: "Chapter 3: Cracking PK9 — The 135-Character Artisan Text (N = 144)", target: "book-ch-3" },
-    { title: "Chapter 4: Cracking PK10 — The Modular Copper Triptych (N = 504)", target: "book-ch-4" },
-    { title: "Chapter 5: The Dual-Cipher GPS Sculpture Theorem", target: "book-ch-5" },
-    { title: "Chapter 6: Grand Cryptosystem Synthesis & Universal Invariants", target: "book-ch-6" },
-    { title: "Chapter 7: Master Solutions Database & Verification Manifest", target: "book-ch-7" },
-    { title: "Epilogue: Complete Suite Reproducibility Assurance", target: "book-ch-epilogue" }
+    { title: "Chapter 2: PK8 — Verified Solution & Method", target: "book-ch-2" },
+    { title: "Chapter 3: PK9 — Open Research Frontier", target: "book-ch-3" },
+    { title: "Chapter 4: PK10 — Open Research Frontier", target: "book-ch-4" },
+    { title: "Chapter 5: Research-Integrity Rules", target: "book-ch-5" },
+    { title: "Chapter 6: Next PK9 Steps", target: "book-ch-6" },
+    { title: "Chapter 7: Verification Commands", target: "book-ch-7" },
+    { title: "Epilogue: Current Solution Status", target: "book-ch-epilogue" }
   ];
 
   const tocList = document.getElementById("book-toc-list");

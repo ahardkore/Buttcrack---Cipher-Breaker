@@ -478,6 +478,7 @@ def wiki_sidebar(current: str) -> str:
         link("history-of-codebreaking.html", "History of codebreaking")
         + link("famous-cryptanalysts.html", "The codebreakers")
         + link("famous-ciphers.html", "Famous ciphers")
+        + link("unsolved-ciphers.html", "Unsolved cipher archive")
     )
     tool_links = (
         link("index.html", "Cipher solver")
@@ -500,9 +501,10 @@ def wiki_sidebar(current: str) -> str:
       </div>
       <nav class="wiki-side-nav">
         <details class="wiki-side-group" open>
-          <summary>Navigation<span class="side-count">3</span></summary>
+          <summary>Navigation<span class="side-count">4</span></summary>
           <ul>
             {link("cipher-wiki.html", "Main page")}
+            {link("unsolved-ciphers.html", "Unsolved cipher archive")}
             <li><a href="cipher-wiki.html#families">Contents — all {total}</a></li>
             <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
           </ul>
@@ -511,7 +513,7 @@ def wiki_sidebar(current: str) -> str:
 {chr(10).join(family_blocks)}
         <h3 class="wiki-side-heading">History</h3>
         <details class="wiki-side-group" open>
-          <summary>Codebreaking<span class="side-count">3</span></summary>
+          <summary>Codebreaking<span class="side-count">4</span></summary>
           <ul>
 {history_links}
           </ul>
@@ -658,7 +660,7 @@ def wiki_stats_infobox() -> str:
             f'<a href="cipher-wiki.html#family-{f}">{FAMILY_TITLES[f]}</a>'
             for f in WIKI_FAMILY_ORDER if f in by_family
         )),
-        ("History features", "Timeline · Codebreakers · Famous ciphers"),
+        ("History features", "Timeline · Codebreakers · Famous ciphers · Unsolved archive"),
         ("Written by", "the solver's registry, at build time"),
         ("License", f'<a href="{CFG["repo_url"]}">Open source</a>'),
     ]
@@ -795,6 +797,12 @@ def solver_html() -> str:
       <button class="ghost" id="clear">Clear</button>
       <span class="samples"><span class="sample-label">Try a sample</span>{sample_buttons}</span>
     </div>
+    <details class="solver-limits">
+      <summary>What this browser solver can—and cannot—do</summary>
+      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution.</p>
+      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. Its ranking model is tuned for English, so a high score is a lead to verify with the method, key, and source context—not a guarantee.</p>
+      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    </details>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
   </section>"""
 
@@ -1194,6 +1202,93 @@ PAGES = [
     },
 ]
 
+# Curated unresolved problems. "Unsolved" means no generally accepted,
+# reproducible decipherment—not that every object below is definitely a cipher.
+# Sources are chosen for institutional, scholarly, or specialist provenance.
+UNSOLVED_ARCHIVE = [
+    {
+        "title": "D’Agapeyeff Cipher",
+        "when": "1939",
+        "kind": "Challenge ciphertext",
+        "summary": "Alexander D’Agapeyeff published this 395-digit exercise in the first edition of <em>Codes and Ciphers</em>. No plaintext or method has been verified; a construction or transcription error remains possible.",
+        "boundary": "An English-looking fragment is not a solution without an exact, reproducible construction for the published digits.",
+        "source_label": "MysteryTwister’s challenge transcript",
+        "source_url": "https://mysterytwister.org/media/challenges/pdf/mtc3-schmeh-02-agapeyeff-en.pdf",
+    },
+    {
+        "title": "Zodiac Z13",
+        "when": "1970",
+        "kind": "13-symbol cryptogram",
+        "summary": "This short cipher follows the phrase “My name is—” in a Zodiac letter. Its length leaves too little information to distinguish a proposed name from other fitting candidates, and no definitive solution is accepted.",
+        "boundary": "Treat proposed names as hypotheses, not identifications, unless a method supplies unique and independently checkable validation.",
+        "source_label": "History’s overview of the Zodiac ciphers",
+        "source_url": "https://www.history.com/articles/the-zodiac-ciphers-what-we-know",
+    },
+    {
+        "title": "Zodiac Z32",
+        "when": "1970",
+        "kind": "32-symbol map cipher",
+        "summary": "This 32-symbol message accompanied a San Francisco Bay Area map and was said to concern a bomb location. It has not been definitively decoded; map context does not by itself turn a candidate reading into proof.",
+        "boundary": "A credible solution must account for the full symbol sequence and produce a falsifiable connection to the accompanying map.",
+        "source_label": "History’s overview of the Zodiac ciphers",
+        "source_url": "https://www.history.com/articles/the-zodiac-ciphers-what-we-know",
+    },
+    {
+        "title": "Dorabella Cipher",
+        "when": "1897",
+        "kind": "87-glyph personal cryptogram",
+        "summary": "Composer Edward Elgar’s note to Dora Penny uses a small set of curved glyphs. Textual and musical interpretations have been proposed, but no reading has gained consensus as the intended message.",
+        "boundary": "The short text admits many plausible readings; historical fit and an exact, consistently applied key are required before calling one a solution.",
+        "source_label": "Nautilus on Elgar’s cipher",
+        "source_url": "https://nautil.us/the-artist-of-the-unbreakable-code-234588",
+    },
+    {
+        "title": "Beale Ciphers 1 &amp; 3",
+        "when": "Published 1885",
+        "kind": "Number-cipher / treasure legend",
+        "summary": "Of the three number ciphers in the Beale Papers, only cipher 2 has a demonstrated Declaration of Independence key. The location and heir messages, ciphers 1 and 3, remain open—and the underlying treasure story itself is unverified.",
+        "boundary": "The archive separates the unsolved texts from the historical claim: a decryption would not by itself authenticate the treasure narrative.",
+        "source_label": "Cipher Museum’s provenance note",
+        "source_url": "https://ciphermuseum.com/ciphers/beale.html",
+    },
+    {
+        "title": "Voynich Manuscript",
+        "when": "15th–16th century",
+        "kind": "Undeciphered manuscript / script",
+        "summary": "Beinecke MS 408 is written in an unidentified script by an unknown author. It is not established that the writing is a cipher at all; cryptographic approaches have not produced an accepted decipherment.",
+        "boundary": "This belongs in an undeciphered-script archive, not in a list of solved cipher systems. Yale provides high-resolution research images.",
+        "source_label": "Yale Beinecke’s record and scans",
+        "source_url": "https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript",
+    },
+    {
+        "title": "Phaistos Disc",
+        "when": "Bronze Age Crete",
+        "kind": "Undeciphered inscribed object",
+        "summary": "The unique spiral object bears more than 240 stamped signs. Its script, language, purpose, and even whether it should be treated as ordinary text remain unresolved because there is no comparable corpus or bilingual key.",
+        "boundary": "Proposed readings are not established decipherments. The archive labels it an undeciphered object rather than assuming a specific cipher mechanism.",
+        "source_label": "Ancient Near East Today on the object’s context",
+        "source_url": "https://anetoday.org/phaistos-disk/",
+    },
+]
+
+
+def unsolved_archive_html() -> str:
+    """Render the curated archive with sources and a verification boundary."""
+    cards = []
+    for item in UNSOLVED_ARCHIVE:
+        cards.append(
+            f"""    <section class="unsolved-entry">
+      <div class="unsolved-meta"><span>{item["kind"]}</span><span class="status status-unsolved">unresolved</span></div>
+      <h3>{item["title"]}</h3>
+      <p class="unsolved-date">{item["when"]}</p>
+      <p>{item["summary"]}</p>
+      <p class="unsolved-boundary"><strong>Verification boundary:</strong> {item["boundary"]}</p>
+      <p class="unsolved-source"><a href="{item["source_url"]}" target="_blank" rel="noopener noreferrer">{item["source_label"]} ↗</a></p>
+    </section>"""
+        )
+    return "\n".join(cards)
+
+
 # A compact, interlinked reference rather than a grab-bag of thin SEO pages.
 # Each article starts with the practical recognition clues, then explains the
 # underlying operation, its historical context and the honest limits of the
@@ -1254,6 +1349,7 @@ __CIPHER_INDEX__
       <li><a href="history-of-codebreaking.html">A history of codebreaking</a> — al-Kindi to Colossus, and where each technique in this solver came from.</li>
       <li><a href="famous-cryptanalysts.html">The codebreakers</a> — who broke what, and what it cost them.</li>
       <li><a href="famous-ciphers.html">Famous ciphers</a> — the ones that changed history, and the handful still unread.</li>
+      <li><a href="unsolved-ciphers.html">Unsolved cipher archive</a> — seven famous open problems, their evidence boundaries, and source links.</li>
     </ul>
 
     <h2>Three measurements worth knowing</h2>
@@ -1277,6 +1373,36 @@ __CIPHER_INDEX__
     fit several keys; proper names and another language confuse an English scorer; and a
     one-time pad used correctly has no statistical weakness. Treat an automatic answer as a
     hypothesis backed by evidence, then read it and verify the recovered key.</p>""",
+    },
+    {
+        "slug": "unsolved-ciphers.html",
+        "title": "Famous Unsolved Ciphers and Undeciphered Scripts — Evidence, Sources and Limits",
+        "desc": "A sourced archive of seven famous unresolved cipher problems, with clear verification boundaries that separate a candidate reading from an accepted decipherment.",
+        "h1": "Famous Unsolved Ciphers & Scripts",
+        "tagline": "Open problems deserve sources, scope, and an honest standard of proof.",
+        "preset": "caesar",
+        "faqs": [
+            ("Does unsolved mean nobody has proposed an answer?",
+             "No. Many of these objects have many proposed readings. Here, unsolved means there is no generally accepted, reproducible decipherment that explains the full source material without arbitrary choices."),
+            ("Are all of these conventional ciphers?",
+             "No. The D’Agapeyeff and Zodiac entries are ciphertext challenges; the Voynich Manuscript and Phaistos Disc are undeciphered written objects. The distinction is stated on every card because it changes what a valid solution would look like."),
+            ("Why are short cryptograms especially difficult?",
+             "Short text provides too little redundancy to choose uniquely among keys and plaintexts. A candidate can look meaningful while many different candidates fit equally well. Independent verification is essential."),
+        ],
+        "body": f"""    <section class="mp-banner">
+      <h2>Research archive, not a claim list</h2>
+      <p>These are famous unresolved problems selected for accessible source material and clear limits. “Unresolved” does not mean every entry is necessarily a cipher, and it does not turn a plausible phrase into a verified solution.</p>
+    </section>
+
+    <h2>How to read the archive</h2>
+    <p>Each card identifies the kind of evidence, links to a source, and states what would have to be shown before a proposed reading should be treated as established. That matters especially for tiny cryptograms, where a name or phrase can be fitted after the fact. For the active Kryptos challenges, see the separate <a href="{KRYPTOS_HREF}">Kryptos research explorer</a>.</p>
+
+    <div class="unsolved-grid">
+{unsolved_archive_html()}
+    </div>
+
+    <h2>What is not a solution</h2>
+    <p>A readable fragment, a favorable n-gram score, a thematic story, or a coincidence with a map or historical event is evidence to investigate—not a decipherment. A strong solution gives a complete method, applies it consistently to the source, and leaves a result that another researcher can reproduce.</p>""",
     },
     {
         "slug": "caesar-cipher-wiki.html",
@@ -1878,6 +2004,22 @@ def main() -> None:
                 ("Cipher wiki", "cipher-wiki.html"),
             ],
         }
+
+    # The unresolved archive is editorial/history material, not a cipher in the
+    # solver registry. Give it the same breadcrumb and category trail as the
+    # history features without pretending the entries share one mechanism.
+    for spec in WIKI_PAGES:
+        if spec["slug"] == "unsolved-ciphers.html":
+            spec["wiki"] = {
+                "family": "history",
+                "family_title": "History of codebreaking",
+                "infobox": "",
+                "categories": [
+                    ("History of cryptography", "cipher-wiki.html#history"),
+                    ("Unsolved ciphers", "unsolved-ciphers.html"),
+                    ("Cipher wiki", "cipher-wiki.html"),
+                ],
+            }
 
     # The wiki main page: its infobox is the wiki's own stats, and it is the
     # one page without a breadcrumb (it is the breadcrumb root).

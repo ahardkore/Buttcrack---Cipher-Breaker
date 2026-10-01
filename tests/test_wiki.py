@@ -93,6 +93,25 @@ class TestSpecCoversRegistry(unittest.TestCase):
         self.assertGreaterEqual(checked, 40, "expected examples for most ciphers")
 
 
+class TestUnsolvedArchive(unittest.TestCase):
+    def test_archive_is_sourced_and_has_explicit_boundaries(self):
+        archive = bp.UNSOLVED_ARCHIVE
+        self.assertEqual(len(archive), 7)
+        self.assertEqual(len({item["title"] for item in archive}), len(archive))
+        for item in archive:
+            self.assertTrue(item["source_url"].startswith("https://"))
+            self.assertTrue(item["source_label"])
+            self.assertTrue(item["boundary"])
+
+    def test_archive_page_is_a_wiki_spec(self):
+        spec = next((item for item in bp.WIKI_PAGES
+                     if item["slug"] == "unsolved-ciphers.html"), None)
+        self.assertIsNotNone(spec)
+        self.assertIn("Verification boundary", spec["body"])
+        self.assertIn("D’Agapeyeff Cipher", spec["body"])
+        self.assertIn("Phaistos Disc", spec["body"])
+
+
 class TestTableOfContents(unittest.TestCase):
     def test_anchors_exist_and_nest(self):
         body = ("<h2>One</h2><p>x</p>"

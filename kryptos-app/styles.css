@@ -498,3 +498,409 @@ footer {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+.frontier-display {
+  color: var(--copper-glow);
+  border-color: rgba(240, 136, 62, 0.55);
+  white-space: pre-wrap;
+  word-break: normal;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Responsive layout ------------------------------------------------------- */
+/* The explorer is used on small screens as often as it is on a desktop. Keep
+   navigation finger-sized, let long cipher text wrap, and turn desktop sidebars
+   into horizontally scrollable selectors rather than forcing a cramped column. */
+html {
+  min-width: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.title-compact,
+.nav-label-compact {
+  display: none;
+}
+
+.code-display {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1080px) {
+  header {
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  nav {
+    max-width: 54%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .nav-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .cipher-explorer-layout {
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .book-reader-container {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .cipher-detail-card,
+  .book-content,
+  .workbench-card,
+  .sculpture-container {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .site-switch {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.75rem;
+  }
+
+  header {
+    position: static;
+    display: block;
+    padding: 0.8rem 0.85rem 0.65rem;
+  }
+
+  .logo-container {
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .logo-badge {
+    padding: 5px 8px;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    flex: 0 0 auto;
+  }
+
+  .logo-title {
+    min-width: 0;
+  }
+
+  .logo-title h1 {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .logo-title p {
+    font-size: 0.7rem;
+    line-height: 1.3;
+    margin-top: 0.18rem;
+  }
+
+  .title-wide,
+  .nav-label-wide {
+    display: none;
+  }
+
+  .title-compact,
+  .nav-label-compact {
+    display: inline;
+  }
+
+  nav {
+    max-width: none;
+    width: calc(100% + 1.7rem);
+    margin: 0.75rem -0.85rem -0.05rem;
+    padding: 0 0.85rem 0.45rem;
+    gap: 0.45rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-tab {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  main {
+    padding: 0.85rem;
+  }
+
+  .cipher-explorer-layout,
+  .book-reader-container,
+  .workbench-grid {
+    display: block;
+  }
+
+  .cipher-sidebar {
+    display: flex;
+    align-items: stretch;
+    gap: 0.45rem;
+    max-height: none;
+    margin-bottom: 0.85rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.55rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .sidebar-category-title {
+    align-self: center;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 0.3rem;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .cipher-nav-item {
+    flex: 0 0 9.75rem;
+    min-height: 3.75rem;
+    margin: 0;
+    padding: 0.55rem 0.65rem;
+    gap: 0.45rem;
+  }
+
+  .cipher-name {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .cipher-badge {
+    flex: 0 0 auto;
+    font-size: 0.62rem;
+  }
+
+  .cipher-detail-card,
+  .sculpture-container,
+  .workbench-card,
+  .github-guide-card {
+    padding: 1rem;
+    border-radius: 7px;
+  }
+
+  .detail-header {
+    display: block;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .detail-title h2 {
+    font-size: 1.25rem;
+    line-height: 1.22;
+  }
+
+  .detail-title p {
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .detail-header > div:last-child {
+    margin-top: 0.65rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-box {
+    padding: 0.6rem 0.35rem;
+  }
+
+  .stat-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.45px;
+    line-height: 1.25;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .text-section {
+    margin-bottom: 1rem;
+  }
+
+  .text-section h3 {
+    font-size: 0.72rem;
+    letter-spacing: 0.7px;
+  }
+
+  .code-display {
+    padding: 0.75rem;
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .sculpture-container h2,
+  .workbench-card h2,
+  .github-guide-card h2 {
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+
+  .sculpture-svg-wrapper {
+    margin: 1rem 0;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sculpture-svg-wrapper img {
+    width: 900px;
+    max-width: none !important;
+  }
+
+  .book-toc {
+    max-height: none;
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    padding: 0.75rem;
+  }
+
+  .book-toc h3 {
+    margin-bottom: 0.55rem;
+  }
+
+  #book-toc-list {
+    display: flex;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .toc-item {
+    flex: 0 0 12.5rem;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .book-content {
+    max-height: none;
+    overflow: visible;
+    padding: 1rem;
+    line-height: 1.65;
+  }
+
+  .book-content h1,
+  .book-content h2,
+  .book-content h3 {
+    line-height: 1.25;
+  }
+
+  .book-content p,
+  .book-content li {
+    overflow-wrap: anywhere;
+  }
+
+  .workbench-card + .workbench-card {
+    margin-top: 0.85rem;
+  }
+
+  textarea.tool-input {
+    height: 9rem;
+    font-size: 0.8rem;
+  }
+
+  .step-box {
+    padding: 0.85rem;
+  }
+
+  .step-box h4 {
+    align-items: flex-start;
+    line-height: 1.3;
+  }
+
+  .step-box pre {
+    font-size: 0.75rem;
+  }
+
+  footer {
+    padding: 1rem;
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 390px) {
+  .site-switch span {
+    display: none;
+  }
+
+  .site-switch {
+    justify-content: flex-start;
+  }
+
+  .logo-title p {
+    display: none;
+  }
+
+  .nav-tab {
+    padding-inline: 0.65rem;
+  }
+
+  .cipher-nav-item {
+    flex-basis: 9.1rem;
+  }
+
+  .stats-grid {
+    gap: 0.4rem;
+  }
+}
+
+/* Official Paradigm source link in the cipher detail header. */
+.challenge-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 0.55rem;
+  color: var(--cyan);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.challenge-link:hover,
+.challenge-link:focus-visible {
+  color: var(--text-bright);
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .challenge-link {
+    min-height: 2.5rem;
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+  }
+}
