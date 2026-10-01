@@ -32,6 +32,7 @@ NAV = [
     ("index.html", "Solver"),
     ("cipher-wiki.html", "Cipher wiki"),
     ("history-of-codebreaking.html", "History"),
+    ("windows-app.html", "Windows app"),
     ("downloads.html", "Puzzle books"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
@@ -487,6 +488,7 @@ def wiki_sidebar(current: str) -> str:
         + link("substitution-cipher-solver.html", "Substitution solver")
         + link("morse-code-translator.html", "Morse translator")
         + link("ctf-crypto-solver.html", "CTF crypto solver")
+        + link("windows-app.html", "Windows app")
         + link("downloads.html", "Puzzle books")
         + link(KRYPTOS_HREF, "Kryptos explorer")
     )
@@ -903,6 +905,131 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 </html>
 """
 
+def download_url(raw: str, field: str) -> str:
+    """Validate the installer URL. Returns "" when the field is unset.
+
+    Same discipline as ``payment_url``: the download button is the whole point
+    of that page, and a URL that 404s or downgrades to http looks exactly like
+    a working one until somebody clicks it.
+    """
+    url = (raw or "").strip()
+    if not url:
+        return ""
+    if url.startswith("http://"):
+        raise SystemExit(
+            f"site.json: windows_app.{field} must be https, not http: {url}\n"
+            f"Browsers block executable downloads over plain http."
+        )
+    if not url.startswith("https://"):
+        raise SystemExit(f"site.json: windows_app.{field} is not a URL: {url!r}")
+    if not url.lower().endswith(".exe"):
+        print(f"  note: windows_app.{field} does not end in .exe ({url}) — assuming a redirect")
+    return url
+
+
+def windows_app_html() -> str:
+    """The desktop download block: a button when it is published, honesty when it is not.
+
+    The installer is a build artefact, not a file in this repository, so the
+    page has two states. With ``windows_app.download_url`` set it is a download
+    page; without it, it tells the reader how to build the thing themselves and
+    links the documentation. It is never a dead button.
+    """
+    cfg = CFG.get("windows_app", {}) or {}
+    url = download_url(cfg.get("download_url", ""), "download_url")
+    version = (cfg.get("version") or "").strip()
+    size = (cfg.get("size") or "").strip()
+    digest = (cfg.get("sha256") or "").strip().lower()
+
+    if url:
+        spec_bits = " · ".join(filter(None, [
+            f"version {version}" if version else "",
+            "Windows 10/11, 64-bit",
+            size,
+            "installs without admin rights",
+        ]))
+        primary = f"""  <div class="product free">
+      <h3>Buttcrack for Windows</h3>
+      <p class="blurb">The full solver as a desktop app: 50 ciphers, six language models, and the
+      same local web interface — with no Python to install and nothing to clone.</p>
+      <p class="spec">{spec_bits}</p>
+      <a class="buy" href="{url}">Download the installer</a>
+    </div>"""
+        checksum = f"""
+    <h2>Check what you downloaded</h2>
+    <p>The installer's SHA-256 is published here so you can confirm the file arrived intact
+    and unmodified. In PowerShell:</p>
+    <pre class="spec">Get-FileHash .\\buttcrack-setup-{version or 'VERSION'}.exe -Algorithm SHA256</pre>
+    <p class="spec">{digest}</p>""" if digest else ""
+    else:
+        primary = """  <div class="product">
+      <h3>Buttcrack for Windows</h3>
+      <p class="blurb">The installer is built from the source tree rather than committed to it,
+      so there is no download link here yet. Building it takes one command on a Windows machine
+      with Python and Inno Setup — see the instructions below.</p>
+      <p class="spec">not yet published</p>
+      <a class="buy ghostbuy" href="#build-it">How to build it</a>
+    </div>"""
+        checksum = ""
+
+    return f"""    <h2>The desktop application</h2>
+    <p>The solver on this page runs in your browser and uses a compact trigram model. The desktop
+    build is the whole thing: <strong>50 ciphers</strong> including the M-94 wheel cipher,
+    quadgram models in <strong>six languages</strong>, layered-puzzle peeling to six levels deep,
+    and a time budget you control. It is the same program as <code>pip install buttcrack</code>,
+    packaged so that nobody has to install Python to use it.</p>
+
+    <div class="products">
+{primary}
+    </div>
+
+    <h2>What you get</h2>
+    <p>Two programs that share one runtime:</p>
+    <ul>
+      <li><strong>Buttcrack</strong> — the Start-menu app. It starts a server on
+      <code>127.0.0.1</code>, opens the solver in your browser, and sits in the notification area
+      until you close it.</li>
+      <li><strong>buttcrack.exe</strong> — the command line, optionally added to your
+      <code>PATH</code> during setup, so
+      <code>buttcrack "Wkh txlfn eurzq ira"</code> works in any terminal.</li>
+    </ul>
+    <p>It installs per-user into <code>%LOCALAPPDATA%</code>, so there is <strong>no
+    administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything else.
+    No account, no licence key, no telemetry, no update checks.</p>
+
+    <h2>Still nothing leaves your machine</h2>
+    <p>The desktop build is a local web server, not a web service. The address it opens is bound
+    to loopback only — unreachable from your network, let alone the internet — and the language
+    model is inside the installer, so the whole thing works with the network cable out. That is
+    the entire reason it exists: a puzzle you are not allowed to paste into a website can still
+    be solved on hardware you control.</p>
+{checksum}
+
+    <h2>Windows will warn you the first time</h2>
+    <p>The installer is not code-signed, so Windows SmartScreen shows a blue
+    <em>“Windows protected your PC”</em> dialog. This is a statement about a certificate that
+    costs several hundred dollars a year, not about the file. To continue, click
+    <strong>More info</strong> and then <strong>Run anyway</strong> — and verify the SHA-256 above
+    first if you would rather not take anyone's word for it.</p>
+
+    <h2 id="build-it">Or build it yourself</h2>
+    <p>Everything needed to produce the installer is in the repository, and the build is
+    reproducible on any Windows machine with Python 3.9+ and
+    <a href="https://jrsoftware.org/isdl.php" rel="noopener" target="_blank">Inno Setup</a>:</p>
+    <pre class="spec">powershell -ExecutionPolicy Bypass -File packaging\\windows\\build.ps1</pre>
+    <p>That writes <code>dist\\installer\\buttcrack-setup-&lt;version&gt;.exe</code> and prints its
+    checksum. The build refuses to finish unless the frozen executable can actually break a test
+    cipher, so a bundle missing its language model fails the build instead of reaching you.</p>
+
+    <h2>macOS and Linux</h2>
+    <p>No installer is published for either, but both run the application natively, because it is
+    plain Python with no dependencies:</p>
+    <pre class="spec">pip install buttcrack
+buttcrack app</pre>
+    <p>The same packaging recipe produces unsigned binaries on both platforms if you would rather
+    not have Python involved.</p>"""
+
+
 PAGES = [
     {
         "slug": "index.html",
@@ -1199,6 +1326,29 @@ PAGES = [
     unwrap. Unwrapping produces a child node and the process repeats. The answer returned is the
     leaf with the highest confidence, reported with the complete chain that produced it — so you
     learn the structure of the challenge, not just the flag.</p>""",
+    },
+    {
+        "slug": "windows-app.html",
+        "title": "Buttcrack for Windows — Free Offline Cipher Solver, Installer Download",
+        "desc": "Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.",
+        "h1": "Windows App",
+        "tagline": "The full solver as a desktop program. Installs in seconds, runs offline, uploads nothing.",
+        "preset": "layered",
+        "body": windows_app_html(),
+        "faqs": [
+            ("Do I need Python installed?",
+             "No. The installer contains its own copy of Python, the language models and the web interface. Nothing else has to be present on the machine, and nothing is downloaded during installation."),
+            ("Does it need administrator rights?",
+             "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."),
+            ("Why does Windows say the publisher is unknown?",
+             "Because the installer is not code-signed. A Windows code-signing certificate costs several hundred dollars a year and must be renewed, which is hard to justify for a free tool. SmartScreen reports that absence rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded."),
+            ("Does it send my ciphertext anywhere?",
+             "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."),
+            ("How is this different from the solver on this page?",
+             "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, deeper layered-puzzle unwrapping, and a search budget you can raise for hard problems."),
+            ("How do I uninstall it?",
+             "Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind because it never writes anything outside its own folder."),
+        ],
     },
 ]
 

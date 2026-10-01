@@ -80,6 +80,24 @@ $ pip install .
 $ buttcrack "Wkh txlfn eurzq ira"
 ```
 
+### Windows, without installing Python
+
+There is a desktop build: one installer, no Python, no clone, no admin rights.
+It ships both programs — a Start-menu app that opens the local web interface in
+your browser, and `buttcrack.exe` on your `PATH` for the command line above.
+
+Build it on any Windows machine with Python 3.9+ and [Inno Setup](https://jrsoftware.org/isdl.php):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1
+```
+
+That produces `dist\installer\buttcrack-setup-<version>.exe` (~25 MB, the
+language model included) and prints its SHA-256. It is an ordinary static file:
+host it on any web server and the people who download it never touch GitHub,
+`git` or `pip`. See [docs/windows-installer.md](docs/windows-installer.md) for
+the build, code signing, and hosting options.
+
 ---
 
 ## Quick start
@@ -103,7 +121,8 @@ buttcrack show playfair
 buttcrack demo                # encrypt a few messages, then break them with no hints
 
 # web interface
-buttcrack serve --port 8080   # then open http://localhost:8080
+buttcrack serve --port 8080   # a server: binds 0.0.0.0, reachable from your network
+buttcrack app                 # a desktop app: loopback only, opens your browser, has a window
 ```
 
 Handy options on `crack`:

@@ -16,6 +16,14 @@ htmlcov/
 # Virtual environments
 .venv/
 venv/
+# Throwaway environment that packaging/windows/build.ps1 installs PyInstaller into
+.venv-build/
+
+# Windows packaging output (build it with packaging/windows/build.ps1; the
+# installer is published to a web host, not committed here -- see
+# docs/windows-installer.md). dist/ and build/ are already ignored above.
+packaging/windows/version_info_*.txt
+*.manifest
 
 # Editors / OS
 .idea/

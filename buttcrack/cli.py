@@ -703,6 +703,16 @@ def cmd_serve(args: argparse.Namespace) -> int:
     return serve_web(host=args.host, port=args.port, open_browser=not args.no_browser)
 
 
+def cmd_app(args: argparse.Namespace) -> int:
+    from .desktop import run as run_desktop
+
+    return run_desktop(
+        port=args.port,
+        open_browser=not args.no_browser,
+        window=False if args.console else None,
+    )
+
+
 # --------------------------------------------------------------------------- #
 # argument parsing
 # --------------------------------------------------------------------------- #
@@ -724,7 +734,8 @@ def build_parser() -> argparse.ArgumentParser:
                f"  {PROGRAM} identify --file puzzle.txt\n"
                f"  {PROGRAM} ciphers --verbose\n"
                f"  {PROGRAM} demo\n"
-               f"  {PROGRAM} serve --port 8080\n",
+               f"  {PROGRAM} serve --port 8080\n"
+               f"  {PROGRAM} app\n",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command")
@@ -836,11 +847,23 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--no-color", action="store_true")
     serve.set_defaults(func=cmd_serve)
 
+    # `serve` is the server: it binds 0.0.0.0 on a fixed port so you can reach
+    # it from elsewhere.  `app` is the desktop program the Windows installer
+    # puts in the Start menu: loopback only, any free port, and a window to
+    # close.  Same interface, opposite defaults, so neither has to compromise.
+    app = sub.add_parser("app", help="run the desktop application (local web UI, 127.0.0.1 only)")
+    app.add_argument("--port", "-p", type=int, default=0,
+                     help="port to use (default: 8080, or any free port)")
+    app.add_argument("--no-browser", action="store_true", help="do not open a browser on startup")
+    app.add_argument("--console", action="store_true", help="no control window; run in the terminal")
+    app.add_argument("--no-color", action="store_true")
+    app.set_defaults(func=cmd_app)
+
     return parser
 
 
 SUBCOMMANDS = (
-    "crack", "identify", "encrypt", "decrypt", "ciphers", "show", "demo", "selftest", "serve",
+    "crack", "identify", "encrypt", "decrypt", "ciphers", "show", "demo", "selftest", "serve", "app",
 )
 
 

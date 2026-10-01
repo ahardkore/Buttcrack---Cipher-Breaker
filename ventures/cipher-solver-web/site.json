@@ -17,6 +17,13 @@
   },
   "_verification_files_note": "For the 'HTML file' method instead of the meta tag (Google Search Console, Bing). Map the exact filename to its exact contents; each is written to the site root on every build. Google's file is named googleXXXX.html and contains the single line 'google-site-verification: googleXXXX.html'.",
   "verification_files": {},
+  "_windows_app_note": "The downloadable Windows installer produced by packaging/windows/build.ps1. Set download_url to wherever you host the .exe -- your own domain, Cloudflare R2, Netlify, anywhere that serves a static file over https -- and paste the version, size and SHA-256 that build.ps1 printed. Leave download_url empty and the page shows build-it-yourself instructions instead of a dead button, so the site is never broken by a missing upload.",
+  "windows_app": {
+    "download_url": "",
+    "version": "",
+    "size": "",
+    "sha256": ""
+  },
   "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
   "stripe": {
     "tip_jar_url": "https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04",

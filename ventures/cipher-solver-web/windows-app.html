@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buttcrack for Windows — Free Offline Cipher Solver, Installer Download</title>
+<meta name="description" content="Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.">
+<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/windows-app.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Buttcrack for Windows — Free Offline Cipher Solver, Installer Download">
+<meta property="og:description" content="Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/windows-app.html">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Buttcrack for Windows \u2014 Free Offline Cipher Solver, Installer Download", "description": "Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need Python installed?", "acceptedAnswer": {"@type": "Answer", "text": "No. The installer contains its own copy of Python, the language models and the web interface. Nothing else has to be present on the machine, and nothing is downloaded during installation."}}, {"@type": "Question", "name": "Does it need administrator rights?", "acceptedAnswer": {"@type": "Answer", "text": "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."}}, {"@type": "Question", "name": "Why does Windows say the publisher is unknown?", "acceptedAnswer": {"@type": "Answer", "text": "Because the installer is not code-signed. A Windows code-signing certificate costs several hundred dollars a year and must be renewed, which is hard to justify for a free tool. SmartScreen reports that absence rather than anything it found in the file. Click More info, then Run anyway \u2014 and check the published SHA-256 if you want independent confirmation of what you downloaded."}}, {"@type": "Question", "name": "Does it send my ciphertext anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."}}, {"@type": "Question", "name": "How is this different from the solver on this page?", "acceptedAnswer": {"@type": "Answer", "text": "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, deeper layered-puzzle unwrapping, and a search budget you can raise for hard problems."}}, {"@type": "Question", "name": "How do I uninstall it?", "acceptedAnswer": {"@type": "Answer", "text": "Settings, then Apps, then Buttcrack, then Uninstall \u2014 or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind because it never writes anything outside its own folder."}}]}</script>
+</head>
+<body data-preset="layered">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <div class="hero-copy">
+      <p class="eyebrow">Automatic classical cryptanalysis</p>
+      <h1>Windows App<span class="dot">.</span></h1>
+      <p class="tagline">The full solver as a desktop program. Installs in seconds, runs offline, uploads nothing.</p>
+    </div>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="windows-app.html" aria-current="page">Windows app</a><a href="downloads.html">Puzzle books</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main-content">
+  <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button></span>
+    </div>
+    <details class="solver-limits">
+      <summary>What this browser solver can—and cannot—do</summary>
+      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution.</p>
+      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. Its ranking model is tuned for English, so a high score is a lead to verify with the method, key, and source context—not a guarantee.</p>
+      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    </details>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+
+  <article>
+    <h2>The desktop application</h2>
+    <p>The solver on this page runs in your browser and uses a compact trigram model. The desktop
+    build is the whole thing: <strong>50 ciphers</strong> including the M-94 wheel cipher,
+    quadgram models in <strong>six languages</strong>, layered-puzzle peeling to six levels deep,
+    and a time budget you control. It is the same program as <code>pip install buttcrack</code>,
+    packaged so that nobody has to install Python to use it.</p>
+
+    <div class="products">
+  <div class="product">
+      <h3>Buttcrack for Windows</h3>
+      <p class="blurb">The installer is built from the source tree rather than committed to it,
+      so there is no download link here yet. Building it takes one command on a Windows machine
+      with Python and Inno Setup — see the instructions below.</p>
+      <p class="spec">not yet published</p>
+      <a class="buy ghostbuy" href="#build-it">How to build it</a>
+    </div>
+    </div>
+
+    <h2>What you get</h2>
+    <p>Two programs that share one runtime:</p>
+    <ul>
+      <li><strong>Buttcrack</strong> — the Start-menu app. It starts a server on
+      <code>127.0.0.1</code>, opens the solver in your browser, and sits in the notification area
+      until you close it.</li>
+      <li><strong>buttcrack.exe</strong> — the command line, optionally added to your
+      <code>PATH</code> during setup, so
+      <code>buttcrack "Wkh txlfn eurzq ira"</code> works in any terminal.</li>
+    </ul>
+    <p>It installs per-user into <code>%LOCALAPPDATA%</code>, so there is <strong>no
+    administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything else.
+    No account, no licence key, no telemetry, no update checks.</p>
+
+    <h2>Still nothing leaves your machine</h2>
+    <p>The desktop build is a local web server, not a web service. The address it opens is bound
+    to loopback only — unreachable from your network, let alone the internet — and the language
+    model is inside the installer, so the whole thing works with the network cable out. That is
+    the entire reason it exists: a puzzle you are not allowed to paste into a website can still
+    be solved on hardware you control.</p>
+
+
+    <h2>Windows will warn you the first time</h2>
+    <p>The installer is not code-signed, so Windows SmartScreen shows a blue
+    <em>“Windows protected your PC”</em> dialog. This is a statement about a certificate that
+    costs several hundred dollars a year, not about the file. To continue, click
+    <strong>More info</strong> and then <strong>Run anyway</strong> — and verify the SHA-256 above
+    first if you would rather not take anyone's word for it.</p>
+
+    <h2 id="build-it">Or build it yourself</h2>
+    <p>Everything needed to produce the installer is in the repository, and the build is
+    reproducible on any Windows machine with Python 3.9+ and
+    <a href="https://jrsoftware.org/isdl.php" rel="noopener" target="_blank">Inno Setup</a>:</p>
+    <pre class="spec">powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1</pre>
+    <p>That writes <code>dist\installer\buttcrack-setup-&lt;version&gt;.exe</code> and prints its
+    checksum. The build refuses to finish unless the frozen executable can actually break a test
+    cipher, so a bundle missing its language model fails the build instead of reaching you.</p>
+
+    <h2>macOS and Linux</h2>
+    <p>No installer is published for either, but both run the application natively, because it is
+    plain Python with no dependencies:</p>
+    <pre class="spec">pip install buttcrack
+buttcrack app</pre>
+    <p>The same packaging recipe produces unsigned binaries on both platforms if you would rather
+    not have Python involved.</p>
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>Do I need Python installed?</summary><p>No. The installer contains its own copy of Python, the language models and the web interface. Nothing else has to be present on the machine, and nothing is downloaded during installation.</p></details><details class="faq"><summary>Does it need administrator rights?</summary><p>No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator.</p></details><details class="faq"><summary>Why does Windows say the publisher is unknown?</summary><p>Because the installer is not code-signed. A Windows code-signing certificate costs several hundred dollars a year and must be renewed, which is hard to justify for a free tool. SmartScreen reports that absence rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded.</p></details><details class="faq"><summary>Does it send my ciphertext anywhere?</summary><p>No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.</p></details><details class="faq"><summary>How is this different from the solver on this page?</summary><p>The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, deeper layered-puzzle unwrapping, and a search budget you can raise for hard problems.</p></details><details class="faq"><summary>How do I uninstall it?</summary><p>Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind because it never writes anything outside its own folder.</p></details>
+  </article>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
+    (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
