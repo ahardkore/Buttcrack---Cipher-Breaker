@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Score the solver against the Paradigm Kryptos CTF corpus.
 
-PK1-PK7 have published solutions, so they are a *scorecard*: the plaintext is
-known and either the solver reproduces it or it does not.  PK8-PK10 have no
-published key here -- PK8 was solved externally and its key was never released,
-PK9 and PK10 have zero solves on the leaderboard -- so for those the script
-reports the best n-gram fitness reached and compares it with the records in
-`kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md` (PK9 -5.2493, PK10 -7.6180).
+PK1-PK8 have published solutions, so they are a *scorecard*: the plaintext is
+known and either the solver reproduces it or it does not. PK8's externally
+published key sequence is independently verified in `verify_pk8_solution.py`.
+PK9 and PK10 have zero solves on the leaderboard, so for those the script
+reports the best n-gram fitness reached. PK10 is also compared with the
+historical `-7.6180` dossier baseline; PK9's former `-5.2493` reading was
+invalidated and is deliberately not treated as a record.
 Nothing here claims a break that the plaintext does not demonstrate.
 
     python3 scripts/kryptos_ctf.py [--budget 60] [--only PK1,PK3]
@@ -27,8 +28,8 @@ from buttcrack import solve  # noqa: E402
 from buttcrack.lang import get_model  # noqa: E402
 
 CORPUS = ROOT / "kryptos"
-#: Records from the repository's own dossier, for the unsolved three.
-RECORDS = {"PK9": -5.2493, "PK10": -7.6180}
+#: Historical records from the repository's dossier for the unsolved two.
+RECORDS = {"PK10": -7.6180}
 
 
 def main() -> int:
