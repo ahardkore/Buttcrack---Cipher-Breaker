@@ -285,6 +285,34 @@ language is present at the opening under arbitrary T8, or elsewhere under the
 Theophilus-word T8 set. The test does not exclude different wording or a
 non-Theophilus T8 permutation away from the opening.
 
+### PK8-calibrated narrative style
+
+A limitation of hand-built continuation lists is unknown recall. To measure it,
+`generate_pk9_style_from_pk8.py` models syntax visible in PK8—first-person
+present tense, temporal complements, subordinate `BEFORE/AFTER` clauses, and
+`BUT/AND` pivots—without inserting its complete opening as a fixed phrase. The
+grammar generates 41,382 distinct 20-letter openings and includes PK8's actual
+opening, `ILEAVEATMIDNIGHTBEFO`, through its ordinary token combinations.
+
+As a real-answer positive control, the unrestricted PK8 crib solver tested all
+41,382 openings. It recovered the exact PK8 plaintext at rank 1 with score
+`-4.361307`; the next candidate scored only `-7.016394`. Applying the same
+finite corpus to PK9 gave:
+
+| target | T8 assignments | placements | candidates | survivors | best score |
+| --- | --- | ---: | ---: | ---: | ---: |
+| PK9 prefix | all 40,320 | 41,382 | 1,668,522,240 | 3,661 | `-6.667399` |
+| all PK9 offsets | 284 Theophilus-word permutations | 5,172,750 | 1,469,061,000 | 3,230 | `-6.734873` |
+
+A second grammar corrects an earlier past-tense bias and generates 51,950
+present-tense openings around returning to the archive and using the needle on
+the knot. Its arbitrary-T8 prefix sweep covered 2,094,624,000 states (4,574
+chance survivors; best `-6.757267`), while its all-offset Theophilus-T8 sweep
+covered 1,844,225,000 states (3,941 survivors; best `-6.734428`). No result is
+language-bearing. The calibrated positive control makes this exclusion stronger
+than an untested phrase list, but it still establishes recall only for PK8's
+known opening—not for unknown PK9 wording.
+
 Because the public hint said PK9 would likely help with PK8, a separate corpus
 models explicit disclosure of `METE / METER / METIER / MASTERY`. Its 8,271
 20-letter windows produced only chance survivors at the PK9 prefix under every
@@ -344,6 +372,17 @@ python3 kryptos/generate_pk9_from_pk8.py --key-sequences \
   /tmp/pk8_key_sequences_20.txt
 python3 kryptos/generate_pk9_letter_from_pk8.py --all-windows \
   /tmp/pk8_letter_windows_20.txt
+python3 kryptos/generate_pk9_present_from_pk8.py \
+  /tmp/pk8_present_openings_20.txt
+python3 kryptos/generate_pk9_style_from_pk8.py \
+  /tmp/pk8_style_openings_20.txt
+
+# Calibrate the style grammar against the real PK8 answer:
+cc -O3 -march=native -fopenmp kryptos/crack_pk8_q4567_crib.c \
+  -o /tmp/crack_pk8_q4567_crib -lm
+OMP_NUM_THREADS=32 /tmp/crack_pk8_q4567_crib \
+  --all-keys /tmp/pk8_style_openings_20.txt
+
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
   --all-keys /tmp/pk9_from_pk8_20.txt
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
@@ -355,6 +394,13 @@ OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
 OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
   --all-keys-t8-all-offsets kryptos/theophilus_w8.txt \
   /tmp/pk8_letter_windows_20.txt
+OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
+  --all-keys /tmp/pk8_style_openings_20.txt
+OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
+  --all-keys-t8-all-offsets kryptos/theophilus_w8.txt \
+  /tmp/pk8_style_openings_20.txt
+OMP_NUM_THREADS=32 /tmp/crack_pk9_q567_t8_crib \
+  --all-keys /tmp/pk8_present_openings_20.txt
 ```
 
 ## Interpretation and next useful work
