@@ -50,23 +50,78 @@ a solution.
 
 ## PK9, 144 letters
 
-Working hypothesis: a polyalphabetic substitution over a double columnar
-transposition, the substitution period around 28 and the grids 18x8 and 8x18.
-144 = 12 x 12 also factors conveniently, and both readings have been tried.
+Unsolved. What follows is what the ciphertext looks like, which hypotheses are
+now eliminated, and why the scores previously recorded here were not evidence.
 
-Best readings reached here: -4.93 with 71% word coverage
-(`pk9_solution_pt.txt`), -4.85 with 59% (`pk9_solution_plaintext.txt`). Both
-are below what a real solve looks like and are consistent with an over-fitted
-transposition search rather than a recovered key.
+Ciphertext statistics: IC 0.0445 against 0.0667 for English and 0.0385 for
+random; all 26 letters present; the letter distribution is nothing like
+English (Q appears 8 times in 144 letters, 5.6% against English's 0.1%), so a
+substitution of some kind is certainly present. Coset IC peaks at period 7
+(0.0568) with harmonics at 14 and 21.
 
-The useful negative result is about method, not about PK9's key:
+### What is eliminated
 
-- A letter histogram cannot identify a substitution laid over a transposition.
-  Measured on synthetic instances of the same shape, the true key scores
-  -23.07 on monogram chi-squared while wrong local optima reach -18.44, and
-  the true key is not even a local optimum. Monogram-guided search for the
-  outer layer is a dead end. It needs a statistic that survives transposition
-  and still discriminates, and letter frequencies are not it.
+**Transposition followed by a short periodic shift.** A transposition cannot
+change the index of coincidence, so if the cipher is `S(T(plaintext))` with
+`S` a periodic shift, undoing `S` has to leave a text whose IC is the
+plaintext's, about 0.066. The highest IC *any* choice of shifts can produce is
+an upper bound on that, and it is computable: maximise IC by coordinate ascent
+over the shifts. Over the KRYPTOS alphabet the ceiling is 0.0475 at period 4,
+0.0546 at period 8 and 0.0631 at period 7 — all short of what English needs.
+Longer periods clear 0.066 only by overfitting: at period 28 the same
+procedure reaches 0.117 on this text and 0.106 on a shuffle of it, which is
+the signature of fitting noise rather than finding a key.
+
+**Substitution followed by an aligned columnar transposition.** If the grid
+width is a multiple of the substitution period, every ciphertext column is a
+single shift class, so each column should be an internally monoalphabetic
+sample with English-like IC. Measured against 300 shuffles per width, no width
+from 4 to 36 reaches even two standard deviations above its null, in either
+the block or the stride convention.
+
+**Hill, with or without a keyed alphabet.** The attack that broke PK7 finds
+nothing here: best reading -6.14 against English's -4.3. The block-repeat
+detector gives 7 aligned pairs of 2-letter blocks where 3.8 is chance, which
+is not a signal.
+
+**Sum-clock keys, at matched effort.** See below.
+
+### Why the old "record" was not progress
+
+This file used to quote a best score of -5.2493 as a frontier. Scores on a
+144-letter text need a null before they mean anything, because a key with
+enough freedom will fit noise. Running the sum-clock attack on PK9 and on four
+shuffles of PK9 — same letters, no structure, same budget, same code:
+
+| text | best fitness |
+| --- | --- |
+| PK9 | -6.01 |
+| shuffle 1 | -6.09 |
+| shuffle 2 | -6.06 |
+| shuffle 3 | -6.10 |
+| shuffle 4 | -5.99 |
+
+The real ciphertext is inside the null distribution. Longer runs push both
+numbers up together: a 600-second run on the real text reaches -5.47 with
+23 unknown key letters against 144 letters of output, which is 0.28
+confidence under the evidence rule and should be read as the search
+describing itself.
+
+`python3 scripts/null_floor.py --cipher sum_clock --pk PK9 --budget 120`
+reproduces this, and will do the same job for any attack anyone tries next.
+A reading on PK9 is worth attention when it beats the shuffles at the same
+effort, and not before.
+
+### What is still open
+
+The period-7 family is the only structure that has shown anything at all: it
+is the one period whose IC ceiling (0.0631) beats its own shuffle maximum
+(0.0607), and the one whose pooled chi-squared fit (56.3) beats all ten
+shuffles (best 58.8). Both margins are thin, both come from the same
+statistic, and neither survives into a reading. It is worth one more look with
+a model that is not a plain shift — the author's other puzzles use keyed
+alphabets and summed wheels, and a period-7 wheel inside a larger composition
+would show exactly this much and no more.
 
 ## PK10, 504 letters
 
