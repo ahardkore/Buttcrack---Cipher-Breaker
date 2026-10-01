@@ -218,6 +218,20 @@ RECURSION_RESERVE = 0.4
 #: 250 letters and essentially nothing inside 12.
 PHASE_SLICES = {CHEAP: 3.0, MODERATE: 6.0, EXPENSIVE: 25.0, BRUTAL: 20.0}
 
+#: How much of a cipher's own likelihood survives into the scheduling order.
+#: Self-assessments are systematically more optimistic than the identifier's
+#: view, which is built from text statistics across all the families at once.
+SELF_ASSESSMENT_WEIGHT = 0.8
+
+#: Likelihood at which an attack stops being speculative.  Above this the
+#: scheduler guarantees it enough time to actually run.
+WELL_EVIDENCED = 0.5
+
+#: The smallest slice worth giving a well-evidenced attack.  Below a few
+#: seconds a stochastic search cannot complete a single restart, so the time
+#: is spent with no chance of a result.
+MIN_VIABLE_SLICE = 8.0
+
 #: Hard cap on decoding-graph nodes per solve.  Depth alone does not bound the
 #: search -- a text that is plausibly five different encodings at once branches
 #: five ways at every level -- and the deadline alone would spend the whole
@@ -335,6 +349,10 @@ class Solver:
         self.budget = float(budget)
         self.workers = max(1, int(workers))
         self.max_depth = max_depth
+        #: Identification likelihoods for the node being attacked, so the
+        #: scheduler can guarantee a workable slice to a well-evidenced
+        #: cipher instead of handing it its arithmetic share of the dregs.
+        self._likelihood_floor: dict[str, float] = {}
         #: ``language`` only names the model to load; an explicit ``model``
         #: always wins, so callers that built their own model keep control.
         self.language = resolve_language(language)
@@ -425,7 +443,15 @@ class Solver:
             0,
             pool,
             report,
-            likelihoods={h.cipher: h.likelihood for h in hypotheses},
+            # Blend in each cipher's own reading of the text, exactly as the
+            # child nodes do.  Identification works from text statistics and
+            # does not know, for instance, that the M-94's own detector is
+            # confident: without this the root node scheduled attacks on the
+            # identifier's view alone, and a cipher whose self-assessment was
+            # the strongest signal available could be left with no time.
+            likelihoods=self._blend_priors(
+                text, ctx, {h.cipher: h.likelihood for h in hypotheses}
+            ),
         )
         self._defer_identity = False
         if not pool.solved:
@@ -705,7 +731,17 @@ class Solver:
 
         letters = letters_only(text)
         ranked = sorted(
-            PRE_PEEL_CIPHERS, key=lambda n: -(likelihoods or {}).get(n, 0.0)
+            PRE_PEEL_CIPHERS,
+            key=lambda n: (
+                -(likelihoods or {}).get(n, 0.0),
+                # Equivalent readings tie on evidence by construction, so the
+                # canonical name has to break the tie here as well: without
+                # this the order falls back to however PRE_PEEL_CIPHERS
+                # happens to be written, and a ROT13 gets reported as a
+                # Caesar of 13.
+                Candidate.EQUIVALENT_CIPHER_RANK.get(n, 1),
+                n,
+            ),
         )
         for name in ranked:
             if pool.certain or ctx.expired():
@@ -1185,13 +1221,36 @@ class Solver:
         it only ever *reorders* attacks -- nothing is excluded on a low prior.
         """
         blended = dict(likelihoods)
+        # A cipher's own detector is useful but partisan: several of them
+        # return near-certainty for any letters-only English-shaped text, and
+        # letting those values compete at face value flattens the identifier's
+        # ranking into a tie, which costs the attack the identifier actually
+        # pointed at.  So a self-assessment is damped, and can never outrank
+        # the best hypothesis the identifier arrived at from the text alone.
+        ceiling = max(likelihoods.values(), default=1.0) * 0.99
         for cipher in self.ciphers:
             try:
                 own = cipher.likelihood(text, ctx)
             except Exception:
                 continue
-            if own and own > blended.get(cipher.info.name, 0.0):
-                blended[cipher.info.name] = own
+            if not own:
+                continue
+            value = min(own * SELF_ASSESSMENT_WEIGHT, ceiling)
+            if value > blended.get(cipher.info.name, 0.0):
+                blended[cipher.info.name] = value
+        # Ciphers that can produce the *same* plaintext share their evidence.
+        # Nothing distinguishes a 13-shift read as ROT13 from one read as a
+        # Caesar, so whichever of them scores higher must not decide which
+        # name the user is given: the search stops at the first certain
+        # answer, so the loser of that race never even runs.  Levelling the
+        # group lets the tie break on Candidate.EQUIVALENT_CIPHER_RANK, which
+        # prefers the specific name.
+        for group in Candidate.EQUIVALENT_GROUPS:
+            present = [name for name in group if name in blended]
+            if len(present) > 1:
+                shared = max(blended[name] for name in present)
+                for name in present:
+                    blended[name] = shared
         return blended
 
     @staticmethod
@@ -1300,6 +1359,7 @@ class Solver:
             # The floor keeps every cipher in the running, because a
             # misidentification must never cost the user their plaintext.
             weights = [max(LIKELIHOOD_FLOOR, likelihoods.get(c.info.name, 0.0)) for c in group]
+            self._likelihood_floor = likelihoods
             for index, cipher in enumerate(group):
                 if ctx.expired() or pool.certain:
                     return
@@ -1335,6 +1395,21 @@ class Solver:
             slice_seconds = min(PHASE_SLICES[cost], remaining * max(0.0, min(1.0, share)))
         else:
             slice_seconds = min(PHASE_SLICES[cost], remaining)
+        # Proportional sharing starves the last phase: by the time the BRUTAL
+        # group is reached the remainder has been divided so many ways that
+        # each attack is offered zero seconds, and a zero-second attack cannot
+        # find anything however well the evidence points at it.  An M-94
+        # ciphertext that the cipher's own search cracks in six seconds was
+        # being missed for exactly this reason, with budget still unspent.
+        # So: when the identifier likes a cipher, it gets a workable slice
+        # rather than its arithmetic share of what is left.
+        evidence = self._likelihood_floor.get(cipher.info.name, 0.0)
+        if (
+            cost >= EXPENSIVE                       # only the proportional phases starve
+            and evidence >= WELL_EVIDENCED
+            and slice_seconds < MIN_VIABLE_SLICE
+        ):
+            slice_seconds = min(MIN_VIABLE_SLICE, remaining)
         if slice_seconds <= 0:
             return
         sub = ctx.child(budget=slice_seconds)

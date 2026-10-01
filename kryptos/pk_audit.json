@@ -1,0 +1,42 @@
+{
+  "PK1": {
+    "status": "SOLVED (VERIFIED)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (Quagmire III, PROVENANCE, KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  },
+  "PK2": {
+    "status": "SOLVED (VERIFIED)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (complete columnar, width 7, order [1,3,4,0,5,2,6]) re-encrypts this plaintext to the published ciphertext exactly."
+  },
+  "PK3": {
+    "status": "SOLVED (VERIFIED)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (sum-clock PENTIMENTO/10 + ORDINATE/8 over the KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  },
+  "PK4": {
+    "status": "PLAINTEXT ONLY (key not reproducible)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the plaintext reads as English (fitness -4.18) and fits the PK narrative, but the stated key is only 'Dual-Clock Substitution p5 + p9, Transposition Width 8' and no columnar convention at widths 8 or 28, with the keystream phased from either side and over either alphabet, reproduces the ciphertext. The plaintext is neither confirmed nor refuted; the key claim is not reproducible."
+  },
+  "PK5": {
+    "status": "PLAINTEXT ONLY (key not reproducible)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the plaintext reads as English (fitness -4.21), but the stated mechanism is refuted for it: with a transposition followed by a period-17 keystream, no set of 17 shifts maps the ciphertext's residue classes onto this plaintext's letter multiset, whatever the transposition. Either the plaintext or the stated mechanism is wrong."
+  },
+  "PK6": {
+    "status": "SOLVED (VERIFIED)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (double columnar width 9, orders [1,3,0,4,8,2,6,7,5] then [4,2,8,1,6,7,0,3,5], then Quagmire III PORTAL) re-encrypts this plaintext to the published ciphertext exactly."
+  },
+  "PK7": {
+    "status": "SOLVED (VERIFIED)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (Quagmire III ANNEAL period 6, then Hill 3x3 ALCHEMIST, both over the KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  },
+  "PK8": {
+    "status": "UNSOLVED HERE (solved externally; key unpublished)",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: PK8 was solved by Kevin Hu and the key was never published; this repository has no solution. The stored four-wheel candidate is internally consistent with the clock parameters it names, but it is not English: fitness -6.43 log10/char against English's -4.3, and 8% coverage in words of four letters or more. The previously reported '71.2% lexical word coverage' counted two- and three-letter fragments of a Viterbi segmentation, which random letters also score well on. Retained as a failed candidate, not a solution."
+  },
+  "PK9": {
+    "status": "UNSOLVED",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: no plaintext is claimed. The best stored reading (pk9_solution_pt.txt) scores -4.93 log10/char with 71% word coverage, below a genuine solve (-4.2 to -4.5 for the verified records) and consistent with an over-fitted transposition search. The 'mathematically locked' phrasing described eliminated search space, not a recovered key."
+  },
+  "PK10": {
+    "status": "UNSOLVED",
+    "verification": "Audited 2026-09-30 by kryptos/verify_pk_records.py: no plaintext is claimed. The best stored readings score -6.2 to -6.6 log10/char (English is -4.3) with 20-27% word coverage: they are not English."
+  }
+}

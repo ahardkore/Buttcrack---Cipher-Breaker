@@ -7,7 +7,7 @@ const CIPHERS_DATA = {
     id: "PK1",
     title: "PK1 — The Accession Log",
     length: 192,
-    status: "SOLVED",
+    status: "SOLVED (VERIFIED)",
     category: "Paradigm Kryptos",
     mechanism: "Quagmire III over Kryptos Alphabet",
     key: "PROVENANCE (Period 10)",
@@ -15,11 +15,13 @@ const CIPHERS_DATA = {
     plaintext: "INVESTIGATIONLOGITEMEIGHTKNOTTIGHTLYWOUNDITSTHREADINSCRIBEDWITHLETTERSTHEACCESSIONLOGSAYSONCEUNRAVELEDITREVEALSTHEROUTETOTHELOSTARCHIVEOFPELLEGRINTWELVEPRIORARCHIVISTSTRIEDTOUNRAVELITALLFAILED",
     notes: "Narrative opening: The apprentice uncovers the ancient knot inscribed with letters leading to the lost archive of Pellegrin."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (Quagmire III, PROVENANCE, KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  ,
   PK2: {
     id: "PK2",
     title: "PK2 — Pellegrin's Treatise",
     length: 350,
-    status: "SOLVED",
+    status: "SOLVED (VERIFIED)",
     category: "Paradigm Kryptos",
     mechanism: "Complete Columnar Transposition (50x7)",
     key: "MARGINS (Order: [1, 3, 4, 0, 5, 2, 6])",
@@ -27,11 +29,13 @@ const CIPHERS_DATA = {
     plaintext: "IHAVEFOUNDREFERENCESTOTHEKNOTINSEVENOTHERRECORDSINOURARCHIVETHEMOSTINTRIGUINGISAPASSINGCOMMENTINATREATISEONTEXTILESWRITTENINPELLEGRINSOWNHANDWHICHSAYSUNAGOTANTOSOTTILEDALEGGEREQUALUNQUENODOIBELIEVEDTHISTOBEJUSTATURNOFPHRASEBUTTHEOTHERMENTIONSSCATTEREDTHROUGHMARGINALIAINBOOKSTHATSHARENOOTHERTOPICHAVELEDMETOSUSPECTTHEPASSAGEREFERSTOAREALOBJECTANEEDLE",
     notes: "Pellegrin's treatise: 'un ago tanto sottile da leggere qualunque nodo' (a needle so fine as to read any knot!)."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (complete columnar, width 7, order [1,3,4,0,5,2,6]) re-encrypts this plaintext to the published ciphertext exactly."
+  ,
   PK3: {
     id: "PK3",
     title: "PK3 — The Viennese Anatomist",
     length: 280,
-    status: "SOLVED",
+    status: "SOLVED (VERIFIED)",
     category: "Paradigm Kryptos",
     mechanism: "Quagmire III (Sum-Clock p10 + p8, period 40)",
     key: "PENTIMENTO (10) + ORDINATE (8)",
@@ -39,11 +43,13 @@ const CIPHERS_DATA = {
     plaintext: "SEVENTHMONTHIWROTETOFIFTEENCORRESPONDENTSINSIXCOUNTRIESSEEKINGANYWORDOFTHEITEMMOSTKNEWNOTHINGAFEWHADHEARDLEGENDSOFANEEDLEFINEENOUGHTOSPLITAHAIRORPIERCEGLASSATLASTAVIENNESEANATOMISTSAIDHESAWSUCHANINSTRUMENTUSEDATASURGICALDEMONSTRATIONINBERNIWROTETOHISADDRESSNOANSWERCAMEIWROTEAGAIN",
     notes: "The search in Bern: Viennese anatomist recalls the ultra-fine needle used in surgical demonstrations."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (sum-clock PENTIMENTO/10 + ORDINATE/8 over the KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  ,
   PK4: {
     id: "PK4",
     title: "PK4 — The Furlongs of Thread",
     length: 224,
-    status: "SOLVED",
+    status: "PLAINTEXT ONLY (key not reproducible)",
     category: "Paradigm Kryptos",
     mechanism: "Columnar Transposition (28x8) + Quagmire III (p45)",
     key: "Dual-Clock Substitution p5 + p9, Width 8",
@@ -51,11 +57,13 @@ const CIPHERS_DATA = {
     plaintext: "THESTRINGSMEASURETWOFURLONGSWEEXAMINEDTHEWEAVEANDTENSIONOFEACHINDIVIDUALSTRANDFINDINGMICROSCOPICCHARACTERSENGRAVEDALONGITSENTIRELENGTHEACHPULLOFTHETHREADREVEALEDFURTHERLETTERSWRITTENINSECTIONSRISINGINCOMPLEXITYTOWARDSTHECORE",
     notes: "Two furlongs of thread; microscopic inscriptions rising in complexity towards the core."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the plaintext reads as English (fitness -4.18) and fits the PK narrative, but the stated key is only 'Dual-Clock Substitution p5 + p9, Transposition Width 8' and no columnar convention at widths 8 or 28, with the keystream phased from either side and over either alphabet, reproduces the ciphertext. The plaintext is neither confirmed nor refuted; the key claim is not reproducible."
+  ,
   PK5: {
     id: "PK5",
     title: "PK5 — The Flax Fibers Under the Lens",
     length: 272,
-    status: "SOLVED",
+    status: "PLAINTEXT ONLY (key not reproducible)",
     category: "Paradigm Kryptos",
     mechanism: "Columnar Transposition (17x16) + Quagmire III (p17)",
     key: "Period 17, Transposition Width 16",
@@ -63,11 +71,13 @@ const CIPHERS_DATA = {
     plaintext: "WEEXAMINEDTHEFIBERSUNDERTHELENSTHEFLAXWASSPUNWITHEXCEPTIONALPRECISIONPRESERVINGTHEINSCRIPTIONSWITHOUTDISTORTIONEACHKNOTCONTAINEDATIGHTLYFOLDEDSEQUENCEOFLETTERSWHICHWHENPROJECTEDONTOTHEPLANEFORMEDANINTERLOCKINGGRIDOFCOORDINATESANDCIPHERTEXTWHICHPOINTEDUSDIRECTLYTOWARDSBERN",
     notes: "Interlocking grid of coordinates and ciphertext pointing to Bern."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the plaintext reads as English (fitness -4.21), but the stated mechanism is refuted for it: with a transposition followed by a period-17 keystream, no set of 17 shifts maps the ciphertext's residue classes onto this plaintext's letter multiset, whatever the transposition. Either the plaintext or the stated mechanism is wrong."
+  ,
   PK6: {
     id: "PK6",
     title: "PK6 — The Whitesmith's Workshop",
     length: 315,
-    status: "SOLVED",
+    status: "SOLVED (VERIFIED)",
     category: "Paradigm Kryptos",
     mechanism: "Double Columnar Transposition (9x35, 9x35) + Quagmire III (p6)",
     key: "PORTAL (Period 6); Col 1: [1, 3, 0, 4, 8, 2, 6, 7, 5]; Col 2: [4, 2, 8, 1, 6, 7, 0, 3, 5]",
@@ -75,23 +85,27 @@ const CIPHERS_DATA = {
     plaintext: "THEWHITESMITHSWORKSHOPISFILLEDWITHTHEOLDTOOLSOFHISTRADEMYEYESAREDRAWNTOTHEGUTTERALONGTHEWALLWHICHISSTREWNWITHEXQUISITENEEDLESTHEWHITESMITHSAYSHEMAKESONEEVERYDAYANDLOSTCOUNTLONGAGOIASKWHATHEDOESWITHTHEMANDHESAYSTHEYAREONLYTHERESIDUEOFHISPRACTICEHETELLSMETHATIFISTUDYUNDERHIMFORTENYEARSHEWILLLETMETAKEONEOFMYOWNMAKING",
     notes: "The master whitesmith: 'They are only the residue of my practice... study for ten years to make your own.'"
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (double columnar width 9, orders [1,3,0,4,8,2,6,7,5] then [4,2,8,1,6,7,0,3,5], then Quagmire III PORTAL) re-encrypts this plaintext to the published ciphertext exactly."
+  ,
   PK7: {
     id: "PK7",
-    title: "PK7 — The Glowing White Hearth",
+    title: "PK7 \u2014 Three Weeks In",
     length: 279,
-    status: "SOLVED",
+    status: "SOLVED (VERIFIED)",
     category: "Paradigm Kryptos",
-    mechanism: "Quagmire III (p6) + Affine Hill 3x3 Matrix",
-    key: "Period 6 + 3x3 Invertible Matrix over GF(26)",
-    ciphertext: "FNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUFNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGU",
-    plaintext: "HEPOINTEDTOTHEHEARTHANDSAIDTHATTHEWORKCOULDONLYBEGINWHENTHEFIREREACHEDITSPROPERHEATWITHLONGTONGSHEHELDTHESTEELINTOCOALSTHATGLOWEDWHITEINTHEBELLOWSWARNINGMETHATONEMOMENTOFTEMPERINGCANDESTROYYEARSOFLABOURFORONLYANIRONPIECEPURIFIEDNINEDAYSINTHEFLAMEWILLHOLDAFINEENOUGHEDGETOBEFORGED",
-    notes: "The master holds the steel into white coals: 'Only an iron piece purified nine days in the flame will hold a fine enough edge to be forged.'"
+    mechanism: "Quagmire III (p6) then Hill 3x3 \u2014 both over the KRYPTOS alphabet",
+    key: "Quagmire III keyword ANNEAL (period 6); Hill 3x3 matrix ALCHEMIST = [[7,17,9],[14,11,18],[15,6,4]], det 17",
+    ciphertext: "FNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUIVNDYZBEQLVHFFFIDAKDCCJKWGOOUESCYELYMRAKIUJCUSEAXUQTYKOBVYDYMRBYWOTQEESCQSMDYDQJNPSWRSUOFMFJDYXSHCXNHVJVBYMZOZOATHTEOVLOQWZITHTEAFMKGLASTBZRDMFRJPKWJOXZXPJCBOVAZEPKAEJPPSIUJODXTXERWTLTTYMRENBJGTNMLBDJMYJDDLRCXCQCHYMJMHBEOLXEUFNJKBPRSHTEYXB",
+    plaintext: "THREEWEEKSINWERISEBEFORETHESUNANDEACHNEEDLEISDONEBYNOONTHEWHITESMITHSHOWSMEHISTECHNIQUEFORPURIFYINGHISMETALBEFOREDRAWINGITINTOAFINEWIREHEHASMEREPEATTHESAMESTEPFOURTIMESWITHSLIGHTVARIATIONSSTILLMYHANDFALTERSIAMPATIENTBUTIKNOWTHISISNOTMYCALLINGIHAVEMADEPEACEWITHITANDWILLGOHOMESOON",
+    notes: "The apprentice three weeks in: 'Still my hand falters. I am patient, but I know this is not my calling.' Recovered from ciphertext alone by the keyed_hill attack; the key re-encrypts to the published ciphertext exactly."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: the stated key (Quagmire III ANNEAL period 6, then Hill 3x3 ALCHEMIST, both over the KRYPTOS alphabet) re-encrypts this plaintext to the published ciphertext exactly."
+  ,
   PK8: {
     id: "PK8",
     title: "PK8 — The Residue of Practice",
     length: 153,
-    status: "SOLVED (SEALED IN CUSTODY)",
+    status: "UNSOLVED HERE (solved externally; key unpublished)",
     category: "Paradigm Kryptos",
     mechanism: "Additive 4-Clock {Q4, Q5, Q6, Q7} over Keyed Kryptos Alphabet",
     key: "Periods {4, 5, 6, 7} (lcm = 420); GF(2) Parity q7=[0,1,1,1,0,0,0]_2; Solved by Kevin Hu (@_newhaiku) after 86 days",
@@ -111,13 +125,15 @@ const CIPHERS_DATA = {
     },
     notes: "Official plaintext sealed in custody. Frontier candidate derived via orthogonal stride decoupling."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: PK8 was solved by Kevin Hu and the key was never published; this repository has no solution. The stored four-wheel candidate is internally consistent with the clock parameters it names, but it is not English: fitness -6.43 log10/char against English's -4.3, and 8% coverage in words of four letters or more. The previously reported '71.2% lexical word coverage' counted two- and three-letter fragments of a Viterbi segmentation, which random letters also score well on. Retained as a failed candidate, not a solution."
+  ,
   PK9: {
     id: "PK9",
     title: "PK9 — The Defunct Cord",
     length: 144,
     core_length: 135,
     padding_length: 9,
-    status: "UNSOLVED FRONTIER (100% MATHEMATICALLY LOCKED)",
+    status: "UNSOLVED",
     category: "Paradigm Kryptos",
     mechanism: "Two-Stage Double Columnar Transposition (18x8 -> 8x18) + Period-28 Polyalphabetic Keystream",
     p2: [7, 0, 5, 2, 4, 3, 6, 1],
@@ -136,13 +152,15 @@ const CIPHERS_DATA = {
     coordinates: "57' 6'' N (Sum_Kr JVRM = 57, Sum_Kr,1 = 126 = 6 mod 60; Tail AUON = 52 = 0 mod 26)",
     notes: "135-character authentic core text. Phases 0 and 17 locked across multiple cross-row words."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: no plaintext is claimed. The best stored reading (pk9_solution_pt.txt) scores -4.93 log10/char with 71% word coverage, below a genuine solve (-4.2 to -4.5 for the verified records) and consistent with an over-fitted transposition search. The 'mathematically locked' phrasing described eliminated search space, not a recovered key."
+  ,
   PK10: {
     id: "PK10",
     title: "PK10 — The Unravelling of the Knot",
     length: 504,
     core_length: 432,
     padding_length: 72,
-    status: "UNSOLVED FRONTIER",
+    status: "UNSOLVED",
     category: "Paradigm Kryptos",
     mechanism: "3-Clock CRT Additive System {Q7, Q8, Q9} (lcm=504) + 12x36 Modular Triptych Columnar Transposition",
     clocks: {
@@ -164,6 +182,8 @@ const CIPHERS_DATA = {
     coordinates: "38° N, 77° 8' 44'' W (77.14° W decimal longitude mean); Concludes with ID BY US",
     notes: "432-character core maps 1-to-1 to Jim Sanborn's 3-panel physical copper screen sculpture."
   },
+    audit: "Audited 2026-09-30 by kryptos/verify_pk_records.py: no plaintext is claimed. The best stored readings score -6.2 to -6.6 log10/char (English is -4.3) with 20-27% word coverage: they are not English."
+  ,
   K1: {
     id: "K1",
     title: "K1 — Palimpsest",

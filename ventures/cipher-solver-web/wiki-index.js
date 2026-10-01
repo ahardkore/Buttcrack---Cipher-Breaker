@@ -187,6 +187,12 @@ window.WIKI_INDEX = {
    "d": "Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately."
   },
   {
+   "t": "Hill over a keyed alphabet (+ Quagmire III)",
+   "s": "keyed-hill-cipher-wiki.html",
+   "f": "Polygraphic ciphers",
+   "d": "Hill over a keyed alphabet (+ Quagmire III): Hill blocks over a keyed (KRYPTOS-style) alphabet, optionally behind a…"
+  },
+  {
    "t": "Four-square",
    "s": "four-square-cipher-wiki.html",
    "f": "Polygraphic ciphers",

@@ -6,7 +6,7 @@ known and either the solver reproduces it or it does not.  PK8-PK10 have no
 published key here -- PK8 was solved externally and its key was never released,
 PK9 and PK10 have zero solves on the leaderboard -- so for those the script
 reports the best n-gram fitness reached and compares it with the records in
-`kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md` (PK9 -5.2493, PK10 -7.6180).
+`kryptos/PK8-PK10.md` (PK9 -5.2493, PK10 -7.6180).
 Nothing here claims a break that the plaintext does not demonstrate.
 
     python3 scripts/kryptos_ctf.py [--budget 60] [--only PK1,PK3]

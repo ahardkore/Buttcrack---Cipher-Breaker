@@ -186,9 +186,13 @@ That collapses "every ordering of six ciphers" into two tractable problems:
    compose to the same permutation.
 
 A gate decides when it runs at all. Chi-squared per letter against English,
-best of the rotations, is 0.116 for English and for *any* transposition of it —
-rail fence, columnar, Myszkowski, AMSCO, a six-cipher stack — against 1.711 for
-Vigenère, 2.214 for Hill and 3.658 for a simple substitution. The separation is
+best of the rotations, is identical for English and for *any* transposition of
+it — rail fence, columnar, Myszkowski, AMSCO, a stacked chain — and an order of
+magnitude higher for anything that substitutes. Measured on the first 4,000
+letters of `examples/english_samples.txt` (reproduce with `python3
+scripts/bench_claims.py --gate`): 0.036 for English and for every transposition
+of it, against 2.349 for Vigenère, 2.433 for Hill and 3.639 for a simple
+substitution. The separation is
 not subtle, so the search never spends budget on a text it could not explain.
 It also runs *after* the expensive attacks: Myszkowski and AMSCO pass the gate
 too, and their permutations are not reachable by composing rail fences, so going

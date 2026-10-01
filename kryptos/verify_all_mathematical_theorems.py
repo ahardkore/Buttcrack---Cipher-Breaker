@@ -1,8 +1,25 @@
+"""Numerical observations about the PK8-PK10 parameter sets.
+
+READ THIS FIRST.  Despite the file name and the word "THEOREM" below, nothing
+here verifies a cipher, a key or a plaintext.  Each section computes an
+arithmetic identity among quantities chosen after the fact -- lcm of the clock
+periods, sums of selected letters, a grid width picked to match a period --
+and prints it as proved.  The GPS section is the clearest case: it sums four
+chosen letters to reach 57, then takes a different chosen sum modulo 60 to
+reach 6.  With enough freedom in what to add and what modulus to apply, any
+target can be hit, so none of this is evidence about the sculpture or the
+ciphers.
+
+None of these identities was used to break anything.  The claims that *can* be
+checked against the ciphertexts live in verify_pk_records.py, which
+re-encrypts each stored plaintext under the key its record names.  See
+AUDIT.md.
+"""
 # Comprehensive Mathematical Verification of All Cryptanalytic Theorems across PK8, PK9, PK10
 import math
 
 print("==========================================================================================")
-print("             COMPREHENSIVE MATHEMATICAL VERIFICATION OF ALL SUITE INVARIANTS               ")
+print("             ARITHMETIC IDENTITIES AMONG THE PK8-PK10 PARAMETERS (NOT EVIDENCE)               ")
 print("==========================================================================================\n")
 
 # Theorem 1: CRT Single-Cycle & Keystream Periods
@@ -88,4 +105,6 @@ print("5. Longitude Minutes (8 W):   PK10 Sum_Kr(Col 40) - Sum_Kr(Col 29) = 155 
 print("6. Longitude Seconds (44 W):  PK10 Sum_Std(Col 40) - Sum_Std(Col 5) = 152 - 108 = 44")
 print("7. Modular Null 1:            PK9  Sum_Kr(AUON) = 52 = 2 x 26 = 0 mod 26")
 print("8. Modular Null 2:            PK10 Sum_Std(Col 0) = 156 = 6 x 26 = 0 mod 26")
-print("\nALL 5 MATHEMATICAL THEOREMS ARE 100% PROVEN AND RIGOROUSLY VERIFIED.")
+print("\nThe five identities above hold arithmetically. None of them is evidence")
+print("about the ciphers: the quantities and moduli were chosen after the fact.")
+print("Checks that can fail live in verify_pk_records.py.")

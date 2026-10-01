@@ -21,7 +21,14 @@ from pathlib import Path
 HERE = Path(__file__).parent
 PACKS = HERE.parent / "puzzle-packs"
 sys.path.insert(0, str(PACKS))
+sys.path.insert(0, str(HERE.parents[1]))
 CFG = json.loads((HERE / "site.json").read_text())
+
+from buttcrack.ciphers import all_ciphers as _all_ciphers  # noqa: E402
+
+#: Quoted in the page copy. Read from the registry so the number in the text
+#: cannot drift away from the tool the pages describe.
+CIPHER_COUNT = len(list(_all_ciphers()))
 
 #: The Kryptos research explorer lives in ``kryptos-app/`` and is mounted as a
 #: sub-directory of this site by ``scripts/build_site.py``. Keep the two in
@@ -881,7 +888,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches {CIPHER_COUNT} ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
@@ -1152,7 +1159,7 @@ PAGES = [
             ("What is single-byte XOR and why is it everywhere in CTFs?",
              "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
             ("How deep can the layers go?",
-             "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges."),
+             "The browser version peels up to three encoding layers. The full version goes six layers deep, searches {CIPHER_COUNT} ciphers and scores in six languages, which is what you want for harder challenges."),
             ("Can it handle flag formats?",
              "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."),
             ("Why does it sometimes pick the wrong layer to unwrap?",
@@ -1210,7 +1217,7 @@ WIKI_PAGES = [
             ("What is the difference between a code and a cipher?",
              "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
             ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
+             "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches {CIPHER_COUNT} ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
             ("How much ciphertext is enough?",
              "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
             ("Who writes this wiki?",
@@ -1797,7 +1804,7 @@ def not_found_page() -> str:
 <footer>
   <div class="wrap">
     <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
-    This browser build uses a compact trigram model; the full version searches 50 ciphers — including the
+    This browser build uses a compact trigram model; the full version searches {CIPHER_COUNT} ciphers — including the
     M-94 wheel cipher — with quadgram models in six languages, and ships its own local web UI
     (<code>pip install buttcrack</code>, then <code>buttcrack serve</code>).</p>
     <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
