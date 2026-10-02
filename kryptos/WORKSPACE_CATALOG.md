@@ -126,3 +126,28 @@
 - `montecarlo_pk9_profile.py`, `constraint_search_pk9_wheels.c` — analysis
   tooling for the raw-statistics investigation (recalibrated: period-7 peaks
   are NOT anomalous for author-style keyword wheels).
+
+## 2026-10-02 (evening) — stale-text purge after PK4 site rejection
+
+- **PK4 site submission failed because the text came from superseded artifacts.**
+  Official PK4 page (paradigm.xyz/kryptos-ctf/pk4) re-fetched: ciphertext is
+  character-identical to `pk_all_ciphertexts.json` (Y1..J224 = YOVISYUAFK...JY),
+  solvers submit the decryption. Correct PK4 text: `TWOYEARSIN...BEGUNTOWORK`
+  (sha256 848cf4b3...6159), keys UNDERLAY/OCHRE/VERDIGRIS — round-trip verified;
+  cross-confirmed by PK5 (its Q(224) key IS the PK4 plaintext).
+- `generate_final_submissions.py` REWRITTEN: now read-only over
+  `pk_verified_solutions.json` + `pk_all_ciphertexts.json`; regenerates
+  `pk_submission_manifest.json` + `PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md`.
+  The old version hard-coded the wrong PK4/PK5/PK7 texts and OVERWROTE the
+  verified JSON — that was the propagation vector.
+- `repair_all_manifests_and_solutions.py` neutralized (deprecated stub);
+  `generate_submission_package.py` is now a thin wrapper around the new
+  generator.
+- PK6 key strings in JSON/manifest updated to keyword form
+  (HANDIWORK -> SMITHWORK -> PORTAL); constructions re-verified — all MATCH.
+- Stale artifacts moved to `kryptos/archive/` with DO-NOT-SUBMIT banners +
+  README: old CTF solutions dossier, candidate_narrative_18.txt,
+  extract_narrative_18.py, test_pk8_classical_families.py,
+  test_pk9_28char_canonical_phrases.py, and the root patch snapshot
+  (arena_session_patch_4_snapshot.diff).
+- `grep THESTRINGSMEASURE` now hits ONLY `kryptos/archive/`.
