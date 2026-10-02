@@ -38,7 +38,7 @@ import sys
 from collections import defaultdict
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -435,6 +435,47 @@ def check_reachability(site: Path, pages: dict[Path, Page], report: Report) -> N
         report.warn(str(path.relative_to(site)), "orphan — nothing in the site links to it")
 
 
+def check_domain_files(site: Path, base_url: str, report: Report) -> None:
+    """CNAME and ads.txt: two one-line files whose absence is silent.
+
+    Neither produces an error anybody sees. A missing CNAME makes an Actions
+    deploy *clear* the custom domain stored in repository settings, and the
+    site falls back to github.io with a green build. A missing or wrong
+    ads.txt costs ad revenue without costing a page.
+    """
+    host = urlparse(base_url).hostname or ""
+    cname = site / "CNAME"
+
+    if host and not host.endswith(".github.io"):
+        if not cname.is_file():
+            report.error(
+                "CNAME",
+                f"missing — an Actions deploy publishes only the artifact, so this "
+                f"would clear the custom domain ({host}) set in Settings and drop the site "
+                f"back to github.io",
+            )
+        else:
+            written = cname.read_text(encoding="utf-8").strip()
+            if written != host:
+                report.error("CNAME", f"says {written!r} but base_url host is {host!r}")
+    elif cname.is_file():
+        report.error("CNAME", f"present ({cname.read_text().strip()!r}) but base_url is {base_url}")
+
+    config = ROOT / "ventures" / "cipher-solver-web" / "site.json"
+    client = ""
+    if config.is_file():
+        client = json.loads(config.read_text(encoding="utf-8")).get("adsense_client", "")
+    if not client or not host or host.endswith(".github.io"):
+        return
+
+    ads = site / "ads.txt"
+    publisher = client[3:] if client.startswith("ca-") else client
+    if not ads.is_file():
+        report.error("ads.txt", f"missing — AdSense will report no ads.txt for {host}")
+    elif publisher not in ads.read_text(encoding="utf-8"):
+        report.error("ads.txt", f"does not authorise {publisher}")
+
+
 def check_assets(site: Path, report: Report) -> None:
     """Assets referenced by CSS/JS that must exist, plus empty-file checks."""
     for path in sorted(site.rglob("*")):
@@ -486,6 +527,7 @@ def main(argv: list[str] | None = None) -> int:
     check_structure(site, pages, report)
     check_sitemap(site, pages, base_url, report)
     check_reachability(site, pages, report)
+    check_domain_files(site, base_url, report)
     check_assets(site, report)
 
     print(f"audited {len(pages)} pages in {site}")

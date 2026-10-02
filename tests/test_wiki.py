@@ -246,6 +246,70 @@ class TestAdSense(unittest.TestCase):
         self.assertNotIn("configure adsense_client", bp.ad_slot())
 
 
+class TestCustomDomain(unittest.TestCase):
+    """base_url is the single source of truth for where the site lives.
+
+    Three things have to agree with it and none of them fails loudly:
+    the CNAME file in the artifact, the hand-written Kryptos canonical, and
+    ads.txt. Each is a one-line file whose absence costs the domain, the
+    search ranking or the ad revenue, silently.
+    """
+
+    def setUp(self):
+        self.build_site = _load(
+            "build_site_domain_module",
+            Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        self.base = bp.CFG["base_url"]
+
+    def test_cname_matches_base_url(self):
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        if host.endswith(".github.io"):
+            self.assertEqual(self.build_site.custom_domain(), "",
+                             "a github.io base_url must produce no CNAME")
+        else:
+            self.assertEqual(self.build_site.custom_domain(), host)
+
+    def test_cname_is_written_into_the_tree(self):
+        # Without this file an Actions deploy clears the custom domain stored
+        # in repository settings, and the site silently reverts to github.io.
+        import tempfile
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        with tempfile.TemporaryDirectory() as tmp:
+            written = self.build_site.write_cname(Path(tmp))
+            cname = Path(tmp) / "CNAME"
+            if host.endswith(".github.io"):
+                self.assertFalse(cname.exists())
+            else:
+                self.assertEqual(written, host)
+                self.assertEqual(cname.read_text().strip(), host)
+                self.assertNotIn("/", cname.read_text(),
+                                 "a CNAME holds a bare hostname, not a URL")
+
+    def test_kryptos_canonical_matches_base_url(self):
+        # kryptos-app is hand-written: nothing regenerates this URL, so it can
+        # only be kept honest by being checked.
+        page = (Path(__file__).resolve().parents[1]
+                / "kryptos-app" / "index.html").read_text(encoding="utf-8")
+        expected = f'<link rel="canonical" href="{self.base}/kryptos/">'
+        self.assertIn(expected, page,
+                      "kryptos-app/index.html canonical is out of step with base_url")
+        self.assertIn(f'content="{self.base}/kryptos/"', page)
+
+    def test_ads_txt_only_on_a_real_domain(self):
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        line = bp.write_ads_txt()
+        if not bp.CFG["adsense_client"] or host.endswith(".github.io"):
+            # ads.txt is only read at the domain root, which a project page
+            # does not own; writing one there would be false confidence.
+            self.assertEqual(line, "")
+        else:
+            self.assertRegex(line, r"^google\.com, pub-\d{16}, DIRECT, [0-9a-f]{16}$")
+            self.assertIn(bp.CFG["adsense_client"].removeprefix("ca-"), line)
+
+
 class TestBrowserBreakableSet(unittest.TestCase):
     def test_members_exist_and_are_registered(self):
         from buttcrack.ciphers import all_ciphers

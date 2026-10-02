@@ -141,13 +141,55 @@ a policy violation, so thin pages are the ones to keep ads off.
 | set              | empty          | loader only — Auto ads places units itself      |
 | set              | set            | loader plus an explicit responsive `<ins>` unit |
 
-Note two things GitHub Pages cannot do for you. **`ads.txt` must sit at the
-domain root** — `https://ahardkore.github.io/ads.txt`, not under this project
-path — so it needs a repository named `ahardkore.github.io`. And **AdSense
-approves top-level domains, not subdomains**: `*.github.io` belongs to GitHub,
-so an application for a project page is normally rejected regardless of
-content quality. A custom domain pointed at these same Pages (Settings →
-Pages → Custom domain, then update `base_url`) is the usual fix.
+`ads.txt` is generated too, but **only on a custom domain**. It is read from
+the domain root and nowhere else, so on a `github.io` project path the file
+would sit at a URL no crawler looks at; `write_ads_txt()` writes nothing in
+that case rather than create false confidence. On `ciphersolverpro.com` it
+publishes `google.com, pub-…, DIRECT, f08c47fec0942fa0`.
+
+This matters because **AdSense approves top-level domains, not subdomains**.
+`*.github.io` belongs to GitHub, so an application naming a project page is
+normally rejected on ownership grounds regardless of content quality — which
+is why the site moved to its own domain.
+
+### The custom domain
+
+The site is served from **ciphersolverpro.com**, registered at Wix, hosted on
+GitHub Pages. `base_url` in `site.json` is the single source of truth: the
+canonicals, the sitemap, `robots.txt`, the Stripe redirect URLs, `ads.txt` and
+the `CNAME` file are all derived from it. Change it there and rebuild; do not
+hand-edit any of them.
+
+**The CNAME file is not optional, and this is the trap.** A custom domain set
+in Settings → Pages is stored against the *repository*, but a GitHub Actions
+deploy publishes exactly what is in the *artifact*. An artifact with no CNAME
+file **clears** the stored domain — the site reverts to github.io, the deploy
+reports success, and nothing anywhere says what happened. So
+`scripts/build_site.py` writes `_site/CNAME` from `base_url` on every build,
+and `scripts/audit_site.py` fails the deploy if it is missing or disagrees.
+A `github.io` `base_url` correctly produces no file at all.
+
+DNS lives at Wix, which does **not** permit external nameservers for domains
+it registered — everything is done with records in Wix's own editor
+(Domains → the domain → Domain Actions → Manage DNS Records):
+
+| Type  | Host  | Value             |
+| ----- | ----- | ----------------- |
+| A     | @     | `185.199.108.153` |
+| A     | @     | `185.199.109.153` |
+| A     | @     | `185.199.110.153` |
+| A     | @     | `185.199.111.153` |
+| CNAME | `www` | `ahardkore.github.io` |
+
+All four A records are needed: they are GitHub's published Pages addresses,
+and the redundancy is the point. The `www` CNAME targets the *user* page
+(`ahardkore.github.io`, no repository path) — GitHub works out which
+repository to serve from the domain itself. Delete any pre-existing A or CNAME
+record pointing at Wix's own servers (`185.230.63.x`, `*.wixdns.net`) or the
+domain will keep resolving to Wix.
+
+Note that Wix cannot do plain URL forwarding, and does not support DNSSEC or
+a proxy in front of these records — leave both off.
 
 ### 2. `puzzle-packs/` — sellable cryptogram books
 

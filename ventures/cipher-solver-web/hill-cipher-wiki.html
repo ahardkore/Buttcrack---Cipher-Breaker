@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hill cipher (matrix) — How It Works and How It Is Broken</title>
 <meta name="description" content="Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately.">
-<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/hill-cipher-wiki.html">
+<link rel="canonical" href="https://ciphersolverpro.com/hill-cipher-wiki.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Hill cipher (matrix) — How It Works and How It Is Broken">
 <meta property="og:description" content="Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/hill-cipher-wiki.html">
+<meta property="og:url" content="https://ciphersolverpro.com/hill-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Hill cipher (matrix)", "description": "Hill cipher (matrix): Blocks of n letters multiplied by an n x n matrix mod 26. Broken by scoring each decryption-matrix row separately.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Polygraphic ciphers"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Hill cipher (matrix) broken?", "acceptedAnswer": {"@type": "Answer", "text": "Linearity is fatal. Decryption is row-separable \u2014 each plaintext position depends on one row of the inverse matrix \u2014 so rows are scored independently. That turns 157,248 invertible 2x2 keys into 676 row evaluations, and makes 3x3 tractable at all."}}, {"@type": "Question", "name": "What key does the Hill cipher (matrix) use?", "acceptedAnswer": {"@type": "Answer", "text": "matrix or keyword (n*n letters). The keyspace is unbounded in practice."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 40 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Hill cipher (matrix) on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page."}}]}</script>

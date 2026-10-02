@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Substitution Cipher Explained — Patterns and Hill Climbing</title>
 <meta name="description" content="How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.">
-<link rel="canonical" href="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-wiki.html">
+<link rel="canonical" href="https://ciphersolverpro.com/substitution-cipher-wiki.html">
 <meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
 <meta property="og:title" content="Substitution Cipher Explained — Patterns and Hill Climbing">
 <meta property="og:description" content="How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ahardkore.github.io/Buttcrack---Cipher-Breaker/substitution-cipher-wiki.html">
+<meta property="og:url" content="https://ciphersolverpro.com/substitution-cipher-wiki.html">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Substitution Ciphers", "description": "How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Monoalphabetic substitution"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many keys does a substitution cipher have?", "acceptedAnswer": {"@type": "Answer", "text": "A full mixed alphabet has 26 factorial possible permutations, about 4 \u00d7 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea."}}, {"@type": "Question", "name": "What patterns survive a substitution?", "acceptedAnswer": {"@type": "Answer", "text": "Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses."}}, {"@type": "Question", "name": "Why do solvers sometimes miss rare letters?", "acceptedAnswer": {"@type": "Answer", "text": "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity."}}]}</script>

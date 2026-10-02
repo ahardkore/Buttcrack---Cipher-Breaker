@@ -29,6 +29,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 SOLVER = ROOT / "ventures" / "cipher-solver-web"
@@ -107,15 +108,52 @@ def refuse_paid_binaries(tree: Path) -> None:
 SITE_JSON = SOLVER / "site.json"
 
 
+def site_config() -> dict:
+    """``site.json``, or an empty dict. ``build_pages.py`` owns this file; this
+    script only reads it, to keep the two halves of the site in step."""
+    if not SITE_JSON.is_file():
+        return {}
+    return json.loads(SITE_JSON.read_text(encoding="utf-8"))
+
+
+def custom_domain() -> str:
+    """The bare host from ``base_url``, or "" when the site is on github.io.
+
+    ``ciphersolverpro.com``, not ``https://ciphersolverpro.com/`` — a CNAME
+    file holds a hostname and nothing else.
+    """
+    base = site_config().get("base_url", "")
+    host = urlparse(base).hostname or ""
+    return "" if host.endswith(".github.io") else host
+
+
+def write_cname(tree: Path) -> str:
+    """Put the custom domain in the artifact, or the deploy will drop it.
+
+    This one is a trap worth spelling out. A custom domain set in
+    Settings → Pages is stored against the *repository*, but an Actions deploy
+    publishes exactly what is in the *artifact* — and an artifact with no CNAME
+    file clears the stored domain. The site then quietly falls back to
+    github.io, with a green deploy and no error anywhere, until someone
+    notices the domain is dead.
+
+    So the file is generated here, from ``base_url``, on every build. A
+    github.io ``base_url`` correctly produces no file at all.
+    """
+    host = custom_domain()
+    if not host:
+        return ""
+    (tree / "CNAME").write_text(f"{host}\n", encoding="utf-8")
+    return host
+
+
 def adsense_loader() -> str:
     """The AdSense loader tag for the configured publisher, or "" if unset.
 
     Byte-for-byte what ``build_pages.adsense_head`` puts in the generated
     pages; see ``inject_adsense`` for why it is needed twice.
     """
-    if not SITE_JSON.is_file():
-        return ""
-    client = json.loads(SITE_JSON.read_text(encoding="utf-8")).get("adsense_client", "")
+    client = site_config().get("adsense_client", "")
     if not client:
         return ""
     return (
@@ -167,6 +205,12 @@ def build(out: Path) -> Path:
     added = inject_adsense(kryptos_out)
     if added:
         print(f"adsense tag   -> added to {added} hand-written page(s) under {KRYPTOS_DIR}/")
+
+    host = write_cname(out)
+    if host:
+        print(f"custom domain -> {out}/CNAME ({host})")
+    else:
+        print("custom domain -> none (base_url is a github.io address)")
 
     # Both halves must actually have an entry point, or the deploy publishes a
     # directory listing (or a 404) and nobody notices until someone visits.

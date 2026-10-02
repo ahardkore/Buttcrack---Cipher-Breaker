@@ -17,6 +17,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 HERE = Path(__file__).parent
 PACKS = HERE.parent / "puzzle-packs"
@@ -51,6 +52,38 @@ def adsense_head() -> str:
         f'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={CFG["adsense_client"]}">'
         "</script>"
     )
+
+
+#: Google's own certification-authority ID in an ads.txt line. A constant for
+#: every AdSense publisher, not something to look up per account.
+ADS_TXT_CERTIFICATION_AUTHORITY = "f08c47fec0942fa0"
+
+
+def write_ads_txt() -> str:
+    """Authorise this publisher to sell the site's inventory. Returns the line.
+
+    ads.txt must be served from the **domain root** — ``/ads.txt`` — which is
+    why this could not exist while the site lived at a github.io project path
+    (``ahardkore.github.io/ads.txt`` belongs to whoever owns the user page, not
+    to this repository). On a custom domain the site root *is* the domain
+    root, so the file can finally be published from here.
+
+    Without it AdSense reports the site as having no ads.txt, and buyers that
+    require one will not bid — an earnings problem rather than an error
+    anybody sees.
+    """
+    client = CFG["adsense_client"]
+    if not client:
+        return ""
+    host = urlparse(CFG["base_url"]).hostname or ""
+    if host.endswith(".github.io"):
+        # The file would be served at <user>.github.io/<repo>/ads.txt, which no
+        # crawler looks at. Writing it would only create false confidence.
+        return ""
+    publisher = client[3:] if client.startswith("ca-") else client
+    line = f"google.com, {publisher}, DIRECT, {ADS_TXT_CERTIFICATION_AUTHORITY}"
+    (HERE / "ads.txt").write_text(f"{line}\n")
+    return line
 
 
 def analytics() -> str:
@@ -2403,6 +2436,10 @@ def main() -> None:
         f"User-agent: *\nAllow: /\nSitemap: {CFG['base_url']}/sitemap.xml\n"
     )
     print(f"wrote sitemap.xml and robots.txt ({len(urls)} pages)")
+
+    ads = write_ads_txt()
+    if ads:
+        print(f"wrote ads.txt                            ({ads})")
 
     for name in write_verification_files():
         print(f"wrote {name:38} (ownership proof)")
