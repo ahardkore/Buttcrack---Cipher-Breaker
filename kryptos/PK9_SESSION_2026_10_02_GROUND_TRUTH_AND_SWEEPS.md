@@ -184,3 +184,96 @@ bash kryptos/run_pk9_wheel_campaign.sh   # log: kryptos/pk9_wheel_campaign.log
 4. PK5's precedent (previous plaintext as key) is only partially explored:
    R3/R8 test PK8 windows as wheels; the analogous "PK8 plaintext as the
    T8-key source" is covered by the all-permutation stages R5/R5b.
+
+---
+
+## Session addendum (2026-10-02, later): statistical investigation, order tests, tq engine
+
+### Raw-ciphertext statistics and what they actually prove
+
+PK9 raw profile (N=144): IoC(7)=0.0568 vs 0.0445 overall; autocorrelation
+z(lag7)=+3.88, z(lag14)=−0.46, z(lag21)=+1.53, z(lag28)=+3.64; repeated
+ciphertext bigram XG (pos 82/89), bigram GU (90/97), trigram UQG (119-121 =
+126-128), all at lag 7.  Reference behaviour on solved puzzles:
+
+| puzzle | construction | statistic | value |
+|---|---|---|---|
+| PK4 | T(8)Q(5)Q(9), Q last, period 45 | IoC(45) | **0.0756** |
+| PK6 | T(9)T(9)Q(6), Q last, period 6 | IoC(6) | **0.0699**, lag-6 z=+2.70 |
+| PK5 | Q last but period 224 > N | — | no peaks |
+| PK8 | pure Q sum-clock, period 420 > N | IoC(7) | 0.0536 (mild), z(7)=+0.17 |
+| PK7 | Q first, Hill last | — | nothing |
+
+A Monte Carlo with UNIFORM random wheels (4,000 trials per family) showed no
+qt/tq/pure family ever reproduces PK9's joint z7+z28 profile — suggesting an
+anomaly.  **A planted control overturned this**: a tq cipher with REAL keyword
+wheels (METER/METIER/MASTERY, T8 key UNDERLAY, story plaintext) naturally
+produces lag7=11, lag14=8 matches with ZERO exact keystream equalities — all
+coincidental, because clustered keyword letters (KRYPTOS indices of common
+letters) concentrate the s-difference distribution.  Conclusion: **the
+period-7 statistics do not discriminate layer order or model**; they are the
+expected behaviour of any Q(5)+Q(6)+Q(7)+T(8) with author-style keyword
+wheels.  (Lesson: always validate statistical arguments against planted
+controls before believing a Monte Carlo null.)
+
+A dictionary search for wheel pairs satisfying 5 exact t-equality constraints
+"derived" from the structural repeats (10,177 x 17,685 words) found 18 pairs
+vs ~15 expected by chance — no signal, consistent with the control.
+
+### New engines (all with planted self-tests)
+
+- `crack_pk9_t8_q7.c` — exact crib solver for reduced models T8+Q(7) in both
+  orders (period-7 wheel only).  Self-consistent; run on the letter corpus.
+- `crack_pk9_tq_grouped_cribs.c` — exact crib solver for the TQ order
+  (T8 FIRST, then the Q567 sum-clock), the previously untested layer order.
+  Linear algebra over Z26 via CRT (mod 2 + mod 13), handling:
+  - the 2-dimensional gauge of the 3-wheel sum-clock
+    (q5+a, q6+b, q7−a−b give identical ciphertext — same gauge as the PK4
+    probe, one dimension per extra wheel);
+  - the structural fact that an L-letter consecutive crib covers only
+    ceil(L/8) of the 6 q6 residues (m%6 advances once per 8 letters), so
+    30-letter cribs leave 2 q6 values free (enumerated for survivors).
+  Self-test: 60/60 random planted permutations recovered exactly.
+- `climb_pk9_period7.c` — (sigma, q7) hill-climb with per-coset chi-square
+  init, both orders.  Self-test shows the climb gets trapped in local optima
+  even given the true sigma (recovered score −4.82 vs true −4.36), so its
+  negative results are weak; parked in favour of exact crib solvers.
+- `montecarlo_pk9_profile.py`, `constraint_search_pk9_wheels.c` — analysis
+  tooling for the above.
+
+### New negative results (letter corpus = 16,985 corrected-story 30-letter
+openings in /tmp/pk9_letter30_corrected.txt, regenerated via
+`generate_pk9_letter_corrected_story.py`; all at crib offset 0, all 8! T8
+orders, all wheel values):
+
+| engine | model | placements | survivors |
+|---|---|---|---|
+| split word-filter (existing engine) | Q56->T8->Q7, story wheels | 6.85e8 | 0 |
+| crack_pk9_t8_q7 --tq/--qt | T8+Q7 only, both orders | 2 x 6.85e8 | 0 |
+| crack_pk9_q567_t8_crib --all-keys | qt grouped | 6.85e8 | 0 |
+| crack_pk9_tq_grouped --all-keys | **tq grouped** | 6.80e8 | 0 |
+
+None of the 16,985 guessed openings fits at offset 0 under any grouped or
+Q7-only model, either order, with arbitrary wheels.
+
+### Campaign / resource notes
+
+- The R5 campaign stage (story wheels x all-40320 T8 qt) was stopped ~60% in
+  to free cores for the exact crib runs; no result recorded for R5.  The
+  campaign restarts as Stage C of the overnight pipeline.
+- Overnight pipeline (running): (A) qt all-offsets on a diverse 2,831-crib
+  subset of the letter corpus; (B) tq all-offsets same; (C) full wheel-word
+  campaign R5-R8.  Log: `kryptos/pk9_overnight_pipeline.log`.
+
+### Standing conclusions
+
+1. Crib machinery remains the only proven approach; every architecture x
+   order x wheel-space combination reachable by exact solvers has now been
+   tested negative on prefix cribs — the bottleneck is CRIB RECALL (guessing
+   the true opening), not solver coverage.
+2. The gauge freedom means any wheel solution found is only defined modulo
+   (a, b, -a-b); keyword identification must sweep the 676 gauge classes.
+3. Highest-value remaining directions: all-offsets runs (in progress), new
+   crib corpora from different narrative framings (e.g. the letter being
+   FROM the Whitesmith, or written years later), and the word-wheel campaign
+   (no-crib coverage of all T8 orders).
