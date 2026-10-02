@@ -55,6 +55,15 @@ jobs:
       - name: Assemble the combined site
         run: python3 scripts/build_site.py --out _site
 
+      # The pages are generated, so one bad template is sixty bad pages. This
+      # checks the *output*: broken internal links and anchors, canonicals that
+      # do not match the page's own URL, missing titles/descriptions, unlabelled
+      # form controls, images without alt text, sitemap entries that 404.
+      # --strict so a warning (an over-long title, an orphan page) also stops
+      # the deploy rather than quietly going live.
+      - name: Audit the assembled site
+        run: python3 scripts/audit_site.py _site --strict
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

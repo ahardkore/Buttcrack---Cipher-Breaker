@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kryptos & Paradigm Kryptos — Master Cryptanalytic Suite</title>
+  <title>Kryptos &amp; Paradigm Kryptos — Master Cryptanalytic Suite</title>
+  <meta name="description" content="Kryptos research explorer: the K1–K4 ciphertexts, verified solutions with reproducible methods, and an interactive cryptanalytic workbench.">
+  <!-- Published at <base_url>/kryptos/ by scripts/build_site.py; keep this in
+       step with base_url in ventures/cipher-solver-web/site.json. -->
+  <link rel="canonical" href="https://ciphersolverpro.com/kryptos/">
+  <meta property="og:title" content="Kryptos &amp; Paradigm Kryptos — Master Cryptanalytic Suite">
+  <meta property="og:description" content="The K1–K4 ciphertexts, verified solutions with reproducible methods, and an interactive cryptanalytic workbench.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ciphersolverpro.com/kryptos/">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="archive.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
@@ -265,17 +273,17 @@ cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
             Test polyalphabetic and transposition hypotheses in real-time over the Kryptos alphabet (<code style="color: var(--copper-glow);">KRYPTOSABCDEFGHIJLMNQUVWXZ</code>).
           </p>
 
-          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Algorithm</label>
+          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" for="wb-algo-select">Algorithm</label>
           <select id="wb-algo-select" style="width: 100%; padding: 8px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; margin: 6px 0 16px;">
             <option value="vigenere-kr">Quagmire III (Kryptos Alphabet Keystream)</option>
             <option value="vigenere-std">Standard Vigenère (A–Z Alphabet)</option>
             <option value="columnar">Columnar Transposition (Keyword Order)</option>
           </select>
 
-          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Ciphertext Input</label>
+          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" for="wb-input-ct">Ciphertext Input</label>
           <textarea id="wb-input-ct" class="tool-input" placeholder="Paste uppercase ciphertext letters here..."></textarea>
 
-          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Key / Keyword / Vector</label>
+          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" for="wb-input-key">Key / Keyword / Vector</label>
           <input type="text" id="wb-input-key" style="width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-bright); font-family: var(--font-mono); border-radius: 6px; margin: 6px 0 20px;" placeholder="e.g. PALIMPSEST or KCOLDYX">
 
           <button id="wb-btn-decrypt" class="btn-primary" style="width: 100%;">Execute Decryption Engine</button>
@@ -328,7 +336,7 @@ cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
 
         <div class="github-steps">
           <div class="step-box">
-            <h4>Step 1: Initialize Git Repository in Workspace</h4>
+            <h3>Step 1: Initialize Git Repository in Workspace</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Run these commands to configure the repository and commit all suite assets:</p>
             <pre>git init
 git config user.name "Your Name"
@@ -338,12 +346,12 @@ git commit -m "Initialize Kryptos & Paradigm Kryptos Master Suite"</pre>
           </div>
 
           <div class="step-box">
-            <h4>Step 2: Create a New GitHub Repository</h4>
+            <h3>Step 2: Create a New GitHub Repository</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Go to <code style="color: var(--copper-glow);">https://github.com/new</code> and create a repository (e.g. <code>kryptos-suite</code> or <code>paradigm-kryptos</code>).</p>
           </div>
 
           <div class="step-box">
-            <h4>Step 3: Connect Remote & Push</h4>
+            <h3>Step 3: Connect Remote & Push</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Add your remote repository URL and push the main branch:</p>
             <pre>git branch -M main
 git remote add origin https://github.com/&lt;USERNAME&gt;/&lt;REPO-NAME&gt;.git
@@ -351,7 +359,7 @@ git push -u origin main</pre>
           </div>
 
           <div class="step-box">
-            <h4>Step 4: Enable Free GitHub Pages Web Hosting</h4>
+            <h3>Step 4: Enable Free GitHub Pages Web Hosting</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">In your GitHub repository settings:</p>
             <ul style="font-size: 0.85rem; color: var(--text-main); margin-left: 20px;">
               <li>Navigate to <strong>Settings</strong> &gt; <strong>Pages</strong>.</li>

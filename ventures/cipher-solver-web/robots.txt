@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://ahardkore.github.io/Buttcrack---Cipher-Breaker/sitemap.xml
+Sitemap: https://ciphersolverpro.com/sitemap.xml

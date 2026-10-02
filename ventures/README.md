@@ -65,8 +65,32 @@ python3 ventures/cipher-solver-web/build_model.py   # compile the language model
 python3 ventures/cipher-solver-web/build_pages.py   # generate the HTML
 node    ventures/cipher-solver-web/test.js          # verify accuracy
 python3 scripts/build_site.py --out _site           # assemble the full site
+python3 scripts/audit_site.py _site --strict        # check the assembled output
 python3 -m http.server 8000 -d _site                # preview exactly what deploys
 ```
+
+#### Auditing the output
+
+`test.js` proves the solver still solves; it says nothing about the sixty-odd
+pages wrapped around it. Because those pages are generated, one wrong value in
+a template is one wrong value on every page at once, and the build is green
+either way. `scripts/audit_site.py` reads the *assembled* tree and fails on:
+
+* internal links and `#anchors` that point at something which is not there;
+* a canonical URL that does not match the page's own path under `base_url`,
+  or a missing title, description, viewport or `lang` (pages marked
+  `noindex` — the 404 and the Stripe delivery pages — are exempt by design);
+* duplicate titles or descriptions, and ones long enough to be truncated;
+* no `<h1>`, more than one, or a skipped heading level;
+* `<img>` without `alt`, form controls with no label and no `aria-label`,
+  duplicate `id`s, unclosed elements, invalid JSON-LD;
+* sitemap entries that are not in the built tree, indexable pages missing
+  from the sitemap, a `robots.txt` that does not point at it, orphan pages.
+
+Both `ci.yml` (on every pull request) and `deploy-site.yml` (before the upload)
+run it with `--strict`, so warnings stop the deploy too. CI additionally
+rebuilds the pages and fails if the committed HTML differs from what
+`build_pages.py` now produces — stale generated output cannot reach the site.
 
 #### One site, two halves
 
@@ -87,6 +111,102 @@ finished last erased the other's site.
 Monetisation is switched on entirely from `site.json` — fill in the AdSense and
 Ko-fi fields, push, and the workflow rebuilds the pages with real ad units. No
 code changes.
+
+#### AdSense
+
+`adsense_client` is the only required field, and it puts Google's loader
+snippet in the `<head>` of every page:
+
+```html
+<script async crossorigin="anonymous"
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-…"></script>
+```
+
+The 67 solver pages are generated, so `build_pages.adsense_head()` writes it
+into each one. The Kryptos explorer is hand-written, so
+`scripts/build_site.py` injects the identical tag at assembly time, reading
+the same `site.json` — the publisher ID is never written down twice. Both are
+pinned by `TestAdSense` in `tests/test_wiki.py`.
+
+The three `thank-you-*.html` delivery pages are deliberately left without it.
+They are `noindex`, reachable only after a Stripe payment, and consist of a
+download button; "Google-served ads on screens without publisher content" is
+a policy violation, so thin pages are the ones to keep ads off.
+
+`adsense_slot` is separate and optional:
+
+| `adsense_client` | `adsense_slot` | What the pages get                             |
+| ---------------- | -------------- | ---------------------------------------------- |
+| empty            | —              | an inert dashed placeholder (local reminder)    |
+| set              | empty          | loader only — Auto ads places units itself      |
+| set              | set            | loader plus an explicit responsive `<ins>` unit |
+
+`ads.txt` is generated too, but **only on a custom domain**. It is read from
+the domain root and nowhere else, so on a `github.io` project path the file
+would sit at a URL no crawler looks at; `write_ads_txt()` writes nothing in
+that case rather than create false confidence. On `ciphersolverpro.com` it
+publishes `google.com, pub-…, DIRECT, f08c47fec0942fa0`.
+
+This matters because **AdSense approves top-level domains, not subdomains**.
+`*.github.io` belongs to GitHub, so an application naming a project page is
+normally rejected on ownership grounds regardless of content quality — which
+is why the site moved to its own domain.
+
+### The custom domain
+
+The site is served from **ciphersolverpro.com**, registered at Wix, hosted on
+GitHub Pages. `base_url` in `site.json` is the single source of truth: the
+canonicals, the sitemap, `robots.txt`, the Stripe redirect URLs, `ads.txt` and
+the `CNAME` file are all derived from it. Change it there and rebuild; do not
+hand-edit any of them.
+
+**The CNAME file is not optional, and this is the trap.** A custom domain set
+in Settings → Pages is stored against the *repository*, but a GitHub Actions
+deploy publishes exactly what is in the *artifact*. An artifact with no CNAME
+file **clears** the stored domain — the site reverts to github.io, the deploy
+reports success, and nothing anywhere says what happened. So
+`scripts/build_site.py` writes `_site/CNAME` from `base_url` on every build,
+and `scripts/audit_site.py` fails the deploy if it is missing or disagrees.
+A `github.io` `base_url` correctly produces no file at all.
+
+DNS lives at Wix, which does **not** permit external nameservers for domains
+it registered — everything is done with records in Wix's own editor
+(Domains → the domain → Domain Actions → Manage DNS Records):
+
+| Type  | Host Name       | Value                 |
+| ----- | --------------- | --------------------- |
+| A     | *(leave empty)* | `185.199.108.153`     |
+| A     | *(leave empty)* | `185.199.109.153`     |
+| A     | *(leave empty)* | `185.199.110.153`     |
+| A     | *(leave empty)* | `185.199.111.153`     |
+| CNAME | `www`           | `ahardkore.github.io` |
+
+**Leave Host Name blank for the root — do not type `@`.** Most registrars
+spell the apex `@`; Wix spells it as an empty field and rejects the `@`
+character outright. This is the single most common way this setup goes wrong.
+
+All four A records are needed: they are GitHub's published Pages addresses,
+and the redundancy is the point. The `www` CNAME targets the *user* page
+(`ahardkore.github.io`, no repository path) — GitHub works out which
+repository to serve from the domain itself.
+
+A Wix-registered domain arrives with its own records already in place: an A
+record at the root pointing to `185.230.63.107` and a `www` CNAME to
+`pointing.wixdns.net` or `initial.wixdns.net`. **Edit** those two rather than
+adding alongside them — a second `www` CNAME conflicts with the first, and a
+leftover Wix A record keeps sending a share of traffic to Wix — then add the
+three remaining A records with **+ Add Record**.
+
+Starting from an empty zone is fine, and is arguably cleaner: add all five
+records above and nothing stale is left to fight them. Deleting records is not
+destructive to the domain itself. The one casualty worth checking for is
+**MX** records — remove those and email on the domain stops until they are
+restored, which only matters if a mailbox was ever set up. Ownership
+verification here is a meta tag in the page `<head>` (`google_site_verification`
+in `site.json`), not a DNS record, so it survives any amount of DNS editing.
+
+Note that Wix cannot do plain URL forwarding, and does not support DNSSEC or
+a proxy in front of these records — leave both off.
 
 ### 2. `puzzle-packs/` — sellable cryptogram books
 

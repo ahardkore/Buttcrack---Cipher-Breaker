@@ -192,6 +192,124 @@ class TestPaymentUrls(unittest.TestCase):
             "https://example.com/pay")
 
 
+class TestAdSense(unittest.TestCase):
+    """The loader tag has to be on every page, and identical on both halves.
+
+    AdSense reviews the site, not the repository: a page that does not load
+    adsbygoogle.js shows no ads, and a publisher ID that differs between the
+    generated pages and the hand-written Kryptos app is a bug nobody would
+    notice until the revenue did not arrive.
+    """
+
+    def setUp(self):
+        self.client = bp.CFG["adsense_client"]
+        if not self.client:
+            self.skipTest("no adsense_client configured in site.json")
+
+    def test_loader_is_googles_snippet(self):
+        head = bp.adsense_head()
+        self.assertIn(
+            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            f"?client={self.client}", head)
+        self.assertIn("async", head)
+        self.assertIn('crossorigin="anonymous"', head)
+
+    def test_client_id_looks_like_a_publisher_id(self):
+        self.assertRegex(self.client, r"^ca-pub-\d{16}$")
+
+    def test_build_site_injects_the_same_tag(self):
+        # scripts/build_site.py adds the tag to the hand-written Kryptos page.
+        # It must be byte-for-byte the generated one, from the same site.json.
+        build_site = _load("build_site_test_module",
+                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        self.assertEqual(build_site.adsense_loader().strip(), bp.adsense_head().strip())
+
+    def test_injection_is_idempotent(self):
+        import tempfile
+
+        build_site = _load("build_site_test_module2",
+                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            page = Path(tmp) / "page.html"
+            page.write_text("<html><head><title>t</title></head><body></body></html>")
+            self.assertEqual(build_site.inject_adsense(Path(tmp)), 1)
+            once = page.read_text()
+            self.assertIn("adsbygoogle.js", once)
+            self.assertIn("adsbygoogle.js", once.split("</head>")[0])
+            # A second pass must not add it twice.
+            self.assertEqual(build_site.inject_adsense(Path(tmp)), 0)
+            self.assertEqual(page.read_text(), once)
+
+    def test_no_stale_placeholder_once_configured(self):
+        # The placeholder names adsense_client as the thing to configure; with
+        # a client set it would be visible to visitors and wrong.
+        self.assertNotIn("configure adsense_client", bp.ad_slot())
+
+
+class TestCustomDomain(unittest.TestCase):
+    """base_url is the single source of truth for where the site lives.
+
+    Three things have to agree with it and none of them fails loudly:
+    the CNAME file in the artifact, the hand-written Kryptos canonical, and
+    ads.txt. Each is a one-line file whose absence costs the domain, the
+    search ranking or the ad revenue, silently.
+    """
+
+    def setUp(self):
+        self.build_site = _load(
+            "build_site_domain_module",
+            Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        self.base = bp.CFG["base_url"]
+
+    def test_cname_matches_base_url(self):
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        if host.endswith(".github.io"):
+            self.assertEqual(self.build_site.custom_domain(), "",
+                             "a github.io base_url must produce no CNAME")
+        else:
+            self.assertEqual(self.build_site.custom_domain(), host)
+
+    def test_cname_is_written_into_the_tree(self):
+        # Without this file an Actions deploy clears the custom domain stored
+        # in repository settings, and the site silently reverts to github.io.
+        import tempfile
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        with tempfile.TemporaryDirectory() as tmp:
+            written = self.build_site.write_cname(Path(tmp))
+            cname = Path(tmp) / "CNAME"
+            if host.endswith(".github.io"):
+                self.assertFalse(cname.exists())
+            else:
+                self.assertEqual(written, host)
+                self.assertEqual(cname.read_text().strip(), host)
+                self.assertNotIn("/", cname.read_text(),
+                                 "a CNAME holds a bare hostname, not a URL")
+
+    def test_kryptos_canonical_matches_base_url(self):
+        # kryptos-app is hand-written: nothing regenerates this URL, so it can
+        # only be kept honest by being checked.
+        page = (Path(__file__).resolve().parents[1]
+                / "kryptos-app" / "index.html").read_text(encoding="utf-8")
+        expected = f'<link rel="canonical" href="{self.base}/kryptos/">'
+        self.assertIn(expected, page,
+                      "kryptos-app/index.html canonical is out of step with base_url")
+        self.assertIn(f'content="{self.base}/kryptos/"', page)
+
+    def test_ads_txt_only_on_a_real_domain(self):
+        from urllib.parse import urlparse
+        host = urlparse(self.base).hostname
+        line = bp.write_ads_txt()
+        if not bp.CFG["adsense_client"] or host.endswith(".github.io"):
+            # ads.txt is only read at the domain root, which a project page
+            # does not own; writing one there would be false confidence.
+            self.assertEqual(line, "")
+        else:
+            self.assertRegex(line, r"^google\.com, pub-\d{16}, DIRECT, [0-9a-f]{16}$")
+            self.assertIn(bp.CFG["adsense_client"].removeprefix("ca-"), line)
+
+
 class TestBrowserBreakableSet(unittest.TestCase):
     def test_members_exist_and_are_registered(self):
         from buttcrack.ciphers import all_ciphers

@@ -472,7 +472,7 @@ button.btn-primary:hover {
   margin-bottom: 16px;
 }
 
-.step-box h4 {
+.step-box h3 {
   color: var(--cyan);
   margin-bottom: 8px;
   display: flex;
@@ -837,7 +837,7 @@ code {
     padding: 0.85rem;
   }
 
-  .step-box h4 {
+  .step-box h3 {
     align-items: flex-start;
     line-height: 1.3;
   }

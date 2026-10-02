@@ -19,8 +19,8 @@ had already bought a book would lose their download link.
 
 | Product | Price | Post-payment redirect URL |
 | ------- | ----- | ------------------------- |
-| Volume One (60 puzzles) | $5 | `https://ahardkore.github.io/Buttcrack---Cipher-Breaker/thank-you-830991499d0d70f90abd.html` |
-| Volume Two (90 puzzles) | $7 | `https://ahardkore.github.io/Buttcrack---Cipher-Breaker/thank-you-bc1474305b0ba8208121.html` |
+| Volume One (60 puzzles) | $5 | `https://ciphersolverpro.com/thank-you-830991499d0d70f90abd.html` |
+| Volume Two (90 puzzles) | $7 | `https://ciphersolverpro.com/thank-you-bc1474305b0ba8208121.html` |
 
 Print them again at any time:
 

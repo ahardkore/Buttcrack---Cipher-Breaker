@@ -17,6 +17,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 HERE = Path(__file__).parent
 PACKS = HERE.parent / "puzzle-packs"
@@ -51,6 +52,38 @@ def adsense_head() -> str:
         f'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={CFG["adsense_client"]}">'
         "</script>"
     )
+
+
+#: Google's own certification-authority ID in an ads.txt line. A constant for
+#: every AdSense publisher, not something to look up per account.
+ADS_TXT_CERTIFICATION_AUTHORITY = "f08c47fec0942fa0"
+
+
+def write_ads_txt() -> str:
+    """Authorise this publisher to sell the site's inventory. Returns the line.
+
+    ads.txt must be served from the **domain root** — ``/ads.txt`` — which is
+    why this could not exist while the site lived at a github.io project path
+    (``ahardkore.github.io/ads.txt`` belongs to whoever owns the user page, not
+    to this repository). On a custom domain the site root *is* the domain
+    root, so the file can finally be published from here.
+
+    Without it AdSense reports the site as having no ads.txt, and buyers that
+    require one will not bid — an earnings problem rather than an error
+    anybody sees.
+    """
+    client = CFG["adsense_client"]
+    if not client:
+        return ""
+    host = urlparse(CFG["base_url"]).hostname or ""
+    if host.endswith(".github.io"):
+        # The file would be served at <user>.github.io/<repo>/ads.txt, which no
+        # crawler looks at. Writing it would only create false confidence.
+        return ""
+    publisher = client[3:] if client.startswith("ca-") else client
+    line = f"google.com, {publisher}, DIRECT, {ADS_TXT_CERTIFICATION_AUTHORITY}"
+    (HERE / "ads.txt").write_text(f"{line}\n")
+    return line
 
 
 def analytics() -> str:
@@ -130,15 +163,30 @@ def write_verification_files() -> list[str]:
 
 
 def ad_slot() -> str:
-    """A real ad unit once IDs are configured; an inert placeholder until then."""
-    if not (CFG["adsense_client"] and CFG["adsense_slot"]):
+    """A real ad unit once IDs are configured; an inert placeholder until then.
+
+    Three states, because the two IDs are obtained at different times:
+
+    * no ``adsense_client`` — nothing is set up yet, so show the dashed
+      placeholder. It is a reminder on a local preview.
+    * ``adsense_client`` but no ``adsense_slot`` — the account exists and the
+      loader is in every ``<head>``, which is all Auto ads needs to place ads
+      itself, and all a site review needs to find. Emit *nothing*: a dashed box
+      captioned "configure adsense_client" on the live site would be both
+      visible to visitors and untrue.
+    * both — the explicit responsive unit.
+    """
+    if not CFG["adsense_client"]:
         return '<div class="ad-slot">ad slot — configure adsense_client in site.json</div>'
+    if not CFG["adsense_slot"]:
+        return ""
     return f"""<ins class="adsbygoogle" style="display:block"
      data-ad-client="{CFG['adsense_client']}"
      data-ad-slot="{CFG['adsense_slot']}"
      data-ad-format="auto"
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>"""
+
 
 
 #: Hosts a live Stripe Payment Link can legitimately be served from. Custom
@@ -1124,7 +1172,7 @@ PAGES = [
     {
         "slug": "index.html",
         "title": "Free Cipher Solver — Break Any Classical Cipher Automatically",
-        "desc": "Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse, layered. No upload.",
+        "desc": "Paste ciphertext and this free solver names the cipher, recovers the key and prints the plaintext — Caesar, Vigenère, substitution, XOR, base64, Morse. No upload.",
         "h1": "Cipher Solver",
         "tagline": "Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
         "preset": "caesar",
@@ -1182,7 +1230,7 @@ PAGES = [
     {
         "slug": "caesar-cipher-decoder.html",
         "title": "Caesar Cipher Decoder — Decrypt Without Knowing the Shift",
-        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste the ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.",
+        "desc": "Free Caesar cipher decoder that finds the shift for you. Paste ciphertext and get the plaintext plus the key. Also handles ROT13 and Atbash. Runs in your browser.",
         "h1": "Caesar Cipher Decoder",
         "tagline": "Don't know the shift? It tries all 26 and picks the English one.",
         "preset": "caesar",
@@ -1226,7 +1274,7 @@ PAGES = [
     {
         "slug": "vigenere-cipher-solver.html",
         "title": "Vigenère Cipher Solver — Recovers the Key Automatically",
-        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter. Runs in your browser.",
+        "desc": "Break a Vigenère cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter, in your browser.",
         "h1": "Vigenère Solver",
         "tagline": "No keyword needed — it recovers the key from the ciphertext itself.",
         "preset": "vigenere",
@@ -1369,7 +1417,7 @@ PAGES = [
     {
         "slug": "ctf-crypto-solver.html",
         "title": "CTF Crypto Solver — Base64, Hex, XOR and Layered Encodings",
-        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte and repeating-key XOR, and stacked encoding layers. Identifies and peels each layer. Free.",
+        "desc": "Automatic solver for CTF crypto challenges: base64, hex, binary, single-byte and repeating-key XOR, and stacked encoding layers. Identifies and peels each layer.",
         "h1": "CTF Crypto Solver",
         "tagline": "Base64 around hex around XOR? It unwraps the whole stack.",
         "preset": "layered",
@@ -1419,7 +1467,7 @@ PAGES = [
     },
     {
         "slug": "windows-app.html",
-        "title": "Buttcrack for Windows — Free Offline Cipher Solver, Installer Download",
+        "title": "Buttcrack for Windows — Offline Cipher Solver and Installer",
         "desc": "Download the Buttcrack cipher solver as a Windows desktop app: 50 ciphers, six language models, runs entirely offline. No Python, no account, no admin rights needed.",
         "h1": "Windows App",
         "tagline": "The full solver as a desktop program. Installs in seconds, runs offline, uploads nothing.",
@@ -1623,7 +1671,7 @@ __CIPHER_INDEX__
     },
     {
         "slug": "unsolved-ciphers.html",
-        "title": "Famous Unsolved Ciphers and Undeciphered Scripts — Evidence, Sources and Limits",
+        "title": "Famous Unsolved Ciphers and Undeciphered Scripts",
         "desc": "A sourced archive of seven famous unresolved cipher problems, with clear verification boundaries that separate a candidate reading from an accepted decipherment.",
         "h1": "Famous Unsolved Ciphers & Scripts",
         "tagline": "Open problems deserve sources, scope, and an honest standard of proof.",
@@ -1695,7 +1743,7 @@ __CIPHER_INDEX__
     },
     {
         "slug": "vigenere-cipher-wiki.html",
-        "title": "Vigenère Cipher Explained — Keywords, Kasiski and Index of Coincidence",
+        "title": "Vigenère Cipher Explained — Keywords and the Kasiski Attack",
         "desc": "Learn how the Vigenère cipher uses a repeating keyword, how Kasiski examination and index of coincidence expose its period, and how each column is solved.",
         "h1": "The Vigenère Cipher",
         "tagline": "Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.",
@@ -1737,7 +1785,7 @@ __CIPHER_INDEX__
     },
     {
         "slug": "substitution-cipher-wiki.html",
-        "title": "Substitution Cipher Explained — Cryptogram Patterns and Hill Climbing",
+        "title": "Substitution Cipher Explained — Patterns and Hill Climbing",
         "desc": "How monoalphabetic substitution ciphers and cryptograms work, why 26 factorial keys cannot be brute-forced, and how frequency patterns and hill climbing solve them.",
         "h1": "Substitution Ciphers",
         "tagline": "A colossal keyspace with a very human leak: the shape of language remains.",
@@ -1780,7 +1828,7 @@ __CIPHER_INDEX__
     },
     {
         "slug": "playfair-cipher-wiki.html",
-        "title": "Playfair Cipher Explained — The 5×5 Grid, Digraph Rules and Attacks",
+        "title": "Playfair Cipher Explained — The 5×5 Grid and Digraph Rules",
         "desc": "Understand the Playfair cipher's 5×5 keyed square, its same-row, same-column and rectangle rules, padding behaviour, and why it needs long ciphertext to attack.",
         "h1": "The Playfair Cipher",
         "tagline": "A grid of 25 letters turns single-letter statistics into a pairwise problem.",
@@ -2389,6 +2437,10 @@ def main() -> None:
     )
     print(f"wrote sitemap.xml and robots.txt ({len(urls)} pages)")
 
+    ads = write_ads_txt()
+    if ads:
+        print(f"wrote ads.txt                            ({ads})")
+
     for name in write_verification_files():
         print(f"wrote {name:38} (ownership proof)")
 
@@ -2400,6 +2452,19 @@ def main() -> None:
     elif not CFG.get("verification_files"):
         print("\nno ownership verification configured — set google_site_verification in "
               "site.json, then push (see ventures/README.md step 3)")
+
+    # AdSense is two separate IDs obtained at two separate times, and the
+    # difference decides whether ads can actually render, so say which state
+    # this build is in rather than leaving it to be discovered on the live site.
+    if CFG["adsense_client"]:
+        print(f"\nAdSense loader for {CFG['adsense_client']} is in every page's <head>.")
+        if not CFG["adsense_slot"]:
+            print("  adsense_slot is empty, so no explicit <ins> unit is emitted; this\n"
+                  "  relies on Auto ads, which you switch on per site in the AdSense UI.\n"
+                  "  For a fixed in-article unit, create a display unit and paste its\n"
+                  "  data-ad-slot number into adsense_slot.")
+    else:
+        print("\nno AdSense client configured — pages show an inert ad placeholder")
 
     # The delivery URLs are what you paste into each Stripe Payment Link as its
     # "after payment" redirect, so print them where you cannot miss them.

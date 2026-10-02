@@ -157,6 +157,44 @@ jobs:
       - name: Sample puzzles
         run: python examples/generate.py --check
 
+  site:
+    name: public site (build and audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Deploy-site.yml only runs on main, so without this a pull request could
+      # turn the published site red and nobody would know until after the merge.
+      # Same three steps the deploy performs, minus the upload.
+      - name: Regenerate the pages
+        run: |
+          python3 ventures/cipher-solver-web/build_model.py
+          python3 ventures/cipher-solver-web/build_pages.py
+
+      # The generated HTML is committed, so a change to build_pages.py that was
+      # not followed by a rebuild would publish stale pages. Catch it here.
+      - name: Generated pages are up to date with their generator
+        run: |
+          if ! git diff --quiet -- ventures/cipher-solver-web; then
+            echo "::error title=stale generated pages::build_pages.py output differs from what is committed. Run it and commit the result."
+            git diff --stat -- ventures/cipher-solver-web
+            exit 1
+          fi
+
+      - name: Assemble the combined site
+        run: python3 scripts/build_site.py --out _site
+
+      - name: Audit the assembled site
+        run: python3 scripts/audit_site.py _site --strict
+
+      - name: Verify solver accuracy
+        run: node ventures/cipher-solver-web/test.js
+
   web:
     name: web interface
     runs-on: ubuntu-latest
