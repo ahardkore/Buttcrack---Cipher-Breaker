@@ -173,20 +173,29 @@ DNS lives at Wix, which does **not** permit external nameservers for domains
 it registered — everything is done with records in Wix's own editor
 (Domains → the domain → Domain Actions → Manage DNS Records):
 
-| Type  | Host  | Value             |
-| ----- | ----- | ----------------- |
-| A     | @     | `185.199.108.153` |
-| A     | @     | `185.199.109.153` |
-| A     | @     | `185.199.110.153` |
-| A     | @     | `185.199.111.153` |
-| CNAME | `www` | `ahardkore.github.io` |
+| Type  | Host Name       | Value                 |
+| ----- | --------------- | --------------------- |
+| A     | *(leave empty)* | `185.199.108.153`     |
+| A     | *(leave empty)* | `185.199.109.153`     |
+| A     | *(leave empty)* | `185.199.110.153`     |
+| A     | *(leave empty)* | `185.199.111.153`     |
+| CNAME | `www`           | `ahardkore.github.io` |
+
+**Leave Host Name blank for the root — do not type `@`.** Most registrars
+spell the apex `@`; Wix spells it as an empty field and rejects the `@`
+character outright. This is the single most common way this setup goes wrong.
 
 All four A records are needed: they are GitHub's published Pages addresses,
 and the redundancy is the point. The `www` CNAME targets the *user* page
 (`ahardkore.github.io`, no repository path) — GitHub works out which
-repository to serve from the domain itself. Delete any pre-existing A or CNAME
-record pointing at Wix's own servers (`185.230.63.x`, `*.wixdns.net`) or the
-domain will keep resolving to Wix.
+repository to serve from the domain itself.
+
+A Wix-registered domain arrives with its own records already in place: an A
+record at the root pointing to `185.230.63.107` and a `www` CNAME to
+`pointing.wixdns.net` or `initial.wixdns.net`. **Edit** those two rather than
+adding alongside them — a second `www` CNAME conflicts with the first, and a
+leftover Wix A record keeps sending a share of traffic to Wix — then add the
+three remaining A records with **+ Add Record**.
 
 Note that Wix cannot do plain URL forwarding, and does not support DNSSEC or
 a proxy in front of these records — leave both off.
