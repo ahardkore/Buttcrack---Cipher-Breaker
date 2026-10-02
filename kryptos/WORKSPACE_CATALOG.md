@@ -1,7 +1,19 @@
 # PARADIGM KRYPTOS WORKSPACE CATALOG & RECALL INDEX
 
+> **⚠ CORRECTION NOTICE (2026-10-02)** — The previously recorded plaintexts and
+> keys for **PK4, PK5 and PK7 were wrong** (early-session fabrications that do
+> not encrypt to the official ciphertexts).  They are now corrected and every
+> PK1–PK8 construction is independently verified against the official
+> ciphertexts — see
+> [`PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`](PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md)
+> and [`verify_pk_constructions.py`](verify_pk_constructions.py).
+> Documents in this workspace that predate the correction and describe PK4/PK5/PK7
+> "solutions", the PK9 135-character "core text", or PK10 "triptych" readings
+> describe **unverified reconstructions**, not confirmed answers.  PK9 and PK10
+> remain unsolved on the official leaderboard.
+
 **Repository**: `/home/user`  
-**Date**: 2026-09-22  
+**Date**: 2026-09-22 (catalog) · 2026-10-02 (correction)  
 **Auditor**: Arena.ai Cryptanalytic Agent  
 **Master Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success)
 

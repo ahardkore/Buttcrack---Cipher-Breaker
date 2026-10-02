@@ -7,6 +7,13 @@
 
 An exhaustive, publication-grade cryptanalytic research repository, mathematical proof ledger, interactive web application, and full book manuscript investigating **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**.
 
+> **⚠ Correction (2026-10-02)**: The PK4/PK5/PK7 records in this workspace were
+> corrected to the verified constructions (all PK1–PK8 now reproduce their
+> official ciphertexts exactly — see `verify_pk_constructions.py`). The
+> "Definitive PK9/PK10" sections below this notice predate the correction and
+> describe unverified reconstructions; **PK9 and PK10 remain unsolved.** See
+> `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md` for the current PK9 state.
+
 ---
 
 ## 🏛️ Executive Cryptanalytic Deliverables
