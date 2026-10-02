@@ -21,3 +21,6 @@ offset 4/115 done: placements=441265139 survivors=0
 PK9 final overnight pipeline started Fri Oct  2 05:10:25 UTC 2026
 ====================================================================
 [05:10:25] STAGE: P1 story-wheels x all-T8 qt
+PK9 pipeline restart Fri Oct  2 05:44:32 UTC 2026 (sandbox restart lost P1; P5/P7/P8 skipped as redundant/known)
+====================================================================
+[2026-10-02 05:44:32] STAGE: P1 story-wheels x all-T8 qt
