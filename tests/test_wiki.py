@@ -192,6 +192,60 @@ class TestPaymentUrls(unittest.TestCase):
             "https://example.com/pay")
 
 
+class TestAdSense(unittest.TestCase):
+    """The loader tag has to be on every page, and identical on both halves.
+
+    AdSense reviews the site, not the repository: a page that does not load
+    adsbygoogle.js shows no ads, and a publisher ID that differs between the
+    generated pages and the hand-written Kryptos app is a bug nobody would
+    notice until the revenue did not arrive.
+    """
+
+    def setUp(self):
+        self.client = bp.CFG["adsense_client"]
+        if not self.client:
+            self.skipTest("no adsense_client configured in site.json")
+
+    def test_loader_is_googles_snippet(self):
+        head = bp.adsense_head()
+        self.assertIn(
+            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            f"?client={self.client}", head)
+        self.assertIn("async", head)
+        self.assertIn('crossorigin="anonymous"', head)
+
+    def test_client_id_looks_like_a_publisher_id(self):
+        self.assertRegex(self.client, r"^ca-pub-\d{16}$")
+
+    def test_build_site_injects_the_same_tag(self):
+        # scripts/build_site.py adds the tag to the hand-written Kryptos page.
+        # It must be byte-for-byte the generated one, from the same site.json.
+        build_site = _load("build_site_test_module",
+                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        self.assertEqual(build_site.adsense_loader().strip(), bp.adsense_head().strip())
+
+    def test_injection_is_idempotent(self):
+        import tempfile
+
+        build_site = _load("build_site_test_module2",
+                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            page = Path(tmp) / "page.html"
+            page.write_text("<html><head><title>t</title></head><body></body></html>")
+            self.assertEqual(build_site.inject_adsense(Path(tmp)), 1)
+            once = page.read_text()
+            self.assertIn("adsbygoogle.js", once)
+            self.assertIn("adsbygoogle.js", once.split("</head>")[0])
+            # A second pass must not add it twice.
+            self.assertEqual(build_site.inject_adsense(Path(tmp)), 0)
+            self.assertEqual(page.read_text(), once)
+
+    def test_no_stale_placeholder_once_configured(self):
+        # The placeholder names adsense_client as the thing to configure; with
+        # a client set it would be visible to visitors and wrong.
+        self.assertNotIn("configure adsense_client", bp.ad_slot())
+
+
 class TestBrowserBreakableSet(unittest.TestCase):
     def test_members_exist_and_are_registered(self):
         from buttcrack.ciphers import all_ciphers

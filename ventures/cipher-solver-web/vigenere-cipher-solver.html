@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Vigen\u00e8re Cipher Solver \u2014 Recovers the Key Automatically", "description": "Break a Vigen\u00e8re cipher without the keyword. This free solver finds the key length by index of coincidence and recovers the key letter by letter, in your browser.", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Vigen\u00e8re cipher be broken without the key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases."}}, {"@type": "Question", "name": "What if the key is as long as the message?", "acceptedAnswer": {"@type": "Answer", "text": "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words."}}, {"@type": "Question", "name": "Why did it return a key that is a repeated word, like LAMPLAMP?", "acceptedAnswer": {"@type": "Answer", "text": "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."}}]}</script>
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3618476692316013"></script>
 </head>
 <body data-preset="vigenere">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -57,7 +58,7 @@
 
   <div id="output" aria-live="polite"></div>
 
-  <div class="ad-slot">ad slot — configure adsense_client in site.json</div>
+  
 
   <article>
     <h2>Why Vigenère resisted for 300 years</h2>

@@ -24,6 +24,7 @@ harness, the raw corpus) are left out of the published tree.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import sys
@@ -101,6 +102,56 @@ def refuse_paid_binaries(tree: Path) -> None:
     )
 
 
+#: Read for ``adsense_client`` below. ``build_pages.py`` owns this file; this
+#: script only reads it, and only to keep the two halves of the site in step.
+SITE_JSON = SOLVER / "site.json"
+
+
+def adsense_loader() -> str:
+    """The AdSense loader tag for the configured publisher, or "" if unset.
+
+    Byte-for-byte what ``build_pages.adsense_head`` puts in the generated
+    pages; see ``inject_adsense`` for why it is needed twice.
+    """
+    if not SITE_JSON.is_file():
+        return ""
+    client = json.loads(SITE_JSON.read_text(encoding="utf-8")).get("adsense_client", "")
+    if not client:
+        return ""
+    return (
+        '  <script async crossorigin="anonymous" '
+        f'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={client}">'
+        "</script>\n"
+    )
+
+
+def inject_adsense(tree: Path) -> int:
+    """Put the AdSense loader in the <head> of hand-written pages.
+
+    AdSense wants its tag on *every* page of the site, and site reviews fail on
+    the pages that are missing it. The solver half is generated, so
+    ``build_pages.py`` emits the tag into all of it; the Kryptos explorer is a
+    hand-written app that no generator touches. Rather than paste the publisher
+    ID into a second file, where it would quietly drift out of step with
+    ``site.json``, insert it here at assembly time from the same config.
+
+    Idempotent: a page that already loads adsbygoogle.js is left alone.
+    """
+    tag = adsense_loader()
+    if not tag:
+        return 0
+    injected = 0
+    for page in sorted(tree.rglob("*.html")):
+        html = page.read_text(encoding="utf-8")
+        if "adsbygoogle.js" in html:
+            continue
+        if "</head>" not in html:
+            raise SystemExit(f"cannot add the AdSense tag: {page} has no </head>")
+        page.write_text(html.replace("</head>", f"{tag}</head>", 1), encoding="utf-8")
+        injected += 1
+    return injected
+
+
 def build(out: Path) -> Path:
     if out.exists():
         shutil.rmtree(out)
@@ -112,6 +163,10 @@ def build(out: Path) -> Path:
     kryptos_out = out / KRYPTOS_DIR
     research = copy_tree(KRYPTOS_APP, kryptos_out)
     print(f"kryptos app   -> {out}/{KRYPTOS_DIR}/ ({research} files)")
+
+    added = inject_adsense(kryptos_out)
+    if added:
+        print(f"adsense tag   -> added to {added} hand-written page(s) under {KRYPTOS_DIR}/")
 
     # Both halves must actually have an entry point, or the deploy publishes a
     # directory listing (or a 404) and nobody notices until someone visits.

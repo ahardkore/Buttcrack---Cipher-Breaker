@@ -112,6 +112,43 @@ Monetisation is switched on entirely from `site.json` — fill in the AdSense an
 Ko-fi fields, push, and the workflow rebuilds the pages with real ad units. No
 code changes.
 
+#### AdSense
+
+`adsense_client` is the only required field, and it puts Google's loader
+snippet in the `<head>` of every page:
+
+```html
+<script async crossorigin="anonymous"
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-…"></script>
+```
+
+The 67 solver pages are generated, so `build_pages.adsense_head()` writes it
+into each one. The Kryptos explorer is hand-written, so
+`scripts/build_site.py` injects the identical tag at assembly time, reading
+the same `site.json` — the publisher ID is never written down twice. Both are
+pinned by `TestAdSense` in `tests/test_wiki.py`.
+
+The three `thank-you-*.html` delivery pages are deliberately left without it.
+They are `noindex`, reachable only after a Stripe payment, and consist of a
+download button; "Google-served ads on screens without publisher content" is
+a policy violation, so thin pages are the ones to keep ads off.
+
+`adsense_slot` is separate and optional:
+
+| `adsense_client` | `adsense_slot` | What the pages get                             |
+| ---------------- | -------------- | ---------------------------------------------- |
+| empty            | —              | an inert dashed placeholder (local reminder)    |
+| set              | empty          | loader only — Auto ads places units itself      |
+| set              | set            | loader plus an explicit responsive `<ins>` unit |
+
+Note two things GitHub Pages cannot do for you. **`ads.txt` must sit at the
+domain root** — `https://ahardkore.github.io/ads.txt`, not under this project
+path — so it needs a repository named `ahardkore.github.io`. And **AdSense
+approves top-level domains, not subdomains**: `*.github.io` belongs to GitHub,
+so an application for a project page is normally rejected regardless of
+content quality. A custom domain pointed at these same Pages (Settings →
+Pages → Custom domain, then update `base_url`) is the usual fix.
+
 ### 2. `puzzle-packs/` — sellable cryptogram books
 
 Generates a print-ready puzzle book: cover, solving instructions, graded

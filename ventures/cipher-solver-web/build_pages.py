@@ -130,15 +130,30 @@ def write_verification_files() -> list[str]:
 
 
 def ad_slot() -> str:
-    """A real ad unit once IDs are configured; an inert placeholder until then."""
-    if not (CFG["adsense_client"] and CFG["adsense_slot"]):
+    """A real ad unit once IDs are configured; an inert placeholder until then.
+
+    Three states, because the two IDs are obtained at different times:
+
+    * no ``adsense_client`` — nothing is set up yet, so show the dashed
+      placeholder. It is a reminder on a local preview.
+    * ``adsense_client`` but no ``adsense_slot`` — the account exists and the
+      loader is in every ``<head>``, which is all Auto ads needs to place ads
+      itself, and all a site review needs to find. Emit *nothing*: a dashed box
+      captioned "configure adsense_client" on the live site would be both
+      visible to visitors and untrue.
+    * both — the explicit responsive unit.
+    """
+    if not CFG["adsense_client"]:
         return '<div class="ad-slot">ad slot — configure adsense_client in site.json</div>'
+    if not CFG["adsense_slot"]:
+        return ""
     return f"""<ins class="adsbygoogle" style="display:block"
      data-ad-client="{CFG['adsense_client']}"
      data-ad-slot="{CFG['adsense_slot']}"
      data-ad-format="auto"
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>"""
+
 
 
 #: Hosts a live Stripe Payment Link can legitimately be served from. Custom
@@ -2400,6 +2415,19 @@ def main() -> None:
     elif not CFG.get("verification_files"):
         print("\nno ownership verification configured — set google_site_verification in "
               "site.json, then push (see ventures/README.md step 3)")
+
+    # AdSense is two separate IDs obtained at two separate times, and the
+    # difference decides whether ads can actually render, so say which state
+    # this build is in rather than leaving it to be discovered on the live site.
+    if CFG["adsense_client"]:
+        print(f"\nAdSense loader for {CFG['adsense_client']} is in every page's <head>.")
+        if not CFG["adsense_slot"]:
+            print("  adsense_slot is empty, so no explicit <ins> unit is emitted; this\n"
+                  "  relies on Auto ads, which you switch on per site in the AdSense UI.\n"
+                  "  For a fixed in-article unit, create a display unit and paste its\n"
+                  "  data-ad-slot number into adsense_slot.")
+    else:
+        print("\nno AdSense client configured — pages show an inert ad placeholder")
 
     # The delivery URLs are what you paste into each Stripe Payment Link as its
     # "after payment" redirect, so print them where you cannot miss them.
