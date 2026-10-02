@@ -3,3 +3,21 @@ PK9 overnight pipeline started Fri Oct  2 04:40:03 UTC 2026
 ====================================================================
 [04:40:03] STAGE A: qt all-offsets, top-3000 letter cribs
 offset 15/114 no full-crib survivor
+offset 31/114 no full-crib survivor
+offset 47/114 no full-crib survivor
+offset 63/114 no full-crib survivor
+offset 79/114 no full-crib survivor
+offset 95/114 no full-crib survivor
+offset 111/114 no full-crib survivor
+offset 114/114 no full-crib survivor
+cribs=2831 offsets=115 placements=325565 permutations=40320 candidates=13126780800 threads=2
+elapsed=216.428s rate=60.652 million candidates/s full_crib_hits=0
+[04:43:39] STAGE A done rc=0
+[04:43:39] STAGE B: tq all-offsets, top-3000 letter cribs
+offset 1/115 done: placements=110329732 survivors=0
+offset 2/115 done: placements=219048625 survivors=0
+offset 3/115 done: placements=329301920 survivors=0
+offset 4/115 done: placements=441265139 survivors=0
+PK9 final overnight pipeline started Fri Oct  2 05:10:25 UTC 2026
+====================================================================
+[05:10:25] STAGE: P1 story-wheels x all-T8 qt

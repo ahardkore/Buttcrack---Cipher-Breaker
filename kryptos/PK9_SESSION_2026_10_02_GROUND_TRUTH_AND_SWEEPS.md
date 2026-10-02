@@ -277,3 +277,82 @@ Q7-only model, either order, with arbitrary wheels.
    crib corpora from different narrative framings (e.g. the letter being
    FROM the Whitesmith, or written years later), and the word-wheel campaign
    (no-crib coverage of all T8 orders).
+
+---
+
+## Session addendum 2 (2026-10-02 evening): chi-square wheel filter, corpus v2, pipeline
+
+### Sigma-free chi-square wheel filter (TQ order) — new tool `chisweep_pk9_tq.c`
+
+Under tq the letter MULTISET of P-hat[i] = C[i] - q5[i%5] - q6[i%6] - q7[i%7]
+equals the plaintext multiset regardless of the T8 permutation (a
+transposition only permutes positions).  Planted controls: true wheels give
+chi-square 23.2 vs best-of-2000 random wheels 261.8.  Word-triple sweeps with
+this filter (each followed by full 8! verification of survivors):
+
+| vocab | triples | below chi2<120 | best quadgram |
+|---|---|---|---|
+| story 119x123x141 | 2.06e6 | 1 (chi2 116.9) | -6.96 noise |
+| broad 633x707x587 | 2.63e8 | 117 (best 75.6) | -6.98 noise |
+| theophilus 833x928x796 | 6.15e8 | 295 (best 79.1) | -7.08 noise |
+| curated 559x616x471 | 1.62e8 | 68 (best 79.1) | -7.08 noise |
+| pk8win 147^3 | 3.18e6 | 0 | - |
+| ladder 9x10x11 | 990 | 0 | - |
+
+**TQ + word wheels is now exhaustively NEGATIVE for all supplied
+vocabularies** (this supersedes the campaign's tq stages R5b/R6-tq/R8-tq,
+which are hereby cancelled — the filter covers the same space including all
+40320 T8 orders, in seconds).
+
+Non-word wheels: a 60,000-restart coordinate descent on the chi2 landscape
+finds 30,000+ distinct minima below chi2=65 (18 free parameters overfit the
+26-bin multiset easily); even chi2=18.5 minima verify at -6.5 (noise).  The
+filter therefore CANNOT discriminate non-word tq wheels; that space remains
+open only via crib solvers.
+
+A similar multiset statistic for the QT order was tested and shows NO
+discrimination (true 22.1 vs random median 23.2 — expected-count vectors are
+nearly flat for any wheels), so the qt side still requires brute sweeps.
+
+### Letter corpus v2 (`generate_pk9_letter_v2.py`)
+
+Adds the missing opening framings: "Three weeks in" (the author's time-marker
+series: PK3 "Seventh month.", PK4 "Two years in.", PK5 "Fourteen days in the
+barn.", PK7 "Three weeks in."), "By the time you read this", "When you read
+this", "I am writing this", candlelight/lamplight, "I will miss", "I will
+never forget", workshop imagery, with PK6-PK8 vocabulary continuations.
+618 new cribs (>= 21 letters; 578 of them >= 28).
+
+Prefix results (all engines, all 8! T8 orders, all wheels): tq grouped 0/24.9M,
+qt grouped 0/24.9M, Q7-only both orders 0/24.9M placements.
+
+### All-offsets crib results (crib anywhere in the 144 letters)
+
+- qt grouped, top-2831 v1 subset: 13.1e9 candidates, **0 full-crib hits**
+  (216 s at 60.7M candidates/s — the qt engine's early-abort is excellent).
+- qt grouped, v2 subset >= 28 letters: 2.7e9 candidates, **0 hits**.
+  (An unfiltered v2 run showed 10 "hits" that were all artifacts of 21-letter
+  cribs — expected ~344 false positives at that length; keep all-offsets
+  cribs to >= 28 letters.)
+- qt grouped, FULL 16,985-crib v1 corpus: running (78.8e9 candidates).
+- tq grouped, top-2831: in overnight pipeline (~4 h).
+
+### Overnight pipeline (running, `kryptos/pk9_overnight_pipeline.log`)
+
+P1 story-wheels x all-40320-T8 qt | P2 broad x story-T8 qt | P3 pk8win x
+all-T8 qt | P4 broad x theophilus-T8 qt | P5 qt all-offsets (top-2831;
+already done negative, kept for completeness) | P6 tq all-offsets (top-2831)
+| P7/P8 v2-corpus all-offsets both orders.
+
+### Updated standing conclusions
+
+1. TQ + word wheels: exhaustively negative (chi-square filter, all T8 orders).
+2. QT + word wheels: R1-R4 negative on partial T8 sets; P1-P4 will complete
+   story/broad/pk8win wheels x the relevant T8 sets tonight.  Remaining qt
+   word gap: full all_words cross-product (infeasible: ~4e12+ triples) —
+   would need a qt prefilter, none found (multiset statistic is blind there).
+3. Crib recall remains the binding constraint for all-keys modes: 17,603
+   opening guesses (v1+v2) are negative at prefix; qt all-offsets negative on
+   the top-2831; full-corpus and tq all-offsets pending.
+4. Non-word wheels: unreachable by filters on either order (overfitting);
+   only exact cribs or brute sweeps can find them.
