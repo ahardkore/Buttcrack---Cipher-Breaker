@@ -110,3 +110,19 @@
    - K2: *"ID BY BROWSING..."*
    - PK9: *"...AND ID BY US..."*
    - PK10: *"...UP ID BY US..."*
+
+## 2026-10-02 (evening) — new PK9 tooling (see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md addenda)
+
+- `chisweep_pk9_tq.c` — sigma-free multiset chi-square wheel filter for the TQ
+  order (T8 first); exhaustively rules out word wheels from all supplied
+  vocabularies incl. every T8 permutation, in seconds per vocabulary.
+- `crack_pk9_tq_grouped_cribs.c` — exact crib solver, TQ order; Z26 via CRT
+  (mod 2/13) with gauge and q6-coverage handling; 60/60 planted perms recovered.
+- `crack_pk9_t8_q7.c` — exact crib solver for reduced T8+Q(7) models, both orders.
+- `climb_pk9_period7.c` — (sigma, q7) chi-init hill-climb, both orders (weak:
+  local-optima trapped; parked).
+- `generate_pk9_letter_v2.py` — letter-crib corpus v2 (three-weeks-in +
+  letter openers); run with v1 through all crib engines: negative.
+- `montecarlo_pk9_profile.py`, `constraint_search_pk9_wheels.c` — analysis
+  tooling for the raw-statistics investigation (recalibrated: period-7 peaks
+  are NOT anomalous for author-style keyword wheels).
