@@ -197,6 +197,14 @@ adding alongside them — a second `www` CNAME conflicts with the first, and a
 leftover Wix A record keeps sending a share of traffic to Wix — then add the
 three remaining A records with **+ Add Record**.
 
+Starting from an empty zone is fine, and is arguably cleaner: add all five
+records above and nothing stale is left to fight them. Deleting records is not
+destructive to the domain itself. The one casualty worth checking for is
+**MX** records — remove those and email on the domain stops until they are
+restored, which only matters if a mailbox was ever set up. Ownership
+verification here is a meta tag in the page `<head>` (`google_site_verification`
+in `site.json`), not a DNS record, so it survives any amount of DNS editing.
+
 Note that Wix cannot do plain URL forwarding, and does not support DNSSEC or
 a proxy in front of these records — leave both off.
 
