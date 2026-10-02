@@ -249,7 +249,7 @@ HISTORY_PAGES = [
         "title": "A History of Codebreaking — From al-Kindi to Colossus and After",
         "desc": "How cryptanalysis grew up: frequency analysis in ninth-century "
                 "Baghdad, the Kasiski examination, the index of coincidence, "
-                "Enigma, Lorenz, and today's statistical attacks.",
+                "Enigma, Lorenz and modern attacks.",
         "h1": "A History of Codebreaking",
         "tagline": "Every technique in this solver has an inventor and a date. Here they are.",
         "preset": "vigenere",
@@ -348,7 +348,7 @@ HISTORY_PAGES = [
         "slug": "famous-ciphers.html",
         "title": "Famous and Historical Ciphers — Solved, Unsolved and Disputed",
         "desc": "The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, "
-                "ADFGVX, Enigma, Lorenz, Purple and the one-time pad — plus Voynich, Beale, "
+                "ADFGVX, Enigma, Lorenz and Purple — plus Voynich, Beale, "
                 "Dorabella, Zodiac and Kryptos.",
         "h1": "Famous Ciphers",
         "tagline": "The ones that changed history, and the handful nobody has read yet.",

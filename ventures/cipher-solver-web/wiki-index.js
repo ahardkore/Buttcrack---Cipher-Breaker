@@ -46,7 +46,7 @@ window.WIKI_INDEX = {
    "t": "A History of Codebreaking",
    "s": "history-of-codebreaking.html",
    "f": "History of codebreaking",
-   "d": "How cryptanalysis grew up: frequency analysis in ninth-century Baghdad, the Kasiski examination, the index of coincidence, Enigma, Lorenz, and today's statistical attacks."
+   "d": "How cryptanalysis grew up: frequency analysis in ninth-century Baghdad, the Kasiski examination, the index of coincidence, Enigma, Lorenz and modern attacks."
   },
   {
    "t": "The Codebreakers",
@@ -58,7 +58,7 @@ window.WIKI_INDEX = {
    "t": "Famous Ciphers",
    "s": "famous-ciphers.html",
    "f": "History of codebreaking",
-   "d": "The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, ADFGVX, Enigma, Lorenz, Purple and the one-time pad — plus Voynich, Beale, Dorabella, Zodiac and Kryptos."
+   "d": "The ciphers that mattered: the Great Cipher, the Zimmermann Telegram, ADFGVX, Enigma, Lorenz and Purple — plus Voynich, Beale, Dorabella, Zodiac and Kryptos."
   },
   {
    "t": "ROT13",

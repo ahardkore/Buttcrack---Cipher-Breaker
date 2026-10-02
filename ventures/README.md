@@ -65,8 +65,32 @@ python3 ventures/cipher-solver-web/build_model.py   # compile the language model
 python3 ventures/cipher-solver-web/build_pages.py   # generate the HTML
 node    ventures/cipher-solver-web/test.js          # verify accuracy
 python3 scripts/build_site.py --out _site           # assemble the full site
+python3 scripts/audit_site.py _site --strict        # check the assembled output
 python3 -m http.server 8000 -d _site                # preview exactly what deploys
 ```
+
+#### Auditing the output
+
+`test.js` proves the solver still solves; it says nothing about the sixty-odd
+pages wrapped around it. Because those pages are generated, one wrong value in
+a template is one wrong value on every page at once, and the build is green
+either way. `scripts/audit_site.py` reads the *assembled* tree and fails on:
+
+* internal links and `#anchors` that point at something which is not there;
+* a canonical URL that does not match the page's own path under `base_url`,
+  or a missing title, description, viewport or `lang` (pages marked
+  `noindex` — the 404 and the Stripe delivery pages — are exempt by design);
+* duplicate titles or descriptions, and ones long enough to be truncated;
+* no `<h1>`, more than one, or a skipped heading level;
+* `<img>` without `alt`, form controls with no label and no `aria-label`,
+  duplicate `id`s, unclosed elements, invalid JSON-LD;
+* sitemap entries that are not in the built tree, indexable pages missing
+  from the sitemap, a `robots.txt` that does not point at it, orphan pages.
+
+Both `ci.yml` (on every pull request) and `deploy-site.yml` (before the upload)
+run it with `--strict`, so warnings stop the deploy too. CI additionally
+rebuilds the pages and fails if the committed HTML differs from what
+`build_pages.py` now produces — stale generated output cannot reach the site.
 
 #### One site, two halves
 
