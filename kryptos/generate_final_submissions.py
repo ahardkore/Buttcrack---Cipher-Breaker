@@ -1,153 +1,133 @@
-# Master Submission Generator for Paradigm Kryptos (PK1 - PK10)
-import json
+#!/usr/bin/env python3
+"""Master submission generator for Paradigm Kryptos (PK1-PK10).
+
+2026-10-02 REWRITE.  The previous version hard-coded plaintexts for PK4, PK5
+and PK7 that were early-session candidate narratives, NOT verified solutions,
+and it OVERWROTE pk_verified_solutions.json with them.  That is how a wrong
+PK4 text got submitted to the site and rejected.
+
+This version is read-only with respect to the ground truth:
+  - reads pk_verified_solutions.json (single source of truth, maintained by
+    verify_pk_constructions.py / apply_ground_truth_corrections.py),
+  - reads pk_all_ciphertexts.json (confirmed identical to the official site),
+  - regenerates pk_submission_manifest.json and
+    PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md from those files only,
+  - never writes pk_verified_solutions.json.
+
+Run:  python3 generate_final_submissions.py
+"""
+from __future__ import annotations
+
 import hashlib
+import json
+from pathlib import Path
 
-with open("pk_all_ciphertexts.json") as f:
-    cts = json.load(f)
+ROOT = Path(__file__).resolve().parent
 
-# Full, exact verified plaintexts for PK1 - PK8
-verified_pts = {
-    "PK1": {
-        "title": "PK1 — The Accession Log",
-        "cipher": "Quagmire III (KRYPTOS alphabet)",
-        "key": "PROVENANCE (Period 10)",
-        "plaintext": "INVESTIGATIONLOGITEMEIGHTKNOTTIGHTLYWOUNDITSTHREADINSCRIBEDWITHLETTERSTHEACCESSIONLOGSAYSONCEUNRAVELEDITREVEALSTHEROUTETOTHELOSTARCHIVEOFPELLEGRINTWELVEPRIORARCHIVISTSTRIEDTOUNRAVELITALLFAILED",
-        "status": "SOLVED"
-    },
-    "PK2": {
-        "title": "PK2 — Pellegrin's Treatise",
-        "cipher": "Complete Columnar Transposition (50x7)",
-        "key": "MARGINS (Order: [1, 3, 4, 0, 5, 2, 6])",
-        "plaintext": "IHAVEFOUNDREFERENCESTOTHEKNOTINSEVENOTHERRECORDSINOURARCHIVETHEMOSTINTRIGUINGISAPASSINGCOMMENTINATREATISEONTEXTILESWRITTENINPELLEGRINSOWNHANDWHICHSAYSUNAGOTANTOSOTTILEDALEGGEREQUALUNQUENODOIBELIEVEDTHISTOBEJUSTATURNOFPHRASEBUTTHEOTHERMENTIONSSCATTEREDTHROUGHMARGINALIAINBOOKSTHATSHARENOOTHERTOPICHAVELEDMETOSUSPECTTHEPASSAGEREFERSTOAREALOBJECTANEEDLE",
-        "status": "SOLVED"
-    },
-    "PK3": {
-        "title": "PK3 — The Viennese Anatomist",
-        "cipher": "Quagmire III (Sum-Clock p10 + p8, period 40)",
-        "key": "PENTIMENTO (10) + ORDINATE (8)",
-        "plaintext": "SEVENTHMONTHIWROTETOFIFTEENCORRESPONDENTSINSIXCOUNTRIESSEEKINGANYWORDOFTHEITEMMOSTKNEWNOTHINGAFEWHADHEARDLEGENDSOFANEEDLEFINEENOUGHTOSPLITAHAIRORPIERCEGLASSATLASTAVIENNESEANATOMISTSAIDHESAWSUCHANINSTRUMENTUSEDATASURGICALDEMONSTRATIONINBERNIWROTETOHISADDRESSNOANSWERCAMEIWROTEAGAIN",
-        "status": "SOLVED"
-    },
-    "PK4": {
-        "title": "PK4 — The Furlongs of Thread",
-        "cipher": "Columnar Transposition (28x8) + Dual-Clock Quagmire III (Period 45)",
-        "key": "Dual-Clock Substitution p5 + p9, Transposition Width 8",
-        "plaintext": "THESTRINGSMEASURETWOFURLONGSWEEXAMINEDTHEWEAVEANDTENSIONOFEACHINDIVIDUALSTRANDFINDINGMICROSCOPICCHARACTERSENGRAVEDALONGITSENTIRELENGTHEACHPULLOFTHETHREADREVEALEDFURTHERLETTERSWRITTENINSECTIONSRISINGINCOMPLEXITYTOWARDSTHECORE",
-        "status": "SOLVED"
-    },
-    "PK5": {
-        "title": "PK5 — The Flax Fibers Under the Lens",
-        "cipher": "Columnar Transposition (17x16) + Quagmire III",
-        "key": "Quagmire III Period 17, Transposition Width 16",
-        "plaintext": "WEEXAMINEDTHEFIBERSUNDERTHELENSTHEFLAXWASSPUNWITHEXCEPTIONALPRECISIONPRESERVINGTHEINSCRIPTIONSWITHOUTDISTORTIONEACHKNOTCONTAINEDATIGHTLYFOLDEDSEQUENCEOFLETTERSWHICHWHENPROJECTEDONTOTHEPLANEFORMEDANINTERLOCKINGGRIDOFCOORDINATESANDCIPHERTEXTWHICHPOINTEDUSDIRECTLYTOWARDSBERN",
-        "status": "SOLVED"
-    },
-    "PK6": {
-        "title": "PK6 — The Whitesmith's Workshop",
-        "cipher": "Double Columnar Transposition (9x35, 9x35) -> Quagmire III (p6)",
-        "key": "PORTAL (Period 6); Col 1: [1, 3, 0, 4, 8, 2, 6, 7, 5]; Col 2: [4, 2, 8, 1, 6, 7, 0, 3, 5]",
-        "plaintext": "THEWHITESMITHSWORKSHOPISFILLEDWITHTHEOLDTOOLSOFHISTRADEMYEYESAREDRAWNTOTHEGUTTERALONGTHEWALLWHICHISSTREWNWITHEXQUISITENEEDLESTHEWHITESMITHSAYSHEMAKESONEEVERYDAYANDLOSTCOUNTLONGAGOIASKWHATHEDOESWITHTHEMANDHESAYSTHEYAREONLYTHERESIDUEOFHISPRACTICEHETELLSMETHATIFISTUDYUNDERHIMFORTENYEARSHEWILLLETMETAKEONEOFMYOWNMAKING",
-        "status": "SOLVED"
-    },
-    "PK7": {
-        "title": "PK7 — The Glowing White Hearth",
-        "cipher": "Quagmire III (p6) + Affine Hill 3x3 Matrix",
-        "key": "Quagmire III Period 6 + 3x3 Invertible Matrix over GF(26)",
-        "plaintext": "HEPOINTEDTOTHEHEARTHANDSAIDTHATTHEWORKCOULDONLYBEGINWHENTHEFIREREACHEDITSPROPERHEATWITHLONGTONGSHEHELDTHESTEELINTOCOALSTHATGLOWEDWHITEINTHEBELLOWSWARNINGMETHATONEMOMENTOFTEMPERINGCANDESTROYYEARSOFLABOURFORONLYANIRONPIECEPURIFIEDNINEDAYSINTHEFLAMEWILLHOLDAFINEENOUGHEDGETOBEFORGED",
-        "status": "SOLVED"
-    },
-    "PK8": {
-        "title": "PK8 — Leaving the Whitesmith",
-        "cipher": "Four sequential Quagmire III layers (KRYPTOS alphabet)",
-        "key": "METE -> METER -> METIER -> MASTERY",
-        "plaintext": "ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER",
-        "status": "SOLVED"
-    }
+TITLES = {
+    "PK1": "PK1 — The Accession Log",
+    "PK2": "PK2 — Pellegrin's Treatise",
+    "PK3": "PK3 — The Viennese Anatomist",
+    "PK4": "PK4 — Two Years In (the Whitesmith)",
+    "PK5": "PK5 — Fourteen Days in the Barn",
+    "PK6": "PK6 — The Whitesmith's Workshop",
+    "PK7": "PK7 — Three Weeks In (the Craft)",
+    "PK8": "PK8 — Leaving the Whitesmith",
 }
 
-# Update pk_verified_solutions.json
-verified_json = {}
-for k, v in verified_pts.items():
-    pt = v["plaintext"]
-    ct = cts[k]
-    verified_json[k] = {
-        "status": v["status"],
-        "cipher": v["cipher"],
-        "key": v["key"],
-        "length": len(pt),
-        "ciphertext": ct,
-        "plaintext": pt,
-        "sha256": hashlib.sha256(pt.encode()).hexdigest()
-    }
-
-with open("pk_verified_solutions.json", "w") as f:
-    json.dump(verified_json, f, indent=2)
-
-master_manifest = {}
-for k in [f"PK{i}" for i in range(1, 9)]:
-    v = verified_pts[k]
-    ct = cts[k]
-    pt = v["plaintext"]
-    master_manifest[k] = {
-        "status": "SOLVED",
-        "challenge_id": k,
-        "title": v["title"],
-        "cipher_mechanism": v["cipher"],
-        "key": v["key"],
-        "ciphertext_length": len(ct),
-        "plaintext_length": len(pt),
-        "ciphertext": ct,
-        "plaintext": pt,
-        "sha256": hashlib.sha256(pt.encode()).hexdigest()
-    }
-
-# PK8 (externally published, independently re-encrypted 153/153 locally)
-ct8 = cts["PK8"]
-pt8 = verified_pts["PK8"]["plaintext"]
-master_manifest["PK8"] = {
-    "status": "SOLVED",
-    "challenge_id": "PK8",
-    "title": verified_pts["PK8"]["title"],
-    "cipher_mechanism": verified_pts["PK8"]["cipher"],
-    "key": verified_pts["PK8"]["key"],
-    "ciphertext_length": len(ct8),
-    "plaintext_length": len(pt8),
-    "ciphertext": ct8,
-    "plaintext": pt8,
-    "sha256": hashlib.sha256(pt8.encode()).hexdigest(),
-    "verification": "Local encryption and decryption match all 153 letters; see verify_pk8_solution.py"
+SOLVED = [f"PK{i}" for i in range(1, 9)]
+UNSOLVED_NOTES = {
+    "PK9": (
+        "Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, "
+        "word-wheel and order searches completed 2026-10-02, all negative; see "
+        "PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md."
+    ),
+    "PK10": (
+        "H(4x4)H(3x3)Q(?)T(?) per the published cipher spec.  Unsolved; no "
+        "verified plaintext or construction."
+    ),
 }
 
-# PK9 remains unsolved. Do not serialize incomplete leads as a solution.
-ct9 = cts["PK9"]
-master_manifest["PK9"] = {
-    "status": "UNSOLVED",
-    "challenge_id": "PK9",
-    "title": "PK9",
-    "ciphertext_length": len(ct9),
-    "ciphertext": ct9,
-    "tested_hypothesis": "Q(5)+Q(6)+Q(7) with a complete T(8), unverified",
-    "result": "No solution; bounded exact-crib and global-phase bridge exclusions only",
-    "reports": [
-        "PK9_Q567_T8_EXACT_CRIB_REPORT.md",
-        "PK9_PK8_PHASE_BRIDGE_REPORT.md"
-    ],
-    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
-}
 
-# PK10 remains unsolved. Do not serialize an unverified research lead as a plaintext solution.
-ct10 = cts["PK10"]
-master_manifest["PK10"] = {
-    "status": "UNSOLVED",
-    "challenge_id": "PK10",
-    "title": "PK10",
-    "ciphertext_length": len(ct10),
-    "ciphertext": ct10,
-    "result": "No verified plaintext or construction",
-    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
-}
+def main() -> None:
+    sols = json.loads((ROOT / "pk_verified_solutions.json").read_text())
+    cts = json.loads((ROOT / "pk_all_ciphertexts.json").read_text())
 
-with open("pk_submission_manifest.json", "w") as f:
-    json.dump(master_manifest, f, indent=2)
+    # sanity: every solved entry must re-encrypt (verified upstream) and be
+    # internally consistent; refuse to emit anything inconsistent.
+    for pk in SOLVED:
+        pt, ct = sols[pk]["plaintext"], cts[pk]
+        assert len(pt) == len(ct), f"{pk}: length mismatch"
+        assert sols[pk].get("sha256") == hashlib.sha256(pt.encode()).hexdigest(), \
+            f"{pk}: sha256 mismatch — ground truth file corrupted?"
 
-print("Updated pk_submission_manifest.json successfully.")
+    manifest: dict = {}
+    for pk in SOLVED:
+        pt, ct = sols[pk]["plaintext"], cts[pk]
+        manifest[pk] = {
+            "status": "SOLVED",
+            "challenge_id": pk,
+            "title": TITLES[pk],
+            "cipher_mechanism": sols[pk]["cipher"],
+            "key": sols[pk]["key"],
+            "ciphertext_length": len(ct),
+            "plaintext_length": len(pt),
+            "ciphertext": ct,
+            "plaintext": pt,
+            "sha256": hashlib.sha256(pt.encode()).hexdigest(),
+            "verification": "Round-trip verified in verify_pk_constructions.py; "
+                            "ciphertexts match the official challenge pages.",
+        }
+    for pk, note in UNSOLVED_NOTES.items():
+        manifest[pk] = {
+            "status": "UNSOLVED",
+            "challenge_id": pk,
+            "title": pk,
+            "ciphertext_length": len(cts[pk]),
+            "ciphertext": cts[pk],
+            "result": note,
+            "verification_requirement":
+                "A proposed answer must re-encrypt to every published ciphertext character.",
+        }
+    (ROOT / "pk_submission_manifest.json").write_text(json.dumps(manifest, indent=2))
+
+    # human-readable submission doc
+    lines = [
+        "# Paradigm Kryptos CTF — Final Submissions (regenerated "
+        f"{__import__('datetime').date.today().isoformat()})",
+        "",
+        "> **Source of truth**: `pk_verified_solutions.json` + "
+        "`pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below",
+        "> round-trips exactly under `verify_pk_constructions.py`.",
+        "> PK9 and PK10 are UNSOLVED; no text is claimed for them.",
+        ">",
+        "> PK4 provenance: independently re-confirmed 2026-10-02 by compiling the",
+        "> published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,",
+        "> src/ctf/PK4.h) on Linux — encode(TWOYEARSIN...) == official ciphertext,",
+        "> decode(ciphertext) == TWOYEARSIN..., keys UNDERLAY/OCHRE/VERDIGRIS.",
+        "",
+    ]
+    for pk in SOLVED:
+        s, ct = sols[pk], cts[pk]
+        lines += [
+            f"### {TITLES[pk]} ($N = {len(ct)}$)",
+            f"- **Cipher**: {s['cipher']}",
+            f"- **Key**: {s['key']}",
+            f"- **Plaintext (submit this, uppercase, no spaces):**",
+            "  ```text",
+            f"  {s['plaintext']}",
+            "  ```",
+            f"- **SHA256**: `{hashlib.sha256(s['plaintext'].encode()).hexdigest()}`",
+            "",
+        ]
+    for pk, note in UNSOLVED_NOTES.items():
+        lines += [f"### {pk} — UNSOLVED", f"- {note}", ""]
+    (ROOT / "PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md").write_text("\n".join(lines))
+
+    print("Regenerated pk_submission_manifest.json and "
+          "PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md from the verified ground truth.")
+    print("pk_verified_solutions.json was NOT modified (read-only source).")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,7 +1,19 @@
 # PARADIGM KRYPTOS WORKSPACE CATALOG & RECALL INDEX
 
+> **⚠ CORRECTION NOTICE (2026-10-02)** — The previously recorded plaintexts and
+> keys for **PK4, PK5 and PK7 were wrong** (early-session fabrications that do
+> not encrypt to the official ciphertexts).  They are now corrected and every
+> PK1–PK8 construction is independently verified against the official
+> ciphertexts — see
+> [`PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`](PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md)
+> and [`verify_pk_constructions.py`](verify_pk_constructions.py).
+> Documents in this workspace that predate the correction and describe PK4/PK5/PK7
+> "solutions", the PK9 135-character "core text", or PK10 "triptych" readings
+> describe **unverified reconstructions**, not confirmed answers.  PK9 and PK10
+> remain unsolved on the official leaderboard.
+
 **Repository**: `/home/user`  
-**Date**: 2026-09-22  
+**Date**: 2026-09-22 (catalog) · 2026-10-02 (correction)  
 **Auditor**: Arena.ai Cryptanalytic Agent  
 **Master Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success)
 
@@ -98,3 +110,44 @@
    - K2: *"ID BY BROWSING..."*
    - PK9: *"...AND ID BY US..."*
    - PK10: *"...UP ID BY US..."*
+
+## 2026-10-02 (evening) — new PK9 tooling (see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md addenda)
+
+- `chisweep_pk9_tq.c` — sigma-free multiset chi-square wheel filter for the TQ
+  order (T8 first); exhaustively rules out word wheels from all supplied
+  vocabularies incl. every T8 permutation, in seconds per vocabulary.
+- `crack_pk9_tq_grouped_cribs.c` — exact crib solver, TQ order; Z26 via CRT
+  (mod 2/13) with gauge and q6-coverage handling; 60/60 planted perms recovered.
+- `crack_pk9_t8_q7.c` — exact crib solver for reduced T8+Q(7) models, both orders.
+- `climb_pk9_period7.c` — (sigma, q7) chi-init hill-climb, both orders (weak:
+  local-optima trapped; parked).
+- `generate_pk9_letter_v2.py` — letter-crib corpus v2 (three-weeks-in +
+  letter openers); run with v1 through all crib engines: negative.
+- `montecarlo_pk9_profile.py`, `constraint_search_pk9_wheels.c` — analysis
+  tooling for the raw-statistics investigation (recalibrated: period-7 peaks
+  are NOT anomalous for author-style keyword wheels).
+
+## 2026-10-02 (evening) — stale-text purge after PK4 site rejection
+
+- **PK4 site submission failed because the text came from superseded artifacts.**
+  Official PK4 page (paradigm.xyz/kryptos-ctf/pk4) re-fetched: ciphertext is
+  character-identical to `pk_all_ciphertexts.json` (Y1..J224 = YOVISYUAFK...JY),
+  solvers submit the decryption. Correct PK4 text: `TWOYEARSIN...BEGUNTOWORK`
+  (sha256 848cf4b3...6159), keys UNDERLAY/OCHRE/VERDIGRIS — round-trip verified;
+  cross-confirmed by PK5 (its Q(224) key IS the PK4 plaintext).
+- `generate_final_submissions.py` REWRITTEN: now read-only over
+  `pk_verified_solutions.json` + `pk_all_ciphertexts.json`; regenerates
+  `pk_submission_manifest.json` + `PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md`.
+  The old version hard-coded the wrong PK4/PK5/PK7 texts and OVERWROTE the
+  verified JSON — that was the propagation vector.
+- `repair_all_manifests_and_solutions.py` neutralized (deprecated stub);
+  `generate_submission_package.py` is now a thin wrapper around the new
+  generator.
+- PK6 key strings in JSON/manifest updated to keyword form
+  (HANDIWORK -> SMITHWORK -> PORTAL); constructions re-verified — all MATCH.
+- Stale artifacts moved to `kryptos/archive/` with DO-NOT-SUBMIT banners +
+  README: old CTF solutions dossier, candidate_narrative_18.txt,
+  extract_narrative_18.py, test_pk8_classical_families.py,
+  test_pk9_28char_canonical_phrases.py, and the root patch snapshot
+  (arena_session_patch_4_snapshot.diff).
+- `grep THESTRINGSMEASURE` now hits ONLY `kryptos/archive/`.

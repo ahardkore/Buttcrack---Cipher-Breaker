@@ -1,3 +1,8 @@
+# ARCHIVED 2026-10-02: raw cumulative patch snapshot from an early Arena session.
+# Contains pre-correction PK4/PK5/PK7 candidate-narrative texts. DO NOT SUBMIT.
+# Ground truth: kryptos/pk_verified_solutions.json; submissions doc:
+# kryptos/PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md
+
 diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
 index dd42d57..89b5781 100644
 --- a/.github/workflows/ci.yml
