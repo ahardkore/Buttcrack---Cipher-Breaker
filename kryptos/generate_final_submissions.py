@@ -100,6 +100,11 @@ def main() -> None:
         "`pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below",
         "> round-trips exactly under `verify_pk_constructions.py`.",
         "> PK9 and PK10 are UNSOLVED; no text is claimed for them.",
+        ">",
+        "> PK4 provenance: independently re-confirmed 2026-10-02 by compiling the",
+        "> published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,",
+        "> src/ctf/PK4.h) on Linux — encode(TWOYEARSIN...) == official ciphertext,",
+        "> decode(ciphertext) == TWOYEARSIN..., keys UNDERLAY/OCHRE/VERDIGRIS.",
         "",
     ]
     for pk in SOLVED:
