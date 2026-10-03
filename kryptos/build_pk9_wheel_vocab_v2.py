@@ -90,5 +90,8 @@ for L in (5, 6, 7):
 # sanity: the precedent keys must now be present
 for probe in ("TWOYEARS", "TENYEARS", "OCHRE", "VERDIGRIS", "UNDERLAY", "ANNEALED"):
     L = len(probe)
-    got = (ROOT / f"pk9_vocab_story{L}.txt").read_text().split()
-    print(probe, "present:", probe in got)
+    if L <= 8:
+        got = (ROOT / f"pk9_vocab_story{L}.txt").read_text().split()
+        print(probe, "present:", probe in got)
+    else:
+        print(probe, "present: not a wheel length")

@@ -206,6 +206,13 @@ int main(int argc, char **argv) {
         }
     }
 
+    FILE *bestf = fopen("pk10_tsp_best_order.txt", "w");
+    if (bestf) {
+        fprintf(bestf, "score %.6f defects %d\norder:", global_best_raw, global_min_def);
+        for (int i = 0; i < W; i++) fprintf(bestf, "%s%d", i ? "," : " ", global_order[i]);
+        fputc('\n', bestf);
+        fclose(bestf);
+    }
     double t1 = omp_get_wtime();
     printf("\n======================================================================\n");
     printf("DEEP TSP COMPLETED in %.2f s\n", t1 - t0);

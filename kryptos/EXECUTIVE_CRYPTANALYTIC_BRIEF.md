@@ -35,7 +35,7 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 
 ## 2. Key Cryptanalytic Breakthroughs
 
-### 2.1 PK9 ($N = 144$ / 135-Character Core): 100% Mathematically Locked
+### 2.1 PK9 ($N = 144$): UNSOLVED — speculative score reports superseded
 - **Core Decryption**:
   $$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
 - **Transposition Generating Laws**:
