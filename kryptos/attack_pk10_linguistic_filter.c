@@ -67,7 +67,10 @@ static inline int passes_monogram_filter(const int *Z, float *out_ioc, int *out_
     if (rare > 14) return 0;
 
     int e_cnt = counts[4]; // E
-    if (e_cnt < 30) return 0;
+    /* PK10 is only 504 letters; use a permissive gate so the filter
+       rejects clear impossibilities without silently eliminating the true
+       plaintext under a wrong model. */
+    if (e_cnt < 20) return 0;
 
     int sp = 0;
     for (int c = 0; c < 26; c++) sp += counts[c] * (counts[c] - 1);
@@ -95,7 +98,11 @@ int main(int argc, char **argv) {
     float global_best_ioc = 0.0f;
     int global_best_rare = 99;
     int best_q7[7], best_q8[8], best_q9[9], best_order[W];
-    char best_pt[N + 1];
+    char best_pt[N + 1] = "NO_VALID_FILTER_SURVIVOR";
+    memset(best_q7, 0, sizeof(best_q7));
+    memset(best_q8, 0, sizeof(best_q8));
+    memset(best_q9, 0, sizeof(best_q9));
+    memset(best_order, 0, sizeof(best_order));
 
     const int init_order[W] = {
         30, 38, 21, 3, 25, 40, 17, 36, 12, 10, 29, 33, 8, 41, 7, 32, 20, 0, 23, 34, 19,
@@ -117,12 +124,12 @@ int main(int argc, char **argv) {
         for (int rep = 0; rep < restarts; rep++) {
             int q7[7], q8[8], q9[9], order[W];
 
-            // Initialize clocks adhering to GF(2) parity
-            q7[0] = 0;
-            for (int i = 1; i < 7; i++) q7[i] = par_q7[i] + 2 * (rand_r(&seed) % 13);
-            q8[0] = 0;
-            for (int i = 1; i < 8; i++) q8[i] = par_q8[i] + 2 * (rand_r(&seed) % 13);
-            for (int i = 0; i < 9; i++) q9[i] = par_q9[i] + 2 * (rand_r(&seed) % 13);
+            // Unconstrained diagnostic search. The parity-constrained model
+            // produced zero linguistic survivors, so do not impose those
+            // unverified vectors in this architecture test.
+            for (int i = 0; i < 7; i++) q7[i] = rand_r(&seed) % 26;
+            for (int i = 0; i < 8; i++) q8[i] = rand_r(&seed) % 26;
+            for (int i = 0; i < 9; i++) q9[i] = rand_r(&seed) % 26;
 
             int Z[N];
             for (int i = 0; i < N; i++) {

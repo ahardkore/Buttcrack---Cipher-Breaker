@@ -657,7 +657,7 @@ Row 11: U N E R U L Y A R R F W Y I G J V G P G Y I | A N | H O | U P | I D A D 
        - $t = 84$ (Row 4, Col 9): Yields `'Q'` in **`QUNGLAYIM`**.
        - $t = 140$ (Row 1, Col 15): Yields `'J'` in **`SKWJER`**.
        - *Proof of Rigidity*: Modifying $s[0] = 25$ destroys **`DEFUNCT`**, **`PRAY`**, **`ALSO`**, and **`ORES`**. The shift $s[0] = 25$ is mathematically locked by four independent cross-row words, proving that **`SKWJER`** and **`QUNGLAYIM`** are the cryptographer's authentic phonetic Early Modern spellings.
-  - *Final Cryptanalytic Resolution of PK9*: **PK9 is 100% mathematically and linguistically resolved**. The recovered 135-character text is the singular global Pareto solution to the cipher.
+  - **Superseded claim:** an earlier scoring run described PK9 as resolved. It was not round-trip verified and must not be treated as a solution. PK9 remains unsolved; see `PK9_NEXT_RESEARCH_PLAN.md`.
 
 ---
 

@@ -528,7 +528,9 @@ int main(int argc, char **argv) {
             i++;
         } else if (!strcmp(argv[i], "--top") && i + 1 < argc) want_top = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--report-above") && i + 1 < argc) report_above = atof(argv[++i]);
-        else if (!strcmp(argv[i], "--keys") && i + 4 < argc) {
+        else if (!strcmp(argv[i], "--keys") && i + 3 < argc) {
+            /* Three wheel keys sweep all T8 permutations; an optional fourth
+             * argument tests one T8 keyword only. */
             key5 = argv[++i]; key6 = argv[++i]; key7 = argv[++i];
             if (i + 1 < argc && argv[i + 1][0] != '-') key8 = argv[++i];
         } else if (!strcmp(argv[i], "--self-test")) {
@@ -552,7 +554,12 @@ int main(int argc, char **argv) {
         signed char ct_kr[N];
         to_kr_stream(PK9_CT, ct_kr);
         unsigned char sigma[W];
-        if (key8) perm_from_keyword(key8, sigma);
+        if (key8) {
+            if ((int)strlen(key8) != W) die("T8 keyword must have 8 distinct letters");
+            for (int a = 0; a < W; a++) for (int b = a + 1; b < W; b++)
+                if (key8[a] == key8[b]) die("T8 keyword must have 8 distinct letters");
+            perm_from_keyword(key8, sigma);
+        }
         for (int pi = 0; pi < 1; pi++) {
             (void)pi;
             signed char p_std[N];
@@ -565,8 +572,8 @@ int main(int argc, char **argv) {
                 snprintf(v5[0], 16, "%s", key5); memcpy(q5v[0], q5, 5);
                 snprintf(v6[0], 16, "%s", key6); memcpy(q6v[0], q6, 6);
                 snprintf(v7[0], 16, "%s", key7); memcpy(q7v[0], q7, 7);
-                run_sweep(ct_kr, 0, &top, -99.0f, &nc);
-                run_sweep(ct_kr, 1, &top, -99.0f, &nc);
+                run_sweep(ct_kr, 0, &top, report_above, &nc);
+                run_sweep(ct_kr, 1, &top, report_above, &nc);
                 print_top(&top, 1, -99.0f);
             } else {
                 decrypt_candidate(ct_kr, sigma, 0, q5, q6, q7, p_std);

@@ -26,7 +26,9 @@
 
 ---
 
-## 2. Definitive Solution Submission: PK9 ($N = 144$)
+## 2. Archived PK9 hypotheses — not a solution
+
+> This section is retained for provenance only. Its candidate text and structural claims are not verified by a complete re-encryption check. PK9 remains unsolved. See `PK9_NEXT_RESEARCH_PLAN.md`.
 
 ### 2.1 Cryptographic Parameters & Reflection Invariants
 - **Cipher Architecture**:
