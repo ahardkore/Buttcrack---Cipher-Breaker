@@ -1,4 +1,6 @@
-# EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10)
+# EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — HISTORICAL
+
+> **Historical status note (updated 2026-10-03):** This brief preserves the pre-recovery PK9 search record. PK9 is now independently solved by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and verified by `verify_pk9_solution.py`; the speculative material below remains research history. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the recovery provenance.
 
 **Date**: 2026-09-22  
 **Author**: Arena.ai Cryptanalytic Agent  
@@ -9,14 +11,14 @@
 - `PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md` (Official Submission & SHA256 Ledger)  
 - `PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg` (Visual Vector Architecture Map)  
 - `pk_submission_manifest.json` (Repaired Machine-Readable Suite Database)  
-- `pk_verified_solutions.json` (Verified Plaintexts PK1–PK7 Database)  
-- `test_full_suite_reproducibility.py` (Automated Master Test Runner: 11/11 Passing)
+- `pk_verified_solutions.json` (Verified Plaintexts PK1–PK10 Database)
+- `test_full_suite_reproducibility.py` (Automated Master Test Runner: 12/12 Passing)
 
 ---
 
 ## 1. Executive Summary & Verification Ledger
 
-Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, every cipher has been forensically audited, mathematically decomposed, and brought to verified resolution:
+Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1–PK10 now have locally recorded exact verification. This brief's older PK9 attack material remains clearly labelled historical:
 
 | Challenge | Length ($N$) | Cipher Architecture | Cryptanalytic Status | Linguistic & Information Metrics |
 | :--- | :--- | :--- | :--- | :--- |
@@ -28,14 +30,19 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Verbatim Plaintext Verified |
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
-| **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
-| **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |
+| **PK9** | 144 | Q3(`CLEPSYDRA`) → Spiral(12) → T(8, `BEAMWORK`) | **SOLVED — exact 144/144 round trip** | Plaintext SHA-256 `c8e1b890…` |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | Plaintext SHA-256 `a2db145f…` |
 
 ---
 
 ## 2. Key Cryptanalytic Breakthroughs
 
-### 2.1 PK9 ($N = 144$): UNSOLVED — speculative score reports superseded
+### 2.1 PK9 ($N = 144$): recovered construction; speculative score reports superseded
+The exact construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. The
+normalized plaintext is
+`ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT`, with SHA-256 `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`. Exact forward and reverse verification is in `verify_pk9_solution.py`.
+
+The following candidate architecture and score analysis is retained as history:
 - **Core Decryption**:
   $$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
 - **Transposition Generating Laws**:
@@ -141,5 +148,5 @@ $$\mathbf{38^\circ \; 57' \; 6'' \text{ N}, \quad 77^\circ \; 8' \; 44'' \text{ 
 ## 4. Full Suite Reproducibility Assurance
 The entire cryptanalytic audit is backed by the automated master test suite:
 - **Test Runner**: `test_full_suite_reproducibility.py`
-- **Results**: **11 / 11 tests passed with 100% success rate in 5.35 seconds**.
+- **Results**: **12 / 12 tests passed with 100% success rate**.
 - Zero compilation errors, zero assertion failures, zero missing fields.

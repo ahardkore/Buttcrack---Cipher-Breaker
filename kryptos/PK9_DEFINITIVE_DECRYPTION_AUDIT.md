@@ -1,4 +1,9 @@
-# PK9 DEFINITIVE DECRYPTION & MATHEMATICAL AUDIT REPORT
+# PK9 HISTORICAL CANDIDATE AUDIT — SUPERSEDED
+> This report documents an overfit, non-round-tripping candidate. It is retained
+> for research provenance only and is not the recovered PK9 solution. The
+> canonical construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and is
+> verified by `verify_pk9_solution.py`.
+
 **Target**: Paradigm Kryptos Challenge PK9 ($N = 144$)  
 **Status**: Decrypted & Audited (All-Time Record Score: **`-5.2493`**)  
 **Word Coverage**: **58.3%** (Exceeds natural English baseline of 56.4%)  

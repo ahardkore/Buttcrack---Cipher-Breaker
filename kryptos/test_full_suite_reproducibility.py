@@ -2,6 +2,9 @@
 import subprocess
 import time
 import sys
+from pathlib import Path
+
+SUITE_DIR = Path(__file__).resolve().parent
 
 print("==========================================================================================")
 print("             PARADIGM KRYPTOS AUTOMATED REPRODUCIBILITY TEST SUITE                        ")
@@ -27,6 +30,11 @@ tests = [
         "name": "Rare Letter Suppression & Orthographic Proof",
         "cmd": ["python3", "audit_rare_letters.py"],
         "expect_str": "Total rare in PK9 Core: 3 / 135"
+    },
+    {
+        "name": "PK9 Exact Construction Encode/Decode Round Trip",
+        "cmd": ["python3", "verify_pk9_solution.py"],
+        "expect_str": "[PASS] decode exact match"
     },
     {
         "name": "PK10 Adjacent Pair Orientation Polish (16 States)",
@@ -67,7 +75,7 @@ tests = [
     {
         "name": "Master Submission Manifest Synchronization",
         "cmd": ["python3", "generate_final_submissions.py"],
-        "expect_str": "Updated pk_submission_manifest.json successfully."
+        "expect_str": "Regenerated pk_submission_manifest.json and PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md from the verified ground truth."
     }
 ]
 
@@ -81,13 +89,13 @@ for idx, t in enumerate(tests, 1):
     
     # Compile step if needed
     if "compile_cmd" in t:
-        cp = subprocess.run(t["compile_cmd"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        cp = subprocess.run(t["compile_cmd"], cwd=SUITE_DIR, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if cp.returncode != 0:
             print(f"FAIL (Compilation Error: {cp.stderr.strip()})")
             continue
             
     # Run step
-    rp = subprocess.run(t["cmd"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    rp = subprocess.run(t["cmd"], cwd=SUITE_DIR, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     dt = time.time() - t0
     
     if rp.returncode == 0 and t["expect_str"] in rp.stdout:

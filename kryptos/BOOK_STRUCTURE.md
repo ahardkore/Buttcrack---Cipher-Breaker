@@ -20,7 +20,8 @@ The manuscript is organized into three reading books plus reference matter.
 
 - Historical narrative and source criticism
 - Images, publication, and revision
-- Open investigations: PK9 and PK10
+- Recovered PK9 construction and provenance
+- Verified PK10’s independently checked construction
 
 ## Reference matter
 

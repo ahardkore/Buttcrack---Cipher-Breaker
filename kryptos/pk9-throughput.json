@@ -4,5 +4,5 @@
   "runtime_seconds_recorded": 0,
   "throughput_chunks_per_hour": null,
   "measured_utc": "2026-10-04T02:27:23Z",
-  "status": "benchmark only; PK9 remains unsolved"
+  "status": "benchmark only; PK9 exact construction independently verified"
 }

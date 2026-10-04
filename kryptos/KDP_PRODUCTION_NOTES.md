@@ -8,6 +8,7 @@
 **Copyright:** © 2026 Aaron Hard. All rights reserved.  
 **Format:** paperback, black and white interior  
 **Trim:** 6 × 9 inches  
+**Technical content status:** PK1–PK10 independently verified; cryptanalytic content frozen
 **Interior:** white paper, black ink, no bleed  
 **Margins:** inside 0.75 inch, outside 0.55 inch, top 0.65 inch, bottom 0.65 inch  
 **Target length:** 350–400 pages after expansion, citations, images, notes, and appendices  
@@ -23,11 +24,12 @@ No image will be represented as an official CIA endorsement. AI-generated illust
 - [ ] Complete 350–400-page text expansion.
 - [ ] Verify every K1–K4 transcription against a cited source.
 - [ ] Mark the K4 candidate PROVISIONAL until independently round-trip verified.
-- [ ] Keep PK9 and PK10 status current at publication freeze.
+- [x] Synchronize PK9/PK10 status: PK9 is independently verified by `verify_pk9_solution.py` as `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`; PK10 is independently verified by `verify_pk10_solution.py`. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for provenance.
 - [ ] Add Chicago-style notes and bibliography.
 - [ ] Add image captions and rights ledger.
 - [ ] Run preflight: embedded fonts, page count, trim size, margins, no clipped text.
 - [ ] Proof a physical copy before publication.
-- [ ] Generate EPUB/Kindle edition from the same canonical Markdown source.
+- [x] Generate EPUB edition from the same canonical Markdown source with `scripts/publication_pipeline.py`; Kindle conversion remains a separate distributor-format step.
+- [x] Run automated repository preflight: manuscript evidence audit, PDF/EPUB validity checks, canonical PK1–PK10 audit, and assembled-site audit.
 
 The Markdown file is the canonical editable source. The PDF is a generated proof, not the only editable artifact.

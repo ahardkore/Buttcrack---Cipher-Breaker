@@ -104,21 +104,29 @@
     "verification": "Round-trip verified in verify_pk_constructions.py; ciphertexts match the official challenge pages."
   },
   "PK9": {
-    "status": "UNSOLVED",
+    "status": "SOLVED",
     "challenge_id": "PK9",
-    "title": "PK9",
+    "title": "PK9 \u2014 The Sealed Testament",
+    "cipher_mechanism": "Quagmire III (KRYPTOS alphabet) -> Spiral Transposition (12 columns) -> Columnar Transposition (8 columns)",
+    "key": "CLEPSYDRA (Q3) -> Spiral(12) -> BEAMWORK (T8)",
     "ciphertext_length": 144,
+    "plaintext_length": 144,
     "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    "result": "Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, word-wheel and order searches completed 2026-10-02, all negative; see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md.",
-    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
+    "plaintext": "ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT",
+    "sha256": "c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8",
+    "verification": "Exact encode/decode round-trip in verify_pk9_solution.py; ciphertext matches the official challenge page."
   },
   "PK10": {
-    "status": "UNSOLVED",
+    "status": "SOLVED",
     "challenge_id": "PK10",
-    "title": "PK10",
+    "title": "PK10 \u2014 The Archive's Successor",
+    "cipher_mechanism": "Cumulative Quagmire III / columnar / Hill / spiral pipeline over the KRYPTOS alphabet",
+    "key": "Q3(PROVENANCE) -> T(MARGINS) -> Q3(ORDINATE) -> Q3(PENTIMENTO) -> T(UNDERLAY) -> Q3(OCHRE) -> Q3(VERDIGRIS) -> T(TWOYEARS) -> Q3(PK4 plaintext) -> T(HANDIWORK) -> T(SMITHWORK) -> Q3(PORTAL) -> Q3(ANNEAL) -> H3(ALCHEMIST) -> Q3(METE) -> Q3(METER) -> Q3(METIER) -> Q3(MASTERY) -> Q3(CLEPSYDRA) -> Spiral(12) -> T(BEAMWORK)",
     "ciphertext_length": 504,
+    "plaintext_length": 504,
     "ciphertext": "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
-    "result": "H(4x4)H(3x3)Q(?)T(?) per the published cipher spec.  Unsolved; no verified plaintext or construction.",
-    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
+    "plaintext": "IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU",
+    "sha256": "a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9",
+    "verification": "Exact encode/decode round-trip in verify_pk10_solution.py; ciphertext matches the official challenge page."
   }
 }
