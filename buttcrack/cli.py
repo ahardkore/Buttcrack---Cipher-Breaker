@@ -438,6 +438,81 @@ def cmd_crack(args: argparse.Namespace) -> int:
 # --------------------------------------------------------------------------- #
 
 
+def cmd_assistant(args: argparse.Namespace) -> int:
+    """Give transparent local attack recommendations; never claims a break."""
+    from .assistant import explain, recommend
+    text = read_input(args)
+    if args.json:
+        payload = {
+            "status": "recommendations_only",
+            "network": False,
+            "model": "explainable-local-planner",
+            "recommendations": [item.__dict__ for item in recommend(text)],
+        }
+        print(json.dumps(payload, indent=2 if args.pretty else None))
+    else:
+        print(explain(text))
+    return 0
+
+
+def cmd_crib(args: argparse.Namespace) -> int:
+    from .crib import consistent_period, implied_shifts
+    shifts = implied_shifts(args.ciphertext, args.crib, args.offset)
+    print(json.dumps({"offset": args.offset, "shifts": shifts, "period_consistent": consistent_period(shifts, args.period)}, indent=2))
+    return 0
+
+
+def cmd_transpose(args: argparse.Namespace) -> int:
+    from .transposition import decrypt, encrypt
+    fn = encrypt if args.action == "encrypt" else decrypt
+    print(fn(args.text, args.keyword))
+    return 0
+
+
+def cmd_results(args: argparse.Namespace) -> int:
+    from .results_db import ResultDB
+    db = ResultDB(args.database)
+    if args.leaderboard:
+        print(json.dumps(db.leaderboard(args.limit, attack=args.attack), indent=2))
+        return 0
+    rows = db.recent(args.limit, attack=args.attack, status=args.status)
+    print(json.dumps([{"attack": r[0], "status": r[1], "score": r[2], "candidate": r[3], "verification": r[4], "created_utc": r[5]} for r in rows], indent=2))
+    return 0
+
+
+def cmd_project(args: argparse.Namespace) -> int:
+    """Create or inspect a portable cryptanalysis session."""
+    from .project import Project
+    if args.project_action == "init":
+        text = read_input(args)
+        project = Project(ciphertext=text, source=args.source or "cli")
+        project.save(args.output)
+        print(f"created {args.output} (sha256={project.ciphertext_sha256})")
+        return 0
+    project = Project.load(args.project_file)
+    if args.project_action == "attack":
+        parameters = json.loads(args.parameters) if args.parameters else {}
+        project.add_attack(args.name, parameters, args.status)
+        project.save(args.project_file)
+        print(f"recorded attack {args.name!r} in {args.project_file}")
+        return 0
+    if args.project_action == "candidate":
+        evidence = json.loads(args.evidence) if args.evidence else {"status": "heuristic"}
+        project.add_candidate(args.plaintext, evidence)
+        project.save(args.project_file)
+        print(f"recorded candidate in {args.project_file}; verification remains required")
+        return 0
+    print(json.dumps({
+        "schema": project.schema,
+        "ciphertext_sha256": project.ciphertext_sha256,
+        "ciphertext_length": len(project.ciphertext),
+        "attacks": len(project.attacks),
+        "candidates": len(project.candidates),
+        "notes": len(project.notes),
+    }, indent=2))
+    return 0
+
+
 def cmd_identify(args: argparse.Namespace) -> int:
     pal = make_palette(args)
     text = read_input(args)
@@ -783,6 +858,57 @@ def build_parser() -> argparse.ArgumentParser:
     crack.set_defaults(func=cmd_crack)
 
     # -- identify ----------------------------------------------------------- #
+    assistant = sub.add_parser("assistant", help="get explainable local attack recommendations")
+    assistant.add_argument("text", nargs="*")
+    assistant.add_argument("--file", "-f")
+    assistant.add_argument("--json", action="store_true", help="machine-readable recommendations")
+    assistant.add_argument("--pretty", action="store_true", help="indent --json output")
+    assistant.set_defaults(func=cmd_assistant)
+
+    crib = sub.add_parser("crib", help="drag a plaintext crib and inspect implied shifts")
+    crib.add_argument("ciphertext")
+    crib.add_argument("crib")
+    crib.add_argument("--offset", type=int, default=0)
+    crib.add_argument("--period", type=int, default=1)
+    crib.set_defaults(func=cmd_crib)
+
+    transpose = sub.add_parser("transpose", help="run an inspectable columnar transposition")
+    transpose.add_argument("action", choices=("encrypt", "decrypt"))
+    transpose.add_argument("keyword")
+    transpose.add_argument("text")
+    transpose.set_defaults(func=cmd_transpose)
+
+    results = sub.add_parser("results", help="inspect the SQLite research result ledger")
+    results.add_argument("database")
+    results.add_argument("--limit", type=int, default=20)
+    results.add_argument("--attack")
+    results.add_argument("--status")
+    results.add_argument("--leaderboard", action="store_true")
+    results.set_defaults(func=cmd_results)
+
+    project = sub.add_parser("project", help="create or inspect a reproducible session file")
+    project_sub = project.add_subparsers(dest="project_action", required=True)
+    init_project = project_sub.add_parser("init", help="create a session from ciphertext")
+    init_project.add_argument("text", nargs="*")
+    init_project.add_argument("--file", "-f")
+    init_project.add_argument("--output", "-o", required=True)
+    init_project.add_argument("--source", default="cli")
+    init_project.set_defaults(func=cmd_project)
+    attack_project = project_sub.add_parser("attack", help="record an attack in a session")
+    attack_project.add_argument("project_file")
+    attack_project.add_argument("name")
+    attack_project.add_argument("--parameters", help="JSON attack parameters")
+    attack_project.add_argument("--status", default="running")
+    attack_project.set_defaults(func=cmd_project)
+    candidate_project = project_sub.add_parser("candidate", help="record a candidate without claiming a solution")
+    candidate_project.add_argument("project_file")
+    candidate_project.add_argument("plaintext")
+    candidate_project.add_argument("--evidence", help="JSON evidence metadata")
+    candidate_project.set_defaults(func=cmd_project)
+    inspect_project = project_sub.add_parser("inspect", help="inspect session metadata")
+    inspect_project.add_argument("project_file")
+    inspect_project.set_defaults(func=cmd_project)
+
     ident = sub.add_parser("identify", help="characterise a ciphertext without breaking it")
     ident.add_argument("text", nargs="*")
     ident.add_argument("--file", "-f")
@@ -863,7 +989,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 SUBCOMMANDS = (
-    "crack", "identify", "encrypt", "decrypt", "ciphers", "show", "demo", "selftest", "serve", "app",
+    "crack", "assistant", "project", "results", "crib", "transpose", "identify", "encrypt", "decrypt", "ciphers", "show", "demo", "selftest", "serve", "app",
 )
 
 

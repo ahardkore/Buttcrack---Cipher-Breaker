@@ -904,3 +904,53 @@ code {
     font-size: 0.78rem;
   }
 }
+
+/* Symbol guide: a reader-facing bridge between the sculpture and the cipher. */
+.symbol-guide-panel { max-width: 1100px; margin: 0 auto; padding: 1rem 0 3rem; }
+.symbol-guide-panel .eyebrow { color: var(--copper-glow); font: 700 .75rem var(--font-mono); letter-spacing: .16em; }
+.symbol-guide-panel h2 { color: var(--text-bright); font-size: clamp(1.8rem, 4vw, 3rem); margin: .35rem 0 .7rem; }
+.symbol-guide-panel .lead { max-width: 760px; color: var(--text-muted); font-size: 1.05rem; }
+.symbol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 2rem; }
+.symbol-grid article { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.1rem; min-height: 170px; }
+.symbol-grid article h3 { color: var(--copper-glow); margin: .7rem 0 .25rem; }
+.symbol-grid article p { color: var(--text-muted); font-size: .92rem; }
+.symbol-swatch { display: inline-grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--copper-primary); border-radius: 8px; color: var(--gold); background: #0b0e14; font: 1.35rem var(--font-mono); }
+.symbol-workflow { margin-top: 1.5rem; border-left: 3px solid var(--copper-primary); padding: .9rem 1rem; background: rgba(217,119,54,.08); color: var(--text-main); }
+@media (max-width: 760px) { .symbol-grid { grid-template-columns: 1fr; } }
+
+.symbol-worksheet { margin-top: 1.5rem; padding: 1rem; border: 1px dashed var(--copper-primary); border-radius: 10px; background: rgba(240,136,62,.05); }
+.symbol-worksheet h3 { color: var(--copper-glow); margin-bottom: .35rem; }
+.symbol-worksheet p { color: var(--text-muted); margin-bottom: .8rem; }
+.symbol-worksheet label { display: block; font-weight: 600; margin-bottom: .35rem; }
+.symbol-worksheet textarea { width: 100%; resize: vertical; padding: .7rem; color: var(--text-main); background: #0b0e14; border: 1px solid var(--border-color); border-radius: 6px; font: .9rem var(--font-mono); }
+.worksheet-button { margin-top: .7rem; border: 1px solid var(--copper-primary); background: transparent; color: var(--copper-glow); border-radius: 5px; padding: .45rem .75rem; cursor: pointer; }
+.worksheet-button:hover, .worksheet-button:focus-visible { background: rgba(217,119,54,.16); }
+@media print { .site-switch, header, nav, .symbol-worksheet button { display: none !important; } .symbol-worksheet { border: 1px solid #555; color: #111; } .symbol-worksheet textarea { min-height: 180px; color: #111; background: #fff; border-color: #555; } }
+
+.guided-demo { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card); }
+.guided-demo h3 { color: var(--copper-glow); margin-bottom: .35rem; }
+.guided-demo p { color: var(--text-muted); margin-bottom: .8rem; }
+.demo-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.demo-row input { min-width: 90px; padding: .45rem; color: var(--text-main); background: #0b0e14; border: 1px solid var(--border-color); border-radius: 5px; font: .9rem var(--font-mono); }
+.demo-output { margin-top: .8rem; min-height: 2.4rem; padding: .7rem; overflow-wrap: anywhere; color: var(--gold); background: #0b0e14; border-radius: 6px; font: .9rem var(--font-mono); }
+@media print { .guided-demo { border: 1px solid #555; background: #fff; color: #111; } .guided-demo button { display: none; } .demo-output { color: #111; background: #fff; border: 1px solid #555; } }
+
+.assistant-panel { max-width: 900px; margin: 0 auto; padding: 1rem 0 3rem; }
+.assistant-panel .eyebrow { color: var(--copper-glow); font: 700 .75rem var(--font-mono); letter-spacing: .16em; }
+.assistant-panel h2 { color: var(--text-bright); font-size: clamp(1.8rem, 4vw, 3rem); margin: .35rem 0 .7rem; }
+.assistant-panel .lead { color: var(--text-muted); max-width: 720px; }
+.assistant-panel label { display: block; margin-top: 1.4rem; margin-bottom: .35rem; font-weight: 700; }
+.assistant-panel textarea { width: 100%; padding: .8rem; resize: vertical; color: var(--text-main); background: #0b0e14; border: 1px solid var(--border-color); border-radius: 7px; font: .9rem var(--font-mono); }
+.worksheet-button:disabled { opacity: .45; cursor: not-allowed; }
+.assistant-panel input[type="file"] { display: block; margin-top: .35rem; max-width: 100%; color: var(--text-muted); }
+.tool-panel { max-width: 980px; margin: 0 auto; padding: 1rem 0 3rem; }
+.tool-panel h2 { color: var(--text-bright); font-size: clamp(1.8rem,4vw,3rem); margin: .35rem 0 .7rem; }
+.tool-panel p { color: var(--text-muted); max-width: 760px; }
+.tool-panel label { display:block; margin-top:1rem; margin-bottom:.3rem; font-weight:700; }
+.tool-panel input, .tool-panel textarea { width:100%; padding:.65rem; color:var(--text-main); background:#0b0e14; border:1px solid var(--border-color); border-radius:6px; font: .9rem var(--font-mono); }
+.tool-panel .demo-row { margin-top:.7rem; }
+.score-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.7rem; margin-top:1rem; }
+.score-cards article { padding:.8rem; border:1px solid var(--border-color); border-radius:7px; background:var(--bg-card); }
+.score-cards strong, .score-cards span { display:block; }
+.score-cards strong { color:var(--text-muted); font-size:.8rem; }
+.score-cards span { color:var(--gold); font:1.25rem var(--font-mono); margin-top:.3rem; }

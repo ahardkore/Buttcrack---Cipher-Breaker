@@ -21,12 +21,14 @@ is handled and the server still runs.  The dependency list is still empty:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import http.server
 import os
 import socket
 import sys
 import threading
 import webbrowser
+from pathlib import Path
 from typing import Any, Callable
 
 from . import __version__
@@ -214,6 +216,8 @@ def run_window(app: LocalApp) -> bool:
         return False
 
     stopping = threading.Event()
+    from .project import Project
+    active_project = [Project(source="desktop")]
 
     def shutdown() -> None:
         if stopping.is_set():
@@ -254,22 +258,332 @@ def run_window(app: LocalApp) -> bool:
     def open_browser() -> None:
         status.set("Opened in your browser." if app.open_browser() else "Could not open a browser.")
 
-    ttk.Button(frame, text="Open Buttcrack", command=open_browser).grid(
-        row=2, column=0, sticky="w", pady=(14, 0)
-    )
-    ttk.Button(frame, text="Hide", command=lambda: hide()).grid(row=2, column=1, sticky="w", pady=(14, 0))
-    ttk.Button(frame, text="Quit", command=shutdown).grid(row=2, column=2, sticky="e", pady=(14, 0))
+    def open_candidate_panel() -> None:
+        from tkinter import messagebox
+        panel = tk.Toplevel(root); panel.title("Buttcrack — Candidate Manager"); panel.minsize(760, 560)
+        body = ttk.Frame(panel, padding=16); body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Candidate Manager", font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        ttk.Label(body, text="Candidates remain hypotheses until exact round-trip and independent recheck both pass.", foreground="#555555").pack(anchor="w", pady=(2, 10))
+        labels=("Plaintext","Score","Key","Algorithm","Source attack","Chunk/job ID","Exact verification","Independent recheck","Notes")
+        fields={}
+        for label in labels:
+            ttk.Label(body,text=label).pack(anchor="w", pady=(4,1))
+            if label in ("Exact verification","Independent recheck"):
+                widget=ttk.Combobox(body, values=("not_checked","passed","failed"), state="readonly"); widget.set("not_checked")
+            else: widget=tk.Entry(body)
+            widget.pack(fill="x"); fields[label]=widget
+        rows=tk.Listbox(body,height=8); rows.pack(fill="both",expand=True,pady=(10,0))
+        def refresh():
+            rows.delete(0,"end")
+            for i,c in enumerate(active_project[0].candidates):
+                ev=c.get("evidence",{}); rows.insert("end",f"{i}: {ev.get('status','heuristic')} | score={ev.get('score','—')} | {c.get('plaintext','')[:70]}")
+        def add():
+            evidence={"score": fields["Score"].get(), "key": fields["Key"].get(), "algorithm": fields["Algorithm"].get(), "source_attack": fields["Source attack"].get(), "chunk_job_id": fields["Chunk/job ID"].get(), "exact_round_trip": fields["Exact verification"].get(), "independent_recheck": fields["Independent recheck"].get(), "status":"heuristic", "notes":fields["Notes"].get()}
+            active_project[0].add_candidate(fields["Plaintext"].get(), evidence); refresh()
+        def set_status(status):
+            selection=rows.curselection()
+            if not selection: return
+            candidate=active_project[0].candidates[selection[0]]; evidence=candidate.get("evidence", {})
+            if status == "promoted_pending_recheck" and not (evidence.get("exact_round_trip") == "passed" and evidence.get("independent_recheck") == "passed"):
+                tk.messagebox.showwarning("Promotion blocked", "Exact round-trip validation and independent recheck must both pass.", parent=panel); return
+            evidence["status"]=status; refresh()
+        actions=ttk.Frame(body); actions.pack(anchor="w",pady=(8,0)); ttk.Button(actions,text="Add candidate",command=add).pack(side="left"); ttk.Button(actions,text="Promote",command=lambda:set_status("promoted_pending_recheck")).pack(side="left",padx=6); ttk.Button(actions,text="Reject",command=lambda:set_status("rejected")).pack(side="left")
+        refresh()
 
-    ttk.Separator(frame, orient="horizontal").grid(row=3, column=0, columnspan=3, sticky="we", pady=14)
+    def open_campaign_dashboard() -> None:
+        from .results_db import ResultDB
+        from tkinter import filedialog
+        import csv, json, time
+        panel=tk.Toplevel(root); panel.title("Buttcrack — PK9 Campaign"); panel.minsize(760,560)
+        body=ttk.Frame(panel,padding=16); body.pack(fill="both",expand=True)
+        ttk.Label(body,text="PK9 Global Campaign",font=("Segoe UI",13,"bold")).pack(anchor="w")
+        stats=tk.StringVar(); ttk.Label(body,textvariable=stats,justify="left").pack(anchor="w",pady=10)
+        view=tk.Text(body,height=18,state="disabled"); view.pack(fill="both",expand=True)
+        def data():
+            db=ResultDB("kryptos/pk9-results.sqlite3"); rows=db.recent(10000); meta=active_project[0].campaign
+            total=int(meta.get("total_chunks",len(rows))); counts={s:sum(1 for r in rows if r[1]==s) for s in ("completed","interrupted","queued")}; done=counts["completed"]
+            runtimes=[]
+            for r in rows:
+                if r[2] is not None: runtimes.append(r)
+            throughput=(done/(sum(float(r[2] or 0) for r in runtimes) or 1))*3600
+            remaining=max(0,total-done); eta=(remaining/throughput*3600 if throughput else None)
+            board=db.leaderboard(1000); local=max((r[2] for r in rows if r[2] is not None),default=None); globalbest=board[0] if board else None
+            return db,rows,meta,total,counts,throughput,eta,local,globalbest
+        def refresh():
+            try:
+                db,rows,meta,total,c,throughput,eta,local,gb=data(); eta_text=f"{eta/3600:.1f}h" if eta is not None else "—"
+                stats.set(f"Chunks total: {total} | completed: {c['completed']} | interrupted: {c['interrupted']} | queued: {c['queued']}\nThroughput: {throughput:.2f} chunks/hour | ETA: {eta_text} | current: {meta.get('current_chunk','—')}\nLocal best: {local if local is not None else '—'} | Global best: {gb.get('best_score','—') if gb else '—'} (ledger provenance)")
+                text="Candidate | score | verification | status\n"+"\n".join(f"{r[3] or '(none)'} | {r[2]} | {r[4]} | {r[1]}" for r in rows[:80]); view.configure(state='normal');view.delete('1.0','end');view.insert('1.0',text);view.configure(state='disabled')
+            except Exception as e: stats.set(f"Campaign ledger unavailable: {e}")
+        def export(kind):
+            db,_,_,_,_,_,_,_,_=data(); target=filedialog.asksaveasfilename(defaultextension='.'+kind,filetypes=[(kind.upper(), '*.'+kind)])
+            if not target:return
+            board=db.leaderboard(10000)
+            if kind=='json': Path(target).write_text(json.dumps(board,indent=2),encoding='utf-8')
+            else:
+                with open(target,'w',newline='',encoding='utf-8') as f:
+                    w=csv.DictWriter(f,fieldnames=['candidate','best_score','status','first_seen']);w.writeheader();w.writerows({k:x.get(k) for k in w.fieldnames} for x in board)
+        def recheck():
+            active_project[0].campaign['last_independent_recheck_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ'); active_project[0].notes.append('Independent recheck requested; no promotion occurs without exact round-trip validation.'); refresh()
+        def resume(): active_project[0].campaign['resume_requested']=True; active_project[0].campaign['resume_requested_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ'); refresh()
+        actions=ttk.Frame(body);actions.pack(anchor='w');
+        for label,cmd in (("Refresh",refresh),("Resume campaign",resume),("Independent recheck",recheck),("Export JSON",lambda:export('json')),("Export CSV",lambda:export('csv'))): ttk.Button(actions,text=label,command=cmd).pack(side='left',padx=(0,6))
+        refresh()
+
+    def open_scoring_dashboard() -> None:
+        from .scoring import score_all
+        panel=tk.Toplevel(root); panel.title("Buttcrack — Score Dashboard"); panel.minsize(650, 480)
+        body=ttk.Frame(panel,padding=16); body.pack(fill="both",expand=True)
+        ttk.Label(body,text="Language Score Dashboard",font=("Segoe UI",13,"bold")).pack(anchor="w")
+        ttk.Label(body,text="Separate ranking clues; not a proof. Random and language calibration may be unavailable.",foreground="#555555",wraplength=600).pack(anchor="w",pady=(2,10))
+        input_box=tk.Text(body,height=7); input_box.pack(fill="x")
+        output=tk.Text(body,height=14,state="disabled"); output.pack(fill="both",expand=True,pady=(10,0))
+        def measure():
+            rows=score_all(input_box.get("1.0","end")); report="\\n".join(f"{r.name}: {r.value:.6f}\\n  {r.explanation}" for r in rows)
+            output.configure(state="normal"); output.delete("1.0","end"); output.insert("1.0",report); output.configure(state="disabled")
+            active_project[0].notes.append(report)
+        ttk.Button(body,text="Measure separate signals",command=measure).pack(anchor="w",pady=(8,0))
+
+    def open_transposition_lab() -> None:
+        from .transposition import encrypt, decrypt, keyword_order
+        from tkinter import filedialog
+        panel=tk.Toplevel(root); panel.title("Buttcrack — Transposition Lab"); panel.minsize(760,620)
+        body=ttk.Frame(panel,padding=16); body.pack(fill="both",expand=True)
+        ttk.Label(body,text="Interactive Transposition Grid",font=("Segoe UI",13,"bold")).pack(anchor="w")
+        text=tk.StringVar(value="MEETATNOONXXXXXX"); key=tk.StringVar(value="KEYS"); key2=tk.StringVar(value="")
+        fill=tk.StringVar(value="row-fill"); route=tk.StringVar(value="rank-order"); direction=tk.StringVar(value="encrypt"); double=tk.BooleanVar()
+        controls=ttk.Frame(body); controls.pack(fill="x")
+        for label,var in (("Text",text),("Key",key),("Second key",key2)):
+            ttk.Label(controls,text=label).pack(side="left",padx=(0,3)); ttk.Entry(controls,textvariable=var,width=18).pack(side="left",padx=(0,8))
+        ttk.Combobox(controls,textvariable=fill,values=("row-fill","column-fill"),state="readonly",width=12).pack(side="left",padx=3)
+        ttk.Combobox(controls,textvariable=route,values=("rank-order","original-order","spiral-clockwise","spiral-counterclockwise"),state="readonly",width=18).pack(side="left",padx=3)
+        ttk.Checkbutton(body,text="Double transposition",variable=double).pack(anchor="w",pady=5)
+        ttk.Radiobutton(body,text="Encrypt",variable=direction,value="encrypt").pack(anchor="w"); ttk.Radiobutton(body,text="Decrypt",variable=direction,value="decrypt").pack(anchor="w")
+        grid=ttk.Frame(body); grid.pack(fill="both",expand=True,pady=8); cells=[]; history=[]; cursor=[-1]
+        report=tk.Text(body,height=8,state="disabled"); report.pack(fill="x")
+        def worksheet():
+            raw=''.join(text.get().split()); cols=max(1,len(key.get())); rows=(len(raw)+cols-1)//cols; matrix=[[raw[r*cols+c] if r*cols+c<len(raw) else '·' for c in range(cols)] for r in range(rows)]
+            return raw,cols,matrix
+        def draw(matrix):
+            for w in grid.winfo_children(): w.destroy()
+            for c in range(len(matrix[0]) if matrix else 0): ttk.Label(grid,text=f"{c+1}",relief="raised",width=4).grid(row=0,column=c,padx=1,pady=1)
+            for r,row in enumerate(matrix):
+                for c,ch in enumerate(row): ttk.Label(grid,text=ch,relief="groove",width=4,anchor="center").grid(row=r+1,column=c,padx=1,pady=1)
+        def render():
+            try:
+                raw,cols,matrix=worksheet(); out=raw
+                if direction.get()=="encrypt": out=encrypt(raw,key.get());
+                else: out=decrypt(raw,key.get())
+                if double.get() and key2.get(): out=encrypt(out,key2.get()) if direction.get()=="encrypt" else decrypt(out,key2.get())
+                draw(matrix); msg=f"fill={fill.get()} route={route.get()} key={key.get()} second_key={key2.get()}\nintermediate grid\n"+'\n'.join(' '.join(r) for r in matrix)+f"\noutput={out}"
+                report.configure(state="normal"); report.delete('1.0','end'); report.insert('1.0',msg); report.configure(state="disabled")
+                del history[cursor[0]+1:]; history.append(msg); cursor[0]+=1; active_project[0].notes.append(msg)
+            except Exception as e: report.configure(state="normal"); report.delete('1.0','end'); report.insert('1.0',f"Input error: {e}"); report.configure(state="disabled")
+        def move(delta):
+            n=max(0,min(len(history)-1,cursor[0]+delta))
+            if history and n!=cursor[0]: cursor[0]=n; report.configure(state="normal"); report.delete('1.0','end'); report.insert('1.0',history[n]); report.configure(state="disabled")
+        def export():
+            target=filedialog.asksaveasfilename(defaultextension='.txt',filetypes=[('Worksheet','*.txt')])
+            if target: Path(target).write_text(report.get('1.0','end')+f"\nparameters: fill={fill.get()}, route={route.get()}, double={double.get()}, direction={direction.get()}",encoding='utf-8')
+        actions=ttk.Frame(body); actions.pack(anchor='w'); ttk.Button(actions,text='Render step',command=render).pack(side='left'); ttk.Button(actions,text='Step back',command=lambda:move(-1)).pack(side='left',padx=5); ttk.Button(actions,text='Step forward',command=lambda:move(1)).pack(side='left'); ttk.Button(actions,text='Export worksheet',command=export).pack(side='left',padx=5); render()
+
+    def open_verification() -> None:
+        from tkinter import filedialog
+        from .verification import round_trip
+        panel = tk.Toplevel(root); panel.title("Buttcrack — Verification Center"); panel.minsize(700, 620)
+        body = ttk.Frame(panel, padding=16); body.pack(fill="both", expand=True)
+        fields = {}
+        for label in ("Plaintext", "Expected ciphertext", "Produced ciphertext", "Algorithm", "Key", "Alphabet", "Normalization", "Padding"):
+            ttk.Label(body, text=label).pack(anchor="w", pady=(6, 2))
+            if label == "Algorithm":
+                from .ciphers import all_ciphers
+                widget = ttk.Combobox(body, values=[cipher.name for cipher in all_ciphers()], state="normal")
+                widget.pack(fill="x"); fields[label] = widget
+            elif label == "Normalization":
+                widget = ttk.Combobox(body, values=["letters-only", "preserve-spaces", "preserve-punctuation"], state="readonly")
+                widget.set("letters-only"); widget.pack(fill="x"); fields[label] = widget
+            elif label == "Padding":
+                widget = ttk.Combobox(body, values=["none", "documented nulls", "PKCS-style (document explicitly)"], state="normal")
+                widget.set("none"); widget.pack(fill="x"); fields[label] = widget
+            else:
+                widget = tk.Text(body, height=2 if label in ("Plaintext", "Expected ciphertext", "Produced ciphertext") else 1, wrap="word")
+                widget.pack(fill="x"); fields[label] = widget
+        output = tk.Text(body, height=10, state="disabled", wrap="word"); output.pack(fill="both", expand=True, pady=(10, 0))
+        def compare():
+            plain = fields["Plaintext"].get("1.0", "end").strip(); expected = fields["Expected ciphertext"].get("1.0", "end").strip()
+            produced = fields["Produced ciphertext"].get("1.0", "end").strip()
+            algorithm = fields["Algorithm"].get().strip()
+            key = fields["Key"].get("1.0", "end").strip()
+            if algorithm:
+                try:
+                    from .ciphers import get
+                    cipher = get(algorithm)
+                    produced = cipher.encrypt(plain, key)
+                    fields["Produced ciphertext"].delete("1.0", "end")
+                    fields["Produced ciphertext"].insert("1.0", produced)
+                except Exception as error:
+                    produced = fields["Produced ciphertext"].get("1.0", "end").strip()
+                    status.set(f"Algorithm unavailable; comparing supplied output: {error}")
+            result = round_trip(plain, expected, lambda _: produced)
+            # The UI accepts a produced stream through the expected field when no cipher runner is attached.
+            normalized_expected = "".join(expected.split())
+            normalized_produced = "".join(produced.split())
+            h = hashlib.sha256(normalized_expected.encode()).hexdigest()
+            ph = hashlib.sha256(normalized_produced.encode()).hexdigest()
+            text = f"Status: {'EXACT MATCH' if result.exact else 'MISMATCH'}\\nAlgorithm: {fields['Algorithm'].get().strip()}\\nKey: {fields['Key'].get('1.0','end').strip()}\\nAlphabet: {fields['Alphabet'].get('1.0','end').strip()}\\nNormalization: {fields['Normalization'].get().strip()}\\nPadding: {fields['Padding'].get('1.0','end').strip()}\\nNormalized expected: {normalized_expected}\\nNormalized produced: {normalized_produced}\\nExpected SHA-256: {h}\\nProduced SHA-256: {ph}\\nDetail: {result.message}\\nEvidence: reproduction requires an attached encryptor and independent recheck."
+            output.configure(state="normal"); output.delete("1.0", "end"); output.insert("1.0", text); output.configure(state="disabled")
+            active_project[0].notes.append(text)
+        ttk.Button(body, text="Compare / verify", command=compare).pack(anchor="w", pady=(8, 0))
+
+    def open_crib_lab() -> None:
+        from tkinter import filedialog
+        from .crib import implied_shifts, consistent_period
+        panel = tk.Toplevel(root); panel.title("Buttcrack — Crib Dragging Lab"); panel.minsize(700, 520)
+        body = ttk.Frame(panel, padding=16); body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Ciphertext").pack(anchor="w"); cipher = tk.Text(body, height=4); cipher.pack(fill="x")
+        ttk.Label(body, text="Crib").pack(anchor="w", pady=(8, 0)); crib = ttk.Entry(body); crib.pack(fill="x")
+        offset = tk.IntVar(value=0); period = tk.IntVar(value=1)
+        ttk.Label(body, text="Offset").pack(anchor="w"); ttk.Scale(body, from_=0, to=100, variable=offset, orient="horizontal").pack(fill="x")
+        ttk.Label(body, text="Period").pack(anchor="w"); ttk.Spinbox(body, from_=1, to=100, textvariable=period).pack(anchor="w")
+        output = tk.Text(body, height=10, state="disabled"); output.pack(fill="both", expand=True, pady=(8, 0))
+        def calculate():
+            shifts = implied_shifts(cipher.get("1.0", "end"), crib.get(), offset.get()); ok = consistent_period(shifts, max(1, period.get()))
+            text = f"Crib: {crib.get()}\\nOffset: {offset.get()}\\nImplied shifts: {shifts}\\nPeriod consistent: {ok}\\nStatus: worksheet hypothesis; verify against a complete model."
+            active_project[0].notes.append(text)
+            output.configure(state="normal"); output.delete("1.0", "end"); output.insert("1.0", text); output.configure(state="disabled")
+        def export():
+            target = filedialog.asksaveasfilename(parent=panel, defaultextension=".txt", filetypes=[("Worksheet", "*.txt")])
+            if target: Path(target).write_text(output.get("1.0", "end"), encoding="utf-8")
+        actions=ttk.Frame(body); actions.pack(anchor="w", pady=(8,0)); ttk.Button(actions, text="Calculate", command=calculate).pack(side="left"); ttk.Button(actions, text="Export worksheet", command=export).pack(side="left", padx=8)
+
+    def open_attack_queue() -> None:
+        """Show a local, checkpoint-aware attack queue scaffold."""
+        from .queue import AttackQueue
+        panel = tk.Toplevel(root); panel.title("Buttcrack — Attack Queue"); panel.minsize(620, 420); panel.transient(root)
+        body = ttk.Frame(panel, padding=16); body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Attack Queue", font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        ttk.Label(body, text="Jobs are local and remain hypotheses until exact verification.", foreground="#555555").pack(anchor="w", pady=(2, 10))
+        queue = AttackQueue(); rows = tk.Listbox(body, height=12); rows.pack(fill="both", expand=True)
+        state = tk.StringVar(value="Ready."); ttk.Label(body, textvariable=state, foreground="#2a6f3a").pack(anchor="w", pady=(8, 0))
+        def refresh():
+            rows.delete(0, "end")
+            for job in queue.jobs: rows.insert("end", f"{job.status.upper():10} {job.name}")
+        def new_attack():
+            name = f"Local analysis {len(queue.jobs)+1}"
+            queue.add(name, lambda: {"status": "recommendations_only"}); active_project[0].add_attack(name, {}, "queued"); refresh(); state.set(f"Added {name}.")
+        def run_next():
+            job = queue.run_next(); refresh(); state.set(f"Completed {job.name}." if job else "No queued jobs.")
+        def cancel():
+            for job in queue.jobs:
+                if job.status == "queued": job.status = "cancelled"; break
+            refresh(); state.set("Queued job cancelled.")
+        def save_checkpoint():
+            from tkinter import filedialog
+            import json
+            target = filedialog.asksaveasfilename(parent=panel, defaultextension=".queue.json", filetypes=[("Queue checkpoint", "*.queue.json")])
+            if target: Path(target).write_text(json.dumps(queue.checkpoint(), indent=2), encoding="utf-8"); state.set("Checkpoint saved.")
+        def export_report():
+            from tkinter import filedialog
+            target = filedialog.asksaveasfilename(parent=panel, defaultextension=".txt", filetypes=[("Text report", "*.txt")])
+            if target: Path(target).write_text("\\n".join(rows.get(0, "") for _ in [0]) + "\\n" + "\\n".join(str(x) for x in queue.checkpoint()), encoding="utf-8"); state.set("Report exported.")
+        actions=ttk.Frame(body); actions.pack(anchor="w", pady=(10,0))
+        for label, command in (("New attack",new_attack),("Resume",run_next),("Cancel",cancel),("Save checkpoint",save_checkpoint),("Export report",export_report)):
+            ttk.Button(actions, text=label, command=command).pack(side="left", padx=(0,6))
+        refresh()
+
+    def open_local_assistant() -> None:
+        """Open the dependency-free assistant without leaving the desktop app."""
+        from .assistant import explain
+        from .local_model import LocalModelAdapter
+        from .provenance import AssistantRecord
+        from .project import Project
+        panel = tk.Toplevel(root)
+        panel.title("Buttcrack — Local Assistant")
+        panel.minsize(620, 440)
+        panel.transient(root)
+        body = ttk.Frame(panel, padding=16)
+        body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Local Cryptanalysis Assistant", font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        ttk.Label(body, text="Runs offline. Recommendations are hypotheses, not solutions.", foreground="#555555").pack(anchor="w", pady=(2, 4))
+        providers = "; ".join(f"{item.provider}: {'available' if item.available else 'not installed'}" for item in LocalModelAdapter().capabilities())
+        ttk.Label(body, text=f"Providers — {providers}", foreground="#555555", wraplength=580).pack(anchor="w", pady=(0, 10))
+        input_box = tk.Text(body, height=7, wrap="word")
+        input_box.pack(fill="x")
+        output_box = tk.Text(body, height=13, wrap="word", state="disabled")
+        output_box.pack(fill="both", expand=True, pady=(10, 0))
+        def analyze() -> None:
+            result = explain(input_box.get("1.0", "end"))
+            output_box.configure(state="normal")
+            output_box.delete("1.0", "end")
+            output_box.insert("1.0", result)
+            output_box.configure(state="disabled")
+            active_project[0].notes.append(result)
+            AssistantRecord.create("explainable-planner", "built-in", input_box.get("1.0", "end"), result, input_box.get("1.0", "end")).save_jsonl(Path.home() / "buttcrack-assistant.jsonl")
+
+        def open_session() -> None:
+            from tkinter import filedialog
+            target = filedialog.askopenfilename(
+                parent=panel, title="Open cryptanalysis session",
+                filetypes=[("Buttcrack session", "*.kryptos-project.json"), ("JSON", "*.json")],
+            )
+            if target:
+                try:
+                    loaded = Project.load(target)
+                    active_project[0] = loaded
+                    input_box.delete("1.0", "end")
+                    input_box.insert("1.0", loaded.ciphertext)
+                    output_box.configure(state="normal")
+                    output_box.delete("1.0", "end")
+                    output_box.insert("1.0", "Session loaded. Run analysis to refresh recommendations.")
+                    output_box.configure(state="disabled")
+                    status.set(f"Loaded session: {os.path.basename(target)}")
+                except Exception as error:
+                    status.set(f"Could not load session: {error}")
+
+        def save_session() -> None:
+            from tkinter import filedialog
+            target = filedialog.asksaveasfilename(
+                parent=panel, title="Save cryptanalysis session",
+                defaultextension=".kryptos-project.json",
+                filetypes=[("Buttcrack session", "*.kryptos-project.json"), ("JSON", "*.json")],
+            )
+            if target:
+                active_project[0].ciphertext = input_box.get("1.0", "end").strip()
+                active_project[0].source = "desktop local assistant"
+                active_project[0].save(target)
+                status.set(f"Saved session: {os.path.basename(target)}")
+
+        actions = ttk.Frame(body)
+        actions.pack(anchor="w", pady=(10, 0))
+        ttk.Button(actions, text="Analyze locally", command=analyze).pack(side="left")
+        ttk.Button(actions, text="Open session", command=open_session).pack(side="left", padx=(8, 0))
+        ttk.Button(actions, text="Save session", command=save_session).pack(side="left", padx=(8, 0))
+        input_box.focus_set()
+
+    ttk.Button(frame, text="Verify", command=open_verification).grid(row=2, column=0, sticky="w", pady=(14, 0))
+    ttk.Button(frame, text="Crib Lab", command=open_crib_lab).grid(row=2, column=1, sticky="w", pady=(14, 0))
+    ttk.Button(frame, text="Attack Queue", command=open_attack_queue).grid(
+        row=2, column=2, sticky="w", pady=(14, 0)
+    )
+    ttk.Button(frame, text="Local Assistant", command=open_local_assistant).grid(row=3, column=0, sticky="w", pady=(4, 0))
+    ttk.Button(frame, text="Open Buttcrack", command=open_browser).grid(row=3, column=1, sticky="w", pady=(4, 0))
+    ttk.Button(frame, text="Candidates", command=open_candidate_panel).grid(row=3, column=2, sticky="e", pady=(4, 0))
+    ttk.Button(frame, text="Hide", command=lambda: hide()).grid(row=4, column=0, sticky="w", pady=(4, 0))
+    ttk.Button(frame, text="Transposition Lab", command=open_transposition_lab).grid(row=4, column=1, sticky="w", pady=(4, 0))
+    ttk.Button(frame, text="Quit", command=shutdown).grid(row=4, column=2, sticky="e", pady=(4, 0))
+    ttk.Button(frame, text="Score Dashboard", command=open_scoring_dashboard).grid(row=5, column=0, sticky="w", pady=(4, 0))
+    ttk.Button(frame, text="PK9 Campaign", command=open_campaign_dashboard).grid(row=5, column=1, sticky="w", pady=(4, 0))
+
+    ttk.Separator(frame, orient="horizontal").grid(row=6, column=0, columnspan=3, sticky="we", pady=14)
 
     for offset, line in enumerate(summary_lines(app)[1:]):
         ttk.Label(frame, text=line, wraplength=390, foreground="#555555").grid(
-            row=4 + offset, column=0, columnspan=3, sticky="w", pady=(0, 2)
+            row=7 + offset, column=0, columnspan=3, sticky="w", pady=(0, 2)
         )
 
     status = tk.StringVar(value="Ready.")
     ttk.Label(frame, textvariable=status, foreground="#2a6f3a").grid(
-        row=20, column=0, columnspan=3, sticky="w", pady=(12, 0)
+        row=23, column=0, columnspan=3, sticky="w", pady=(12, 0)
     )
 
     frame.columnconfigure(0, weight=1)

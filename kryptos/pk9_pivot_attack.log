@@ -1,0 +1,4 @@
+FAIL architecture=double-columnar(18x8->8x18)+period28 mismatches=113/144
+derived_period28=20,15,10,6,21,7,0,11,21,22,4,11,13,3,18,11,11,8,6,14,3,22,1,23,2,10,5,11
+pivot=crib-free joint search: vary both transposition permutations and keystream model
+status=not a solution; no round-trip claim

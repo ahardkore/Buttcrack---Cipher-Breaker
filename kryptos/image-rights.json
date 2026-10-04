@@ -1,0 +1,10 @@
+{
+  "images": [
+    {
+      "file": "book-cover.jpg",
+      "rights_status": "verify-before-publication",
+      "source": "repository asset",
+      "sha256": "b17186c02225762b473792155f888ebeca880c21ec5082828de7e92d7df2b60d"
+    }
+  ]
+}

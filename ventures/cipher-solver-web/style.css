@@ -638,3 +638,31 @@ input:focus-visible, .wiki-tab:focus-visible, .wiki-card:focus-visible {
   .unsolved-grid { grid-template-columns: 1fr; }
   .unsolved-entry { padding: 14px; }
 }
+
+/* Original explanatory artwork on wiki pages. Documentary images must carry
+   their own source/license caption; these diagrams are authored for the site. */
+.wiki-figure { margin: 1.4rem 0 1.7rem; border: 1px solid var(--line, #d8d2c7); background: #10151d; }
+.wiki-figure img { display: block; width: 100%; height: auto; }
+.wiki-figure figcaption { padding: .65rem .8rem; color: var(--muted, #6f6a61); font-size: .82rem; line-height: 1.45; }
+
+/* Accessibility and study mode enhancements. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .site-header, nav, .wiki-sidebar, .wiki-solver, .ad-slot, .support, footer { display: none !important; }
+  body { background: #fff; color: #111; font-size: 11pt; }
+  .wiki-content, .wiki-article { max-width: none; border: 0; box-shadow: none; }
+  .wiki-figure { break-inside: avoid; border: 1px solid #777; }
+  a { color: #111; text-decoration: underline; }
+}
+.copy-code { display: block; margin: .8rem 0 0 auto; padding: .35rem .65rem; border: 1px solid var(--copper-primary, #d97736); border-radius: 5px; background: transparent; color: var(--copper-glow, #f0883e); cursor: pointer; font-size: .78rem; }
+.copy-code:hover, .copy-code:focus-visible { background: rgba(217,119,54,.14); }
+@media print { .copy-code { display: none; } }
+.study-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: 1rem 0; padding: .55rem .7rem; background: color-mix(in srgb, var(--paper, #f7f4ee) 80%, transparent); border: 1px solid var(--line, #d8d2c7); font-size: .82rem; }
+.study-controls button { border: 1px solid var(--line, #aaa); background: transparent; color: inherit; border-radius: 4px; padding: .25rem .5rem; cursor: pointer; }
+.study-controls button:focus-visible { outline: 3px solid #b45309; outline-offset: 2px; }
+.study-large .wiki-article-body { font-size: 1.12em; line-height: 1.8; }
+.study-contrast .wiki-article, .study-contrast .wiki-solver { background: #fff; color: #111; }
+.study-contrast .wiki-article a, .study-contrast .wiki-solver a { color: #0645ad; }
+@media (max-width: 650px) { .study-controls { align-items: flex-start; flex-direction: column; } }

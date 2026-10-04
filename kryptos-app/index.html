@@ -40,7 +40,13 @@
       <button class="nav-tab" data-target="sculpture-visualizer"><span class="nav-label-wide">Sculpture Architecture</span><span class="nav-label-compact">Map</span></button>
       <button class="nav-tab" data-target="book-reader"><span class="nav-label-wide">Manuscript Reader</span><span class="nav-label-compact">Reader</span></button>
       <button class="nav-tab" data-target="workbench"><span class="nav-label-wide">Cryptanalytic Workbench</span><span class="nav-label-compact">Workbench</span></button>
+      <button class="nav-tab" data-target="local-assistant"><span class="nav-label-wide">Local Assistant</span><span class="nav-label-compact">AI</span></button>
+      <button class="nav-tab" data-target="verification-center"><span class="nav-label-wide">Verification Center</span><span class="nav-label-compact">Verify</span></button>
+      <button class="nav-tab" data-target="crib-lab"><span class="nav-label-wide">Crib Lab</span><span class="nav-label-compact">Crib</span></button>
+      <button class="nav-tab" data-target="transposition-lab"><span class="nav-label-wide">Transposition Lab</span><span class="nav-label-compact">Grid</span></button>
+      <button class="nav-tab" data-target="language-dashboard"><span class="nav-label-wide">Score Dashboard</span><span class="nav-label-compact">Scores</span></button>
       <button class="nav-tab" data-target="unsolved-archive"><span class="nav-label-wide">Unsolved Cipher Archive</span><span class="nav-label-compact">Archive</span></button>
+      <button class="nav-tab" data-target="symbol-guide"><span class="nav-label-wide">Symbol Guide</span><span class="nav-label-compact">Symbols</span></button>
       <button class="nav-tab" data-target="github-guide"><span class="nav-label-wide">GitHub &amp; Deploy Guide</span><span class="nav-label-compact">Guide</span></button>
     </nav>
   </header>
@@ -323,6 +329,96 @@ cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
           <p>This is a curated reading archive, not a solution leaderboard. Some entries are conventional ciphertexts; others are short inscriptions or undeciphered scripts. Each card states its evidence boundary and links to a source so that uncertainty is visible rather than hidden.</p>
         </div>
         <div id="unsolved-archive-grid" class="archive-grid" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- Tab: Verification Center -->
+    <div id="verification-center" class="tab-pane">
+      <section class="tool-panel">
+        <p class="eyebrow">EXACT EVIDENCE</p><h2>Verification Center</h2>
+        <p>Compare a proposed encryption with the published ciphertext. A score is never a substitute for an exact match.</p>
+        <label for="verify-expected">Expected ciphertext</label><textarea id="verify-expected" rows="4"></textarea>
+        <label for="verify-produced">Produced ciphertext</label><textarea id="verify-produced" rows="4"></textarea>
+        <button type="button" id="verify-run" class="worksheet-button">Compare exactly</button>
+        <pre id="verify-output" class="demo-output" aria-live="polite">Enter both streams to inspect the first mismatch.</pre>
+      </section>
+    </div>
+
+    <!-- Tab: Crib Lab -->
+    <div id="crib-lab" class="tab-pane"><section class="tool-panel">
+      <p class="eyebrow">HAND CRYPTANALYSIS</p><h2>Crib-Dragging Lab</h2>
+      <p>Slide a suspected plaintext fragment across the ciphertext and inspect the implied additive shifts.</p>
+      <label for="crib-cipher">Ciphertext</label><textarea id="crib-cipher" rows="3"></textarea>
+      <label for="crib-text">Crib</label><input id="crib-text" value="THE" maxlength="80">
+      <div class="demo-row"><label for="crib-offset">Offset</label><input id="crib-offset" type="number" value="0" min="0"><label for="crib-period">Period</label><input id="crib-period" type="number" value="1" min="1"></div>
+      <button type="button" id="crib-run" class="worksheet-button">Calculate implied shifts</button>
+      <pre id="crib-output" class="demo-output" aria-live="polite">Shifts will appear here.</pre>
+    </section></div>
+
+    <!-- Tab: Transposition Lab -->
+    <div id="transposition-lab" class="tab-pane"><section class="tool-panel">
+      <p class="eyebrow">VISUAL TRANSFORMATION</p><h2>Transposition Lab</h2>
+      <p>See a row-filled grid, keyword order, and reversible columnar transformation.</p>
+      <label for="transpose-text">Text</label><input id="transpose-text" value="MEETATNOONXXXXXX">
+      <label for="transpose-key">Keyword</label><input id="transpose-key" value="KEYS">
+      <div class="demo-row"><button type="button" id="transpose-enc" class="worksheet-button">Encrypt</button><button type="button" id="transpose-dec" class="worksheet-button">Decrypt</button></div>
+      <pre id="transpose-output" class="demo-output" aria-live="polite">Output will appear here.</pre>
+    </section></div>
+
+    <!-- Tab: Language Dashboard -->
+    <div id="language-dashboard" class="tab-pane"><section class="tool-panel">
+      <p class="eyebrow">SEPARATE SIGNALS</p><h2>Language Score Dashboard</h2>
+      <p>These metrics are separate clues, not a combined proof. Random-control comparison is intentionally labeled as a rough baseline.</p>
+      <label for="score-input">Candidate text</label><textarea id="score-input" rows="5"></textarea>
+      <button type="button" id="score-run" class="worksheet-button">Measure signals</button>
+      <div id="score-output" class="score-cards" aria-live="polite"></div>
+    </section></div>
+
+    <!-- Tab: Local Assistant -->
+    <div id="local-assistant" class="tab-pane">
+      <section class="assistant-panel">
+        <p class="eyebrow">OFFLINE RESEARCH AIDE</p>
+        <h2>Local Cryptanalysis Assistant</h2>
+        <p class="lead">This planner runs in your browser. It uses transparent statistics to suggest next steps; it does not upload text or claim to solve a cipher.</p>
+        <label for="assistant-input">Ciphertext</label>
+        <textarea id="assistant-input" rows="6" placeholder="Paste letters, numbers, or symbols here"></textarea>
+        <button type="button" id="assistant-run" class="worksheet-button">Analyze locally</button>
+        <button type="button" id="assistant-save" class="worksheet-button" disabled>Download session JSON</button>
+        <label for="assistant-load">Load saved session</label>
+        <input id="assistant-load" type="file" accept="application/json,.json">
+        <pre id="assistant-output" class="demo-output" aria-live="polite">Recommendations will appear here.</pre>
+      </section>
+    </div>
+
+    <!-- Tab: Symbol Guide -->
+    <div id="symbol-guide" class="tab-pane">
+      <section class="symbol-guide-panel">
+        <p class="eyebrow">VISUAL LITERACY</p>
+        <h2>How to Read a Cipher Symbol</h2>
+        <p class="lead">Not every mark on a cryptographic artwork is ciphertext. Use this guide to distinguish letters, separators, padding, notation, and visual clues before attempting a decode.</p>
+        <div class="symbol-grid">
+          <article><span class="symbol-swatch">A</span><h3>Letter</h3><p>A symbol included in the canonical transcription and operated on by the cipher.</p></article>
+          <article><span class="symbol-swatch">·</span><h3>Delimiter</h3><p>A visible boundary that may separate words or groups, but is not automatically encrypted.</p></article>
+          <article><span class="symbol-swatch">□</span><h3>Null or padding</h3><p>A filler used to complete a grid. It must be documented before it is removed.</p></article>
+          <article><span class="symbol-swatch">→</span><h3>Transformation</h3><p>Notation showing movement from plaintext to ciphertext, not a character in the message.</p></article>
+          <article><span class="symbol-swatch">◎</span><h3>Visual clue</h3><p>A feature that may guide interpretation without proving a key or plaintext.</p></article>
+          <article><span class="symbol-swatch">✓</span><h3>Verified</h3><p>An exact round-trip result independently checked. Scores alone do not earn this mark.</p></article>
+        </div>
+        <div class="symbol-workflow"><strong>Hand workflow:</strong> inventory marks → record positions → compare with the machine transcription → test hypotheses → document confidence.</div>
+        <section class="guided-demo" aria-labelledby="guided-demo-title">
+          <h3 id="guided-demo-title">Try a cipher by hand</h3>
+          <p>Enter a short word and choose a Caesar shift. The result shows the transformation without hiding the arithmetic.</p>
+          <div class="demo-row"><label for="demo-text">Plaintext</label><input id="demo-text" value="KRYPTOS" maxlength="40" autocomplete="off"><label for="demo-shift">Shift</label><input id="demo-shift" type="number" value="3" min="0" max="25"></div>
+          <button type="button" id="run-demo" class="worksheet-button">Show transformation</button>
+          <pre id="demo-output" class="demo-output" aria-live="polite">K → N    R → U    Y → B ...</pre>
+        </section>
+        <section class="symbol-worksheet" aria-labelledby="worksheet-title">
+          <h3 id="worksheet-title">Printable symbol worksheet</h3>
+          <p>Use this small worksheet before decoding an unfamiliar inscription. It stays in your browser and is designed to print cleanly.</p>
+          <label for="symbol-notes">Observations and confidence notes</label>
+          <textarea id="symbol-notes" rows="8" placeholder="Mark, position, repetition, transcription status, first hypothesis..."></textarea>
+          <button type="button" id="print-symbol-worksheet" class="worksheet-button">Print worksheet</button>
+        </section>
       </section>
     </div>
 
