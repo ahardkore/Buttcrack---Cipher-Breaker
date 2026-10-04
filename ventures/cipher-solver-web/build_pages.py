@@ -616,18 +616,70 @@ def wiki_sidebar(current: str) -> str:
     </aside>"""
 
 
+# One illustration per family keeps the generated pages visually useful without
+# pretending that a generic wheel diagram is a photograph of every cipher. The
+# SVGs are original explanatory artwork; the historical pages use individually
+# selected Wikimedia Commons files instead.
+WIKI_FAMILY_FIGURES = {
+    "shift": ("cipher-wheel.svg", "Shifted alphabet wheel"),
+    "polyalphabetic": ("vigenere-grid.svg", "Polyalphabetic cipher tableau"),
+    "substitution": ("frequency-bars.svg", "Letter frequency profile"),
+    "transposition": ("transposition-grid.svg", "Columnar transposition grid"),
+    "polygraphic": ("polybius-grid.svg", "Polygraphic coordinate grid"),
+    "wheel": ("rotor-stack.svg", "Stacked cipher rotors"),
+    "xor": ("encoding-packet.svg", "Byte stream and XOR layer"),
+    "code": ("morse-dots.svg", "Morse code symbol table"),
+    "encoding": ("encoding-packet.svg", "Encoding layer diagram"),
+}
+
+# Wikimedia Commons is used only for pages where a real historical object or
+# document adds information. Special:FilePath is stable, hotlinkable, and
+# redirects to the current original file; the Commons page is linked in the
+# caption so the author and license remain visible to readers.
+WIKI_DOCUMENTARY_FIGURES = {
+    "history-of-codebreaking.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Enigma.JPG",
+        "https://commons.wikimedia.org/wiki/File:Enigma.JPG",
+        "German Enigma machine on display",
+    ),
+    "famous-ciphers.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Zodiac%20Z340%20cipher%20key.png",
+        "https://commons.wikimedia.org/wiki/File:Zodiac_Z340_cipher_key.png",
+        "The symbol key for the Zodiac Z340 cipher",
+    ),
+    "famous-cryptanalysts.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Alan%20Turing%20Aged%2016.jpg",
+        "https://commons.wikimedia.org/wiki/File:Alan_Turing_Aged_16.jpg",
+        "Alan Turing at age sixteen",
+    ),
+    "unsolved-ciphers.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/4abc_-_San_Francisco_Chronicle_Dripping_Pen_Card_November_8_1969_340_Cipher_COLOR.jpg",
+        "https://commons.wikimedia.org/wiki/File:4abc_-_San_Francisco_Chronicle_Dripping_Pen_Card_November_8_1969_340_Cipher_COLOR.jpg",
+        "The Zodiac Killer's 340-symbol cipher card",
+    ),
+}
+
+
 def wiki_figure(wiki: dict) -> str:
-    """Original explanatory SVGs; documentary images remain separately sourced."""
-    asset = "transposition-grid.svg" if wiki.get("family") == "history" else "cipher-wheel.svg"
-    alt = (
-        "Original keyed-alphabet diagram"
-        if asset == "cipher-wheel.svg"
-        else "Original columnar-transposition diagram"
+    """Return a relevant, correctly attributed article illustration."""
+    documentary = WIKI_DOCUMENTARY_FIGURES.get(wiki.get("slug"))
+    if documentary:
+        image, source, alt = documentary
+        return (
+            f'<figure class="wiki-figure wiki-documentary"><img src="{image}" alt="{alt}" '
+            'loading="lazy" decoding="async">'
+            f'<figcaption>{alt}. Publicly available through '
+            f'<a href="{source}" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>; '
+            "see the source page for the author and license.</figcaption></figure>"
+        )
+
+    asset, alt = WIKI_FAMILY_FIGURES.get(
+        wiki.get("family"), ("cipher-wheel.svg", "Cipher alphabet diagram")
     )
     return (
-        f'<figure class="wiki-figure"><img src="{asset}" alt="{alt}">'
-        f"<figcaption>{alt}. Original diagram prepared for the Cipher Wiki; "
-        "not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>"
+        f'<figure class="wiki-figure"><img src="{asset}" alt="{alt}" loading="lazy" decoding="async">'
+        f"<figcaption>{alt}. Original explanatory artwork prepared for the Cipher Wiki; "
+        "it is not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>"
     )
 
 
@@ -684,7 +736,7 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str, faq_html: str, wiki: 
         <div class="wiki-article-body">
           {wiki.get("infobox", "")}
           {wiki.get("lead", "")}
-          {wiki_figure(wiki)}
+          {wiki_figure({**wiki, "slug": slug})}
           {toc}
 {body_ids}
         </div>
