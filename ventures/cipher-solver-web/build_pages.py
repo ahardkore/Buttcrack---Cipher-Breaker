@@ -2433,6 +2433,10 @@ def main() -> None:
     check_internal_links(written)
     print(f"checked: no broken internal links across {len(written)} pages")
 
+    # The book landing page is hand-written rather than generated, but it is
+    # part of the published site and has its own canonical URL.
+    urls.append("book.html")
+
     # The Kryptos explorer is a hand-written app rather than a generated page,
     # but it is part of this site once build_site.py mounts it, so it belongs in
     # the sitemap like everything else.
