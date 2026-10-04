@@ -131,13 +131,13 @@ const CIPHERS_DATA = {
     status: "UNSOLVED",
     category: "Paradigm Kryptos",
     challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk10",
-    mechanism: "Unknown",
-    key: "No verified key or construction.",
+    mechanism: "Published specification: H(4×4) → H(3×3) → Q(?) → T(?). Matrix keys, Quagmire parameters, transposition width, and conventions remain unknown.",
+    key: "No verified matrices, Quagmire key, transposition key, or construction.",
     ciphertext: "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
     plaintext: "",
     frontier: "No verified plaintext has been recovered. Apparent word fragments or high-scoring arrangements are research candidates, not decryptions.",
-    method: "No public solution method is established. The explorer retains only the source ciphertext until a candidate can be independently re-encrypted and verified against the complete challenge.",
-    notes: "The official Paradigm leaderboard listed PK10 as unsolved on 2026-10-01."
+    method: "The correct attack target is the published H(4×4) → H(3×3) → Q(?) → T(?) pipeline. The 504-letter length gives 126 four-letter Hill blocks, 168 three-letter Hill blocks, and 42 joint 12-letter alignment units. Earlier additive {7,8,9}-clock and 12×42 candidates do not implement the published pipeline and are retained only as negative search artifacts.",
+    notes: "The official Paradigm leaderboard listed PK10 with no solver on 2026-10-04. Architecture audit: kryptos/PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md."
   },
   K1: {
     id: "K1",
