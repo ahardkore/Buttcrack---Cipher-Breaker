@@ -7,22 +7,24 @@
 **Submission Manifest**: `pk_submission_manifest.json`  
 **Test Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% reproducible)
 
+> **Canonical-status update (2026-10-03):** The ledger immediately below is the current, exact-round-trip record sourced from `pk_submission_manifest.json` and `pk_verified_solutions.json`. Detailed candidate material retained later in this dossier is historical research context, not a replacement for those canonical records.
+
 ---
 
 ## 1. Master Challenge Ledger & Verification Status
 
 | Challenge | Length ($N$) | Core Cryptographic Mechanism | Verified Cryptanalytic Status | Linguistic & Information Metrics |
 | :--- | :--- | :--- | :--- | :--- |
-| **PK1** | 192 | Rail Fence / Classical Transposition | **SOLVED** | Official Plaintext Verified |
-| **PK2** | 350 | Vigenère on Keyed Kryptos Alphabet | **SOLVED** | Official Plaintext Verified (IoC `0.07095`) |
-| **PK3** | 280 | Quagmire III Mixed Alphabet | **SOLVED** | Official Plaintext Verified |
-| **PK4** | 224 | Columnar Transposition + Substitution | **SOLVED** | Official Plaintext Verified |
-| **PK5** | 272 | Polyalphabetic Quagmire IV | **SOLVED** | Official Plaintext Verified |
-| **PK6** | 315 | Double Columnar Transposition | **SOLVED** | Official Plaintext Verified |
-| **PK7** | 279 | Periodic Autokey / Mixed Quagmire | **SOLVED** | Official Plaintext Verified |
-| **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
-| **PK9** | 144 | `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` | **SOLVED — exact 144/144 round trip** | Plaintext and SHA-256 recorded in canonical manifest |
-| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | See `PK10_BREAK_REPORT_2026-10-04.md` |
+| **PK1** | 192 | Quagmire III (KRYPTOS alphabet; `PROVENANCE`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK2** | 350 | Complete columnar transposition (50×7; `MARGINS`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK3** | 280 | Quagmire III (sum-clock p10 + p8; period 40) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK4** | 224 | Columnar transposition T(8) → Quagmire III Q(5) → Q(9) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK5** | 272 | Columnar transposition T(8) → Quagmire III Q(224) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK6** | 315 | T(9) → T(9) → Quagmire III Q(6) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK7** | 279 | Quagmire III Q(6) + Hill cipher 3×3 (KRYPTOS alphabet) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK8** | 153 | Four sequential Quagmire III layers (`METE` → `METER` → `METIER` → `MASTERY`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK9** | 144 | Quagmire III `CLEPSYDRA` → Spiral(12) → T(`BEAMWORK`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK10** | 504 | Cumulative Quagmire III / columnar / Hill / spiral pipeline | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
 
 ---
 

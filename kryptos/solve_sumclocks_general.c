@@ -6,7 +6,8 @@
 #include <time.h>
 
 #define N 144
-static const char CT[N + 1] = "UQGIGYVYYCUIXEUUQGHWKVOWZEYCVWDUFUVUGBWZHYCGJWHGFLHETWDUWCCJGBWZHZCUFEEJGBNZHECUBEWXHCUECGVFEJHECCJGBWZGACURZWVFEJGBCUFBWZHFCLHETEZFVRGACUBEEJGBCUZGAY";
+/* This experiment uses a 12 x 12 ciphertext grid, so the corpus is exactly N characters. */
+static const char CT[N + 1] = "UQGIGYVYYCUIXEUUQGHWKVOWZEYCVWDUFUVUGBWZHYCGJWHGFLHETWDUWCCJGBWZHZCUFEEJGBNZHECUBEWXHCUECGVFEJHECCJGBWZGACURZWVFEJGBCUFBWZHFCLHETEZFVRGACUBEEJGB";
 static const char KRYPTOS[27] = "KRYPTOSABCDEFGHIJLMNQUVWXZ";
 static const char STD[27]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -18,7 +19,7 @@ void load_quadgrams(const char *path) {
         for (int b = 0; b < 26; b++)
             for (int c = 0; c < 26; c++)
                 for (int d = 0; d < 26; d++)
-                    quad[a][b][c][d] = -10.0f;
+                    quad[a][b][c][d] = -9.5f;
 
     FILE *f = fopen(path, "r");
     if (!f) {
@@ -26,33 +27,17 @@ void load_quadgrams(const char *path) {
         exit(1);
     }
     char line[128];
-    double total = 0;
-    long long counts[26][26][26][26] = {0};
-
     while (fgets(line, sizeof(line), f)) {
         char q[5];
-        long long cnt;
-        if (sscanf(line, "%4s %lld", q, &cnt) == 2) {
+        float score;
+        /* english_quads.tsv stores precomputed log scores, not raw counts. */
+        if (sscanf(line, "%4s %f", q, &score) == 2) {
             int a = q[0] - 'A', b = q[1] - 'A', c = q[2] - 'A', d = q[3] - 'A';
-            if (a>=0 && a<26 && b>=0 && b<26 && c>=0 && c<26 && d>=0 && d<26) {
-                counts[a][b][c][d] = cnt;
-                total += cnt;
-            }
+            if (a >= 0 && a < 26 && b >= 0 && b < 26 && c >= 0 && c < 26 && d >= 0 && d < 26)
+                quad[a][b][c][d] = score;
         }
     }
     fclose(f);
-
-    float log_tot = log10(total);
-    for (int a = 0; a < 26; a++)
-        for (int b = 0; b < 26; b++)
-            for (int c = 0; c < 26; c++)
-                for (int d = 0; d < 26; d++) {
-                    if (counts[a][b][c][d] > 0) {
-                        quad[a][b][c][d] = log10((double)counts[a][b][c][d]) - log_tot;
-                    } else {
-                        quad[a][b][c][d] = -9.5f;
-                    }
-                }
 }
 
 // Coordinate descent for arbitrary set of periods
@@ -142,7 +127,7 @@ void test_clocks(ClockConfig cfg, const char *alph_name, int use_kryptos, int nu
 }
 
 int main() {
-    load_quadgrams("english_quadgrams.txt");
+    load_quadgrams("english_quads.tsv");
     printf("Quadgrams loaded.\n");
     return 0;
 }

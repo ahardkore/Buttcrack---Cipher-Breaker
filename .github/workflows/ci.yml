@@ -39,6 +39,35 @@ jobs:
       - name: Lint
         run: ruff check .
 
+  repository-integrity:
+    name: repository integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The installable package tests do not traverse the research archive or
+      # Markdown source.  Keep those published files parseable and navigable,
+      # then verify the canonical PK1–PK10 records independently.
+      - name: Check tracked source syntax and local documentation links
+        run: python scripts/audit_repository.py
+
+      # These are standalone historical/research programs rather than one
+      # library target, so validate each translation unit independently.
+      - name: Parse Kryptos C and shell research tools
+        run: |
+          find kryptos -maxdepth 1 -type f -name '*.c' -print0 | sort -z | xargs -0 -r -n1 gcc -fsyntax-only
+          bash -n kryptos/push_to_github.sh kryptos/run_pk9_resumable.sh kryptos/relaunch_pk9_sweeps.sh
+
+      - name: Verify Paradigm Kryptos canonical records
+        run: |
+          python kryptos/audit_all_deliverables_crosscheck.py
+          python kryptos/test_full_suite_reproducibility.py
+
   tests:
     name: tests (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
