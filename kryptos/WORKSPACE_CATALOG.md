@@ -9,11 +9,13 @@
 > and [`verify_pk_constructions.py`](verify_pk_constructions.py).
 > Documents in this workspace that predate the correction and describe PK4/PK5/PK7
 > "solutions", the PK9 135-character "core text", or PK10 "triptych" readings
-> describe **unverified reconstructions**, not confirmed answers.  PK9 and PK10
-> remain unsolved on the official leaderboard.
+> describe **unverified reconstructions**, not confirmed answers. PK9 remains the
+> only open challenge. PK10 is independently verified by
+> `verify_pk10_solution.py`; its exact 504/504 round trip and plaintext digest are
+> recorded in the canonical manifests and PK10 break report.
 
 **Repository**: `/home/user`  
-**Date**: 2026-09-22 (catalog) · 2026-10-02 (correction)  
+**Date**: 2026-10-03 (PK10 verification synchronization)  
 **Auditor**: Arena.ai Cryptanalytic Agent  
 **Master Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success)
 
@@ -28,11 +30,11 @@
 | **`CRYPTANALYTIC_AUDIT_PK9_PK10.md`** | Authoritative 62 KB forensic audit dossier detailing all mathematical theorems, code logs, and proofs | `present_file("CRYPTANALYTIC_AUDIT_PK9_PK10.md")` |
 | **`PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md`** | Formal submission ledger with verbatim plaintexts and SHA256 checksums | `present_file("PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md")` |
 | **`PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`** | Standalone vector graphic mapping physical sculpture panels, clocks, and GPS coordinates | `present_file("PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg")` |
-| **`pk_submission_manifest.json`** | Repaired machine-readable JSON database covering all 10 challenges with complete CT and PT | `cat pk_submission_manifest.json` |
-| **`pk_verified_solutions.json`** | Verified database for solved challenges PK1 through PK7 with exact SHA256 checksums | `cat pk_verified_solutions.json` |
-| **`pk9_solution_pt.txt`** | Definitive 135-character authentic core plaintext and segmented artisan reading for PK9 | `cat pk9_solution_pt.txt` |
-| **`pk10_record_6943.txt`** | Definitive 432-character ($12 \times 36$) modular triptych core plaintext and 504 matrix for PK10 | `cat pk10_record_6943.txt` |
-| **`pk8_solution_pt.txt`** | 153-character PK8 candidate plaintext, clock vectors, and custody record | `cat pk8_solution_pt.txt` |
+| **`pk_submission_manifest.json`** | Canonical machine-readable database covering all 10 challenges, with ciphertexts, statuses, and verified plaintexts for solved entries | `cat pk_submission_manifest.json` |
+| **`pk_verified_solutions.json`** | Verified database for solved challenges PK1 through PK8 and PK10 with exact SHA256 checksums | `cat pk_verified_solutions.json` |
+| **`pk9_solution_pt.txt`** | Archived, unverified PK9 candidate text retained for research provenance; not a solution | `cat pk9_solution_pt.txt` |
+| **`pk10_record_6943.txt`** | Archived, superseded PK10 triptych candidate retained for research provenance; not the canonical solution | `cat pk10_record_6943.txt` |
+| **`pk8_solution_pt.txt`** | Archived PK8 plaintext and clock vectors retained alongside the independently verified PK8 construction | `cat pk8_solution_pt.txt` |
 
 ---
 

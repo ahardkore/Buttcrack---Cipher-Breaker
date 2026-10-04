@@ -28,13 +28,13 @@
 
 9. Historical narrative and source criticism
 10. Images, publication, and revision
-11. Open investigations: PK9 and PK10
+11. Open investigation: PK9; verified PK10 case study
 
 **Reference matter:** glossary, bibliography, index, figure list, table list, source ledger, and image-rights ledger.
 
 The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control.
 
-> **Status notice.** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK9 remains open; PK10 is now independently verified by `verify_pk10_solution.py`. Historical sections below the 2026-10-04 update retain pre-break PK10 hypotheses for provenance. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof.
+> **Status notice (updated 2026-10-03).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK9 remains the only open Paradigm Kryptos challenge; PK10 is independently verified by `verify_pk10_solution.py`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain pre-break PK10 hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof.
 
 ---
 
@@ -203,9 +203,13 @@ The Hill layer changes the attack problem by coupling letters in blocks. The cha
 
 PK8 is presented as a verified example of multiple periodic keyed shifts. The chapter explains gauge freedom, effective parameter dimension, modulo-13 projections, and why a strong periodic statistic is not sufficient to identify the key family.
 
-## 19. PK9 and PK10: intentionally excluded from this edition
+## 19. PK9 open frontier and PK10 verified case study
 
-This edition does not publish the active PK9 or PK10 research dossier. They are reserved for a separate future volume after exact validation. No PK9 or PK10 claim is part of this manuscript.
+PK9 remains the only open challenge in the current Paradigm Kryptos record. Its plaintext, key material, padding, and transposition order are not accepted without an exact re-encryption check against the 144-letter source ciphertext. The bounded experiments and negative results are retained as an active research record.
+
+PK10 is not part of that open frontier. Its complete 504-letter construction is independently verified in both directions by `kryptos/verify_pk10_solution.py`: the recovered plaintext encodes to the canonical ciphertext exactly, and decoding the canonical ciphertext recovers the same plaintext. The verified construction is the cumulative pipeline `Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO) → T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS) → Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK) → Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST) → Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY) → Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, over `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The normalized plaintext is 504 characters, begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
+
+The long pre-break PK10 dossier is still useful as a record of rejected models, but it is included only under an explicit **OPEN-WORK ARCHIVE** label below. It is not a current solution claim.
 
 # Part VI — Reproducible cryptanalysis
 
@@ -1652,13 +1656,15 @@ A failed attack is not a failed researcher. It is a documented experiment whose 
 
 Some failures are strong: an exact algebraic consistency condition fails at many positions. Some are moderate: an exhaustive dictionary search finds no candidate above the noise floor. Some are weak: an optimizer stops at a local plateau. The manuscript labels these differently so that readers can understand how much each result tells us.
 
-# Part XIV — Open investigations retained as failures
+# Part XIV — PK9 open investigation and PK10 verification record
 
 ## 42. PK9 and PK10: what can be said responsibly
 
-PK9 and PK10 are retained here only as records of attempted methods and failed tests. This is not a solution chapter. No plaintext, key, or architecture is accepted for either challenge in this edition.
+PK9 remains open and is retained here as a record of attempted methods, bounded negative tests, and the evidence still needed for acceptance. No PK9 plaintext, key, padding scheme, or transposition order is accepted without a full re-encryption check against the 144-letter source ciphertext.
 
-The retained PK9 work includes tests of multi-clock additive schedules, vocabulary-based wheel searches, columnar and double-columnar arrangements, route and grid transformations, crib searches, classical families, and optimization-based defect minimization. The retained PK10 work includes documented exploratory tests where they illuminate method. Every such entry is framed as “this tested model did not produce a validated answer,” not “the challenge cannot use this model.”
+PK10 has a different status. The canonical construction is independently verified by `kryptos/verify_pk10_solution.py` with exact 504/504 encode and decode checks. The pre-break PK10 experiments below are preserved only as clearly labelled archival evidence of rejected models; they must not be read as the current PK10 status.
+
+The retained PK9 work includes tests of multi-clock additive schedules, vocabulary-based wheel searches, columnar and double-columnar arrangements, route and grid transformations, crib searches, classical families, and optimization-based defect minimization. Every such entry is framed as “this tested model did not produce a validated answer,” not “the challenge cannot use this model.”
 
 ## 43. How an open problem remains useful to a beginner
 
@@ -6290,13 +6296,13 @@ prose that `scripts/calibrate_scoring.py` scores when it re-measures the
 confidence thresholds in `buttcrack/lang.py`.
 
 
---- TECHNICAL REFERENCE: THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md ---
+--- TECHNICAL REFERENCE (SYNCHRONIZED): THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md ---
 
 # THE KRYPTOS DECRYPTION MANUSCRIPT
 ## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 
 **Author**: Arena.ai Cryptanalytic Agent  
-**Date of Record**: September 2026  
+**Date of Record**: 3 October 2026
 **Repository**: `/home/user`  
 **Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
 
@@ -6305,11 +6311,11 @@ confidence thresholds in `buttcrack/lang.py`.
 ## TABLE OF CONTENTS
 1. **Prologue: The CIA Sculpture & The 36-Year Mystery**
 2. **Chapter 1: The Narrative Arc of Paradigm Kryptos (PK1 – PK7)**
-3. **Chapter 2: Decoupling and Breaking PK8 ($N = 153$)**
-4. **Chapter 3: Cracking PK9 — The 135-Character Artisan Text ($N = 144$)**
-5. **Chapter 4: Cracking PK10 — The Modular Copper Triptych ($N = 504$)**
-6. **Chapter 5: The Dual-Cipher GPS Sculpture Theorem**
-7. **Chapter 6: Grand Cryptosystem Synthesis & Universal Invariants**
+3. **Chapter 2: PK8 — Verified Solution and Reproducible Method ($N = 153$)**
+4. **Chapter 3: PK9 — Open Research Frontier ($N = 144$)**
+5. **Chapter 4: PK10 — Independently Verified Construction ($N = 504$)**
+6. **Chapter 5: Verification Boundaries and Research Integrity**
+7. **Chapter 6: Current Status and Reproducibility**
 8. **Chapter 7: Master Solutions Database & Verification Manifest**
 9. **Epilogue: Complete Suite Reproducibility Assurance**
 
@@ -6325,7 +6331,7 @@ Over three decades, while K1, K2, and K3 yielded to classical cryptanalysis, K4 
 K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
 ```
 
-This manuscript provides the definitive, publication-ready mathematical and historical record explaining how the entire cryptosystem functions, from the opening accession log of PK1 to the final mathematical locks of PK9 and PK10.
+This manuscript records the reproducible constructions in the Paradigm Kryptos suite, distinguishes the independently verified PK10 break from the still-open PK9 challenge, and preserves rejected hypotheses without promoting them to solutions.
 
 ---
 
@@ -6369,169 +6375,101 @@ Unlike disjoint cryptographic puzzles, the challenges of Paradigm Kryptos form a
 
 ---
 
-## CHAPTER 2: DECOUPLING AND BREAKING PK8 ($N = 153$)
+## CHAPTER 2: PK8 — VERIFIED SOLUTION AND REPRODUCIBLE METHOD ($N = 153$)
 
-### 2.1 The Cryptographic Engine & Period Progression
-Following the master smith's instruction in PK7, **PK8** ($N = 153$) initiates the physical forging of the needle.
-- **Cipher Mechanism**: Additive 4-Clock Quagmire III system over the keyed Kryptos alphabet:
-  $$P_i = \left( C_i - (q_4[i \bmod 4] + q_5[i \bmod 5] + q_6[i \bmod 6] + q_7[i \bmod 7]) \right) \bmod 26$$
-- **Aggregate Keystream Period**: $\operatorname{lcm}(4, 5, 6, 7) = 420$.
-- **Degrees of Freedom**: $4 + 5 + 6 + 7 - 3 = 19$ independent parameters over $\mathbb{Z}_{26}$.
-- **Historical Solved Status**: On September 6, 2026, Kevin Hu (`@_newhaiku`) solved PK8 after 86 days; verified by Dan Robinson. Official plaintext sealed in custody.
+PK8 is a verified four-layer Quagmire III construction over the keyed alphabet `KRYPTOSABCDEFGHIJLMNQUVWXZ`. Its encryption order is:
 
-### 2.2 The Orthogonal Sub-Lattice Stride Decoupling Theorem
-Because $N = 153 < 420$, naive statistical search encounters an unidentifiability barrier. However, by exploiting the **Least Common Multiples** of clock subsets, individual clocks can be completely isolated with zero crosstalk:
-1. **Stride $d = 60 = \operatorname{lcm}(4, 5, 6)$ (Isolates Clock 7)**:
-   $60 \equiv 0 \pmod{4}$, $60 \equiv 0 \pmod{5}$, $60 \equiv 0 \pmod{6}$.
-   Clocks 4, 5, and 6 vanish identically ($\Delta = 0$). Evaluated all 4,826,809 parity-constrained states in $\mathbb{Z}_{26}^7$ via `solve_exact_q7_pk8.c`; uniquely identified global maximum-likelihood Clock 7:
-   $$\mathbf{Q_7 = [0, 19, 5, 9, 12, 4, 4] \implies K \quad N \quad O \quad C \quad F \quad T \quad T} \quad (\text{Mnemonic: } \mathbf{KNOC} / \mathbf{KNOT})$$
-2. **Stride $d = 84 = \operatorname{lcm}(4, 6, 7)$ (Isolates Clock 5)**:
-   Clocks 4, 6, and 7 vanish identically. Evaluated all 456,976 states in $\mathbb{Z}_{26}^5$; resolved global ML Clock 5:
-   $$\mathbf{Q_5 = [0, 25, 12, 5, 18] \implies K \quad Z \quad F \quad O \quad M}$$
-3. **Stride $d = 140 = \operatorname{lcm}(4, 5, 7)$ (Isolates Clock 6)**:
-   Clocks 4, 5, and 7 vanish identically. Evaluated all 11,881,376 states in $\mathbb{Z}_{26}^6$; resolved global ML Clock 6:
-   $$\mathbf{Q_6 = [0, 0, 8, 17, 10, 18] \implies K \quad K \quad B \quad L \quad D \quad M}$$
-4. **Decoupled Stream $Y = C - (Q_5 + Q_6 + Q_7)$ (Isolates Clock 4)**:
-   Subtracting the three isolated clocks reduces $Y$ to a pure period-4 monoalphabetic stream:
-   - **Slice 1 Monogram IoC**: Measured at **`0.06117`** (**authentic literary English IoC**).
-   - Global ML Clock 4: $\mathbf{Q_4 = [17, 1, 7, 22] \implies L \quad R \quad A \quad V}$.
-
-### 2.3 The Quadgram/Lexical Maximizer State
-In parallel with orthogonal stride decoupling, simulated annealing on English quadgrams and dynamic programming word segmentation converged to the **stationary quadgram frontier**:
-$$\begin{aligned}
-Q_4 &= [0, 6, 13, 20] \quad (\text{Arithmetic progression: } +6, +7, +7, +6 = 26 \equiv 0 \bmod 26) \\
-Q_5 &= [3, 4, 15, 0, 10] \quad (\text{Proven unique global maximum out of } 11,881,376 \text{ states}) \\
-Q_6 &= [3, 18, 15, 25, 20, 4] \\
-Q_7 &= [10, 2, 24, 0, 9, 5, 17] = \operatorname{rot}_4(Q_7^{\text{PK10}}) \quad (\mathbf{q}_7 = [0, 1, 1, 1, 0, 0, 0]_2)
-\end{aligned}$$
-
-- **Plaintext Candidate ($N = 153$)**:
-  ```text
-  NRHPXXOEICEJAANOSSOYBUIFLBVVOGFUNOITTHSETEHFANCPLBGLSNTEEVNVZBDELQBONIATIQBSFKTTTBAUGNTHEELHASOCENDFGTHSYORTSUODSEDAWPEYONHEACLITTDHUSSIKEYJMHELODYUDOPTN
-  ```
-- **Metrics**: Score `-7.3259` | **71.2% lexical word coverage** (109 / 153 chars) | Monogram IoC **`0.05022`** | 38 recovered English words (`ICE`, `FUN`, `SET`, `FAN`, `THEE`, `HEEL`, `HAS`, `END`, `ORTS`, `DAW`, `YON`, `LIT`, `KEY`, `MELODY`, `OPT`).
-
----
-
-## CHAPTER 3: CRACKING PK9 — THE 135-CHARACTER ARTISAN TEXT ($N = 144$)
-
-### 3.1 The Two-Stage Columnar Transposition & Reflection Invariants
-PK9 features an inner two-stage columnar transposition followed by an outer period-28 polyalphabetic substitution:
-$$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
-
-1. **Stage 2 Invariant ($p_2$)**:
-   $$p_2 = [7, 0, 5, 2, 4, 3, 6, 1]$$
-   Governed by an exact alternating reflection law in $\mathbb{Z}_8$:
-   $$\forall k \in \{0, 1, 2, 3\}, \quad p_2[2k] + p_2[2k+1] = 7$$
-   Pairwise difference spans $|p_2[2k] - p_2[2k+1]|$ are the descending odd integers $\{7, 3, 1, 5\}$, proving an intentional geometric fold across the matrix centerline ($x = 3.5$).
-2. **Stage 1 Invariant ($p_1$)**:
-   $$p_1 = [15, 1, 3, 7, 6, 0, 17, 9, 13, 12, 5, 4, 2, 10, 11, 14, 16, 8]$$
-   Exhibits bilateral reflection symmetry of complementary pairs in $\mathbb{Z}_{18}$ ($x + y = 17$).
-
-### 3.2 The 9-Character Boundary Padding Theorem ($144 - 9 = 135$)
-Raw ciphertext length is $N = 144 = 18 \times 8$. Removing 5 null padding characters at the head (`JVRMB`) and 4 null padding characters at the tail (`AUON`) exposes the authentic **135-character artisan text**:
-$$144 - (5 + 4) = 135 = 15 \times 9 = 27 \times 5$$
-
-### 3.3 Multi-Word Polyalphabetic Interlocking Proof (Phases 0 and 17)
-The period-28 substitution schedule is governed by 28 shifts $s_{28}$. An exhaustive trace across all positions sharing Phase 0 and Phase 17 proves mathematical rigidity:
-- **Phase 17 ($s[17] = 23$)**: Simultaneously generates `'E'` in **`ORES`**, `'S'` in **`FAT SERED`**, `'H'` in **`THEE DAMES`**, and `'Q'` in **`ORD. Q. BOOM`**. Changing $s[17]$ from 23 to 6 destroys three confirmed English words.
-- **Phase 0 ($s[0] = 25$)**: Simultaneously generates `'U'` in **`DEFUNCT`**, `'A'` in **`PRAY`**, `'A'` in **`ALSO`**, `'R'` in **`ORES`**, `'Q'` in **`QUNGLAYIM`**, and `'J'` in **`SKWJER`**.
-- *Mathematical Verdict*: The tokens **`ORD. Q. BOOM`** (Ordnance Quartermaster Boom), **`SKWJER`** (whitesmith phonetic `SKEWER`), and **`QUNGLAYIM`** (Theophilus Book III Ch. 19: `QUENCH LAY HIM`) are authentic intended Early Modern whitesmith orthography.
-
-### 3.4 Plaintext Exegesis (*De Diversis Artibus*, Book III)
 ```text
-Continuous Decrypted Core Plaintext:
-LARDADEFUNCTORDQBOOMRBETHSKWJEREASTYMARINPRAYIALMSOISEARVEMYLAILEBOTHEEDAMESQUNGLAYIMIRLOFATSEREDCISANTIDBYOUSCHESALSOMYRELIFORESSESTIA
-
-Verbatim Artisan Reading:
-LARD A DEFUNCT ORD. Q. BOOM R BETH SKWJER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY IM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA
-
-Regularized Modern English Reading (99.3% Valid Quadgrams, Score -4.7282):
-LARD A DEFUNCT ORDER BOOM R BETH SKEWER EAST Y MARIN PRAY I ALMS O I SEAR VE MY LAIL E BOTH HEED THE DAMES QUENCH LAY HIM IRLO FAT SEARED CIS AND ID BY US CHES ALSO MY RELIEF ORES SESTIA
+Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY)
 ```
 
----
+The normalized plaintext is:
 
-## CHAPTER 4: CRACKING PK10 — THE MODULAR COPPER TRIPTYCH ($N = 504$)
-
-### 4.1 The Chinese Remainder Theorem Single-Cycle Engine
-PK10 is governed by a three-clock additive Quagmire III system whose clock lengths are pairwise coprime:
-$$\operatorname{gcd}(7, 8) = \operatorname{gcd}(7, 9) = \operatorname{gcd}(8, 9) = 1$$
-- Aggregate Period: $\operatorname{lcm}(7, 8, 9) = 7 \times 8 \times 9 = \mathbf{504 \text{ characters}}$.
-- Because the ciphertext length equals the CRT period ($N = 504$), the keystream forms a **single non-repeating bijection**, maximizing diffusion ($99.1\%$ Shannon entropy).
-- **Proven Clocks**:
-  $$\begin{aligned}
-  Q_7 &= [0, 9, 5, 17, 10, 2, 24] \quad \implies \quad \mathbf{K \quad C \quad O \quad L \quad D \quad Y \quad X \quad (COLD \; LOCK)} \\
-  Q_8 &= [0, 8, 16, 15, 16, 3, 6, 20] \quad \implies \quad \mathbf{K \quad B \quad J \quad I \quad J \quad P \quad S \quad Q \quad (SKIP)} \\
-  Q_9 &= [16, 0, 19, 9, 7, 23, 6, 16, 18] \quad \implies \quad \mathbf{J \quad K \quad N \quad C \quad A \quad W \quad S \quad J \quad M}
-  \end{aligned}$$
-  - **Mnemonic Anchor**: Clock 7 spells **`COLD LOCK`** (`KCOLD`), aligning with Sanborn's K4 clue **`BERLIN CLOCK`** and Theophilus's cold water quenching instructions.
-  - **Information Metrics**: Monogram IoC = **`0.04563`** (97.7% of theoretical upper bound $\le 0.04788$); rare letters suppressed by **88%** ($66.5 \to 8$ in core, 1.85%).
-
-### 4.2 The $12 \times 12$ Modular Triptych Theorem ($3 \times 144 = 432$)
-The physical copper sculpture at CIA Langley consists of three curved panels. PK10's core grid maps directly to this architecture:
-$$\text{PK9 Dimension} = 144 = 12 \times 12$$
-$$\text{PK10 Core Dimension} = 432 = 3 \times 144 = 3 \times (12 \times 12)$$
-$$\text{PK10 Outer Padding} = 6 \text{ columns} \times 12 \text{ rows} = 72 \text{ characters} \implies 432 + 72 = 504$$
-
-The 36 core columns partition into three $12 \times 12$ panels:
-- **Panel A (Cols 0..11)**: **70.4% valid quadgrams** (Score `-6.5111`, bilateral symmetry $x+y=11$).
-- **Panel B (Cols 12..23)**: 61.1% valid quadgrams (Score `-6.7957`, 2-opt/3-opt stationary).
-- **Panel C (Cols 24..35)**: 59.3% valid quadgrams (Score `-7.0865`, 2-opt/3-opt stationary).
-
-### 4.3 Word-Boundary Dynamic Programming Segmentation (70.1% Coverage)
 ```text
-Row  0 (63.9%): IK [NOOK] [RAP] [PROW] N S T S I V H N B M [DAG] A V J P P X E S [ADD]
-Row  1 (69.4%): W S C I L [MAT] [BY] [VAS] [GET] [BLEAR] P I L A K C N [PROP] N W Q P
-Row  2 (69.4%): [AD] [YER] [KUUP] [TEA] [ADAY] [FIR] V E [GRUNGE] W R F R R L X V P
-Row  3 (63.9%): T M [IE] [TIM] [MAE] [BY] [KET] E V [ORT] [DE] [HANT] T G R I V M P M K [NE]
-Row  4 (66.7%): C G K [KOL] [GOD] [GOES] [PREDAMP] I H C K Y K [LI] C F N [DAY] [MA]
-Row  5 (83.3%): [ID] [YE] K V [OCH] [LY] H [FOU] [BIG] [LED] [AY] [SLY] [TON] [DESI] F F C
-Row  6 (66.7%): [VERI] [SLANT] S P [ELD] H H N M N [MY] [PA] V P F [WER] C K [LOCOU]
-Row  7 (72.2%): K E [VIVA] [GRUN] [WAIT] [TH] I H C Z [CHEVR] D V R [PHI] [HUNK] R
-Row  8 (72.2%): [OH] [AVE] [WA] [PRIA] P Q V W [PO] C I C K [ACT] V [CUM] [BAUL] F [NIG]
-Row  9 (86.1%): X P [DAL] [WRY] [SWE] [FA] [BYE] [APPS] P B W [SAH] [TD] [IF] [WESHPL]
-Row 10 (63.9%): [TU] K [FLY] [CIG] [ER] N D [GOI] [MOTH] K W K G W V T T [BRA] F [TRY] B
-Row 11 (63.9%): [ER] U L [YARR] F [WY] I G J V G P G Y [IAN] [HO] [UP] [ID] [AD] [BU] [BY] S U
+ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER
 ```
-**Total Lexical Word Coverage**: **303 / 432 characters (70.1%)**.
 
----
+It has length 153 and SHA-256 `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`. Applying the layers in the displayed order reproduces the official ciphertext; applying them in reverse decrypts it. The repository records this positive control so that the later PK10 construction can be evaluated against the same standard rather than by language score alone.
 
-## CHAPTER 5: THE DUAL-CIPHER GPS SCULPTURE THEOREM
+## CHAPTER 3: PK9 — OPEN RESEARCH FRONTIER ($N = 144$)
 
-The official geographical coordinates of the Kryptos sculpture at CIA Headquarters in Langley, Virginia, are:
-$$\mathbf{38^\circ \; 57' \; 6.5'' \text{ N}, \quad 77^\circ \; 8' \; 44'' \text{ W} \quad (77.1455^\circ \text{ W})}$$
+PK9 is the only remaining open challenge in the current Paradigm Kryptos record. The published ciphertext contains 144 letters. The repository records candidate architectures, exact-crib experiments, word-wheel searches, and negative results, but it does not accept a plaintext merely because it contains plausible artisan vocabulary or a high language score.
 
-The boundary padding characters across PK9 (9 chars) and PK10 (72 chars) arithmetically embed every single component of this coordinate:
+A valid PK9 submission must specify the complete construction: alphabet, normalization, keys or wheel values, padding treatment, transposition dimensions and order, and both encryption and decryption directions. The result must re-encrypt to all 144 published ciphertext letters exactly. The current bounded work and controls are documented in `kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`, `kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md`, and `kryptos/PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
 
-$$\begin{aligned}
-\text{Latitude Degrees (38° N)}:  &\quad \text{PK10: } \text{Sum}_{\text{Kr}}(\text{Col } 1) - \text{Sum}_{\text{Kr}}(\text{Col } 5) = 166 - 128 = \mathbf{38} \\
-\text{Latitude Minutes (57' N)}:  &\quad \text{PK9: }  \text{Sum}_{\text{Kr}}(\text{J V R M}) = 16 + 22 + 1 + 18 = \mathbf{57} \\
-\text{Latitude Seconds (6'' N)}:  &\quad \text{PK9: }  \text{Sum}_{\text{Kr, 1-idx}}(\text{All 9: } \text{JVRMBAUON}) = 126 \equiv \mathbf{6 \pmod{60}} \\
-\text{Longitude Degrees (77° W)}: &\quad \text{PK10: } \text{Sum}_{\text{Std}}(\text{Row } 0 \text{ Pad: } \text{LUJDPT}) = 11+20+9+3+15+19 = \mathbf{77} \\
-\text{Longitude Minutes (8' W)}:  &\quad \text{PK10: } \text{Sum}_{\text{Kr}}(\text{Col } 40) - \text{Sum}_{\text{Kr}}(\text{Col } 29) = 155 - 147 = \mathbf{8} \\
-\text{Longitude Seconds (44'' W)}: &\quad \text{PK10: } \text{Sum}_{\text{Std}}(\text{Col } 40) - \text{Sum}_{\text{Std}}(\text{Col } 5) = 152 - 108 = \mathbf{44} \\
-\text{Decimal Longitude Mean}:     &\quad \text{PK10: } \text{Mean ASCII of 72 Padding Chars} = 5,554 / 72 = \mathbf{77.14} \\
-\text{Modular Null 1}:            &\quad \text{PK9: }  \text{Tail AUON} = 52 = 2 \times 26 \equiv \mathbf{0 \pmod{26}} \\
-\text{Modular Null 2}:            &\quad \text{PK10: } \text{Col } 0 = 156 = 6 \times 26 \equiv \mathbf{0 \pmod{26}}
-\end{aligned}$$
+Earlier reports that described a “135-character artisan text,” a triptych, or a complete PK9 reading are superseded hypotheses. They remain useful only as labelled research history and are not part of the canonical solution manifest. PK9 therefore remains open; no PK9 plaintext is printed here as an answer.
 
----
+## CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$)
 
-## CHAPTER 6: GRAND CRYPTOSYSTEM SYNTHESIS & UNIVERSAL INVARIANTS
+PK10 is solved in the repository by a complete construction that was independently reimplemented from the public reference material and checked in both directions. The acceptance criterion is exact: encoding the recovered normalized plaintext reproduces every one of the 504 canonical ciphertext letters, and decoding that ciphertext recovers the same plaintext.
 
-### 6.1 The Clock 7 Universal Pivot
-Across the entire suite, Clock 7 acts as the structural carrier bridge:
-$$\text{PK8: } [4, 5, 6, \mathbf{7}] \;\longrightarrow\; \text{PK9: } [4, \mathbf{7}] \;\longrightarrow\; \text{PK10: } [\mathbf{7}, 8, 9]$$
+### 4.1 Exact cumulative pipeline
 
-### 6.2 The Universal Colophon Signature
-Every branch of the Kryptos canon concludes with the identical artisan colophon formula:
-- **K2 Plaintext**: *"ID BY BROWSING..."*
-- **PK9 Plaintext (Row 6)**: *"...AND ID BY US..."*
-- **PK10 Plaintext (Row 11)**: *"...UP ID BY US..."*
+All Quagmire III operations use the keyed alphabet `KRYPTOSABCDEFGHIJLMNQUVWXZ`. `Q3(KEY)` adds the keyed-alphabet indices of the repeating key modulo 26. `T(KEY)` fills a rectangle row-wise, assigns duplicate-aware alphabetical column ranks, and reads the permuted columns top-to-bottom. `H3(ALCHEMIST)` uses the nine letters as a row-major 3×3 matrix over `Z/26Z`, with column-vector blocks. `Spiral(12)` traverses a 42×12 row-wise grid down, left, up, and right from its top-right cell.
 
----
+The exact forward order is:
+
+```text
+Q3(PROVENANCE)
+→ T(MARGINS)
+→ Q3(ORDINATE)
+→ Q3(PENTIMENTO)
+→ T(UNDERLAY)
+→ Q3(OCHRE)
+→ Q3(VERDIGRIS)
+→ T(TWOYEARS)
+→ Q3(PK4 normalized plaintext)
+→ T(HANDIWORK)
+→ T(SMITHWORK)
+→ Q3(PORTAL)
+→ Q3(ANNEAL)
+→ H3(ALCHEMIST)
+→ Q3(METE)
+→ Q3(METER)
+→ Q3(METIER)
+→ Q3(MASTERY)
+→ Q3(CLEPSYDRA)
+→ Spiral(12)
+→ T(BEAMWORK)
+```
+
+The PK4 normalized plaintext is the 224-character running key used by the ninth layer. It is not a guessed narrative key: its exact value and provenance are defined in `kryptos/verify_pk10_solution.py`.
+
+### 4.2 Plaintext boundary and digest
+
+The normalized plaintext is 504 characters. Its boundary is:
+
+```text
+IHAVENOTREADTHESTRAND ... ANDILEAVETHEKNOTTOYOU
+```
+
+Its SHA-256 is:
+
+```text
+a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9
+```
+
+The authoritative verifier is:
+
+```bash
+python3 kryptos/verify_pk10_solution.py
+```
+
+It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42, and modular-triptych candidates are superseded research artifacts; they are retained only where explicitly labelled archival.
+
+## CHAPTER 5: VERIFICATION BOUNDARIES AND RESEARCH INTEGRITY
+
+A candidate is not a solution because it contains readable fragments, receives a favorable language score, or appears to fit a geometric clue. Every accepted construction must state its alphabet, normalization, layer order, keys, dimensions, direction, and exact round-trip test.
+
+PK9 remains the only open Paradigm Kryptos challenge in this edition. Its 144-letter ciphertext has active hypotheses and documented negative searches, but no PK9 plaintext, key, padding scheme, or transposition order is accepted without exact re-encryption. The PK9 research record is therefore useful as a bounded investigation, not as a solved chapter.
+
+PK10 demonstrates the opposite standard. Its construction is fully specified, its plaintext boundary and digest are recorded above, and its independent verifier passes both directions. The word “solved” is used for PK10 because the implementation survives that test—not because its narrative interpretation is attractive.
+
+## CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY
+
+The canonical status is **PK1–PK8 solved, PK9 open, PK10 solved and independently verified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK10 verifier is `kryptos/verify_pk10_solution.py`.
+
+The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifier, and PK10 chapter control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
 
 ## CHAPTER 7: MASTER SOLUTIONS DATABASE & VERIFICATION MANIFEST
 
@@ -6543,6 +6481,7 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 - **PK5**: `fc46271a3e87d8a6df6f6323cf10078b538da2f298ee62ff8cc4821a37c95e9f`
 - **PK6**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`
 - **PK7**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`
+- **PK10**: `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9` (verified by `kryptos/verify_pk10_solution.py`)
 
 ---
 
@@ -6553,8 +6492,9 @@ Every proof, equation, and parameter in this manuscript is backed by the automat
 - **Execution Time**: **4.65 seconds**
 - **Test Results**: **11 / 11 automated test suites passing with 100% success rate**.
 
+--- HISTORICAL TECHNICAL REFERENCE (SUPERSEDED): paradigm_kryptos_master_report.md ---
 
---- TECHNICAL REFERENCE: paradigm_kryptos_master_report.md ---
+> This report predates the verified PK10 cumulative pipeline. Its PK9/PK10 candidate analysis is archival only; current status is PK9 open and PK10 independently verified.
 
 # PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT
 **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
@@ -6747,7 +6687,9 @@ The complete story across PK1 to PK10 forms a single unified literary work:
 - `sweep_pk9_all_widths.c` — High-speed C engine verifying all factor widths of PK9.
 
 
---- TECHNICAL REFERENCE: paradigm_kryptos_cryptanalytic_report.md ---
+--- HISTORICAL TECHNICAL REFERENCE (SUPERSEDED): paradigm_kryptos_cryptanalytic_report.md ---
+
+> This report predates the verified PK10 cumulative pipeline. Its PK9/PK10 candidate analysis is archival only; current status is PK9 open and PK10 independently verified.
 
 # Paradigm Kryptos Cryptanalytic Ledger: PK8, PK9 & PK10
 **Definitive Cryptanalytic Progress & Theoretical Bounds**
@@ -6818,7 +6760,9 @@ By taking stride differences matching sub-clock LCMs, the 22-variable system fac
    preventing the statistical overfitting observed in unconstrained monogram maximum likelihood.
 
 
---- TECHNICAL REFERENCE: pk9_pk10_definitive_cryptanalysis.md ---
+--- HISTORICAL TECHNICAL REFERENCE (SUPERSEDED): pk9_pk10_definitive_cryptanalysis.md ---
+
+> This report predates the verified PK10 cumulative pipeline. Its PK9/PK10 candidate analysis is archival only; current status is PK9 open and PK10 independently verified.
 
 # Definitive Cryptanalytic Ledger: PK8, PK9, and PK10
 **Universal Unimodular Bases, CRT Single-Cycle Theorem, and Cross-Cipher Homologies**
@@ -6970,7 +6914,7 @@ The lack of a sharp difference distribution surge on raw ciphertext difference p
 
 ## 72. How to use this volume in a classroom
 
-An instructor can assign the book in layers. A first reading uses the plain-language chapters and the toy examples. A second reading asks students to reproduce one keyed-alphabet operation and one transposition by hand. A third reading compares a successful positive control with a failed PK9 or PK10 search. Students should be graded on the quality of their assumptions and records, not only on whether they discover an answer.
+An instructor can assign the book in layers. A first reading uses the plain-language chapters and the toy examples. A second reading asks students to reproduce one keyed-alphabet operation and one transposition by hand. A third reading compares a successful PK10 round trip with a failed PK9 search. Students should be graded on the quality of their assumptions and records, not only on whether they discover an answer.
 
 A useful seminar exercise is to give groups the same ciphertext and different
 assumptions. One group uses a substitution model, another a transposition,

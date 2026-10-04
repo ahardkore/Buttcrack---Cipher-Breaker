@@ -23,7 +23,7 @@ No image will be represented as an official CIA endorsement. AI-generated illust
 - [ ] Complete 350–400-page text expansion.
 - [ ] Verify every K1–K4 transcription against a cited source.
 - [ ] Mark the K4 candidate PROVISIONAL until independently round-trip verified.
-- [ ] Keep PK9 and PK10 status current at publication freeze.
+- [x] Synchronize PK9/PK10 status: PK9 remains open; PK10 is independently verified by `verify_pk10_solution.py`.
 - [ ] Add Chicago-style notes and bibliography.
 - [ ] Add image captions and rights ledger.
 - [ ] Run preflight: embedded fonts, page count, trim size, margins, no clipped text.
