@@ -1,4 +1,4 @@
-<!--
+"""
   ARCHIVED 2026-10-02 — SUPERSEDED / CONTAINS REFUTED TEXTS. DO NOT SUBMIT ANYTHING FROM THIS FILE.
 
   The PK4/PK5/PK7 'plaintexts' in early-session artifacts like this one were
@@ -8,7 +8,7 @@
   kryptos/PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md.
 
   Correct PK4 plaintext (first 40 chars): TWOYEARSINTHENEEDLESTRAILLEDMETOACRAFTSM...
--->
+"""
 
 import json, math, time
 

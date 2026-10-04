@@ -8,6 +8,8 @@ API
 ``GET  /``                     the single-page app
 ``GET  /api/health``           version, model provenance, CPU count
 ``GET  /api/ciphers``          the registry, for the reference panel
+``GET  /api/paradigm``         verified Paradigm Kryptos PK1–PK10 catalog (local)
+``POST /api/assistant``        ``{"text": ...}`` -> explainable local plan / exact-match status
 ``POST /api/identify``         ``{"text": ...}`` -> characterisation + hypotheses
 ``POST /api/transform``        ``{"cipher","key","text","operation"}`` -> output
 ``POST /api/crack``            ``{"text","budget","workers","depth","hints"}`` -> ``{"job": id}``
@@ -40,6 +42,7 @@ from .ciphers import ALL_CIPHERS, layer_ciphers, try_get
 from .detect import identify
 from .engine import solve, solve_auto
 from .lang import LANGUAGES, get_model, resolve_language
+from .paradigm import RECORDS, catalog
 
 STATIC_DIR = Path(__file__).parent / "static"
 MAX_BODY_BYTES = 4 * 1024 * 1024
@@ -204,6 +207,7 @@ class Handler(BaseHTTPRequestHandler):
                         "cpus": os.cpu_count() or 1,
                         "ciphers": len(ALL_CIPHERS),
                         "layers": [c.info.name for c in layer_ciphers()],
+                        "paradigm_records": len(RECORDS),
                         "model": get_model().meta,
                         "languages": [
                             {"name": name, "quadgrams": get_model(name).ngram_count(4)} for name in LANGUAGES
@@ -212,6 +216,11 @@ class Handler(BaseHTTPRequestHandler):
                 )
             if path == "/api/ciphers":
                 return self._json([c.info.as_dict() for c in ALL_CIPHERS])
+            if path == "/api/paradigm":
+                # Corpus texts are intentionally included: this local, offline
+                # API powers the desktop archive panel and lets a user load a
+                # published sample without copying it from a web page.
+                return self._json({"records": catalog(include_text=True), "match_policy": "exact normalized A-Z equality"})
             if path.startswith("/api/job/"):
                 job = JOBS.get(path.rsplit("/", 1)[-1])
                 if job is None:
@@ -250,6 +259,13 @@ class Handler(BaseHTTPRequestHandler):
                     "hints": _clean_hints(body.get("hints")),
                 }
                 return self._json({"job": JOBS.create(options), "options": options})
+            if path == "/api/assistant":
+                text = str(body.get("text") or "")
+                if not text.strip():
+                    return self._error(400, "no text given")
+                from .assistant import analysis
+
+                return self._json(analysis(text))
             if path == "/api/identify":
                 text = str(body.get("text") or "")
                 if not text.strip():

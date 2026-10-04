@@ -8,43 +8,39 @@
 static float qgram[26][26][26][26];
 
 void load_qgrams() {
-    FILE *f = fopen("english_quadgrams.txt", "r");
+    FILE *f = fopen("english_quads.tsv", "r");
     if (!f) {
-        fprintf(stderr, "Cannot open english_quadgrams.txt\n");
+        fprintf(stderr, "Cannot open english_quads.tsv\n");
         exit(1);
     }
+    for (int a = 0; a < 26; a++)
+        for (int b = 0; b < 26; b++)
+            for (int c = 0; c < 26; c++)
+                for (int d = 0; d < 26; d++)
+                    qgram[a][b][c][d] = -9.5f;
+
     char line[128];
-    double total = 0;
-    static double counts[26][26][26][26];
-    memset(counts, 0, sizeof(counts));
     while (fgets(line, sizeof(line), f)) {
         char gram[5];
-        double count;
-        if (sscanf(line, "%4s %lf", gram, &count) == 2) {
+        float score;
+        /* english_quads.tsv stores precomputed log scores, not raw counts. */
+        if (sscanf(line, "%4s %f", gram, &score) == 2) {
             int a = gram[0] - 'A';
             int b = gram[1] - 'A';
             int c = gram[2] - 'A';
             int d = gram[3] - 'A';
-            if (a>=0 && a<26 && b>=0 && b<26 && c>=0 && c<26 && d>=0 && d<26) {
-                counts[a][b][c][d] = count;
-                total += count;
-            }
+            if (a >= 0 && a < 26 && b >= 0 && b < 26 && c >= 0 && c < 26 && d >= 0 && d < 26)
+                qgram[a][b][c][d] = score;
         }
     }
     fclose(f);
-    float floor_val = log10f(0.01f / total);
-    for (int a=0; a<26; a++)
-        for (int b=0; b<26; b++)
-            for (int c=0; c<26; c++)
-                for (int d=0; d<26; d++)
-                    qgram[a][b][c][d] = counts[a][b][c][d] > 0 ? log10f(counts[a][b][c][d] / total) : floor_val;
 }
 
 const char *KRYPTOS = "KRYPTOSABCDEFGHIJLMNQUVWXZ";
 const char *STD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const char *PK8_CT = "COPVEJJVSVURTVIPYOTPLHGBTMAUCCPESIWIGZBWSJPKTRPUEKQFIFCLHMXTHIMHWOYIGURBOMPARCVXVKBDDVBVHDRHGCVNWWVLBMYWMWHICFIXZWBVZYCQGNOGJGUMLNPUTHQCXNWPQZOIRJZGSWVPY";
 
-inline float score_text(const int *pt, int len) {
+static inline float score_text(const int *pt, int len) {
     float sc = 0;
     for (int i = 0; i < len - 3; i++) {
         sc += qgram[pt[i]][pt[i+1]][pt[i+2]][pt[i+3]];

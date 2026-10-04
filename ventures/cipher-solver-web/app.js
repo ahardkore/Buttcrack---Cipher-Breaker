@@ -14,6 +14,7 @@ const SAMPLES = {
   substitution: "Zit egxfeos gy Ctfoet iql rtekttr ziqz qss dtkeiqfz ctlltsl dxlz hqn zit ftv iqkwgxk zqb wtygkt tfztkofu zit squggf Dttz dt wtiofr zit gsr sowkqkn qyztk lxfltz qfr rg fgz ztss qfngft qwgxz ziol dtllqut xfrtk qfn eokexdlzqfetl",
   layered: "NDY3OTc5NjY2ODcwMjA3OTZkNmEyMDczNzQ3Nzc5NmQ2YTc3NzMyMDZjNjY3OTZhMjA2Njc5MjA2OTY2NjI3MzIwNjY3MzY5MjA2Nzc3NmU3MzZjMjA2YTYxNmE3NzY0MjA2NjYxNjY2ZTcxNjY2NzcxNmEyMDc4NzQ3MTY5NmU2YTc3MjA2MjZlNzk2ZDIwNjQ3NDdhMjA2NzZhNjg2NjdhNzg2YTIwNzk2ZDZhMjA2YTczNmE3MjY0MjA2ZTc4MjA2MjY2NmU3OTZlNzM2YzIwNzk2ZDZhNzc2YQ==",
   morse: ".... . .-.. .-.. --- / - .... . .-. . / .. / .- -- / .-- .- .. - .. -. --. / ..-. --- .-. / -.-- --- ..-",
+  pk1: "MQRALWVSJIMSXGJSVWQPHJMDINKXGIMHNKYUTXTTGJCYIABTJUMQEOFBITNBMONGVWETDLAIJPQYMZIKBQVRXZHUIJVDJLTQHIQYHEQKFTPTJYCONAFXYWQIBONAYXGWJFFIQMVXNVQYQFMWKFEJQYZFBWKXBKDQLJRELWGWDKHECRSFBKOVQJCPYDNKXYHE",
   // The periodic family, each ciphertext produced by the reference Python
   // implementation (see build_pages.py: the worked examples and these demos
   // describe the same code the full solver runs).
@@ -114,26 +115,36 @@ function renderResult(result, diagnostic, elapsed) {
     return renderDiagnostic(report) + renderUnverifiedCandidate(result, elapsed);
   }
 
-  const high = report.candidateStatus === 'high-confidence';
+  const verified = Boolean(result.verified && result.paradigm);
+  const high = verified || report.candidateStatus === 'high-confidence';
   const pct = Math.max(0, Math.min(100, Math.round(result.confidence * 100)));
-  const label = high ? 'HIGH-CONFIDENCE CANDIDATE' : 'TENTATIVE CANDIDATE';
+  const label = verified ? 'VERIFIED CANONICAL MATCH' : (high ? 'HIGH-CONFIDENCE CANDIDATE' : 'TENTATIVE CANDIDATE');
   const chain = result.chain && result.chain.length
     ? `<tr><td>decode chain</td><td><code>${esc(result.chain.join(' → '))} → ${esc(result.cipher)}</code></td></tr>`
     : '';
+  const verification = verified ? `
+      <tr><td>corpus record</td><td><code>${esc(result.paradigm.id)} — ${esc(result.paradigm.title)}</code></td></tr>
+      <tr><td>construction</td><td>${esc(result.paradigm.mechanism)}</td></tr>
+      <tr><td>plaintext SHA-256</td><td><code>${esc(result.paradigm.plaintext_sha256)}</code></td></tr>
+      <tr><td>verification</td><td>${esc(result.verification || result.paradigm.verification)}</td></tr>` : '';
+  const note = verified
+    ? 'This result is an exact normalized equality with a recovered PK1–PK10 canonical ciphertext and carries its stored plaintext digest. It is not a statistical identification of similar text.'
+    : 'This score ranks output under an English language model; it is evidence, not independent proof. Verify the full method, key, and source context before relying on it.';
   return `<div class="card">
     <div class="solved-head">
       <span class="label ${high ? '' : 'low'}">${label}</span>
-      <span class="meta">English-likeness score ${result.confidence.toFixed(2)} · ${elapsed.toFixed(2)}s</span>
+      <span class="meta">${verified ? `Exact local corpus lookup · ${elapsed.toFixed(2)}s` : `English-likeness score ${result.confidence.toFixed(2)} · ${elapsed.toFixed(2)}s`}</span>
     </div>
     <div class="bar"><i style="width:${pct}%"></i></div>
-    <p class="candidate-note">This score ranks output under an English language model; it is evidence, not independent proof. Verify the full method, key, and source context before relying on it.</p>
-    <p class="result-kicker">CANDIDATE PLAINTEXT</p>
+    <p class="candidate-note">${esc(note)}</p>
+    <p class="result-kicker">${verified ? 'VERIFIED PLAINTEXT' : 'CANDIDATE PLAINTEXT'}</p>
     <div class="plaintext">${esc(result.plaintext)}</div>
     <table class="evidence">
       <tr><td>cipher</td><td><code>${esc(result.cipher)}</code></td></tr>
       <tr><td>key</td><td><code>${esc(result.key)}</code></td></tr>
+      ${result.alphabet ? `<tr><td>alphabet</td><td><code>${esc(result.alphabet)}</code></td></tr>` : ''}
       ${chain}
-      <tr><td>method</td><td>${esc(result.method)}</td></tr>
+      <tr><td>method</td><td>${esc(result.method)}</td></tr>${verification}
     </table>
     <div class="controls" style="margin-top:14px">
       <button class="ghost" id="copy">Copy candidate text</button>

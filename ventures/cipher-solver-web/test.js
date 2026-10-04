@@ -8,6 +8,7 @@ if (typeof atob === 'undefined') {
   global.atob = s => Buffer.from(s, 'base64').toString('binary');
 }
 const S = require('./solver.js');
+const P = require('./paradigm.js');
 
 const PT1 = 'The council of Venice has decreed that all merchant vessels must pay the new harbour tax before entering the lagoon';
 const PT2 = 'Attack the northern gate at dawn and bring every available soldier with you because the enemy is waiting there';
@@ -23,6 +24,9 @@ function shift(t, k) {
     return ch;
   }).join('');
 }
+const KRYPTOS_ALPHABET = 'KRYPTOSABCDEFGHIJLMNQUVWXZ';
+const KRYPTOS_INDEX = Object.fromEntries([...KRYPTOS_ALPHABET].map((ch, index) => [ch, index]));
+
 function vigEnc(p, key) {
   let out = '', i = 0;
   for (const ch of p) {
@@ -31,6 +35,19 @@ function vigEnc(p, key) {
       out += String.fromCharCode((u.charCodeAt(0) - 65 + key.charCodeAt(i % key.length) - 65) % 26 + 65);
       i++;
     } else out += ch;
+  }
+  return out;
+}
+function quagmire3Enc(p, key) {
+  let out = '', i = 0;
+  for (const ch of p) {
+    const upper = ch.toUpperCase();
+    const plain = KRYPTOS_INDEX[upper];
+    if (plain === undefined) { out += ch; continue; }
+    const shift = KRYPTOS_INDEX[key[i % key.length]];
+    const encoded = KRYPTOS_ALPHABET[(plain + shift) % 26];
+    out += ch === upper ? encoded : encoded.toLowerCase();
+    i++;
   }
   return out;
 }
@@ -121,6 +138,7 @@ const CASES = [
   ['vigenere LAMP', vigEnc(PT1, 'LAMP'), PT1],
   ['vigenere SECRET', vigEnc(PT2, 'SECRET'), PT2],
   ['vigenere CIPHERKEY', vigEnc(PT3, 'CIPHERKEY'), PT3],
+  ['quagmire III KRYPTOS alphabet', quagmire3Enc(`${PT1} ${PT2} ${PT3}`, 'PROVENANCE'), `${PT1} ${PT2} ${PT3}`],
   ['substitution', subEnc(PT1 + ' ' + PT2, 'QWERTYUIOPASDFGHJKLZXCVBNM'), PT1 + ' ' + PT2],
   ['railfence 4', railEnc(norm(PT2), 4), PT2],
   ['base64', b64(PT1), PT1],
@@ -149,6 +167,9 @@ const CASES = [
   ['autokey QUEEN', autokeyEnc(PT1, 'QUEEN'), PT1],
   ['autokey BRAVE', autokeyEnc(PT3, 'BRAVE'), PT3],
   ['hex -> beaufort', hex(beaufortEnc(PT2, 'HARBOR')), PT2],
+  // A corpus match is deliberately different from statistical cracking: all
+  // ten known PK ciphertexts must select their stored verified construction.
+  ...P.PARADIGM_KRYPTOS.map(record => [`${record.id} verified corpus`, record.ciphertext, record.plaintext]),
 ];
 
 let pass = 0;
@@ -158,7 +179,8 @@ for (const [name, ct, expected] of CASES) {
   let r = null;
   try { r = S.solve(ct); } catch (e) { r = null; }
   const got = r ? norm(r.plaintext) : '';
-  const ok = got === norm(expected);
+  const expectedVerified = name.endsWith('verified corpus');
+  const ok = got === norm(expected) && (!expectedVerified || Boolean(r && r.verified));
   if (ok) pass++;
   const ms = Date.now() - started;
   console.log(

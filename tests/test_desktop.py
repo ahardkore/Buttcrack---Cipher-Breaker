@@ -21,6 +21,7 @@ from unittest import mock
 
 from buttcrack import cli, desktop
 from buttcrack._wintray import TrayIcon
+from buttcrack.paradigm import RECORDS
 
 
 class FreePortTests(unittest.TestCase):
@@ -56,6 +57,16 @@ class LocalAppTests(unittest.TestCase):
         with urllib.request.urlopen(self.app.url + path, timeout=30) as response:
             return response.status, response.read()
 
+    def post(self, path: str, payload: dict) -> tuple[int, bytes]:
+        request = urllib.request.Request(
+            self.app.url + path,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return response.status, response.read()
+
     def test_binds_loopback_only(self) -> None:
         # A desktop app that listens on 0.0.0.0 is a cipher solver anyone on
         # the coffee-shop wifi can post to; `serve` is the one allowed to.
@@ -72,6 +83,28 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(status, 200)
         payload = json.loads(body)
         self.assertIn("version", payload)
+        self.assertEqual(payload["paradigm_records"], 10)
+
+    def test_serves_the_verified_paradigm_catalog(self) -> None:
+        status, body = self.get("api/paradigm")
+        self.assertEqual(status, 200)
+        payload = json.loads(body)
+        self.assertEqual(payload["match_policy"], "exact normalized A-Z equality")
+        self.assertEqual([record["id"] for record in payload["records"]], [f"PK{i}" for i in range(1, 11)])
+        self.assertIn("ciphertext", payload["records"][0])
+
+    def test_local_assistant_api_reports_the_exact_match_boundary(self) -> None:
+        status, body = self.post("api/assistant", {"text": RECORDS[0].ciphertext})
+        self.assertEqual(status, 200)
+        verified = json.loads(body)
+        self.assertEqual(verified["status"], "verified_exact_match")
+        self.assertEqual(verified["exact_match"]["id"], "PK1")
+
+        status, body = self.post("api/assistant", {"text": "Z" + RECORDS[0].ciphertext[1:]})
+        self.assertEqual(status, 200)
+        unverified = json.loads(body)
+        self.assertEqual(unverified["status"], "recommendations_only")
+        self.assertIsNone(unverified["exact_match"])
 
     def test_summary_mentions_where_it_is_listening(self) -> None:
         lines = desktop.summary_lines(self.app)

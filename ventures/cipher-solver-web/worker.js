@@ -2,7 +2,7 @@
  * main thread and the page stays responsive. */
 'use strict';
 
-importScripts('model.js', 'solver.js');
+importScripts('model.js', 'paradigm.js', 'solver.js');
 
 self.onmessage = e => {
   const { text, depth } = e.data;

@@ -17,6 +17,9 @@
 const M = (typeof module !== 'undefined' && module.exports)
   ? require('./model.js')
   : { TRI_LO, TRI_HI, TRI_FLOOR, TRI_PACKED, TOP_WORDS };
+const P = (typeof module !== 'undefined' && module.exports)
+  ? require('./paradigm.js')
+  : (typeof knownParadigmResult === 'function' ? { knownParadigmResult, matchParadigmKryptos } : {});
 
 const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const B64I = {};
@@ -477,6 +480,101 @@ function periodic(text, maxLen = 20) {
   };
 }
 
+/* -------------------------------------------------------- quagmire III */
+/* Paradigm Kryptos made one practical lesson impossible to ignore: periodic
+ * arithmetic need not happen in ordinary A=0…Z=25 coordinates. Quagmire III
+ * uses a keyed alphabet, so an otherwise sound Vigenere attack must re-index
+ * both ciphertext and English frequencies before it can recover a key. This
+ * browser pass fixes the KRYPTOS alphabet (the published PK convention) and
+ * competes with ordinary periodic attacks; it does not label arbitrary text
+ * “Kryptos” merely because its IoC is low. */
+const KRYPTOS_ALPHABET = 'KRYPTOSABCDEFGHIJLMNQUVWXZ';
+const KRYPTOS_INDEX = (() => {
+  const out = Object.create(null);
+  for (let i = 0; i < KRYPTOS_ALPHABET.length; i++) out[KRYPTOS_ALPHABET[i]] = i;
+  return out;
+})();
+
+function quagmire3Decrypt(text, key) {
+  let out = '', position = 0;
+  for (const ch of text) {
+    const upper = ch.toUpperCase();
+    const value = KRYPTOS_INDEX[upper];
+    if (value === undefined) { out += ch; continue; }
+    const decoded = KRYPTOS_ALPHABET[(value - key[position % key.length] + 26) % 26];
+    out += ch === upper ? decoded : decoded.toLowerCase();
+    position++;
+  }
+  return out;
+}
+
+function quagmire3(text, maxLen = 16) {
+  const stream = lettersOnly(text);
+  if (stream.length < 40) return null;
+  const sample = stream.slice(0, 800);
+  const n = sample.length;
+  const limit = Math.min(maxLen, Math.floor(n / 5));
+  const seeded = [];
+  for (let period = 1; period <= limit; period++) {
+    const key = [];
+    for (let offset = 0; offset < period; offset++) {
+      let chosen = 0, best = -Infinity;
+      for (let shift = 0; shift < 26; shift++) {
+        let value = 0;
+        for (let i = offset; i < n; i += period) {
+          const cipherIndex = KRYPTOS_INDEX[sample[i]];
+          const plain = KRYPTOS_ALPHABET[(cipherIndex - shift + 26) % 26];
+          value += UNI[plain.charCodeAt(0) - 65];
+        }
+        if (value > best) { best = value; chosen = shift; }
+      }
+      key.push(chosen);
+    }
+    seeded.push({ key, initial: score(quagmire3Decrypt(sample, key)) });
+  }
+  seeded.sort((a, b) => b.initial - a.initial || a.key.length - b.key.length);
+
+  let best = null;
+  for (const candidate of seeded.slice(0, 8)) {
+    const key = candidate.key.slice();
+    const objective = values => score(quagmire3Decrypt(sample, values));
+    let current = objective(key);
+    for (let pass = 0; pass < 3; pass++) {
+      let changed = false;
+      for (let position = 0; position < key.length; position++) {
+        const original = key[position];
+        let keep = original;
+        for (let shift = 0; shift < 26; shift++) {
+          if (shift === original) continue;
+          key[position] = shift;
+          const value = objective(key);
+          if (value > current) { current = value; keep = shift; changed = true; }
+        }
+        key[position] = keep;
+      }
+      if (!changed) break;
+    }
+    // A multiple of the real period has no extra explanatory value.
+    for (let divisor = 1; divisor < key.length; divisor++) {
+      if (key.length % divisor) continue;
+      if (key.every((value, index) => value === key[index % divisor])) {
+        key.splice(divisor);
+        break;
+      }
+    }
+    const plain = quagmire3Decrypt(text, key);
+    const rank = score(plain) + 2.5 * wordRate(plain) - 0.012 * key.length;
+    if (!best || rank > best.rank) best = { key, plain, rank };
+  }
+  if (!best) return null;
+  return {
+    cipher: 'quagmire3', key: best.key.map(value => KRYPTOS_ALPHABET[value]).join(''), plaintext: best.plain,
+    confidence: plausibility(best.plain),
+    method: 'KRYPTOS keyed-alphabet coset seed + trigram coordinate refinement',
+    alphabet: 'KRYPTOSABCDEFGHIJLMNQUVWXZ',
+  };
+}
+
 /* ------------------------------------------------------- trithemius */
 /** Progressive-key: shift = (start + i*step) mod 26. 650 keys, no period to
  *  find, so a monogram sweep refined by trigrams settles it outright. */
@@ -815,6 +913,15 @@ function xorSingle(bytes) {
 const FAST_ANSWER_CONFIDENCE = 0.58;
 
 function solve(text, depth = 3, chain = []) {
+  // A recovered PK record is proven by exact normalized equality, not by this
+  // small browser language model.  Keep this lookup before statistical attacks
+  // so an already solved canonical challenge gets its construction evidence,
+  // while every non-match follows the ordinary generic solver unchanged.
+  const known = P.knownParadigmResult && P.knownParadigmResult(text);
+  if (known) {
+    known.chain = chain.slice();
+    return known;
+  }
   const results = [];
   const push = r => { if (r && r.plaintext && r.plaintext.trim()) results.push(r); };
   const bestConfidence = () => results.reduce((best, r) => Math.max(best, r.confidence || 0), 0);
@@ -840,6 +947,7 @@ function solve(text, depth = 3, chain = []) {
   // the input.
   if (bestConfidence() < FAST_ANSWER_CONFIDENCE) {
     push(periodic(text));
+    push(quagmire3(text));
     push(autokey(text));
   }
 
@@ -923,6 +1031,10 @@ function identify(text) {
   const t = lettersOnly(text);
   const guesses = [];
   const clean = text.replace(/\s/g, '');
+  const known = P.matchParadigmKryptos && P.matchParadigmKryptos(text);
+  if (known) {
+    guesses.push([`Paradigm Kryptos ${known.id} (verified exact match)`, 1]);
+  }
 
   if (/^[01\s]+$/.test(text) && clean.length >= 16) guesses.push(['binary', 0.9]);
   else if (/^[.\-\s/|]+$/.test(text)) guesses.push(['morse', 0.9]);
@@ -933,8 +1045,13 @@ function identify(text) {
 
   if (t.length >= 20) {
     if (ic > 0.06) { guesses.push(['caesar / substitution', 0.7]); guesses.push(['transposition', 0.4]); }
-    else if (ic > 0.045) guesses.push(['periodic (short key)', 0.6]);
-    else guesses.push(['vigenere / beaufort / periodic', 0.65]);
+    else if (ic > 0.045) {
+      guesses.push(['periodic (short key)', 0.6]);
+      guesses.push(['quagmire III / keyed alphabet', 0.35]);
+    } else {
+      guesses.push(['vigenere / beaufort / periodic', 0.65]);
+      guesses.push(['quagmire III / keyed alphabet', 0.55]);
+    }
   }
   if (!guesses.length) guesses.push(['unknown', 0.2]);
   guesses.sort((a, b) => b[1] - a[1]);
@@ -1049,7 +1166,7 @@ function diagnose(text, info = identify(text), result = null) {
   const attempted = [
     'Caesar, Atbash, ROT13, affine, Trithemius, and rail-fence attacks',
     'single-byte XOR when the input is 8–3,999 bytes',
-    'periodic Vigenère-family and autokey searches when a fast direct candidate did not already score well',
+    'periodic Vigenère-family, KRYPTOS-alphabet Quagmire III, and autokey searches when a fast direct candidate did not already score well',
     'recognised encoding layers (including Base64, hex, binary, decimal ASCII, Morse, and reverse) to the selected depth',
     'statistical substitution only with 60+ A–Z letters and no faster strong candidate',
   ];
@@ -1068,7 +1185,7 @@ function diagnose(text, info = identify(text), result = null) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    solve, identify, diagnose, plausibility, score, wordRate, indexOfCoincidence, entropy,
+    solve, identify, diagnose, plausibility, score, wordRate, indexOfCoincidence, entropy, quagmire3,
     TENTATIVE_CANDIDATE_SCORE, HIGH_CONFIDENCE_CANDIDATE_SCORE,
   };
 }

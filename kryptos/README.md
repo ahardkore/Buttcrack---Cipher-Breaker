@@ -2,7 +2,7 @@
 
 [![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(12%2F12)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
 [![Manuscript](https://img.shields.io/badge/Book%20Manuscript-8%20Chapters%20Complete-d97736?style=for-the-badge&logo=gitbook)](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md)
-[![Web App](https://img.shields.io/badge/Web%20App-Interactive%20Suite-58a6ff?style=for-the-badge&logo=html5)](kryptos-app/)
+[![Web App](https://img.shields.io/badge/Web%20App-Interactive%20Suite-58a6ff?style=for-the-badge&logo=html5)](../kryptos-app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge)](LICENSE)
 
 An exhaustive, publication-grade cryptanalytic research repository, mathematical proof ledger, interactive web application, and full book manuscript investigating **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**.
@@ -27,7 +27,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 | **Forensic Cryptanalytic Audit** | 62 KB exhaustive audit detailing all algorithms, empirical runs, and theorems for PK9 and PK10. | [`CRYPTANALYTIC_AUDIT_PK9_PK10.md`](CRYPTANALYTIC_AUDIT_PK9_PK10.md) |
 | **Master Submission Manifest** | Structured JSON database of all ciphers, parameters, plaintexts, and SHA256 checksums. | [`pk_submission_manifest.json`](pk_submission_manifest.json) |
 | **Verified Solutions Database** | Machine-readable database of independently verified solutions for PK1–PK10. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
-| **Interactive Web Application** | Standalone browser-based cipher explorer, architecture visualizer, book reader, and live decryptor. | [`kryptos-app/`](kryptos-app/) |
+| **Interactive Web Application** | Standalone browser-based cipher explorer, architecture visualizer, book reader, and live decryptor. | [`kryptos-app/`](../kryptos-app/) |
 
 ---
 
@@ -88,7 +88,7 @@ Open `http://localhost:8000` to access:
 
 ## 🚀 GitHub Pages Deployment
 
-This repository includes a preconfigured GitHub Actions workflow in `.github/workflows/deploy.yml`. When pushed to GitHub:
+This repository includes a preconfigured GitHub Actions workflow in `../.github/workflows/deploy-site.yml`. When pushed to GitHub:
 1. Navigate to your repository **Settings** > **Pages**.
 2. Select **GitHub Actions** as the build source.
 3. The interactive web application will automatically be published to `https://<USERNAME>.github.io/<REPO-NAME>/`.

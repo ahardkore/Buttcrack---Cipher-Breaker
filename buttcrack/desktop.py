@@ -171,12 +171,14 @@ def summary_lines(app: LocalApp) -> list[str]:
     try:
         from .ciphers import ALL_CIPHERS
         from .lang import LANGUAGES, get_model
+        from .paradigm import RECORDS
 
         model = get_model()
         lines.append(
             f"{len(ALL_CIPHERS)} ciphers | {model.ngram_count(4):,} quadgrams | "
             f"{len(model.words):,} words | {len(LANGUAGES)} languages"
         )
+        lines.append(f"{len(RECORDS)} verified Paradigm Kryptos records | exact-match recognition offline")
     except Exception:  # a broken model must not stop the window from appearing
         lines.append("language model unavailable")
     lines.append("Your text is never uploaded: the server is this machine.")
@@ -802,6 +804,91 @@ def run_window(app: LocalApp) -> bool:
             ttk.Button(actions, text=label, command=command).pack(side="left", padx=(0, 6))
         refresh()
 
+    def open_paradigm_archive() -> None:
+        """Browse the exact-match PK1–PK10 corpus without implying a generic solve."""
+        from .paradigm import RECORDS
+
+        panel = tk.Toplevel(root)
+        panel.title("Buttcrack — Paradigm Kryptos PK1–PK10 Archive")
+        panel.minsize(820, 570)
+        panel.transient(root)
+        body = ttk.Frame(panel, padding=16)
+        body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Verified Paradigm Kryptos PK1–PK10 Archive", font=("Segoe UI", 13, "bold")).pack(
+            anchor="w"
+        )
+        ttk.Label(
+            body,
+            text=(
+                "These are canonical corpus records. A result is marked verified only when normalized ciphertext "
+                "matches one record exactly; shared length or alphabet is not a match."
+            ),
+            foreground="#555555",
+            wraplength=760,
+        ).pack(anchor="w", pady=(2, 10))
+        columns = ("id", "title", "length", "mechanism")
+        tree = ttk.Treeview(body, columns=columns, show="headings", height=10)
+        for name, label, width in (
+            ("id", "ID", 55),
+            ("title", "Challenge", 230),
+            ("length", "CT", 55),
+            ("mechanism", "Recovered construction", 440),
+        ):
+            tree.heading(name, text=label)
+            tree.column(name, width=width, stretch=name == "mechanism")
+        for record in RECORDS:
+            tree.insert(
+                "",
+                "end",
+                iid=record.challenge_id,
+                values=(record.challenge_id, record.title, record.ciphertext_length, record.mechanism),
+            )
+        tree.pack(fill="x")
+        detail = tk.Text(body, height=15, wrap="word", state="disabled")
+        detail.pack(fill="both", expand=True, pady=(10, 0))
+
+        def selected():
+            item = tree.selection()
+            return next((record for record in RECORDS if item and record.challenge_id == item[0]), None)
+
+        def show_record(_event=None) -> None:
+            record = selected()
+            if record is None:
+                return
+            content = (
+                f"{record.challenge_id} — {record.title}\n\n"
+                f"Recovered construction: {record.mechanism}\n"
+                f"Key material: {record.key}\n"
+                f"Ciphertext letters: {record.ciphertext_length}\n"
+                f"Plaintext letters: {record.plaintext_length}\n"
+                f"Plaintext SHA-256: {record.plaintext_sha256}\n"
+                f"Verification: {record.verification}\n\n"
+                f"Ciphertext\n{record.ciphertext}\n\nPlaintext\n{record.plaintext}"
+            )
+            detail.configure(state="normal")
+            detail.delete("1.0", "end")
+            detail.insert("1.0", content)
+            detail.configure(state="disabled")
+
+        def copy(kind: str) -> None:
+            record = selected()
+            if record is None:
+                status.set("Select a PK record first.")
+                return
+            value = record.ciphertext if kind == "ciphertext" else record.plaintext
+            with contextlib.suppress(Exception):
+                root.clipboard_clear()
+                root.clipboard_append(value)
+            status.set(f"{record.challenge_id} {kind} copied to the clipboard.")
+
+        actions = ttk.Frame(body)
+        actions.pack(anchor="w", pady=(10, 0))
+        ttk.Button(actions, text="Copy ciphertext", command=lambda: copy("ciphertext")).pack(side="left")
+        ttk.Button(actions, text="Copy plaintext", command=lambda: copy("plaintext")).pack(side="left", padx=(8, 0))
+        tree.bind("<<TreeviewSelect>>", show_record)
+        tree.selection_set(RECORDS[0].challenge_id)
+        show_record()
+
     def open_local_assistant() -> None:
         """Open the dependency-free assistant without leaving the desktop app."""
         from .assistant import explain
@@ -904,6 +991,9 @@ def run_window(app: LocalApp) -> bool:
     )
     ttk.Button(frame, text="PK9 Campaign", command=open_campaign_dashboard).grid(
         row=5, column=1, sticky="w", pady=(4, 0)
+    )
+    ttk.Button(frame, text="PK1–10 Archive", command=open_paradigm_archive).grid(
+        row=5, column=2, sticky="e", pady=(4, 0)
     )
 
     ttk.Separator(frame, orient="horizontal").grid(row=6, column=0, columnspan=3, sticky="we", pady=14)

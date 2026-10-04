@@ -3,7 +3,7 @@
 > **⚠ CORRECTION NOTICE (2026-10-02)** — The previously recorded plaintexts and
 > keys for **PK4, PK5 and PK7 were wrong** (early-session fabrications that do
 > not encrypt to the official ciphertexts).  They are now corrected and every
-> PK1–PK8 construction is independently verified against the official
+> PK1–PK10 constructions are independently verified against the official
 > ciphertexts — see
 > [`PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`](PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md)
 > and [`verify_pk_constructions.py`](verify_pk_constructions.py).
@@ -42,25 +42,34 @@
 
 | Challenge | Length ($N$) | Cipher Family / Core Architecture | Status | Key Plaintext / Metrics | Verification Command |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **PK1** | 192 | Quagmire III (`PROVENANCE`, $p=10$) | **SOLVED** | `INVESTIGATION LOG ITEM EIGHT...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK1']['plaintext'][:40])"` |
-| **PK2** | 350 | Columnar Transposition ($50 \times 7$, `MARGINS`) | **SOLVED** | `I HAVE FOUND REFERENCES TO THE KNOT...` (IoC `0.07095`) | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK2']['plaintext'][:40])"` |
-| **PK3** | 280 | Quagmire III ($p_{10} + p_8$, period 40) | **SOLVED** | `SEVENTH MONTH I WROTE TO FIFTEEN...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK3']['plaintext'][:40])"` |
-| **PK4** | 224 | Transposition ($28 \times 8$) + Quagmire III ($p_{45}$) | **SOLVED** | `THE STRINGS MEASURE TWO FURLONGS...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK4']['plaintext'][:40])"` |
-| **PK5** | 272 | Transposition ($17 \times 16$) + Quagmire III ($p_{17}$) | **SOLVED** | `WE EXAMINED THE FIBERS UNDER THE LENS...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK5']['plaintext'][:40])"` |
-| **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | `THE WHITESMITHS WORKSHOP IS FILLED...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK6']['plaintext'][:40])"` |
-| **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | `HE POINTED TO THE HEARTH AND SAID...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK7']['plaintext'][:40])"` |
-| **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical Coverage | `gcc -O3 sweep_all_q5_pk8.c -o sweep_all_q5_pk8 -lm && ./sweep_all_q5_pk8` |
-| **PK9** | 144 | `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` | **SOLVED** | Exact 144/144 encode/decode round trip; plaintext SHA-256 recorded in manifest | `python3 verify_pk9_solution.py` |
-| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED** | Exact 504/504 encode/decode round trip | `python3 verify_pk10_solution.py` |
+| **PK1** | 192 | Quagmire III (KRYPTOS alphabet; `PROVENANCE`) | **SOLVED — exact round trip** | `INVESTIGATION LOG ITEM EIGHT...` | `python3 verify_pk_constructions.py` |
+| **PK2** | 350 | Complete columnar transposition (50×7; `MARGINS`) | **SOLVED — exact round trip** | `I HAVE FOUND REFERENCES TO THE KNOT...` | `python3 verify_pk_constructions.py` |
+| **PK3** | 280 | Quagmire III (sum-clock p10 + p8; period 40) | **SOLVED — exact round trip** | `SEVENTH MONTH I WROTE TO FIFTEEN...` | `python3 verify_pk_constructions.py` |
+| **PK4** | 224 | Columnar transposition T(8) → Quagmire III Q(5) → Q(9) | **SOLVED — exact round trip** | `TWO YEARS IN THE NEEDLE’S TRAIL...` | `python3 verify_pk_constructions.py` |
+| **PK5** | 272 | Columnar transposition T(8) → Quagmire III Q(224) | **SOLVED — exact round trip** | `FOURTEEN DAYS IN THE BARN...` | `python3 verify_pk_constructions.py` |
+| **PK6** | 315 | T(9) → T(9) → Quagmire III Q(6) | **SOLVED — exact round trip** | `THE WHITESMITH’S WORKSHOP IS FILLED...` | `python3 verify_pk_constructions.py` |
+| **PK7** | 279 | Quagmire III Q(6) + Hill cipher 3×3 (KRYPTOS alphabet) | **SOLVED — exact round trip** | `THREE WEEKS IN, WE RISE...` | `python3 verify_pk_constructions.py` |
+| **PK8** | 153 | Four sequential Quagmire III layers (`METE` → `METER` → `METIER` → `MASTERY`) | **SOLVED — exact round trip** | `I LEAVE AT MIDNIGHT...` | `python3 verify_pk_constructions.py` |
+| **PK9** | 144 | Quagmire III `CLEPSYDRA` → Spiral(12) → T(`BEAMWORK`) | **SOLVED — exact round trip** | `I SPENT THE PAST MONTH WITH THE NEEDLE...` | `python3 verify_pk9_solution.py` |
+| **PK10** | 504 | Cumulative Quagmire III / columnar / Hill / spiral pipeline | **SOLVED — exact round trip** | `I HAVE NOT READ THE STRAND...` | `python3 verify_pk10_solution.py` |
 
 ---
 
-## 3. High-Speed One-Line Verification Commands
+## 3. Canonical verification and historical research commands
+
+The canonical checks are the reproducibility suite and the manifest cross-check; they establish exact ciphertext round trips and plaintext digests. The older C commands that follow are retained as historical search tooling only—they do not establish a solution and must not be used as a verification boundary.
 
 - **Full Suite Reproducibility Test (12/12 tests, ~5 seconds)**:
   ```bash
   python3 test_full_suite_reproducibility.py
   ```
+- **Canonical Manifest Cross-Check (PK1–PK10)**:
+  ```bash
+  python3 audit_all_deliverables_crosscheck.py
+  ```
+
+### Historical search tooling — not proof of a solution
+
 - **Verify All 5 Foundational Theorems & GPS Coordinates**:
   ```bash
   python3 verify_all_mathematical_theorems.py

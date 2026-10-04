@@ -1,6 +1,6 @@
 # EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — HISTORICAL
 
-> **Historical status note (updated 2026-10-03):** This brief preserves the pre-recovery PK9 search record. PK9 is now independently solved by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and verified by `verify_pk9_solution.py`; the speculative material below remains research history. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the recovery provenance.
+> **Historical status note (updated 2026-10-03):** The ledger below is the current canonical summary. The detailed PK4–PK10 attack narratives elsewhere in this brief preserve superseded research, including pre-recovery PK9 and old PK8/PK10 candidate models; they are not verification records. PK9 is independently reproduced by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` in `verify_pk9_solution.py`. See `pk_verified_solutions.json` and `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for canonical data and recovery provenance.
 
 **Date**: 2026-09-22  
 **Author**: Arena.ai Cryptanalytic Agent  
@@ -22,16 +22,16 @@ Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1�
 
 | Challenge | Length ($N$) | Cipher Architecture | Cryptanalytic Status | Linguistic & Information Metrics |
 | :--- | :--- | :--- | :--- | :--- |
-| **PK1** | 192 | Quagmire III (`PROVENANCE`, $p=10$) | **SOLVED** | Verbatim Plaintext Verified |
-| **PK2** | 350 | Columnar Transposition ($50 \times 7$, `MARGINS`) | **SOLVED** | Verbatim Plaintext Verified (IoC `0.07095`) |
-| **PK3** | 280 | Quagmire III ($p_{10} + p_8$, period 40) | **SOLVED** | Verbatim Plaintext Verified |
-| **PK4** | 224 | Transposition ($28 \times 8$) + Quagmire III ($p_{45}$) | **SOLVED** | Verbatim Plaintext Verified |
-| **PK5** | 272 | Transposition ($17 \times 16$) + Quagmire III ($p_{17}$) | **SOLVED** | Verbatim Plaintext Verified |
-| **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Verbatim Plaintext Verified |
-| **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
-| **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
-| **PK9** | 144 | Q3(`CLEPSYDRA`) → Spiral(12) → T(8, `BEAMWORK`) | **SOLVED — exact 144/144 round trip** | Plaintext SHA-256 `c8e1b890…` |
-| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | Plaintext SHA-256 `a2db145f…` |
+| **PK1** | 192 | Quagmire III (KRYPTOS alphabet; `PROVENANCE`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK2** | 350 | Complete columnar transposition (50×7; `MARGINS`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK3** | 280 | Quagmire III (sum-clock p10 + p8; period 40) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK4** | 224 | Columnar transposition T(8) → Quagmire III Q(5) → Q(9) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK5** | 272 | Columnar transposition T(8) → Quagmire III Q(224) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK6** | 315 | T(9) → T(9) → Quagmire III Q(6) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK7** | 279 | Quagmire III Q(6) + Hill cipher 3×3 (KRYPTOS alphabet) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK8** | 153 | Four sequential Quagmire III layers (`METE` → `METER` → `METIER` → `MASTERY`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK9** | 144 | Quagmire III `CLEPSYDRA` → Spiral(12) → T(`BEAMWORK`) | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
+| **PK10** | 504 | Cumulative Quagmire III / columnar / Hill / spiral pipeline | **SOLVED — exact round trip** | Canonical plaintext and SHA-256 in `pk_verified_solutions.json` |
 
 ---
 

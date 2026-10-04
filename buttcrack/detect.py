@@ -266,6 +266,20 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     stripped = text.strip()
     compact = re.sub(r"\s+", "", stripped)
 
+    # A PK corpus match is the sole identifier that is conclusive: the
+    # comparison is exact after documented A-Z normalization, not a score or a
+    # length coincidence.  Similar-looking texts still travel through every
+    # normal structural/statistical rule below.
+    from .paradigm import match as match_paradigm
+
+    known = match_paradigm(text)
+    if known is not None:
+        add(
+            known.cipher_name,
+            1.0,
+            f"exact normalized ciphertext match to verified Paradigm Kryptos {known.challenge_id} corpus record",
+        )
+
     # 0. Structural markers first: a percent escape is worth more than any amount
     # of "this reads as English", because URL-encoded text still reads as English
     # once the non-letters are dropped.
