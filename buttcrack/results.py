@@ -179,11 +179,29 @@ MIN_LETTERS_PER_COLUMN_TRUST = 6
 CHAIN_STEP_BITS = 12.0
 
 #: Steps that cost nothing: self-verifying structural decodes.
-VERIFIED_STEPS = frozenset({
-    "base64", "base32", "base16", "base58", "base85", "url", "binary",
-    "decimal_ascii", "quoted_printable", "uuencode", "morse", "bacon",
-    "bacon_case", "a1z26", "polybius", "tap_code", "nato", "braille", "baudot",
-})
+VERIFIED_STEPS = frozenset(
+    {
+        "base64",
+        "base32",
+        "base16",
+        "base58",
+        "base85",
+        "url",
+        "binary",
+        "decimal_ascii",
+        "quoted_printable",
+        "uuencode",
+        "morse",
+        "bacon",
+        "bacon_case",
+        "a1z26",
+        "polybius",
+        "tap_code",
+        "nato",
+        "braille",
+        "baudot",
+    }
+)
 
 
 def chain_bits(steps: Sequence[str] | None) -> float:
@@ -374,9 +392,7 @@ class CrackReport:
             "solved": self.solved,
             "confidence": round(self.confidence, 4),
             "best": self.best.as_dict(plaintext_limit=plaintext_limit) if self.best else None,
-            "candidates": [
-                c.as_dict(plaintext_limit=plaintext_limit) for c in self.candidates[:max_candidates]
-            ],
+            "candidates": [c.as_dict(plaintext_limit=plaintext_limit) for c in self.candidates[:max_candidates]],
             "hypotheses": [h.as_dict() for h in self.hypotheses],
             "attacks": [a.as_dict() for a in self.attacks],
             "elapsed": round(self.elapsed, 3),

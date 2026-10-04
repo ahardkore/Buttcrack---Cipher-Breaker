@@ -53,8 +53,7 @@ def main() -> int:
         # point callers at its exact reversible verifier instead.
         if name == "PK10" and name in solutions:
             solved += 1
-            print("SOLVED PK10 exact 504/504 round trip; see "
-                  "kryptos/verify_pk10_solution.py")
+            print("SOLVED PK10 exact 504/504 round trip; see kryptos/verify_pk10_solution.py")
             continue
         started = time.time()
         report = solve(ciphertext, budget=args.budget, workers=args.workers)
@@ -91,8 +90,7 @@ def main() -> int:
             print(f"       got      {got[:56]}")
 
     known = [n for n in wanted if n in solutions]
-    print(f"\n{solved}/{len(known)} of the published solutions reproduced "
-          f"({attempted} challenges attempted)")
+    print(f"\n{solved}/{len(known)} of the published solutions reproduced ({attempted} challenges attempted)")
     return 0
 
 

@@ -24,6 +24,7 @@ Usage::
 Exit status is 0 when the live site is correct, 1 when it is not — so it can
 be run from a scheduled job as well as by hand.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -85,8 +86,7 @@ def check(url: str, publisher: str, *, required: bool) -> bool:
         print(f"  FAIL  {url}\n        HTTP 200 but the body is HTML, not an ads.txt record")
         return False
     if publisher not in body:
-        print(f"  FAIL  {url}\n        served, but does not authorise {publisher}:\n"
-              f"        {body.strip()[:200]!r}")
+        print(f"  FAIL  {url}\n        served, but does not authorise {publisher}:\n        {body.strip()[:200]!r}")
         return False
 
     note = "" if final == url else f" (via {final})"
@@ -115,8 +115,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"cannot read a hostname out of base_url {base!r}")
         return 1
     if host.endswith(".github.io"):
-        print(f"{host} is a github.io address; ads.txt is only read at a domain "
-              "root, so there is nothing to serve. Move to the custom domain first.")
+        print(
+            f"{host} is a github.io address; ads.txt is only read at a domain "
+            "root, so there is nothing to serve. Move to the custom domain first."
+        )
         return 0
 
     publisher = publisher_id(client)
@@ -129,10 +131,12 @@ def main(argv: list[str] | None = None) -> int:
 
     print()
     if ok:
-        print("live ads.txt is correct.\n"
-              "If AdSense still shows the warning, it is reporting its last crawl;\n"
-              "the console clears it on the next one. Check that AdSense → Sites\n"
-              f"lists {host} itself — a stale github.io entry can never pass.")
+        print(
+            "live ads.txt is correct.\n"
+            "If AdSense still shows the warning, it is reporting its last crawl;\n"
+            "the console clears it on the next one. Check that AdSense → Sites\n"
+            f"lists {host} itself — a stale github.io entry can never pass."
+        )
         return 0
     print("live ads.txt is wrong or missing — redeploy, then re-run this check.")
     return 1

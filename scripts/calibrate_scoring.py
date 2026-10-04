@@ -72,6 +72,7 @@ def main(argv: list[str] | None = None) -> int:
     #              as a candidate but below the true plaintext.
     def stats() -> dict[str, list]:
         return {"fitness": [], "words": [], "segmentation": [], "ic": [], "chi": []}
+
     good, bad, near = stats(), stats(), stats()
 
     def record(bucket: dict, text: str) -> None:
@@ -84,14 +85,14 @@ def main(argv: list[str] | None = None) -> int:
 
     for sample in samples:
         record(good, sample)
-        record(bad, "".join(rng.choice(A26) for _ in sample))            # pure noise
-        for k in range(1, 26):                                            # wrong Caesar shifts
+        record(bad, "".join(rng.choice(A26) for _ in sample))  # pure noise
+        for k in range(1, 26):  # wrong Caesar shifts
             record(bad, caesar(sample, k))
-        record(bad, sample[::-1])                                         # reversed
-        shuffled = list(sample)                                           # shuffled (transposition gone wrong)
+        record(bad, sample[::-1])  # reversed
+        shuffled = list(sample)  # shuffled (transposition gone wrong)
         rng.shuffle(shuffled)
         record(bad, "".join(shuffled))
-        for swaps in (2, 4, 6, 8):                                        # near-miss substitutions
+        for swaps in (2, 4, 6, 8):  # near-miss substitutions
             key = list(A26)
             rng.shuffle(key)
             for i in rng.sample(range(26), 26 - swaps):
@@ -100,9 +101,11 @@ def main(argv: list[str] | None = None) -> int:
 
     def describe(name: str) -> None:
         g, b, n = good[name], bad[name], near[name]
-        print(f"{name:>12}  english min {min(g):8.3f} med {statistics.median(g):8.3f}  |  "
-              f"noise max {max(b):8.3f} p95 {sorted(b)[int(len(b)*0.95)]:8.3f} med {statistics.median(b):8.3f}  |  "
-              f"nearmiss min {min(n):8.3f} med {statistics.median(n):8.3f}")
+        print(
+            f"{name:>12}  english min {min(g):8.3f} med {statistics.median(g):8.3f}  |  "
+            f"noise max {max(b):8.3f} p95 {sorted(b)[int(len(b) * 0.95)]:8.3f} med {statistics.median(b):8.3f}  |  "
+            f"nearmiss min {min(n):8.3f} med {statistics.median(n):8.3f}"
+        )
 
     print("Raw statistic distributions")
     print("-" * 132)
@@ -111,6 +114,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print("\nRecommended ramp constants for buttcrack/lang.py")
     print("-" * 118)
+
     # GOOD = the weakest real English we must still accept;
     # BAD  = the strongest *noise* we must still reject.  Near-misses are
     # deliberately allowed to land in between: they are real partial solutions.
@@ -140,7 +144,9 @@ def main(argv: list[str] | None = None) -> int:
 
     gc = [confidence(good["fitness"][i], good["words"][i], good["segmentation"][i]) for i in range(len(samples))]
     bc = [confidence(bad["fitness"][i], bad["words"][i], bad["segmentation"][i]) for i in range(len(bad["fitness"]))]
-    nc = [confidence(near["fitness"][i], near["words"][i], near["segmentation"][i]) for i in range(len(near["fitness"]))]
+    nc = [
+        confidence(near["fitness"][i], near["words"][i], near["segmentation"][i]) for i in range(len(near["fitness"]))
+    ]
     print("\nSeparation check")
     print(f"  english  confidence: min {min(gc):.3f}  median {statistics.median(gc):.3f}  (want min >= 0.80)")
     print(f"  noise    confidence: max {max(bc):.3f}  median {statistics.median(bc):.3f}  (want max <= 0.30)")

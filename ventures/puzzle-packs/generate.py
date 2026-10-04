@@ -12,6 +12,7 @@ Quotations are short fragments attributed to historical figures who died before
 are generated deterministically from the seed, so the same seed always yields
 the same book — change the seed to produce a genuinely different volume.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -80,7 +81,10 @@ QUOTES: list[tuple[str, str]] = [
     ("If winter comes can spring be far behind", "Percy Bysshe Shelley"),
     ("Look on my works ye mighty and despair", "Percy Bysshe Shelley"),
     ("She walks in beauty like the night of cloudless climes and starry skies", "Lord Byron"),
-    ("It is a truth universally acknowledged that a single man in possession of a good fortune must be in want of a wife", "Jane Austen"),
+    (
+        "It is a truth universally acknowledged that a single man in possession of a good fortune must be in want of a wife",
+        "Jane Austen",
+    ),
     ("There is no charm equal to tenderness of heart", "Jane Austen"),
     ("It was the best of times it was the worst of times", "Charles Dickens"),
     ("No one is useless in this world who lightens the burden of another", "Charles Dickens"),
@@ -201,7 +205,7 @@ def build(puzzles: int, seed: int, title: str) -> str:
       <span class="ptype">{kind} · {label}</span></div>
     <div class="ct">{words}</div>
     <div class="author">— {html.escape(ct_author)}</div>
-    {f'<div class="hint">{html.escape(hint_line)}</div>' if hint_line else ''}
+    {f'<div class="hint">{html.escape(hint_line)}</div>' if hint_line else ""}
   </section>""")
         solutions.append(
             f'<div class="sol"><b>{i}.</b> {html.escape(quote.capitalize())} '

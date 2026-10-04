@@ -15,6 +15,7 @@ Any subset works — pass only what you have, run it again later for the rest.
 Use --show to print the current state and the redirect URLs without changing
 anything.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -70,10 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     from build_pages import payment_url
 
     updates = {"vol1": args.vol1, "vol2": args.vol2}
-    checked = {
-        sku: payment_url(url, f"--{sku}")
-        for sku, url in updates.items() if url is not None
-    }
+    checked = {sku: payment_url(url, f"--{sku}") for sku, url in updates.items() if url is not None}
     tip = payment_url(args.tip, "--tip") if args.tip is not None else None
 
     known = {p["sku"] for p in cfg["stripe"]["products"]}

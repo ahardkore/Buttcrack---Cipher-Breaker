@@ -1,4 +1,5 @@
 """Small sequential attack queue with JSON-safe checkpoints."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

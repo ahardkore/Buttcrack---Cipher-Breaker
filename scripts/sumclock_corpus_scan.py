@@ -37,10 +37,13 @@ def main() -> int:
     parser.add_argument("corpus", nargs="+", help="text files to scan")
     parser.add_argument("--periods", default="4,5,6,7", help="wheel periods (default 4,5,6,7)")
     parser.add_argument("--min-hits", type=int, default=12)
-    parser.add_argument("--partial", action="store_true",
-                        help="report the longest run of satisfied constraints instead of "
-                             "requiring a whole-window match — use this when the plaintext "
-                             "may quote only part of a passage, or the corpus is OCR")
+    parser.add_argument(
+        "--partial",
+        action="store_true",
+        help="report the longest run of satisfied constraints instead of "
+        "requiring a whole-window match — use this when the plaintext "
+        "may quote only part of a passage, or the corpus is OCR",
+    )
     args = parser.parse_args()
 
     corpus_path = ROOT / "kryptos" / "pk_all_ciphertexts.json"
@@ -63,13 +66,13 @@ def main() -> int:
             letters = sum(1 for c in text.upper() if "A" <= c <= "Z")
             total += letters
             if args.partial:
-                results = cipher.scan_corpus_partial(
-                    ciphertext, text, periods, alphabet, report_from=args.min_hits
-                )
+                results = cipher.scan_corpus_partial(ciphertext, text, periods, alphabet, report_from=args.min_hits)
                 for position, run, offset, window in results[:5]:
                     found += 1
-                    print(f"\nHIT  {path}  position {position}  alphabet {name}  "
-                          f"run of {run} consecutive constraints from offset {offset}")
+                    print(
+                        f"\nHIT  {path}  position {position}  alphabet {name}  "
+                        f"run of {run} consecutive constraints from offset {offset}"
+                    )
                     print(f"     {window}")
                 if not results:
                     print(f"  (no run of {args.min_hits}+ constraints; chance gives about 4)")
@@ -78,14 +81,15 @@ def main() -> int:
                 ciphertext, text, periods, alphabet, min_hits=args.min_hits
             ):
                 found += 1
-                print(f"\nHIT  {path}  position {position}  alphabet {name}  "
-                      f"{hits} constraints satisfied")
+                print(f"\nHIT  {path}  position {position}  alphabet {name}  {hits} constraints satisfied")
                 print(f"     {window}")
             print(f"scanned {path} ({name}): {letters:,} letters")
     print(f"\n{total:,} letters scanned, {found} candidate passage(s)")
     if not found:
-        print("No window of this corpus can be the plaintext under that wheel shape. "
-              "That rules the corpus out; it does not rule out the cipher.")
+        print(
+            "No window of this corpus can be the plaintext under that wheel shape. "
+            "That rules the corpus out; it does not rule out the cipher."
+        )
     return 0
 
 

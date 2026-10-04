@@ -1,9 +1,13 @@
 """Auditable provenance records for assistant/model suggestions."""
+
 from __future__ import annotations
+
+import hashlib
+import json
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-import hashlib, json
 from pathlib import Path
+
 
 @dataclass(frozen=True)
 class AssistantRecord:
@@ -17,8 +21,18 @@ class AssistantRecord:
     evidence_status: str = "hypothesis"
 
     @classmethod
-    def create(cls, provider: str, model: str, prompt: str, output: str, ciphertext: str, **kwargs) -> "AssistantRecord":
-        return cls(provider, model, prompt, output, hashlib.sha256(ciphertext.encode()).hexdigest(), datetime.now(timezone.utc).isoformat(), **kwargs)
+    def create(
+        cls, provider: str, model: str, prompt: str, output: str, ciphertext: str, **kwargs
+    ) -> AssistantRecord:
+        return cls(
+            provider,
+            model,
+            prompt,
+            output,
+            hashlib.sha256(ciphertext.encode()).hexdigest(),
+            datetime.now(timezone.utc).isoformat(),
+            **kwargs,
+        )
 
     def save_jsonl(self, path: str | Path) -> None:
         with Path(path).open("a", encoding="utf-8") as handle:

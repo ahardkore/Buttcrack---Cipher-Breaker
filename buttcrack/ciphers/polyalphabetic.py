@@ -145,16 +145,12 @@ class PeriodicCipher(Cipher):
         span = len(shifts)
         # map_letters keeps case, spaces and punctuation, and counts letters only,
         # so the key advances over letters exactly as it always did.
-        return map_letters(
-            plaintext, lambda pos, idx: self._encrypt_letter(idx, shifts[pos % span])
-        )
+        return map_letters(plaintext, lambda pos, idx: self._encrypt_letter(idx, shifts[pos % span]))
 
     def decrypt(self, ciphertext: str, key: Any = "KEY") -> str:
         shifts = self.normalise_key(key)
         span = len(shifts)
-        return map_letters(
-            ciphertext, lambda pos, idx: self._decrypt_letter(idx, shifts[pos % span])
-        )
+        return map_letters(ciphertext, lambda pos, idx: self._decrypt_letter(idx, shifts[pos % span]))
 
     # -- cryptanalysis ------------------------------------------------------ #
     def solve_columns(self, stream: str, key_len: int, ctx: CrackContext) -> list[int]:
@@ -208,9 +204,7 @@ class PeriodicCipher(Cipher):
     def _fitness(self, stream: str, shifts: list[int], ctx: CrackContext) -> float:
         n = len(shifts)
         sample = stream[: min(len(stream), 1200)]
-        plain = "".join(
-            A26[self._decrypt_letter(A26.index(c), shifts[i % n])] for i, c in enumerate(sample)
-        )
+        plain = "".join(A26[self._decrypt_letter(A26.index(c), shifts[i % n])] for i, c in enumerate(sample))
         return ctx.model.search_fitness(plain)
 
     def crack(self, ciphertext: str, ctx: CrackContext) -> Iterator[Candidate]:
@@ -222,9 +216,7 @@ class PeriodicCipher(Cipher):
         if hint_key:
             shifts = self.normalise_key(hint_key)
             plain = self.decrypt(stream, shifts)
-            yield ctx.candidate(
-                self.name, plain, {"key": self.key_word(shifts)}, steps=ctx.steps, method="hint"
-            )
+            yield ctx.candidate(self.name, plain, {"key": self.key_word(shifts)}, steps=ctx.steps, method="hint")
             return
         if hint_len:
             lengths = [(int(hint_len), 1.0, "hint")]
@@ -496,9 +488,7 @@ class Trithemius(PeriodicCipher):
             for step in range(1, 26):
                 if ctx.expired():
                     return
-                plain = "".join(
-                    A26[(v - (start + i * step)) % 26] for i, v in enumerate(idx)
-                )
+                plain = "".join(A26[(v - (start + i * step)) % 26] for i, v in enumerate(idx))
                 results.append((ctx.model.search_fitness(plain), start, step))
         # Cheap quadgram ranking first; the expensive multi-view score is only
         # worth spending on the leaders of a 676-key sweep.

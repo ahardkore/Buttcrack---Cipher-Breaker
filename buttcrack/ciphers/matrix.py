@@ -75,10 +75,7 @@ def invert(matrix: list[list[int]]) -> list[list[int]] | None:
         for i in range(3):
             row = []
             for j in range(3):
-                minor = [
-                    [matrix[r][c] for c in range(3) if c != i]
-                    for r in range(3) if r != j
-                ]
+                minor = [[matrix[r][c] for c in range(3) if c != i] for r in range(3) if r != j]
                 row.append(((-1) ** (i + j)) * determinant(minor))
             adj.append(row)
     return [[(inv_det * value) % 26 for value in row] for row in adj]
@@ -117,9 +114,7 @@ class Hill(Cipher):
             letters = letters_only(key)
             size = int(round(len(letters) ** 0.5))
             if size * size != len(letters) or size not in self.block_sizes:
-                raise ValueError(
-                    f"a Hill keyword must have n*n letters (4 or 9), got {len(letters)}"
-                )
+                raise ValueError(f"a Hill keyword must have n*n letters (4 or 9), got {len(letters)}")
             values = [A26.index(c) for c in letters]
             return [values[i * size : (i + 1) * size] for i in range(size)]
         rows = list(key)
@@ -203,8 +198,11 @@ class Hill(Cipher):
         if hint:
             with suppress(ValueError):  # a singular hint matrix is the user's mistake
                 yield ctx.candidate(
-                    self.name, self.decrypt(stream, hint),
-                    {"matrix": self.normalise_key(hint)}, steps=ctx.steps, method="hint",
+                    self.name,
+                    self.decrypt(stream, hint),
+                    {"matrix": self.normalise_key(hint)},
+                    steps=ctx.steps,
+                    method="hint",
                 )
             return
 
@@ -218,10 +216,7 @@ class Hill(Cipher):
             # Row scoring is O(26**size * blocks); cap the sample so 3x3 on a
             # long text stays inside its slice of the budget.
             sample = stream[: min(usable, 1200 - 1200 % size)]
-            blocks = [
-                [A26.index(c) for c in sample[i : i + size]]
-                for i in range(0, len(sample), size)
-            ]
+            blocks = [[A26.index(c) for c in sample[i : i + size]] for i in range(0, len(sample), size)]
             per_position = []
             for position in range(size):
                 if ctx.expired():

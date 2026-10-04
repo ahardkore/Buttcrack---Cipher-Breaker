@@ -58,9 +58,7 @@ XOR_VALUE: tuple[bytes, ...] = tuple(
 #: Layers whose payload is raw bytes rather than text.  XOR sitting underneath
 #: one of these is the most common constructed-cipher pattern there is, so it
 #: earns a strong prior once such a layer has been peeled.
-BYTE_LAYERS = frozenset(
-    {"base16", "base64", "base32", "base58", "base85", "binary", "url", "decimal_ascii"}
-)
+BYTE_LAYERS = frozenset({"base16", "base64", "base32", "base58", "base85", "binary", "url", "decimal_ascii"})
 
 #: Likelihood granted to a byte attack directly underneath a peeled byte encoding.
 UNDER_BYTE_LAYER = 0.85
@@ -120,11 +118,33 @@ B32_RE = re.compile(r"^[A-Z2-7\s]+=*$")
 #: towards the letters that actually start sentences), digits at ~0.1% each and
 #: punctuation at its measured share.
 _LOWER_RATES = {
-    b" ": 0.172, b"e": 0.102, b"t": 0.075, b"a": 0.065, b"o": 0.062, b"i": 0.057,
-    b"n": 0.057, b"s": 0.051, b"r": 0.049, b"h": 0.049, b"l": 0.033, b"d": 0.033,
-    b"c": 0.023, b"u": 0.022, b"m": 0.020, b"f": 0.018, b"p": 0.016, b"g": 0.016,
-    b"w": 0.016, b"y": 0.015, b"b": 0.012, b"v": 0.008, b"k": 0.005, b"x": 0.001,
-    b"j": 0.001, b"q": 0.001, b"z": 0.001,
+    b" ": 0.172,
+    b"e": 0.102,
+    b"t": 0.075,
+    b"a": 0.065,
+    b"o": 0.062,
+    b"i": 0.057,
+    b"n": 0.057,
+    b"s": 0.051,
+    b"r": 0.049,
+    b"h": 0.049,
+    b"l": 0.033,
+    b"d": 0.033,
+    b"c": 0.023,
+    b"u": 0.022,
+    b"m": 0.020,
+    b"f": 0.018,
+    b"p": 0.016,
+    b"g": 0.016,
+    b"w": 0.016,
+    b"y": 0.015,
+    b"b": 0.012,
+    b"v": 0.008,
+    b"k": 0.005,
+    b"x": 0.001,
+    b"j": 0.001,
+    b"q": 0.001,
+    b"z": 0.001,
 }
 #: Letters that disproportionately open sentences and proper nouns.
 _SENTENCE_STARTERS = frozenset(b"TAISWMHBDCLEPRGFNO")
@@ -134,9 +154,21 @@ for _b, _rate in _LOWER_RATES.items():
     if _b.isalpha():
         _upper = _b.upper()
         ENGLISH_BYTES[_upper] = _rate * (0.09 if _upper[0] in _SENTENCE_STARTERS else 0.02)
-for _b, _rate in {b",": 0.006, b".": 0.007, b"'": 0.004, b'"': 0.002, b"-": 0.002,
-                  b":": 0.001, b";": 0.0005, b"!": 0.0004, b"?": 0.0006,
-                  b"(": 0.0005, b")": 0.0005, b"\n": 0.001, b"\t": 0.0002}.items():
+for _b, _rate in {
+    b",": 0.006,
+    b".": 0.007,
+    b"'": 0.004,
+    b'"': 0.002,
+    b"-": 0.002,
+    b":": 0.001,
+    b";": 0.0005,
+    b"!": 0.0004,
+    b"?": 0.0006,
+    b"(": 0.0005,
+    b")": 0.0005,
+    b"\n": 0.001,
+    b"\t": 0.0002,
+}.items():
     ENGLISH_BYTES[_b] = _rate
 for _digit in b"0123456789":
     ENGLISH_BYTES[bytes([_digit])] = 0.0011
@@ -148,6 +180,7 @@ UNKNOWN_BYTE_RATE = 0.0004
 _TOTAL = sum(ENGLISH_BYTES.values())
 ENGLISH_BYTES = {b: v / _TOTAL for b, v in ENGLISH_BYTES.items()}
 UNKNOWN_BYTE_RATE /= _TOTAL
+
 
 def to_payload(text: str) -> tuple[bytes, str]:
     """Best-effort decode of a ciphertext into raw bytes.
@@ -576,7 +609,9 @@ class RepeatingKeyXOR(XORCipher):
             counts = Counter(window[pos::size])
             ranked = sorted(
                 range(256),
-                key=lambda k: -sum(n * ENGLISH_BYTES.get(bytes([b ^ k]), UNKNOWN_BYTE_RATE) for b, n in counts.items()),
+                key=lambda k: (
+                    -sum(n * ENGLISH_BYTES.get(bytes([b ^ k]), UNKNOWN_BYTE_RATE) for b, n in counts.items())
+                ),
             )
             for cand in ranked[:6]:
                 if cand == key[pos] or ctx.expired():

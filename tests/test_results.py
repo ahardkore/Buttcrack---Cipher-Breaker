@@ -77,9 +77,7 @@ class TestRanking(unittest.TestCase):
     def test_path_reads_outermost_layer_first(self):
         self.assertEqual(candidate(steps=()).path, "caesar")
         self.assertEqual(candidate(steps=("base64",)).path, "base64 -> caesar")
-        self.assertEqual(
-            candidate(cipher="none", steps=("base64", "morse")).path, "base64 -> morse"
-        )
+        self.assertEqual(candidate(cipher="none", steps=("base64", "morse")).path, "base64 -> morse")
 
     def test_as_dict_is_json_serialisable(self):
         payload = json.dumps(candidate(key={"key": "SECRET"}).as_dict())
@@ -139,8 +137,13 @@ class TestReportTypes(unittest.TestCase):
     def test_attack_log_records_what_happened(self):
         started = time.time() - 0.01
         log = AttackLog(
-            cipher="caesar", started=started, finished=started + 0.01,
-            status="solved", tried=25, best_confidence=0.99, detail="key=7",
+            cipher="caesar",
+            started=started,
+            finished=started + 0.01,
+            status="solved",
+            tried=25,
+            best_confidence=0.99,
+            detail="key=7",
         )
         payload = log.as_dict()
         self.assertEqual(payload["status"], "solved")
@@ -181,8 +184,16 @@ class TestReportTypes(unittest.TestCase):
             best=best,
             candidates=[best],
             hypotheses=[Hypothesis("caesar", 0.95, "one shift restores English")],
-            attacks=[AttackLog(cipher="caesar", started=time.time(), finished=time.time(),
-                               status="solved", tried=25, best_confidence=0.93)],
+            attacks=[
+                AttackLog(
+                    cipher="caesar",
+                    started=time.time(),
+                    finished=time.time(),
+                    status="solved",
+                    tried=25,
+                    best_confidence=0.93,
+                )
+            ],
             elapsed=0.02,
             budget=10.0,
             workers=2,

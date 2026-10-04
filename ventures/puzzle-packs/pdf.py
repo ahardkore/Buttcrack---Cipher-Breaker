@@ -8,6 +8,7 @@ can be produced in CI without a browser or a print dialogue.
 Coordinates are in points (72 per inch) with the origin at the bottom-left,
 which is the PDF convention.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -28,20 +29,101 @@ FONTS = [HELV, HELV_B, HELV_O, TIMES, TIMES_B, TIMES_I, COURIER, COURIER_B]
 # monospaced at exactly 600; the proportional fonts use per-character tables
 # for the ASCII range, which is all we typeset.
 _HELV_W = {
-    ' ': 278, '!': 278, '"': 355, '#': 556, '$': 556, '%': 889, '&': 667,
-    "'": 191, '(': 333, ')': 333, '*': 389, '+': 584, ',': 278, '-': 333,
-    '.': 278, '/': 278, '0': 556, '1': 556, '2': 556, '3': 556, '4': 556,
-    '5': 556, '6': 556, '7': 556, '8': 556, '9': 556, ':': 278, ';': 278,
-    '<': 584, '=': 584, '>': 584, '?': 556, '@': 1015, 'A': 667, 'B': 667,
-    'C': 722, 'D': 722, 'E': 667, 'F': 611, 'G': 778, 'H': 722, 'I': 278,
-    'J': 500, 'K': 667, 'L': 556, 'M': 833, 'N': 722, 'O': 778, 'P': 667,
-    'Q': 778, 'R': 722, 'S': 667, 'T': 611, 'U': 722, 'V': 667, 'W': 944,
-    'X': 667, 'Y': 667, 'Z': 611, '[': 278, '\\': 278, ']': 278, '^': 469,
-    '_': 556, '`': 333, 'a': 556, 'b': 556, 'c': 500, 'd': 556, 'e': 556,
-    'f': 278, 'g': 556, 'h': 556, 'i': 222, 'j': 222, 'k': 500, 'l': 222,
-    'm': 833, 'n': 556, 'o': 556, 'p': 556, 'q': 556, 'r': 333, 's': 500,
-    't': 278, 'u': 556, 'v': 500, 'w': 722, 'x': 500, 'y': 500, 'z': 500,
-    '{': 334, '|': 260, '}': 334, '~': 584,
+    " ": 278,
+    "!": 278,
+    '"': 355,
+    "#": 556,
+    "$": 556,
+    "%": 889,
+    "&": 667,
+    "'": 191,
+    "(": 333,
+    ")": 333,
+    "*": 389,
+    "+": 584,
+    ",": 278,
+    "-": 333,
+    ".": 278,
+    "/": 278,
+    "0": 556,
+    "1": 556,
+    "2": 556,
+    "3": 556,
+    "4": 556,
+    "5": 556,
+    "6": 556,
+    "7": 556,
+    "8": 556,
+    "9": 556,
+    ":": 278,
+    ";": 278,
+    "<": 584,
+    "=": 584,
+    ">": 584,
+    "?": 556,
+    "@": 1015,
+    "A": 667,
+    "B": 667,
+    "C": 722,
+    "D": 722,
+    "E": 667,
+    "F": 611,
+    "G": 778,
+    "H": 722,
+    "I": 278,
+    "J": 500,
+    "K": 667,
+    "L": 556,
+    "M": 833,
+    "N": 722,
+    "O": 778,
+    "P": 667,
+    "Q": 778,
+    "R": 722,
+    "S": 667,
+    "T": 611,
+    "U": 722,
+    "V": 667,
+    "W": 944,
+    "X": 667,
+    "Y": 667,
+    "Z": 611,
+    "[": 278,
+    "\\": 278,
+    "]": 278,
+    "^": 469,
+    "_": 556,
+    "`": 333,
+    "a": 556,
+    "b": 556,
+    "c": 500,
+    "d": 556,
+    "e": 556,
+    "f": 278,
+    "g": 556,
+    "h": 556,
+    "i": 222,
+    "j": 222,
+    "k": 500,
+    "l": 222,
+    "m": 833,
+    "n": 556,
+    "o": 556,
+    "p": 556,
+    "q": 556,
+    "r": 333,
+    "s": 500,
+    "t": 278,
+    "u": 556,
+    "v": 500,
+    "w": 722,
+    "x": 500,
+    "y": 500,
+    "z": 500,
+    "{": 334,
+    "|": 260,
+    "}": 334,
+    "~": 584,
 }
 # Times is narrower than Helvetica by roughly this ratio on mixed-case text.
 _TIMES_SCALE = 0.92
@@ -62,10 +144,22 @@ def text_width(s: str, font: str, size: float) -> float:
 # Typographic characters that are not Latin-1 but do exist in WinAnsiEncoding,
 # which is the encoding declared on the fonts.
 WINANSI = {
-    "\u2013": 0x96, "\u2014": 0x97, "\u2018": 0x91, "\u2019": 0x92,
-    "\u201c": 0x93, "\u201d": 0x94, "\u2022": 0x95, "\u2026": 0x85,
-    "\u2020": 0x86, "\u2021": 0x87, "\u2030": 0x89, "\u20ac": 0x80,
-    "\u2039": 0x8b, "\u203a": 0x9b, "\u0192": 0x83, "\u02c6": 0x88,
+    "\u2013": 0x96,
+    "\u2014": 0x97,
+    "\u2018": 0x91,
+    "\u2019": 0x92,
+    "\u201c": 0x93,
+    "\u201d": 0x94,
+    "\u2022": 0x95,
+    "\u2026": 0x85,
+    "\u2020": 0x86,
+    "\u2021": 0x87,
+    "\u2030": 0x89,
+    "\u20ac": 0x80,
+    "\u2039": 0x8B,
+    "\u203a": 0x9B,
+    "\u0192": 0x83,
+    "\u02c6": 0x88,
 }
 # Last-resort transliteration for anything with no WinAnsi slot at all.
 ASCII_FALLBACK = {"\u2212": "-", "\u00a0": " ", "\u2032": "'", "\u2033": '"'}
@@ -97,26 +191,21 @@ class Page:
     height: float
     ops: list[str] = field(default_factory=list)
 
-    def text(self, x: float, y: float, s: str, font: str = HELV, size: float = 11,
-             gray: float = 0.0) -> None:
+    def text(self, x: float, y: float, s: str, font: str = HELV, size: float = 11, gray: float = 0.0) -> None:
         self.ops.append(
-            f"BT {gray:.2f} g /{font.replace('-', '')} {size:.2f} Tf "
-            f"1 0 0 1 {x:.2f} {y:.2f} Tm ({escape(s)}) Tj ET"
+            f"BT {gray:.2f} g /{font.replace('-', '')} {size:.2f} Tf 1 0 0 1 {x:.2f} {y:.2f} Tm ({escape(s)}) Tj ET"
         )
 
-    def text_centred(self, y: float, s: str, font: str = HELV, size: float = 11,
-                     gray: float = 0.0) -> None:
+    def text_centred(self, y: float, s: str, font: str = HELV, size: float = 11, gray: float = 0.0) -> None:
         self.text((self.width - text_width(s, font, size)) / 2, y, s, font, size, gray)
 
-    def text_right(self, x_right: float, y: float, s: str, font: str = HELV,
-                   size: float = 11, gray: float = 0.0) -> None:
+    def text_right(
+        self, x_right: float, y: float, s: str, font: str = HELV, size: float = 11, gray: float = 0.0
+    ) -> None:
         self.text(x_right - text_width(s, font, size), y, s, font, size, gray)
 
-    def line(self, x1: float, y1: float, x2: float, y2: float,
-             width: float = 0.5, gray: float = 0.0) -> None:
-        self.ops.append(
-            f"{gray:.2f} G {width:.2f} w {x1:.2f} {y1:.2f} m {x2:.2f} {y2:.2f} l S"
-        )
+    def line(self, x1: float, y1: float, x2: float, y2: float, width: float = 0.5, gray: float = 0.0) -> None:
+        self.ops.append(f"{gray:.2f} G {width:.2f} w {x1:.2f} {y1:.2f} m {x2:.2f} {y2:.2f} l S")
 
     def content(self) -> bytes:
         return "\n".join(self.ops).encode("latin-1", "replace")
@@ -125,8 +214,7 @@ class Page:
 class Document:
     """Collects pages and serialises them into a valid PDF file."""
 
-    def __init__(self, width: float = 612, height: float = 792,
-                 title: str = "", author: str = "") -> None:
+    def __init__(self, width: float = 612, height: float = 792, title: str = "", author: str = "") -> None:
         self.width, self.height = width, height
         self.title, self.author = title, author
         self.pages: list[Page] = []
@@ -141,24 +229,21 @@ class Document:
 
         def add(body: bytes) -> int:
             objects.append(body)
-            return len(objects)          # object numbers are 1-based
+            return len(objects)  # object numbers are 1-based
 
-        font_objs = {f: add(
-            f"<< /Type /Font /Subtype /Type1 /BaseFont /{f} "
-            f"/Encoding /WinAnsiEncoding >>".encode()
-        ) for f in FONTS}
-        resources = "<< /Font << " + " ".join(
-            f"/{f.replace('-', '')} {n} 0 R" for f, n in font_objs.items()
-        ) + " >> >>"
+        font_objs = {
+            f: add(f"<< /Type /Font /Subtype /Type1 /BaseFont /{f} /Encoding /WinAnsiEncoding >>".encode())
+            for f in FONTS
+        }
+        resources = (
+            "<< /Font << " + " ".join(f"/{f.replace('-', '')} {n} 0 R" for f, n in font_objs.items()) + " >> >>"
+        )
 
-        pages_obj = add(b"")             # reserved, patched once kids are known
+        pages_obj = add(b"")  # reserved, patched once kids are known
         kids = []
         for page in self.pages:
             stream = page.content()
-            content_obj = add(
-                b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n"
-                + stream + b"\nendstream"
-            )
+            content_obj = add(b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream")
             page_obj = add(
                 f"<< /Type /Page /Parent {pages_obj} 0 R "
                 f"/MediaBox [0 0 {self.width:.2f} {self.height:.2f}] "
@@ -167,8 +252,7 @@ class Document:
             kids.append(page_obj)
 
         objects[pages_obj - 1] = (
-            "<< /Type /Pages /Count " + str(len(kids)) + " /Kids ["
-            + " ".join(f"{k} 0 R" for k in kids) + "] >>"
+            "<< /Type /Pages /Count " + str(len(kids)) + " /Kids [" + " ".join(f"{k} 0 R" for k in kids) + "] >>"
         ).encode()
 
         info_obj = add(

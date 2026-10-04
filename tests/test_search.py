@@ -63,9 +63,7 @@ class TestClimb(unittest.TestCase):
         ciphertext = SUBSTITUTION.prepare(SUBSTITUTION.encrypt(PLAINTEXT, ALPHABET))
         rng = random.Random(1234)
         start = list(A26)
-        baseline = MODEL.search_fitness(
-            "".join(ciphertext).translate(str.maketrans(A26, "".join(start)))
-        )
+        baseline = MODEL.search_fitness("".join(ciphertext).translate(str.maketrans(A26, "".join(start))))
         key, fit, evals = climb(
             ciphertext,
             MODEL.search_fitness,

@@ -175,14 +175,10 @@ class TestSingleCiphers(unittest.TestCase):
                 # hinted key gives the exact plaintext", not "this attack wins
                 # a race against forty-nine others for a 20-second budget",
                 # which is what made this flaky as the registry grew.
-                report = Solver(
-                    budget=20, workers=WORKERS, ciphers=[cipher], hints={"key": key}
-                ).solve(ciphertext)
+                report = Solver(budget=20, workers=WORKERS, ciphers=[cipher], hints={"key": key}).solve(ciphertext)
                 self.assertTrue(report.solved, f"{name}: {report.confidence:.3f}")
                 self.assertEqual(report.cipher, name)
-                self.assertTrue(
-                    squash(report.plaintext, "").startswith(squash(PARAGRAPH, "")[:60])
-                )
+                self.assertTrue(squash(report.plaintext, "").startswith(squash(PARAGRAPH, "")[:60]))
 
     def test_new_code_layers(self):
         for name in ("tap_code", "nato", "braille", "baudot"):
@@ -256,8 +252,11 @@ class TestStacks(unittest.TestCase):
     def test_encoding_over_cipher(self):
         self.assert_chain(code("base64", enc("caesar", key=5)), "base64 -> caesar")
         self.assert_chain(code("base16", enc("vigenere", key="LAMP")), "base16 -> vigenere")
-        self.assert_chain(code("base64", code("morse", "Proceed to the extraction point immediately")),
-                          "base64 -> morse", "Proceed to the extraction point immediately")
+        self.assert_chain(
+            code("base64", code("morse", "Proceed to the extraction point immediately")),
+            "base64 -> morse",
+            "Proceed to the extraction point immediately",
+        )
 
     def test_encoding_over_encoding(self):
         self.assert_chain(code("base32", code("base64")), "base32 -> base64")
@@ -303,15 +302,11 @@ class TestStacks(unittest.TestCase):
         stacked = code("base32", code("base16", code("base64", code("morse", get("reverse").encrypt(inner)))))
         report = solve(stacked, budget=BUDGET, workers=WORKERS, max_depth=6)
         self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
-        self.assertEqual(
-            report.path, "base32 -> base16 -> base64 -> morse -> reverse -> caesar"
-        )
+        self.assertEqual(report.path, "base32 -> base16 -> base64 -> morse -> reverse -> caesar")
 
     def test_three_ciphers_deep(self):
         """Ciphers stacked on ciphers, not just encodings on ciphers."""
-        stacked = get("reverse").encrypt(
-            get("rail_fence").encrypt(enc("caesar", SENTENCE, key=5), 4)
-        )
+        stacked = get("reverse").encrypt(get("rail_fence").encrypt(enc("caesar", SENTENCE, key=5), 4))
         report = solve(stacked, budget=BUDGET, workers=WORKERS)
         self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
         self.assertEqual(report.path, "reverse -> rail_fence -> caesar")
@@ -326,22 +321,16 @@ class TestStacks(unittest.TestCase):
         inner = enc("rot13", SENTENCE)
         stacked = get("reverse").encrypt(
             get("rail_fence").encrypt(
-                get("skip").encrypt(
-                    get("reverse").encrypt(get("rail_fence").encrypt(inner, 3)), 5
-                ), 4
+                get("skip").encrypt(get("reverse").encrypt(get("rail_fence").encrypt(inner, 3)), 5), 4
             )
         )
         report = solve(stacked, budget=30, workers=WORKERS)
         self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
-        self.assertEqual(
-            report.path, "reverse -> rail_fence -> skip -> reverse -> rail_fence -> rot13"
-        )
+        self.assertEqual(report.path, "reverse -> rail_fence -> skip -> reverse -> rail_fence -> rot13")
 
     def test_encodings_wrapped_around_a_cipher_chain(self):
         """The chain search keeps the steps it was already inside."""
-        inner = get("reverse").encrypt(
-            get("rail_fence").encrypt(enc("caesar", SENTENCE, key=9), 3)
-        )
+        inner = get("reverse").encrypt(get("rail_fence").encrypt(enc("caesar", SENTENCE, key=9), 3))
         stacked = code("base64", code("morse", inner))
         report = solve(stacked, budget=30, workers=WORKERS)
         self.assertTrue(report.solved, f"{report.confidence:.3f} {report.path}")
@@ -481,8 +470,12 @@ class TestSolverControls(unittest.TestCase):
         class Probe(Cipher):
             def __init__(self, name):
                 self.info = CipherInfo(
-                    name=name, title=name, family=Family.SUBSTITUTION,
-                    cost=EXPENSIVE, min_length=2, description="test-only budget probe",
+                    name=name,
+                    title=name,
+                    family=Family.SUBSTITUTION,
+                    cost=EXPENSIVE,
+                    min_length=2,
+                    description="test-only budget probe",
                 )
                 self.slices = []
 
@@ -499,8 +492,11 @@ class TestSolverControls(unittest.TestCase):
         # The last attack in a phase may use whatever is left, so the comparison
         # is between the two that still have a successor.
         solver._attack(
-            "QZXWVUTSRQPONMLKJIHGFEDCBA", ctx, pool,
-            {"probe_a": 0.9, "probe_b": 0.0, "probe_c": 0.0}, report,
+            "QZXWVUTSRQPONMLKJIHGFEDCBA",
+            ctx,
+            pool,
+            {"probe_a": 0.9, "probe_b": 0.0, "probe_c": 0.0},
+            report,
             costs=(EXPENSIVE,),
         )
         self.assertGreater(likely.slices[0], unlikely.slices[0])
@@ -577,6 +573,7 @@ class TestConstants(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 
 class TestChainSearch(unittest.TestCase):
     """The commuting-stack search and the gate that decides when it runs."""

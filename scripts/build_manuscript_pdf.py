@@ -41,10 +41,28 @@ BODY = PAGE_W - 2 * MARGIN_X
 #: manuscript uses proper typography; a PDF that silently dropped an em dash
 #: would change sentences.
 REPLACEMENTS = {
-    "—": "--", "–": "-", "’": "'", "‘": "'", "“": '"', "”": '"',
-    "…": "...", "×": "x", "≈": "~", "≥": ">=", "≤": "<=", "−": "-",
-    "≡": "==", "⟶": "->", "→": "->", "·": "-", "½": "1/2", "²": "2",
-    "³": "3", "⁴": "4", "𝑘": "k", "Z/26": "Z/26",
+    "—": "--",
+    "–": "-",
+    "’": "'",
+    "‘": "'",
+    "“": '"',
+    "”": '"',
+    "…": "...",
+    "×": "x",
+    "≈": "~",
+    "≥": ">=",
+    "≤": "<=",
+    "−": "-",
+    "≡": "==",
+    "⟶": "->",
+    "→": "->",
+    "·": "-",
+    "½": "1/2",
+    "²": "2",
+    "³": "3",
+    "⁴": "4",
+    "𝑘": "k",
+    "Z/26": "Z/26",
 }
 
 
@@ -55,7 +73,7 @@ def clean(text: str) -> str:
     text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
     text = re.sub(r"(?<!\w)\*(.+?)\*(?!\w)", r"\1", text)
     text = re.sub(r"`([^`]+)`", r"\1", text)
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)   # links -> their text
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)  # links -> their text
     return "".join(c if ord(c) < 256 else "?" for c in text)
 
 
@@ -87,8 +105,9 @@ class Book:
     def space(self, amount: float) -> None:
         self.y -= amount
 
-    def para(self, text: str, font: str = TIMES, size: float = 10.5,
-             indent: float = 0.0, leading: float = 14.0) -> None:
+    def para(
+        self, text: str, font: str = TIMES, size: float = 10.5, indent: float = 0.0, leading: float = 14.0
+    ) -> None:
         if not text.strip():
             return
         for line in wrap(text, font, size, BODY - indent):
@@ -138,8 +157,7 @@ class Book:
             for c, cell_lines in enumerate(wrapped):
                 yy = top
                 for line in cell_lines:
-                    self.page.text(MARGIN_X + c * width + 3, yy, line,
-                                   TIMES_B if index == 0 else TIMES, size)
+                    self.page.text(MARGIN_X + c * width + 3, yy, line, TIMES_B if index == 0 else TIMES, size)
                     yy -= 10.5
             self.y = top - height - 2
             if index == 0:
@@ -176,7 +194,7 @@ def render(markdown: str, title: str) -> Book:
 
         if line.startswith("|"):
             cells = [clean(c.strip()) for c in line.strip("|").split("|")]
-            if not all(set(c) <= set("-: ") for c in cells):   # skip separator rows
+            if not all(set(c) <= set("-: ") for c in cells):  # skip separator rows
                 pending_table.append(cells)
             i += 1
             continue
@@ -216,7 +234,7 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     book.doc.save(out)
     size = out.stat().st_size
-    print(f"wrote {out.relative_to(ROOT)} — {book.number} pages, {size/1024:.0f} KB")
+    print(f"wrote {out.relative_to(ROOT)} — {book.number} pages, {size / 1024:.0f} KB")
     return 0
 
 

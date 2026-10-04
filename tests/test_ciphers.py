@@ -159,8 +159,11 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
         """Four wheels of 4, 5, 6 and 7 have a key longer than the message."""
         cipher = get("sum_clock")
         plaintext = "ATTACKATDAWNTHEBRIDGEISHELDBYTHEENEMY" * 4
-        key = {"periods": [4, 5, 6, 7], "alphabet": "kryptos",
-               "wheels": [[3, 14, 2, 9], [1, 7, 22, 4, 11], [5, 2, 19, 8, 13, 0], [6, 21, 3, 17, 9, 24, 12]]}
+        key = {
+            "periods": [4, 5, 6, 7],
+            "alphabet": "kryptos",
+            "wheels": [[3, 14, 2, 9], [1, 7, 22, 4, 11], [5, 2, 19, 8, 13, 0], [6, 21, 3, 17, 9, 24, 12]],
+        }
         ciphertext = cipher.encrypt(plaintext, key)
         self.assertEqual(cipher.decrypt(ciphertext, key), plaintext)
         self.assertNotEqual(ciphertext, plaintext)
@@ -192,10 +195,16 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
         ciphertext = cipher._apply(plaintext, KRYPTOS_ALPHABET, wheels, +1)
         ctx = CrackContext.create(budget=60)
         found = cipher.solve_two_wheels(
-            ciphertext, KRYPTOS_ALPHABET, 8, 10, ctx,
-            candidates=[[index[c] for c in "ORDINATE"],
-                        [index[c] for c in "MARIGOLD"],
-                        [index[c] for c in "PROVENAN"]],
+            ciphertext,
+            KRYPTOS_ALPHABET,
+            8,
+            10,
+            ctx,
+            candidates=[
+                [index[c] for c in "ORDINATE"],
+                [index[c] for c in "MARIGOLD"],
+                [index[c] for c in "PROVENAN"],
+            ],
         )
         self.assertTrue(found)
         self.assertEqual(found[0][2], plaintext)
@@ -218,8 +227,7 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
             sorted(cipher.annihilator([4, 5, 6, 7]).items()),
             [(0, 1), (7, -1), (60, -1), (67, 1)],
         )
-        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1],
-                  [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
+        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1], [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
         keystream = cipher.keystream(wheels, 153)
         for t in range(len(keystream) - 67):
             self.assertEqual(
@@ -233,8 +241,7 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
         rng = _random.Random(5)
         noise = [rng.randrange(26) for _ in range(153)]
         violations = sum(
-            1 for t in range(len(noise) - 67)
-            if (noise[t + 67] - noise[t + 60] - noise[t + 7] + noise[t]) % 26 != 0
+            1 for t in range(len(noise) - 67) if (noise[t + 67] - noise[t + 60] - noise[t + 7] + noise[t]) % 26 != 0
         )
         self.assertGreater(violations, 70)
         _ = KRYPTOS_ALPHABET
@@ -248,8 +255,7 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
             "ATLASTTHEFIREWASLITANDTHEBELLOWSSANGASTHECOALSTURNEDWHITETHESMITHTOOKUPHIS"
             "HAMMERANDBEGANTOWORKTHEIRONWHILEAPPRENTICESWATCHEDINSILENCENEARTHEDOOR"
         )[:153]
-        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1],
-                  [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
+        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1], [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
         ciphertext = cipher._apply(passage, KRYPTOS_ALPHABET, wheels, +1)
         corpus = "QWERTYUIOPASDFGHJKLZXCVBNM" * 400 + passage + "MNBVCXZLKJHGFDSAPOIUYTREWQ" * 400
         hits = cipher.scan_corpus(ciphertext, corpus, [4, 5, 6, 7])
@@ -278,15 +284,12 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
         tail = "THENTHEMASTERTURNEDAWAYANDSAIDNOTHINGMOREUNTILTHEMORNINGBELLRANGOUT"
         corpus_noise = "".join(rng.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(20000))
         corpus = corpus_noise[:10000] + base + corpus_noise[10000:]
-        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1],
-                  [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
+        wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1], [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
 
         for quoted, expect in ((74, False), (110, True)):
             plaintext = (base[:quoted] + tail)[:153]
             ciphertext = cipher._apply(plaintext, KRYPTOS_ALPHABET, wheels, +1)
-            hits = cipher.scan_corpus_partial(
-                ciphertext, corpus, [4, 5, 6, 7], report_from=12
-            )
+            hits = cipher.scan_corpus_partial(ciphertext, corpus, [4, 5, 6, 7], report_from=12)
             with self.subTest(quoted=quoted):
                 if expect:
                     self.assertTrue(hits, f"{quoted}-letter quotation should be found")
@@ -334,9 +337,7 @@ class TestKeyedAlphabetCiphers(unittest.TestCase):
         )[:153]
         wheels = [[7, 19, 2, 11], [23, 4, 16, 8, 1], [12, 25, 6, 18, 3, 20], [9, 14, 0, 21, 5, 17, 10]]
         ciphertext = cipher._apply(plaintext, KRYPTOS_ALPHABET, wheels, +1)
-        subspace = cipher._crib_subspace(
-            ciphertext, KRYPTOS_ALPHABET, [4, 5, 6, 7], plaintext[:12], 0
-        )
+        subspace = cipher._crib_subspace(ciphertext, KRYPTOS_ALPHABET, [4, 5, 6, 7], plaintext[:12], 0)
         self.assertIsNotNone(subspace)
         particular, basis = subspace
         self.assertEqual(len(particular), 22)
@@ -425,10 +426,7 @@ class TestRoundTrips(unittest.TestCase):
 
     def test_route_transposition_routes_are_distinct(self):
         route_cipher = get("route")
-        outputs = {
-            r: route_cipher.encrypt(PLAINTEXT, {"cols": 5, "route": r})
-            for r in route_cipher.ROUTES
-        }
+        outputs = {r: route_cipher.encrypt(PLAINTEXT, {"cols": 5, "route": r}) for r in route_cipher.ROUTES}
         self.assertEqual(len(set(outputs.values())), len(outputs))
 
     def test_involutions_are_their_own_inverse(self):

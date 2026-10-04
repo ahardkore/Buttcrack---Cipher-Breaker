@@ -10,6 +10,7 @@ fill in the AdSense/Ko-fi fields, re-run this script, push.
 
     python3 ventures/cipher-solver-web/build_pages.py
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -91,8 +92,7 @@ def analytics() -> str:
     if not CFG["plausible_domain"]:
         return ""
     return (
-        f'\n  <script defer data-domain="{CFG["plausible_domain"]}" '
-        'src="https://plausible.io/js/script.js"></script>'
+        f'\n  <script defer data-domain="{CFG["plausible_domain"]}" src="https://plausible.io/js/script.js"></script>'
     )
 
 
@@ -110,7 +110,7 @@ def verification_token(raw: str, field: str) -> str:
         return ""
 
     tag = _META_CONTENT.search(text)
-    if tag:                                  # they pasted the entire <meta> tag
+    if tag:  # they pasted the entire <meta> tag
         text = tag.group(1).strip()
 
     # "google-site-verification: google1234.html" is the *body of the HTML file*,
@@ -182,12 +182,11 @@ def ad_slot() -> str:
     if not CFG["adsense_slot"]:
         return ""
     return f"""<ins class="adsbygoogle" style="display:block"
-     data-ad-client="{CFG['adsense_client']}"
-     data-ad-slot="{CFG['adsense_slot']}"
+     data-ad-client="{CFG["adsense_client"]}"
+     data-ad-slot="{CFG["adsense_slot"]}"
      data-ad-format="auto"
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>"""
-
 
 
 #: Hosts a live Stripe Payment Link can legitimately be served from. Custom
@@ -216,8 +215,8 @@ def payment_url(raw: str, field: str) -> str:
             f"Paste the whole link Stripe shows, starting with https://buy.stripe.com/"
         )
 
-    host = url[len("https://"):].split("/", 1)[0].split("?", 1)[0].lower()
-    path = url[len("https://") + len(host):]
+    host = url[len("https://") :].split("/", 1)[0].split("?", 1)[0].lower()
+    path = url[len("https://") + len(host) :]
 
     # The dashboard URL is what your browser shows while you *edit* the link;
     # it is behind your login and useless to a customer.
@@ -263,16 +262,13 @@ def support_block() -> str:
     return f"""<section class="support">
       <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
       <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
-      <div class="btns">{''.join(buttons)}</div>
+      <div class="btns">{"".join(buttons)}</div>
     </section>"""
 
 
 def nav(current: str) -> str:
     here = ' aria-current="page"'
-    links = "".join(
-        f'<a href="{href}"{here if href == current else ""}>{label}</a>'
-        for href, label in NAV
-    )
+    links = "".join(f'<a href="{href}"{here if href == current else ""}>{label}</a>' for href, label in NAV)
     return f'<nav class="tools">{links}</nav>'
 
 
@@ -340,8 +336,15 @@ def buy_button_script(body: str) -> str:
 #: The order families appear in across the wiki, matching the solver's own
 #: "ciphers" table (shifts first, encodings last).
 WIKI_FAMILY_ORDER = [
-    "shift", "substitution", "polyalphabetic", "transposition",
-    "polygraphic", "wheel", "xor", "code", "encoding",
+    "shift",
+    "substitution",
+    "polyalphabetic",
+    "transposition",
+    "polygraphic",
+    "wheel",
+    "xor",
+    "code",
+    "encoding",
 ]
 
 #: "Did you know…" items for the wiki main page. Every claim is one the site
@@ -365,27 +368,58 @@ DYK_FACTS = [
 
 #: The rotating "featured article" pool for the wiki main page.
 FEATURED_ARTICLES = [
-    ("The Caesar cipher", "caesar-cipher-wiki.html",
-     "A rotation so small it teaches nearly every idea behind classical cryptanalysis — and the first thing this solver tries on unknown text."),
-    ("The Vigenère cipher", "vigenere-cipher-wiki.html",
-     "Misattributed for centuries and called <em>le chiffre indéchiffrable</em>, until the repetition of its keyword gave the game away."),
-    ("The M-94 wheel cipher", "m94-wheel-cipher.html",
-     "Twenty-five mixed alphabets on a spindle: the US Army's field cipher from 1922, with a keyspace of 25! disk orders — and how they fall."),
-    ("The Playfair cipher", "playfair-cipher-wiki.html",
-     "A 5×5 keyed grid that encrypts letter pairs, flattening single-letter statistics three centuries before anyone called them that."),
-    ("The Hill cipher", "hill-cipher-wiki.html",
-     "Lester Hill's 1929 matrix cipher: the first built on linear algebra, and a standing lesson in why linearity and secrecy sit badly together."),
-    ("The Quagmire III cipher", "quagmire3-cipher-wiki.html",
-     "Vigenère arithmetic in a keyed alphabet — the form used on the Kryptos sculpture at CIA headquarters."),
-    ("The autokey cipher", "autokey-cipher-wiki.html",
-     "Vigenère's own 1586 idea, genuinely stronger than the cipher that took his name — and the one nobody used."),
-    ("The Bifid cipher", "bifid-cipher-wiki.html",
-     "Delastelle's fractionating cipher, smearing each plaintext letter across two ciphertext letters within a period."),
-    ("A history of codebreaking", "history-of-codebreaking.html",
-     "Frequency analysis in ninth-century Baghdad to Colossus in 1944 — every technique in this solver has an inventor and a date."),
-    ("Famous ciphers", "famous-ciphers.html",
-     "The Great Cipher, the Zimmermann Telegram, Enigma and Lorenz — and the handful of messages nobody has read yet."),
+    (
+        "The Caesar cipher",
+        "caesar-cipher-wiki.html",
+        "A rotation so small it teaches nearly every idea behind classical cryptanalysis — and the first thing this solver tries on unknown text.",
+    ),
+    (
+        "The Vigenère cipher",
+        "vigenere-cipher-wiki.html",
+        "Misattributed for centuries and called <em>le chiffre indéchiffrable</em>, until the repetition of its keyword gave the game away.",
+    ),
+    (
+        "The M-94 wheel cipher",
+        "m94-wheel-cipher.html",
+        "Twenty-five mixed alphabets on a spindle: the US Army's field cipher from 1922, with a keyspace of 25! disk orders — and how they fall.",
+    ),
+    (
+        "The Playfair cipher",
+        "playfair-cipher-wiki.html",
+        "A 5×5 keyed grid that encrypts letter pairs, flattening single-letter statistics three centuries before anyone called them that.",
+    ),
+    (
+        "The Hill cipher",
+        "hill-cipher-wiki.html",
+        "Lester Hill's 1929 matrix cipher: the first built on linear algebra, and a standing lesson in why linearity and secrecy sit badly together.",
+    ),
+    (
+        "The Quagmire III cipher",
+        "quagmire3-cipher-wiki.html",
+        "Vigenère arithmetic in a keyed alphabet — the form used on the Kryptos sculpture at CIA headquarters.",
+    ),
+    (
+        "The autokey cipher",
+        "autokey-cipher-wiki.html",
+        "Vigenère's own 1586 idea, genuinely stronger than the cipher that took his name — and the one nobody used.",
+    ),
+    (
+        "The Bifid cipher",
+        "bifid-cipher-wiki.html",
+        "Delastelle's fractionating cipher, smearing each plaintext letter across two ciphertext letters within a period.",
+    ),
+    (
+        "A history of codebreaking",
+        "history-of-codebreaking.html",
+        "Frequency analysis in ninth-century Baghdad to Colossus in 1944 — every technique in this solver has an inventor and a date.",
+    ),
+    (
+        "Famous ciphers",
+        "famous-ciphers.html",
+        "The Great Cipher, the Zimmermann Telegram, Enigma and Lorenz — and the handful of messages nobody has read yet.",
+    ),
 ]
+
 
 def wiki_article_note(wiki: dict) -> str:
     """The Wikipedia-style 'this page was last edited' footer, honestly worded
@@ -424,6 +458,7 @@ def _tocify(entries: list, seen: dict[str, int]):
     comes out in the order the headings appear in the body — the nesting pass
     after it depends on that.
     """
+
     def repl(m: re.Match) -> str:
         level, attrs, text = m.group(1), m.group(2), m.group(3).strip()
         if "data-notoc" in attrs:
@@ -438,8 +473,11 @@ def _tocify(entries: list, seen: dict[str, int]):
             seen[base] = n + 1
             anchor = base if n == 0 else f"{base}-{n}"
         entries.append((int(level), anchor, plain))
-        return (f'<h{level} id="{anchor}">{text}'
-                f'<a class="section-anchor" href="#{anchor}" aria-label="Link to this section">§</a></h{level}>')
+        return (
+            f'<h{level} id="{anchor}">{text}'
+            f'<a class="section-anchor" href="#{anchor}" aria-label="Link to this section">§</a></h{level}>'
+        )
+
     return repl
 
 
@@ -487,7 +525,7 @@ def with_toc(body: str) -> tuple[str, str]:
     toc = (
         '<nav class="wiki-toc" aria-label="Contents">\n'
         '        <div class="wiki-toc-title">Contents</div>\n'
-        f'        <ul>{render(root)}</ul>\n'
+        f"        <ul>{render(root)}</ul>\n"
         "      </nav>"
     )
     return new_body, toc
@@ -512,16 +550,14 @@ def wiki_sidebar(current: str) -> str:
         ciphers = sorted(by_family.get(family, []), key=lambda c: c.info.title)
         if not ciphers:
             continue
-        items = "".join(
-            link(wiki_slug(c.info.name), c.info.title) for c in ciphers
-        )
+        items = "".join(link(wiki_slug(c.info.name), c.info.title) for c in ciphers)
         family_blocks.append(
             f'      <details class="wiki-side-group" open>\n'
             f'        <summary><a href="cipher-wiki.html#family-{family}">'
             f'{FAMILY_TITLES.get(family, family)}</a><span class="side-count">'
-            f'{len(ciphers)}</span></summary>\n'
-            f'        <ul>\n{items}\n        </ul>\n'
-            f'      </details>'
+            f"{len(ciphers)}</span></summary>\n"
+            f"        <ul>\n{items}\n        </ul>\n"
+            f"      </details>"
         )
 
     history_links = (
@@ -583,19 +619,23 @@ def wiki_sidebar(current: str) -> str:
 def wiki_figure(wiki: dict) -> str:
     """Original explanatory SVGs; documentary images remain separately sourced."""
     asset = "transposition-grid.svg" if wiki.get("family") == "history" else "cipher-wheel.svg"
-    alt = ("Original keyed-alphabet diagram" if asset == "cipher-wheel.svg"
-           else "Original columnar-transposition diagram")
-    return (f'<figure class="wiki-figure"><img src="{asset}" alt="{alt}">'
-            f'<figcaption>{alt}. Original diagram prepared for the Cipher Wiki; '
-            'not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>')
+    alt = (
+        "Original keyed-alphabet diagram"
+        if asset == "cipher-wheel.svg"
+        else "Original columnar-transposition diagram"
+    )
+    return (
+        f'<figure class="wiki-figure"><img src="{asset}" alt="{alt}">'
+        f"<figcaption>{alt}. Original diagram prepared for the Cipher Wiki; "
+        "not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>"
+    )
 
 
-def wiki_main(slug: str, h1: str, tagline: str, body: str,
-              faq_html: str, wiki: dict) -> str:
+def wiki_main(slug: str, h1: str, tagline: str, body: str, faq_html: str, wiki: dict) -> str:
     """The encyclopedia layout: sidebar, article card, then the solver."""
     full_body = body
     if faq_html:
-        full_body += f'\n    <h2>Frequently asked questions</h2>\n    {faq_html}'
+        full_body += f"\n    <h2>Frequently asked questions</h2>\n    {faq_html}"
     body_ids, toc = with_toc(full_body)
 
     from_line = tagline or ""
@@ -608,22 +648,19 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str,
         if wiki.get("family") == "history":
             crumbs += ' <span aria-hidden="true">›</span> <a href="history-of-codebreaking.html">History</a>'
         elif wiki.get("family"):
-            crumbs += (f' <span aria-hidden="true">›</span> '
-                       f'<a href="cipher-wiki.html#family-{wiki["family"]}">{wiki["family_title"]}</a>')
+            crumbs += (
+                f' <span aria-hidden="true">›</span> '
+                f'<a href="cipher-wiki.html#family-{wiki["family"]}">{wiki["family_title"]}</a>'
+            )
         crumbs += f' <span aria-hidden="true">›</span> <span class="crumb-here">{h1}</span>'
         from_line = "From the Buttcrack Cipher Wiki — the free field guide to classical ciphers"
 
-    breadcrumb_html = (
-        f'<nav class="wiki-breadcrumb" aria-label="Breadcrumb">{crumbs}</nav>' if crumbs else ""
-    )
+    breadcrumb_html = f'<nav class="wiki-breadcrumb" aria-label="Breadcrumb">{crumbs}</nav>' if crumbs else ""
     categories = ""
     if wiki.get("categories"):
-        cats = " | ".join(
-            f'<a href="{href}">{label}</a>' for label, href in wiki["categories"]
-        )
+        cats = " | ".join(f'<a href="{href}">{label}</a>' for label, href in wiki["categories"])
         categories = (
-            '<div class="wiki-categories">'
-            f'<span class="wiki-categories-label">Categories:</span> {cats}</div>'
+            f'<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> {cats}</div>'
         )
 
     return f"""<main class="wrap wrap-wide" id="main-content">
@@ -695,18 +732,14 @@ def cipher_index_html() -> str:
         items = []
         for cipher in sorted(ciphers, key=lambda c: c.info.title):
             info = cipher.info
-            chip = (
-                ' <span class="chip chip-full">full version</span>'
-                if info.name not in BROWSER_BREAKABLE else ""
-            )
+            chip = ' <span class="chip chip-full">full version</span>' if info.name not in BROWSER_BREAKABLE else ""
             items.append(
-                f'        <li><a href="{wiki_slug(info.name)}">{info.title}</a>{chip}'
-                f" — {info.description}</li>"
+                f'        <li><a href="{wiki_slug(info.name)}">{info.title}</a>{chip} — {info.description}</li>'
             )
         out.append(
             f'    <section class="wiki-family" id="family-{family}">\n'
-            f'      <h3>{FAMILY_TITLES.get(family, family)}</h3>\n'
-            f'      <p>{FAMILY_BLURBS.get(family, "")}</p>\n'
+            f"      <h3>{FAMILY_TITLES.get(family, family)}</h3>\n"
+            f"      <p>{FAMILY_BLURBS.get(family, '')}</p>\n"
             f'      <ul class="cipher-index">\n' + "\n".join(items) + "\n      </ul>\n"
             "    </section>"
         )
@@ -724,10 +757,14 @@ def wiki_stats_infobox() -> str:
         by_family[cipher.info.family.value] = by_family.get(cipher.info.family.value, 0) + 1
     rows = [
         ("Cipher articles", str(len(list(all_ciphers())))),
-        ("Families", ", ".join(
-            f'<a href="cipher-wiki.html#family-{f}">{FAMILY_TITLES[f]}</a>'
-            for f in WIKI_FAMILY_ORDER if f in by_family
-        )),
+        (
+            "Families",
+            ", ".join(
+                f'<a href="cipher-wiki.html#family-{f}">{FAMILY_TITLES[f]}</a>'
+                for f in WIKI_FAMILY_ORDER
+                if f in by_family
+            ),
+        ),
         ("History features", "Timeline · Codebreakers · Famous ciphers · Unsolved archive"),
         ("Written by", "the solver's registry, at build time"),
         ("License", f'<a href="{CFG["repo_url"]}">Open source</a>'),
@@ -738,7 +775,7 @@ def wiki_stats_infobox() -> str:
         '      <div class="wiki-infobox-title">Buttcrack Cipher Wiki</div>\n'
         '      <div class="wiki-infobox-sub">The free field guide</div>\n'
         '      <table class="wiki-infobox-table"><tbody>\n'
-        f'        {body}\n'
+        f"        {body}\n"
         "      </tbody></table>\n"
         '      <div class="wiki-infobox-note">One article per cipher, generated from the '
         "code that implements it — so a page cannot quietly disagree with the tool above it.</div>\n"
@@ -781,17 +818,17 @@ def write_wiki_index_js(wiki_specs: list[dict]) -> None:
     pages = []
     for spec in wiki_specs:
         fam = (spec.get("wiki") or {}).get("family_title", "")
-        pages.append({
-            "t": spec["h1"],
-            "s": spec["slug"],
-            "f": fam,
-            "d": spec.get("desc", "")[:200],
-        })
+        pages.append(
+            {
+                "t": spec["h1"],
+                "s": spec["slug"],
+                "f": fam,
+                "d": spec.get("desc", "")[:200],
+            }
+        )
     data = {
         "pages": pages,
-        "featured": [
-            {"t": t, "s": s, "d": d} for t, s, d in FEATURED_ARTICLES
-        ],
+        "featured": [{"t": t, "s": s, "d": d} for t, s, d in FEATURED_ARTICLES],
         "facts": DYK_FACTS,
     }
     (HERE / "wiki-index.js").write_text(
@@ -837,8 +874,7 @@ def check_internal_links(written: dict[str, str]) -> None:
     if problems:
         details = "\n  ".join(problems[:30])
         raise SystemExit(
-            f"broken internal links ({len(problems)}):\n  {details}"
-            + ("\n  …" if len(problems) > 30 else "")
+            f"broken internal links ({len(problems)}):\n  {details}" + ("\n  …" if len(problems) > 30 else "")
         )
 
 
@@ -847,9 +883,14 @@ def solver_html() -> str:
     sample_buttons = "".join(
         f'<button data-sample="{key}">{label}</button>'
         for key, label in [
-            ("caesar", "Caesar"), ("vigenere", "Vigenère"),
-            ("beaufort", "Beaufort"), ("porta", "Porta"), ("autokey", "Autokey"),
-            ("substitution", "Substitution"), ("layered", "Layered"), ("morse", "Morse"),
+            ("caesar", "Caesar"),
+            ("vigenere", "Vigenère"),
+            ("beaufort", "Beaufort"),
+            ("porta", "Porta"),
+            ("autokey", "Autokey"),
+            ("substitution", "Substitution"),
+            ("layered", "Layered"),
+            ("morse", "Morse"),
         ]
     )
     return f"""<section class="solver-shell" aria-label="Cipher solver">
@@ -875,12 +916,18 @@ def solver_html() -> str:
   </section>"""
 
 
-def page(slug: str, title: str, desc: str, h1: str, tagline: str,
-         preset: str, body: str, faqs: list[tuple[str, str]],
-         wiki: dict | None = None) -> str:
-    faq_html = "".join(
-        f"<details class=\"faq\"><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs
-    )
+def page(
+    slug: str,
+    title: str,
+    desc: str,
+    h1: str,
+    tagline: str,
+    preset: str,
+    body: str,
+    faqs: list[tuple[str, str]],
+    wiki: dict | None = None,
+) -> str:
+    faq_html = "".join(f'<details class="faq"><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
     if wiki:
         # Wiki pages wear the encyclopedia layout: a compact site bar (the
         # solver's big hero would push the article below the fold), then the
@@ -939,14 +986,14 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<link rel="canonical" href="{CFG['base_url']}/{slug}">{verification_meta()}
+<link rel="canonical" href="{CFG["base_url"]}/{slug}">{verification_meta()}
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:type" content="{'article' if wiki else 'website'}">
-<meta property="og:url" content="{CFG['base_url']}/{slug}">
+<meta property="og:type" content="{"article" if wiki else "website"}">
+<meta property="og:url" content="{CFG["base_url"]}/{slug}">
 <link rel="stylesheet" href="style.css">
-{article_jsonld(h1, desc, (wiki or {}).get('family_title', '')) if wiki else app_jsonld(title, desc)}
-{faq_jsonld(faqs) if faqs else ''}{buy_button_script(body)}{adsense_head()}{analytics()}
+{article_jsonld(h1, desc, (wiki or {}).get("family_title", "")) if wiki else app_jsonld(title, desc)}
+{faq_jsonld(faqs) if faqs else ""}{buy_button_script(body)}{adsense_head()}{analytics()}
 </head>
 <body data-preset="{preset}">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -956,7 +1003,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 
 <footer>
   <div class="wrap">
-    <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
+    <p>Powered by <a href="{CFG["repo_url"]}">buttcrack</a>, an open-source automatic cipher breaker.
     This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
     version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
     six languages, and runs its own local interface entirely offline.</p>
@@ -970,6 +1017,7 @@ def page(slug: str, title: str, desc: str, h1: str, tagline: str,
 </body>
 </html>
 """
+
 
 def delivery_url(raw: str, field: str) -> str:
     """Validate the post-purchase installer URL. Returns "" when unset.
@@ -1021,11 +1069,16 @@ def write_windows_delivery(cfg: dict) -> None:
     so a changed salt cannot leave a stale delivery page behind.
     """
     link = cfg["delivery_url"]
-    spec = " · ".join(filter(None, [
-        f"version {cfg.get('version', '')}" if cfg.get("version") else "",
-        "Windows 10/11, 64-bit",
-        cfg.get("size", ""),
-    ]))
+    spec = " · ".join(
+        filter(
+            None,
+            [
+                f"version {cfg.get('version', '')}" if cfg.get("version") else "",
+                "Windows 10/11, 64-bit",
+                cfg.get("size", ""),
+            ],
+        )
+    )
     if link:
         action = f"""<p><a class="btn primary" style="display:inline-block;padding:11px 24px;border-radius:8px;
        background:var(--accent);color:#05230f;font-weight:700;text-decoration:none"
@@ -1044,7 +1097,7 @@ def write_windows_delivery(cfg: dict) -> None:
     if cfg.get("sha256"):
         sha = f"""
     <p style="font-size:13px;color:var(--muted);margin:14px 0 0">SHA-256, to check the file arrived
-      intact:<br><code style="font-size:12px;word-break:break-all">{html_escape(cfg['sha256'])}</code></p>"""
+      intact:<br><code style="font-size:12px;word-break:break-all">{html_escape(cfg["sha256"])}</code></p>"""
 
     (HERE / cfg["delivery_page"]).write_text(f"""<!doctype html>
 <html lang="en">
@@ -1052,7 +1105,7 @@ def write_windows_delivery(cfg: dict) -> None:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Your download — {html_escape(cfg.get('title', 'Buttcrack for Windows'))}</title>
+<title>Your download — {html_escape(cfg.get("title", "Buttcrack for Windows"))}</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -1062,7 +1115,7 @@ def write_windows_delivery(cfg: dict) -> None:
 </div></header>
 <main class="wrap">
   <div class="card">
-    <h2 style="margin-top:0">{html_escape(cfg.get('title', 'Buttcrack for Windows'))}</h2>
+    <h2 style="margin-top:0">{html_escape(cfg.get("title", "Buttcrack for Windows"))}</h2>
     <p style="color:var(--muted)">{html_escape(spec)}</p>
     {action}{sha}
   </div>
@@ -1097,24 +1150,32 @@ def windows_app_html() -> str:
     version = html_escape((cfg.get("version") or "").strip())
     digest = (cfg.get("sha256") or "").strip().lower()
 
-    spec_bits = " · ".join(filter(None, [
-        f"version {version}" if version else "",
-        "Windows 10 / 11, 64-bit",
-        html_escape((cfg.get("size") or "").strip()),
-        "no admin rights needed",
-    ]))
+    spec_bits = " · ".join(
+        filter(
+            None,
+            [
+                f"version {version}" if version else "",
+                "Windows 10 / 11, 64-bit",
+                html_escape((cfg.get("size") or "").strip()),
+                "no admin rights needed",
+            ],
+        )
+    )
     if link:
         button = f'<a class="buy" href="{link}">Buy for {price or "the listed price"}</a>'
     else:
-        button = ('<span class="soon">Payment link not configured yet — '
-                  'see ventures/README.md</span>')
+        button = '<span class="soon">Payment link not configured yet — see ventures/README.md</span>'
 
-    checksum = f"""
+    checksum = (
+        f"""
     <h2>Verify what you downloaded</h2>
     <p>The installer's SHA-256 is published before you buy, so you can confirm the file you
     receive is byte-for-byte the one described here. In PowerShell:</p>
-    <pre class="spec">Get-FileHash .\\buttcrack-setup-{version or 'VERSION'}.exe -Algorithm SHA256</pre>
-    <p class="spec">{html_escape(digest)}</p>""" if digest else ""
+    <pre class="spec">Get-FileHash .\\buttcrack-setup-{version or "VERSION"}.exe -Algorithm SHA256</pre>
+    <p class="spec">{html_escape(digest)}</p>"""
+        if digest
+        else ""
+    )
 
     return f"""    <h2>The desktop application</h2>
     <p>The solver on this page runs in your browser on a compact trigram model, and it is free
@@ -1125,7 +1186,7 @@ def windows_app_html() -> str:
 
     <div class="products">
   <div class="product">
-      <h3>{html_escape(cfg.get('title', 'Buttcrack for Windows'))}</h3>
+      <h3>{html_escape(cfg.get("title", "Buttcrack for Windows"))}</h3>
       <p class="blurb">The complete cipher breaker as a Windows program. One installer, nothing
       else to fetch — the language models and the interface are inside it. Install it on a
       machine that has never seen Python and it works.</p>
@@ -1195,16 +1256,26 @@ PAGES = [
         "tagline": "Paste ciphertext. It works out the cipher, finds the key, and shows the plaintext.",
         "preset": "caesar",
         "faqs": [
-            ("Do I need to know which cipher was used?",
-             "No. The solver characterises the text first — index of coincidence, entropy, character set — then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button."),
-            ("Is my ciphertext uploaded anywhere?",
-             "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works."),
-            ("Which ciphers can it break?",
-             "Caesar and ROT13, Atbash, affine, the periodic family — Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery — plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other."),
-            ("Why did it fail on my text?",
-             "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext."),
-            ("Can it break modern encryption like AES or RSA?",
-             "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search."),
+            (
+                "Do I need to know which cipher was used?",
+                "No. The solver characterises the text first — index of coincidence, entropy, character set — then tries every cipher it knows and ranks the candidate plaintexts with an English trigram language model. You just paste and press the button.",
+            ),
+            (
+                "Is my ciphertext uploaded anywhere?",
+                "No. There is no server. The entire solver, including the language model, is JavaScript that your browser downloads once and runs locally. You can disconnect from the internet after the page loads and it still works.",
+            ),
+            (
+                "Which ciphers can it break?",
+                "Caesar and ROT13, Atbash, affine, the periodic family — Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey, all with automatic key recovery — plus monoalphabetic substitution, rail fence transposition, single-byte XOR, and the encoding layers base64, hex, binary, decimal bytes, Morse and reversed text, including several of those stacked on top of each other.",
+            ),
+            (
+                "Why did it fail on my text?",
+                "The most common reasons are that the text is too short (under about 40 letters there is not enough statistical signal), the plaintext is not English — this browser build scores English only — or the cipher is outside the set above. Longer ciphertext is dramatically easier to break than short ciphertext, and the full desktop version adds French, German, Italian, Latin and Spanish models for non-English plaintext.",
+            ),
+            (
+                "Can it break modern encryption like AES or RSA?",
+                "No, and neither can anything else you will find on the web. This tool targets classical and puzzle ciphers. Properly implemented modern encryption is not breakable by frequency analysis or key search.",
+            ),
         ],
         "body": """    <h2>What this does</h2>
     <p>Most cipher tools ask you to pick the cipher and supply the key. That is fine when you
@@ -1253,14 +1324,22 @@ PAGES = [
         "tagline": "Don't know the shift? It tries all 26 and picks the English one.",
         "preset": "caesar",
         "faqs": [
-            ("How do I decode a Caesar cipher without the key?",
-             "There are only 26 possible shifts, so you try them all and pick the one that produces English. This page automates both halves: it generates all 26 candidates and scores each with a trigram language model, so the correct shift is chosen without you reading through the list."),
-            ("Is ROT13 the same thing?",
-             "ROT13 is a Caesar cipher with a shift of exactly 13. Because 13 is half of 26, applying it twice returns the original text, which is why it is used for hiding spoilers rather than for security."),
-            ("What is the difference between Caesar and Atbash?",
-             "Caesar rotates the alphabet by a fixed amount. Atbash reflects it, mapping A to Z, B to Y and so on. Atbash has no key at all, so there is only one possible decryption. This tool tests both."),
-            ("The shift looks right but some words are wrong. Why?",
-             "A Caesar cipher applies one shift to the whole message, so if part of it decodes and part does not, you are probably looking at a Vigenère cipher, which uses a repeating sequence of shifts. Try the Vigenère page."),
+            (
+                "How do I decode a Caesar cipher without the key?",
+                "There are only 26 possible shifts, so you try them all and pick the one that produces English. This page automates both halves: it generates all 26 candidates and scores each with a trigram language model, so the correct shift is chosen without you reading through the list.",
+            ),
+            (
+                "Is ROT13 the same thing?",
+                "ROT13 is a Caesar cipher with a shift of exactly 13. Because 13 is half of 26, applying it twice returns the original text, which is why it is used for hiding spoilers rather than for security.",
+            ),
+            (
+                "What is the difference between Caesar and Atbash?",
+                "Caesar rotates the alphabet by a fixed amount. Atbash reflects it, mapping A to Z, B to Y and so on. Atbash has no key at all, so there is only one possible decryption. This tool tests both.",
+            ),
+            (
+                "The shift looks right but some words are wrong. Why?",
+                "A Caesar cipher applies one shift to the whole message, so if part of it decodes and part does not, you are probably looking at a Vigenère cipher, which uses a repeating sequence of shifts. Try the Vigenère page.",
+            ),
         ],
         "body": """    <h2>How the Caesar cipher works</h2>
     <p>Each letter is moved a fixed number of places along the alphabet. With a shift of 3,
@@ -1297,14 +1376,22 @@ PAGES = [
         "tagline": "No keyword needed — it recovers the key from the ciphertext itself.",
         "preset": "vigenere",
         "faqs": [
-            ("Can a Vigenère cipher be broken without the key?",
-             "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863."),
-            ("How much ciphertext do I need?",
-             "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases."),
-            ("What if the key is as long as the message?",
-             "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words."),
-            ("Why did it return a key that is a repeated word, like LAMPLAMP?",
-             "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct."),
+            (
+                "Can a Vigenère cipher be broken without the key?",
+                "Yes. Because the key repeats, the ciphertext contains several interleaved Caesar ciphers. Find the key length and each of those can be solved independently by frequency analysis. This has been standard practice since Kasiski published the method in 1863.",
+            ),
+            (
+                "How much ciphertext do I need?",
+                "As a rough rule you want at least 20 letters per key character, so a six-letter key wants 120 letters or more. Shorter texts leave each position with too few samples for the statistics to be reliable, though the trigram refinement pass on this page recovers many borderline cases.",
+            ),
+            (
+                "What if the key is as long as the message?",
+                "Then it is a one-time pad and it is genuinely unbreakable, provided the key is random and never reused. No tool can help. In practice puzzle keys are short repeating words.",
+            ),
+            (
+                "Why did it return a key that is a repeated word, like LAMPLAMP?",
+                "Any multiple of the true key length fits the ciphertext just as well. The solver penalises longer keys to prefer the shortest explanation, but on short texts a doubled key occasionally wins. The plaintext is still correct.",
+            ),
         ],
         "body": """    <h2>Why Vigenère resisted for 300 years</h2>
     <p>A Caesar cipher uses one shift for the whole message, so letter frequencies survive
@@ -1348,14 +1435,22 @@ PAGES = [
         "tagline": "Cryptograms cracked by hill-climbing search — no crib, no hints.",
         "preset": "substitution",
         "faqs": [
-            ("How long does the ciphertext need to be?",
-             "About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them."),
-            ("Does it handle keyword-generated alphabets?",
-             "Yes, implicitly. The solver searches for the mapping itself and does not care how the key alphabet was produced, so keyword ciphers, random alphabets and keyed Caesar variants are all the same problem to it."),
-            ("Why is one or two letters wrong in the output?",
-             "Rare letters like J, Q, X and Z appear too infrequently for the statistics to place them confidently, so they sometimes swap. The text is usually readable anyway and the correct letter is obvious from context."),
-            ("Will it solve a newspaper cryptogram?",
-             "Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for."),
+            (
+                "How long does the ciphertext need to be?",
+                "About 60 letters is the practical minimum and 150 or more is comfortable. Unlike Caesar, there are 26 factorial possible keys, so the search relies on letter statistics and short texts simply do not contain enough of them.",
+            ),
+            (
+                "Does it handle keyword-generated alphabets?",
+                "Yes, implicitly. The solver searches for the mapping itself and does not care how the key alphabet was produced, so keyword ciphers, random alphabets and keyed Caesar variants are all the same problem to it.",
+            ),
+            (
+                "Why is one or two letters wrong in the output?",
+                "Rare letters like J, Q, X and Z appear too infrequently for the statistics to place them confidently, so they sometimes swap. The text is usually readable anyway and the correct letter is obvious from context.",
+            ),
+            (
+                "Will it solve a newspaper cryptogram?",
+                "Usually yes, if you paste the whole puzzle. Cryptograms preserve word boundaries, which makes them easier than the continuous-block ciphertext this solver is designed for.",
+            ),
         ],
         "body": """    <h2>A keyspace you cannot search</h2>
     <p>A monoalphabetic substitution replaces each letter with another, consistently, using a
@@ -1397,14 +1492,22 @@ PAGES = [
         "tagline": "Dots and dashes in, readable text out — and it keeps going if there's a cipher underneath.",
         "preset": "morse",
         "faqs": [
-            ("What separators does it accept?",
-             "Single spaces between letters, and a slash, a pipe or a double space between words. Mixed conventions in the same message are handled, which matters because puzzle sources are rarely consistent."),
-            ("Can it decode Morse audio or flashing lights?",
-             "No, this is a text tool. You need to transcribe the signal into dots and dashes first, then paste it here."),
-            ("What if the decoded Morse is still gibberish?",
-             "Then Morse was only the outer layer. This page automatically re-runs the full cipher search on whatever the Morse decodes to, so a Caesar shift or Vigenère cipher hidden underneath is peeled off in the same pass."),
-            ("Does it support numbers and punctuation?",
-             "Digits zero through nine are supported. Punctuation codes are rarer in puzzles and are skipped rather than guessed."),
+            (
+                "What separators does it accept?",
+                "Single spaces between letters, and a slash, a pipe or a double space between words. Mixed conventions in the same message are handled, which matters because puzzle sources are rarely consistent.",
+            ),
+            (
+                "Can it decode Morse audio or flashing lights?",
+                "No, this is a text tool. You need to transcribe the signal into dots and dashes first, then paste it here.",
+            ),
+            (
+                "What if the decoded Morse is still gibberish?",
+                "Then Morse was only the outer layer. This page automatically re-runs the full cipher search on whatever the Morse decodes to, so a Caesar shift or Vigenère cipher hidden underneath is peeled off in the same pass.",
+            ),
+            (
+                "Does it support numbers and punctuation?",
+                "Digits zero through nine are supported. Punctuation codes are rarer in puzzles and are skipped rather than guessed.",
+            ),
         ],
         "body": """    <h2>Reading Morse</h2>
     <p>Morse encodes each letter as a sequence of short and long signals — dots and dashes.
@@ -1440,14 +1543,22 @@ PAGES = [
         "tagline": "Base64 around hex around XOR? It unwraps the whole stack.",
         "preset": "layered",
         "faqs": [
-            ("What is single-byte XOR and why is it everywhere in CTFs?",
-             "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories."),
-            ("How deep can the layers go?",
-             "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges."),
-            ("Can it handle flag formats?",
-             "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal."),
-            ("Why does it sometimes pick the wrong layer to unwrap?",
-             "Hex and base64 character sets overlap, so a string can be validly interpretable as either. The solver tries both branches and keeps whichever produces the more English-like result rather than committing to the first guess."),
+            (
+                "What is single-byte XOR and why is it everywhere in CTFs?",
+                "Every byte of the plaintext is XORed with the same one-byte key. There are only 255 keys to try, so it is trivially breakable, which makes it the standard warm-up challenge in introductory CTF crypto categories.",
+            ),
+            (
+                "How deep can the layers go?",
+                "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges.",
+            ),
+            (
+                "Can it handle flag formats?",
+                "Yes, incidentally — flags like ctf{...} are usually surrounded by enough English or structured text for the scoring to lock on. Very short flag-only inputs are harder because there is little statistical signal.",
+            ),
+            (
+                "Why does it sometimes pick the wrong layer to unwrap?",
+                "Hex and base64 character sets overlap, so a string can be validly interpretable as either. The solver tries both branches and keeps whichever produces the more English-like result rather than committing to the first guess.",
+            ),
         ],
         "body": """    <h2>The shape of a crypto challenge</h2>
     <p>Introductory CTF crypto is mostly recognition. The underlying operations are simple —
@@ -1495,22 +1606,38 @@ PAGES = [
         # a second call to main() from stacking a second copy.
         "body": "__WINDOWS_APP__",
         "faqs": [
-            ("How do I get the file after paying?",
-             "Stripe sends you straight to a download page the moment the payment clears, and your receipt arrives by email. The download page stays valid, so bookmark it. If you lose it, reply to the Stripe receipt and it will be sent again."),
-            ("Do I need Python installed?",
-             "No. The installer contains its own copy of Python, the six language models and the interface. Nothing else has to be present on the machine and nothing is downloaded during installation."),
-            ("Does it need administrator rights?",
-             "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator."),
-            ("Why does Windows say the publisher is unknown?",
-             "Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded."),
-            ("Does it send my ciphertext anywhere?",
-             "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works."),
-            ("How is this different from the free solver on this page?",
-             "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including Playfair, Hill, the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, layered unwrapping six levels deep, and a search budget you can raise for hard problems."),
-            ("Can I install it on more than one machine?",
-             "Yes. One payment covers your own machines — desktop, laptop, a virtual machine. There is no licence key and nothing to activate, so there is nothing to juggle."),
-            ("How do I uninstall it?",
-             "Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind, because it never writes anything outside its own folder."),
+            (
+                "How do I get the file after paying?",
+                "Stripe sends you straight to a download page the moment the payment clears, and your receipt arrives by email. The download page stays valid, so bookmark it. If you lose it, reply to the Stripe receipt and it will be sent again.",
+            ),
+            (
+                "Do I need Python installed?",
+                "No. The installer contains its own copy of Python, the six language models and the interface. Nothing else has to be present on the machine and nothing is downloaded during installation.",
+            ),
+            (
+                "Does it need administrator rights?",
+                "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator.",
+            ),
+            (
+                "Why does Windows say the publisher is unknown?",
+                "Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded.",
+            ),
+            (
+                "Does it send my ciphertext anywhere?",
+                "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.",
+            ),
+            (
+                "How is this different from the free solver on this page?",
+                "The browser solver uses a compact trigram model and covers the common ciphers. The desktop build has all 50 ciphers including Playfair, Hill, the M-94 wheel cipher and Quagmire III, quadgram models for English, French, German, Italian, Latin and Spanish, layered unwrapping six levels deep, and a search budget you can raise for hard problems.",
+            ),
+            (
+                "Can I install it on more than one machine?",
+                "Yes. One payment covers your own machines — desktop, laptop, a virtual machine. There is no licence key and nothing to activate, so there is nothing to juggle.",
+            ),
+            (
+                "How do I uninstall it?",
+                "Settings, then Apps, then Buttcrack, then Uninstall — or the Uninstall shortcut in its Start menu folder. It removes the program, the shortcuts and the PATH entry if you added one. It leaves nothing behind, because it never writes anything outside its own folder.",
+            ),
         ],
     },
 ]
@@ -1615,14 +1742,22 @@ WIKI_PAGES = [
         "tagline": "Recognise the shape. Understand the mechanism. Know what an answer is worth.",
         "preset": "caesar",
         "faqs": [
-            ("What is the difference between a code and a cipher?",
-             "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message."),
-            ("Can this site break every cipher in the wiki?",
-             "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods."),
-            ("How much ciphertext is enough?",
-             "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down."),
-            ("Who writes this wiki?",
-             "The facts — family, key type, keyspace, minimum text, worked examples — are generated from the solver's own cipher registry every time the site is built, and the round trips are verified, so an article cannot quietly disagree with the tool it documents. The history and context are editorial. The full source is on GitHub."),
+            (
+                "What is the difference between a code and a cipher?",
+                "A code substitutes whole words or ideas from a shared book or table. A cipher transforms letters or bytes according to a repeatable rule and a key. Classical puzzle writing often calls both ciphers, but the distinction matters when you decide how to attack a message.",
+            ),
+            (
+                "Can this site break every cipher in the wiki?",
+                "The browser solver targets the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius and autokey), monoalphabetic substitution, rail fence and several encodings. The full version of the project searches 50 ciphers — the Hill matrix cipher and the M-94 wheel among them — with quadgram models in six languages. Modern encryption such as AES and RSA is not a classical cipher and is not breakable by these methods.",
+            ),
+            (
+                "How much ciphertext is enough?",
+                "A short Caesar message may need only a few words because there are 26 keys. A substitution cipher needs roughly 100 letters to become comfortable. Playfair and other polygraphic systems need hundreds or more because the key has much more structure, and a wheel cipher such as the M-94 wants 200 letters or more before the disk order is pinned down.",
+            ),
+            (
+                "Who writes this wiki?",
+                "The facts — family, key type, keyspace, minimum text, worked examples — are generated from the solver's own cipher registry every time the site is built, and the round trips are verified, so an article cannot quietly disagree with the tool it documents. The history and context are editorial. The full source is on GitHub.",
+            ),
         ],
         "body": """    <section class="mp-banner">
       <h2>Welcome to the Cipher Wiki</h2>
@@ -1695,12 +1830,18 @@ __CIPHER_INDEX__
         "tagline": "Open problems deserve sources, scope, and an honest standard of proof.",
         "preset": "caesar",
         "faqs": [
-            ("Does unsolved mean nobody has proposed an answer?",
-             "No. Many of these objects have many proposed readings. Here, unsolved means there is no generally accepted, reproducible decipherment that explains the full source material without arbitrary choices."),
-            ("Are all of these conventional ciphers?",
-             "No. The D’Agapeyeff and Zodiac entries are ciphertext challenges; the Voynich Manuscript and Phaistos Disc are undeciphered written objects. The distinction is stated on every card because it changes what a valid solution would look like."),
-            ("Why are short cryptograms especially difficult?",
-             "Short text provides too little redundancy to choose uniquely among keys and plaintexts. A candidate can look meaningful while many different candidates fit equally well. Independent verification is essential."),
+            (
+                "Does unsolved mean nobody has proposed an answer?",
+                "No. Many of these objects have many proposed readings. Here, unsolved means there is no generally accepted, reproducible decipherment that explains the full source material without arbitrary choices.",
+            ),
+            (
+                "Are all of these conventional ciphers?",
+                "No. The D’Agapeyeff and Zodiac entries are ciphertext challenges; the Voynich Manuscript and Phaistos Disc are undeciphered written objects. The distinction is stated on every card because it changes what a valid solution would look like.",
+            ),
+            (
+                "Why are short cryptograms especially difficult?",
+                "Short text provides too little redundancy to choose uniquely among keys and plaintexts. A candidate can look meaningful while many different candidates fit equally well. Independent verification is essential.",
+            ),
         ],
         "body": f"""    <section class="mp-banner">
       <h2>Research archive, not a claim list</h2>
@@ -1725,12 +1866,18 @@ __CIPHER_INDEX__
         "tagline": "A rotation so small it teaches nearly every idea behind classical cryptanalysis.",
         "preset": "caesar",
         "faqs": [
-            ("What is the Caesar cipher formula?",
-             "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet."),
-            ("Is ROT13 a Caesar cipher?",
-             "Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text."),
-            ("Why is it not secure?",
-             "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough."),
+            (
+                "What is the Caesar cipher formula?",
+                "With A equal to 0 through Z equal to 25, encryption is C = P + k mod 26 and decryption is P = C − k mod 26. The key k is the number of places rotated around the alphabet.",
+            ),
+            (
+                "Is ROT13 a Caesar cipher?",
+                "Yes. ROT13 uses k = 13. Since 13 is exactly half of 26, encryption and decryption are the same operation: applying ROT13 twice returns the original text.",
+            ),
+            (
+                "Why is it not secure?",
+                "There are only 26 possible rotations, including the unchanged alphabet. A person can list them; a computer can score them all immediately. Frequency analysis is useful, but exhaustive search alone is enough.",
+            ),
         ],
         "body": """    <h2>The operation</h2>
     <p>Write the alphabet twice and slide the lower copy by a fixed number of places. With a
@@ -1767,12 +1914,18 @@ __CIPHER_INDEX__
         "tagline": "Several Caesar ciphers woven together by a keyword — clever, historic, and breakable.",
         "preset": "vigenere",
         "faqs": [
-            ("Why was Vigenère called unbreakable?",
-             "It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible."),
-            ("What is Kasiski examination?",
-             "Repeated ciphertext fragments can result from repeated plaintext fragments aligned under the same part of the keyword. Distances between them often share factors with the key length. It suggests periods to test; it does not recover the key on its own."),
-            ("What makes a Vigenère cipher genuinely secure?",
-             "If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigenère."),
+            (
+                "Why was Vigenère called unbreakable?",
+                "It hides ordinary letter frequencies better than a single substitution. Before the period was understood, analysts could not tell which of several shifts had enciphered each E. The repeated keyword is the weakness that eventually made systematic attacks possible.",
+            ),
+            (
+                "What is Kasiski examination?",
+                "Repeated ciphertext fragments can result from repeated plaintext fragments aligned under the same part of the keyword. Distances between them often share factors with the key length. It suggests periods to test; it does not recover the key on its own.",
+            ),
+            (
+                "What makes a Vigenère cipher genuinely secure?",
+                "If the key is truly random, as long as the message, used once and kept secret, the construction is a one-time pad. A repeating dictionary word is the critical flaw in ordinary Vigenère.",
+            ),
         ],
         "body": """    <h2>A Caesar shift that changes every letter</h2>
     <p>Vigenère assigns each keyword letter a shift. With the key <code>LEMON</code>, the shifts
@@ -1809,12 +1962,18 @@ __CIPHER_INDEX__
         "tagline": "A colossal keyspace with a very human leak: the shape of language remains.",
         "preset": "substitution",
         "faqs": [
-            ("How many keys does a substitution cipher have?",
-             "A full mixed alphabet has 26 factorial possible permutations, about 4 × 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea."),
-            ("What patterns survive a substitution?",
-             "Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses."),
-            ("Why do solvers sometimes miss rare letters?",
-             "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity."),
+            (
+                "How many keys does a substitution cipher have?",
+                "A full mixed alphabet has 26 factorial possible permutations, about 4 × 10 to the power of 26. Exhaustive search is impractical, which is why substitution is more interesting than Caesar despite using the same basic idea.",
+            ),
+            (
+                "What patterns survive a substitution?",
+                "Every occurrence of a plaintext letter becomes the same ciphertext letter, so word lengths, repeated letters and repeated word patterns survive. THE and THAT have different letter-pattern signatures, and doubled letters strongly constrain guesses.",
+            ),
+            (
+                "Why do solvers sometimes miss rare letters?",
+                "A ciphertext that never uses Q, J or Z contains almost no evidence about where that plaintext letter maps. Several keys can decrypt the observed text equally well; context, a crib or more ciphertext resolves the ambiguity.",
+            ),
         ],
         "body": """    <h2>A scrambled alphabet, used consistently</h2>
     <p>In a monoalphabetic substitution cipher, each plaintext letter maps to one different
@@ -1852,12 +2011,18 @@ __CIPHER_INDEX__
         "tagline": "A grid of 25 letters turns single-letter statistics into a pairwise problem.",
         "preset": "substitution",
         "faqs": [
-            ("Why are I and J combined in Playfair?",
-             "A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices."),
-            ("Why does Playfair insert X characters?",
-             "A digraph cannot contain the same letter twice. A repeated letter is split with a filler, traditionally X, and an odd-length message gets a final filler. That means decryption returns the intended letters plus ambiguous Xs that a reader removes from context."),
-            ("Can frequency analysis break Playfair?",
-             "Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important."),
+            (
+                "Why are I and J combined in Playfair?",
+                "A 5 by 5 square holds 25 cells, but the Latin alphabet has 26 letters. Traditional English Playfair merges I and J into one cell. Other alphabets and six-by-six variants make different choices.",
+            ),
+            (
+                "Why does Playfair insert X characters?",
+                "A digraph cannot contain the same letter twice. A repeated letter is split with a filler, traditionally X, and an odd-length message gets a final filler. That means decryption returns the intended letters plus ambiguous Xs that a reader removes from context.",
+            ),
+            (
+                "Can frequency analysis break Playfair?",
+                "Single-letter frequency analysis is much less direct because Playfair encrypts pairs. Modern classical-cipher attacks score candidate decryptions by n-grams and use simulated annealing or genetic search to rearrange the grid. Long ciphertext is important.",
+            ),
         ],
         "body": """    <h2>The keyed square</h2>
     <p>Playfair writes a keyword without duplicates into a 5×5 square, then fills the remaining
@@ -1894,16 +2059,26 @@ __CIPHER_INDEX__
         "tagline": "Twenty-five mixed alphabets on a spindle: the US Army's field cipher, and how 25! disk orders still fall.",
         "preset": "vigenere",
         "faqs": [
-            ("What was the M-94?",
-             "A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795."),
-            ("How does it differ from Vigenère?",
-             "Vigenère shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works — each column needs its full mixed alphabet recovered."),
-            ("Can this page break an M-94 message?",
-             "No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint."),
-            ("Why is disk 17 famous?",
-             "One of the standard disks spells ARMYOFTHEUS — 'ARMY OF THE US' — around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret."),
-            ("How much ciphertext does a break need?",
-             "About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven — 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds."),
+            (
+                "What was the M-94?",
+                "A cylindrical cipher device used by the US Army from 1922 until 1943, and by the Navy as the CSP-488. Major Joseph Mauborgne designed it in 1917 from Colonel Parker Hitt's ideas, and the same wheel principle had been reinvented several times before, most famously by Thomas Jefferson around 1795.",
+            ),
+            (
+                "How does it differ from Vigenère?",
+                "Vigenère shifts each position by a key letter, so every column of the period is a Caesar cipher. On the M-94, every position of the period runs through its own completely scrambled alphabet, one per disk. The period is exactly 25 because there are 25 disks, and frequency analysis per column no longer works — each column needs its full mixed alphabet recovered.",
+            ),
+            (
+                "Can this page break an M-94 message?",
+                "No. The browser solver on this page handles the common puzzle families; a wheel cipher needs a hill-climbing search over disk orders with quadgram scoring, which is in the full version of the project. It recovers a genuinely secret 25-disk order from about 200 letters of ciphertext, and a suspected order can be tested instantly with a key hint.",
+            ),
+            (
+                "Why is disk 17 famous?",
+                "One of the standard disks spells ARMYOFTHEUS — 'ARMY OF THE US' — around its rim, starting at A, which is how the device's origin is identified at a glance. The full 25-disk set was public: it was engraved on every device manufactured, and only the spindle order was secret.",
+            ),
+            (
+                "How much ciphertext does a break need?",
+                "About 200 letters for a reliable recovery with a real search budget, and 150 is the floor below which even the true order cannot be proven — 25 wheels each want roughly six letters of evidence. Longer messages are dramatically easier; 300 or more usually falls within seconds.",
+            ),
         ],
         "body": """    <h2>The device</h2>
     <p>Twenty-five brass disks, each about an inch and a half across, threaded onto a spindle in a
@@ -1975,11 +2150,12 @@ def wiki_index_section() -> str:
 
     cards = [
         f'      <a class="wiki-card" href="{spec["slug"]}">\n'
-        f'        <h3>{spec["h1"]}</h3>\n'
-        f'        <p>{spec["tagline"]}</p>\n'
+        f"        <h3>{spec['h1']}</h3>\n"
+        f"        <p>{spec['tagline']}</p>\n"
         f'        <span class="wiki-more">Read the article →</span>\n'
-        f'      </a>'
-        for spec in WIKI_PAGES + HISTORY_PAGES if spec["slug"] != "cipher-wiki.html"
+        f"      </a>"
+        for spec in WIKI_PAGES + HISTORY_PAGES
+        if spec["slug"] != "cipher-wiki.html"
     ]
     return f"""    <section class="wiki-index" aria-label="Cipher wiki">
     <h2>Cipher wiki</h2>
@@ -2026,7 +2202,7 @@ def build_products() -> tuple[list[dict], str]:
     files_dir.mkdir(exist_ok=True)
     for stale in files_dir.glob("*.pdf"):
         stale.unlink()
-    for stale in HERE.glob("thank-you-*.html"):   # drop pages from an old salt
+    for stale in HERE.glob("thank-you-*.html"):  # drop pages from an old salt
         stale.unlink()
 
     built = []
@@ -2038,15 +2214,15 @@ def build_products() -> tuple[list[dict], str]:
         tmp.rename(final)
         # Derived from the SKU and a fixed salt, never from file contents, so
         # the delivery URL you paste into Stripe keeps working across rebuilds.
-        token = hashlib.sha256(
-            f"{product['sku']}:{stripe.get('delivery_salt', '')}".encode()
-        ).hexdigest()[:20]
-        built.append({
-            **product,
-            "file": f"files/{final.name}",
-            "size_kb": final.stat().st_size // 1024,
-            "delivery": f"thank-you-{token}.html",
-        })
+        token = hashlib.sha256(f"{product['sku']}:{stripe.get('delivery_salt', '')}".encode()).hexdigest()[:20]
+        built.append(
+            {
+                **product,
+                "file": f"files/{final.name}",
+                "size_kb": final.stat().st_size // 1024,
+                "delivery": f"thank-you-{token}.html",
+            }
+        )
 
     sampler_cfg = stripe.get("sampler")
     sampler_rel = ""
@@ -2066,7 +2242,7 @@ def build_products() -> tuple[list[dict], str]:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Your download — {html_escape(product['title'])}</title>
+<title>Your download — {html_escape(product["title"])}</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -2076,11 +2252,11 @@ def build_products() -> tuple[list[dict], str]:
 </div></header>
 <main class="wrap">
   <div class="card">
-    <h2 style="margin-top:0">{html_escape(product['title'])}</h2>
-    <p style="color:var(--muted)">{product['puzzles']} puzzles with full solutions · PDF · {product['size_kb']} KB</p>
+    <h2 style="margin-top:0">{html_escape(product["title"])}</h2>
+    <p style="color:var(--muted)">{product["puzzles"]} puzzles with full solutions · PDF · {product["size_kb"]} KB</p>
     <p><a class="btn primary" style="display:inline-block;padding:11px 24px;border-radius:8px;
        background:var(--accent);color:#05230f;font-weight:700;text-decoration:none"
-       href="{product['file']}" download>Download the PDF</a></p>
+       href="{product["file"]}" download>Download the PDF</a></p>
     <p style="font-size:14px;color:var(--muted);margin-bottom:0">
       Bookmark this page — the link stays valid. Lost it? Email the address on your
       Stripe receipt and it will be sent again.</p>
@@ -2123,17 +2299,18 @@ def store_page(products: list[dict], sampler: str) -> str:
             # Stripe's embedded button: checkout happens in an overlay, so the
             # visitor never leaves the page. Publishable keys are meant to ship
             # in client HTML, so this is safe to commit and deploy.
-            button = (f'<stripe-buy-button buy-button-id="{html_escape(button_id)}" '
-                      f'publishable-key="{html_escape(pk)}"></stripe-buy-button>')
+            button = (
+                f'<stripe-buy-button buy-button-id="{html_escape(button_id)}" '
+                f'publishable-key="{html_escape(pk)}"></stripe-buy-button>'
+            )
         elif link:
-            button = (f'<a class="buy" href="{link}">Buy for {html_escape(product["price"])}</a>')
+            button = f'<a class="buy" href="{link}">Buy for {html_escape(product["price"])}</a>'
         else:
-            button = ('<span class="soon">Payment link not configured yet — '
-                      'see ventures/README.md</span>')
+            button = '<span class="soon">Payment link not configured yet — see ventures/README.md</span>'
         cards.append(f"""    <div class="product">
-      <h3>{html_escape(product['title'])}</h3>
-      <p class="blurb">{html_escape(product['blurb'])}</p>
-      <p class="spec">{product['puzzles']} puzzles · full solutions · PDF · {product['size_kb']} KB</p>
+      <h3>{html_escape(product["title"])}</h3>
+      <p class="blurb">{html_escape(product["blurb"])}</p>
+      <p class="spec">{product["puzzles"]} puzzles · full solutions · PDF · {product["size_kb"]} KB</p>
       {button}
     </div>""")
 
@@ -2166,8 +2343,7 @@ def store_page(products: list[dict], sampler: str) -> str:
 
 
 def html_escape(s: str) -> str:
-    return (s.replace("&", "&amp;").replace("<", "&lt;")
-             .replace(">", "&gt;").replace('"', "&quot;"))
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 def not_found_page() -> str:
@@ -2187,7 +2363,7 @@ def not_found_page() -> str:
       <span>buttcrack<span class="brand-dot">.</span></span>
     </a>
     <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
-    {nav('404.html')}
+    {nav("404.html")}
   </div>
 </header>"""
     return f"""<!doctype html>
@@ -2206,7 +2382,7 @@ def not_found_page() -> str:
 
 <main class="wrap wrap-wide" id="main-content">
   <div class="wiki-layout">
-{wiki_sidebar('404.html')}
+{wiki_sidebar("404.html")}
     <div class="wiki-content">
       <article class="wiki-article">
         <h1 class="wiki-title">Page not found</h1>
@@ -2235,7 +2411,7 @@ def not_found_page() -> str:
 
 <footer>
   <div class="wrap">
-    <p>Powered by <a href="{CFG['repo_url']}">buttcrack</a>, an open-source automatic cipher breaker.
+    <p>Powered by <a href="{CFG["repo_url"]}">buttcrack</a>, an open-source automatic cipher breaker.
     This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
     version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
     six languages, and runs its own local interface entirely offline.</p>
@@ -2260,25 +2436,35 @@ def main() -> None:
     write_windows_delivery(windows_app)
     print(f"wrote {windows_app['delivery_page']:38} (Windows installer delivery page)")
 
-    PAGES.append({
-        "slug": "downloads.html",
-        "title": "Printable Cryptogram Puzzle Books — PDF, Instant Download",
-        "desc": "Printable cryptogram puzzle books as PDFs: graded easy to hard, full solutions included, plus a free ten-puzzle sampler. Instant download, no account needed.",
-        "h1": "Puzzle Books",
-        "tagline": "Pencil-and-paper cryptograms, graded and solved, as printable PDFs.",
-        "preset": "substitution",
-        "body": store_page(products, sampler),
-        "faqs": [
-            ("What format are the books in?",
-             "PDF, typeset for US Letter paper with answer blanks under every character. They print cleanly on a home printer and are equally usable on screen."),
-            ("Do I need an account to buy one?",
-             "No. Checkout is handled by Stripe, and the download appears immediately afterwards in your browser. There is no account, no mailing list and no subscription."),
-            ("Are the solutions included?",
-             "Yes, every volume has a complete solutions section listing each quotation, its author and the key that was used."),
-            ("Can I print copies for my classroom or club?",
-             "Yes. Print as many copies as you need for your own group. Please do not redistribute the PDF itself or resell it."),
-        ],
-    })
+    PAGES.append(
+        {
+            "slug": "downloads.html",
+            "title": "Printable Cryptogram Puzzle Books — PDF, Instant Download",
+            "desc": "Printable cryptogram puzzle books as PDFs: graded easy to hard, full solutions included, plus a free ten-puzzle sampler. Instant download, no account needed.",
+            "h1": "Puzzle Books",
+            "tagline": "Pencil-and-paper cryptograms, graded and solved, as printable PDFs.",
+            "preset": "substitution",
+            "body": store_page(products, sampler),
+            "faqs": [
+                (
+                    "What format are the books in?",
+                    "PDF, typeset for US Letter paper with answer blanks under every character. They print cleanly on a home printer and are equally usable on screen.",
+                ),
+                (
+                    "Do I need an account to buy one?",
+                    "No. Checkout is handled by Stripe, and the download appears immediately afterwards in your browser. There is no account, no mailing list and no subscription.",
+                ),
+                (
+                    "Are the solutions included?",
+                    "Yes, every volume has a complete solutions section listing each quotation, its author and the key that was used.",
+                ),
+                (
+                    "Can I print copies for my classroom or club?",
+                    "Yes. Print as many copies as you need for your own group. Please do not redistribute the PDF itself or resell it.",
+                ),
+            ],
+        }
+    )
 
     from wiki_ciphers import (
         FAMILY_PRESETS,
@@ -2379,12 +2565,13 @@ def main() -> None:
         # browser rotates them daily.
         if spec["slug"] == "cipher-wiki.html":
             f_title, f_slug, f_desc = FEATURED_ARTICLES[0]
-            body = (body
-                    .replace("{FEATURED_TITLE}", f_title)
-                    .replace("{FEATURED_HREF}", f_slug)
-                    .replace("{FEATURED_DESC}", f_desc)
-                    .replace("{DYK_FIRST}", DYK_FACTS[0])
-                    .replace("__CIPHER_INDEX__", cipher_index_html()))
+            body = (
+                body.replace("{FEATURED_TITLE}", f_title)
+                .replace("{FEATURED_HREF}", f_slug)
+                .replace("{FEATURED_DESC}", f_desc)
+                .replace("{DYK_FIRST}", DYK_FACTS[0])
+                .replace("__CIPHER_INDEX__", cipher_index_html())
+            )
         html = page(**{**spec, "body": body})
         # A token configured but missing from a page means a silently unverified
         # property, which shows up as a Search Console failure days later. Fail
@@ -2398,9 +2585,7 @@ def main() -> None:
 
     # The browser-side search index: built from the pages this run actually
     # wrote, so the search box can never offer a page that does not exist.
-    write_wiki_index_js(
-        WIKI_PAGES + HISTORY_PAGES + generated
-    )
+    write_wiki_index_js(WIKI_PAGES + HISTORY_PAGES + generated)
     print(f"wrote wiki-index.js ({len(WIKI_PAGES) + len(HISTORY_PAGES) + len(generated)} searchable pages)")
 
     # Every registered cipher must have a page, and every page must be linked
@@ -2454,9 +2639,7 @@ def main() -> None:
         + "</urlset>\n"
     )
     (HERE / "sitemap.xml").write_text(sitemap)
-    (HERE / "robots.txt").write_text(
-        f"User-agent: *\nAllow: /\nSitemap: {CFG['base_url']}/sitemap.xml\n"
-    )
+    (HERE / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {CFG['base_url']}/sitemap.xml\n")
     print(f"wrote sitemap.xml and robots.txt ({len(urls)} pages)")
 
     ads = write_ads_txt()
@@ -2472,8 +2655,10 @@ def main() -> None:
     if names:
         print(f"\nverification tags on all {len(urls)} pages: {', '.join(names)}")
     elif not CFG.get("verification_files"):
-        print("\nno ownership verification configured — set google_site_verification in "
-              "site.json, then push (see ventures/README.md step 3)")
+        print(
+            "\nno ownership verification configured — set google_site_verification in "
+            "site.json, then push (see ventures/README.md step 3)"
+        )
 
     # AdSense is two separate IDs obtained at two separate times, and the
     # difference decides whether ads can actually render, so say which state
@@ -2481,10 +2666,12 @@ def main() -> None:
     if CFG["adsense_client"]:
         print(f"\nAdSense loader for {CFG['adsense_client']} is in every page's <head>.")
         if not CFG["adsense_slot"]:
-            print("  adsense_slot is empty, so no explicit <ins> unit is emitted; this\n"
-                  "  relies on Auto ads, which you switch on per site in the AdSense UI.\n"
-                  "  For a fixed in-article unit, create a display unit and paste its\n"
-                  "  data-ad-slot number into adsense_slot.")
+            print(
+                "  adsense_slot is empty, so no explicit <ins> unit is emitted; this\n"
+                "  relies on Auto ads, which you switch on per site in the AdSense UI.\n"
+                "  For a fixed in-article unit, create a display unit and paste its\n"
+                "  data-ad-slot number into adsense_slot."
+            )
     else:
         print("\nno AdSense client configured — pages show an inert ad placeholder")
 
@@ -2495,8 +2682,7 @@ def main() -> None:
         state = "LINK SET" if product.get("payment_link") else "needs payment_link"
         print(f"  {product['sku']:6} {CFG['base_url']}/{product['delivery']}   [{state}]")
     win_state = "LINK SET" if windows_app["payment_link"] else "needs payment_link"
-    print(f"  {windows_app.get('sku', 'winapp'):6} {CFG['base_url']}/{windows_app['delivery_page']}"
-          f"   [{win_state}]")
+    print(f"  {windows_app.get('sku', 'winapp'):6} {CFG['base_url']}/{windows_app['delivery_page']}   [{win_state}]")
 
     # The installer is the one thing this build cannot produce (it needs
     # Windows) and the one thing a customer has paid for, so an unset

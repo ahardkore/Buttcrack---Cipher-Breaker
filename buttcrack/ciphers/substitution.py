@@ -69,7 +69,9 @@ def inverse_alphabet(decrypt_key: str) -> str:
     return "".join(A26[decrypt_key.index(c)] for c in A26)
 
 
-def explain_key(mixed_alphabet: str, dictionary: dict[str, int] | None = None, min_match: int = 20) -> tuple[str, int] | None:
+def explain_key(
+    mixed_alphabet: str, dictionary: dict[str, int] | None = None, min_match: int = 20
+) -> tuple[str, int] | None:
     """Recover the keyword behind a keyed alphabet.
 
     Returns ``(keyword, uncertain_positions)`` or ``None``.
@@ -90,9 +92,7 @@ def explain_key(mixed_alphabet: str, dictionary: dict[str, int] | None = None, m
         return None
 
     valid = [
-        p
-        for p in range(1, 25)
-        if list(alpha[p:]) == sorted(alpha[p:]) and not (set(alpha[:p]) & set(alpha[p:]))
+        p for p in range(1, 25) if list(alpha[p:]) == sorted(alpha[p:]) and not (set(alpha[:p]) & set(alpha[p:]))
     ]
     # Longest dictionary word first: that is what a human setter would have used.
     if dictionary:
@@ -175,10 +175,7 @@ class Substitution(Cipher):
         language = ctx.model.language
         if workers > 1:
             per = max(1, total_restarts // workers)
-            payloads = [
-                (stream, per, ctx_seed(ctx, i), max_evals_for(n), i == 0, language)
-                for i in range(workers)
-            ]
+            payloads = [(stream, per, ctx_seed(ctx, i), max_evals_for(n), i == 0, language) for i in range(workers)]
         else:
             payloads = [(stream, total_restarts, ctx_seed(ctx, 0), max_evals_for(n), True, language)]
 

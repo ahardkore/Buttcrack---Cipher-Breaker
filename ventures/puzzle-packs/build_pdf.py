@@ -9,6 +9,7 @@ Stripe payment link, or send it to Amazon KDP.
 Reuses the puzzle generation in generate.py so the HTML and PDF editions of a
 given seed contain exactly the same puzzles.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -19,10 +20,10 @@ from pathlib import Path
 from generate import QUOTES, caesar, difficulty_for, encrypt, hint_for, random_key
 from pdf import COURIER, HELV, HELV_B, HELV_O, TIMES, TIMES_I, Document, text_width, wrap
 
-PAGE_W, PAGE_H = 612.0, 792.0        # US Letter in points
-MARGIN = 54.0                         # 0.75 inch
+PAGE_W, PAGE_H = 612.0, 792.0  # US Letter in points
+MARGIN = 54.0  # 0.75 inch
 CONTENT_W = PAGE_W - 2 * MARGIN
-CELL_W = 15.0                         # width of one answer blank
+CELL_W = 15.0  # width of one answer blank
 CELL_GAP = 1.5
 WORD_GAP = 9.0
 
@@ -57,8 +58,7 @@ class Book:
         self.page.text(MARGIN, self.y - size, s, HELV_B, size)
         self.y -= size + 12
 
-    def para(self, s: str, font: str = TIMES, size: float = 10.5,
-             leading: float = 15.0, gray: float = 0.15) -> None:
+    def para(self, s: str, font: str = TIMES, size: float = 10.5, leading: float = 15.0, gray: float = 0.15) -> None:
         for line in wrap(s, font, size, CONTENT_W):
             self.need(leading)
             self.page.text(MARGIN, self.y - size, line, font, size, gray)
@@ -87,14 +87,12 @@ def layout_rows(ct: str) -> list[list[str]]:
     return rows
 
 
-def draw_puzzle(book: Book, num: int, ct: str, ct_author: str, kind: str,
-                label: str, hint: str) -> None:
+def draw_puzzle(book: Book, num: int, ct: str, ct_author: str, kind: str, label: str, hint: str) -> None:
     book.need(puzzle_height(ct) + (14 if hint else 0))
     page = book.page
 
     page.text(MARGIN, book.y - 11, f"Puzzle {num}", HELV_B, 11)
-    page.text_right(PAGE_W - MARGIN, book.y - 10, f"{kind} · {label}".upper(),
-                    HELV, 7.5, 0.5)
+    page.text_right(PAGE_W - MARGIN, book.y - 10, f"{kind} · {label}".upper(), HELV, 7.5, 0.5)
     book.y -= 26
 
     for row in layout_rows(ct):
@@ -103,8 +101,7 @@ def draw_puzzle(book: Book, num: int, ct: str, ct_author: str, kind: str,
             for ch in word:
                 if ch.isalpha():
                     # The letter sits above a blank the solver writes in.
-                    page.text(x + (CELL_W - text_width(ch, COURIER, 10)) / 2,
-                              book.y - 9, ch, COURIER, 10, 0.1)
+                    page.text(x + (CELL_W - text_width(ch, COURIER, 10)) / 2, book.y - 9, ch, COURIER, 10, 0.1)
                     page.line(x, book.y - 21, x + CELL_W, book.y - 21, 0.6, 0.55)
                 else:
                     page.text(x + 3, book.y - 9, ch, COURIER, 10, 0.4)
@@ -143,7 +140,7 @@ def build(puzzles: int, seed: int, title: str, out: Path) -> None:
     book = Book(doc, title)
 
     # ---- instructions ------------------------------------------------------
-    book.new_page(numbered=False)   # first real page; the cover is unnumbered
+    book.new_page(numbered=False)  # first real page; the cover is unnumbered
     book.heading("How to solve a cryptogram", 18)
     book.para(
         "Every puzzle in this book is a quotation in which each letter has been replaced "
@@ -153,15 +150,22 @@ def build(puzzles: int, seed: int, title: str, out: Path) -> None:
     )
     steps = [
         ("Start with one-letter words.", "In English they are almost always A or I."),
-        ("Attack the three-letter words.", "The most common by far is THE. If one "
-         "three-letter pattern repeats, try it — that single guess often hands you the "
-         "three most useful letters in the puzzle at once."),
-        ("Look for doubled letters.", "Doubles at the end of a word are usually LL, SS, "
-         "EE or OO."),
-        ("Use word endings.", "ING, ED, TION and LY are everywhere, and each one you spot "
-         "confirms several letters at a stroke."),
-        ("Count frequencies.", "Across English the order runs roughly E T A O I N S H R D "
-         "L U. The most repeated symbol in a long puzzle is very likely E."),
+        (
+            "Attack the three-letter words.",
+            "The most common by far is THE. If one "
+            "three-letter pattern repeats, try it — that single guess often hands you the "
+            "three most useful letters in the puzzle at once.",
+        ),
+        ("Look for doubled letters.", "Doubles at the end of a word are usually LL, SS, EE or OO."),
+        (
+            "Use word endings.",
+            "ING, ED, TION and LY are everywhere, and each one you spot confirms several letters at a stroke.",
+        ),
+        (
+            "Count frequencies.",
+            "Across English the order runs roughly E T A O I N S H R D "
+            "L U. The most repeated symbol in a long puzzle is very likely E.",
+        ),
         ("Use pencil.", "Guesses that collapse three words later are part of the process."),
     ]
     for i, (bold, rest) in enumerate(steps, start=1):
@@ -178,7 +182,7 @@ def build(puzzles: int, seed: int, title: str, out: Path) -> None:
                 break
         book.page.text(x, book.y - 10, first_line, TIMES, 10.5, 0.15)
         book.y -= 15
-        remainder = rest[len(first_line):].strip()
+        remainder = rest[len(first_line) :].strip()
         if remainder:
             for line in wrap(remainder, TIMES, 10.5, CONTENT_W - 16):
                 book.need(15)
@@ -223,8 +227,7 @@ def build(puzzles: int, seed: int, title: str, out: Path) -> None:
         lines = wrap(text, TIMES, 9.5, CONTENT_W)
         book.need(len(lines) * 13 + 4)
         for j, line in enumerate(lines):
-            book.page.text(MARGIN + (0 if j == 0 else 14), book.y - 9, line,
-                           TIMES, 9.5, 0.15)
+            book.page.text(MARGIN + (0 if j == 0 else 14), book.y - 9, line, TIMES, 9.5, 0.15)
             book.y -= 13
         book.y -= 3
 
@@ -244,8 +247,7 @@ def build(puzzles: int, seed: int, title: str, out: Path) -> None:
     )
 
     doc.save(out)
-    print(f"wrote {out}  ({puzzles} puzzles, seed {seed}, "
-          f"{len(doc.pages)} pages, {out.stat().st_size // 1024} KB)")
+    print(f"wrote {out}  ({puzzles} puzzles, seed {seed}, {len(doc.pages)} pages, {out.stat().st_size // 1024} KB)")
 
 
 def main() -> None:

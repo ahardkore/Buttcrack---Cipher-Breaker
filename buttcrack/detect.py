@@ -55,6 +55,7 @@ def chi2_english_max(letters: int) -> float:
     """Length-aware chi-squared ceiling for "this distribution is English"."""
     return CHI2_ENGLISH_MAX + CHI2_SHORT_TEXT_RELAXATION / max(letters, 1)
 
+
 _MORSE_CHARS = set(".-/ \t\n")
 _TWO_SYMBOL_THRESHOLD = 2
 
@@ -305,8 +306,8 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
         add(
             "morse",
             0.45 if tap_shaped else 0.95,
-            "input uses only Morse symbols, but with no dashes and legal 1-5 runs "
-            "it is more likely tap code" if tap_shaped
+            "input uses only Morse symbols, but with no dashes and legal 1-5 runs it is more likely tap code"
+            if tap_shaped
             else f"input uses only Morse symbols ({stats.charset})",
         )
     if tap_shaped:
@@ -341,12 +342,12 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
                 f"{len(digits) // 2} digit pairs, all restricted to 1-5: a 5x5 coordinate grid",
             )
         elif len(values) >= 3 and all(1 <= v <= 26 for v in values) and sum(values) / len(values) < 30:
-            add("a1z26", 0.9, f"{len(values)} numbers all within 1-26 (mean {sum(values)/len(values):.1f})")
+            add("a1z26", 0.9, f"{len(values)} numbers all within 1-26 (mean {sum(values) / len(values):.1f})")
         if all(9 <= v <= 126 for v in values) and not set(digits) <= set("12345"):
             add("decimal_ascii", 0.8, "numbers all in the printable ASCII range")
 
     if compact and set(compact) <= set("01") and len(compact) % 8 == 0 and len(compact) >= 16:
-        add("binary", 0.9, f"{len(compact)//8} groups of 8 bits")
+        add("binary", 0.9, f"{len(compact) // 8} groups of 8 bits")
     # Five-bit groups are Bacon *or* ITA2 teleprinter code, and no amount of
     # staring at the bits will say which: both tables accept the same stream.
     # So both are decoded and the one that produces English wins.  This is the
@@ -389,13 +390,13 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     # the layout is what tells the two apart.
     prose_shaped = is_word_shaped(stripped)
     b58_match = (
-        bool(compact)
-        and not prose_shaped
-        and re.fullmatch(r"[1-9A-HJ-NP-Za-km-z]+", compact)
-        and len(compact) >= 16
+        bool(compact) and not prose_shaped and re.fullmatch(r"[1-9A-HJ-NP-Za-km-z]+", compact) and len(compact) >= 16
     )
-    if b58_match and any(c.isdigit() for c in compact) and any(c.isupper() for c in compact) and any(
-        c.islower() for c in compact
+    if (
+        b58_match
+        and any(c.isdigit() for c in compact)
+        and any(c.isupper() for c in compact)
+        and any(c.islower() for c in compact)
     ):
         add("base58", 0.7, "base58 alphabet (no 0OIl, no +/=) with mixed case and digits")
     # Base32 is a strict subset of the base64 alphabet, so both tests fire on a
@@ -538,8 +539,14 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
                 add_stat("skip", 0.6, reason)
                 add_stat("route", 0.6, reason)
             elif ic >= IC_MONO_MIN:
-                add_stat("substitution", 0.9, f"IC {ic:.4f} is English-like but the distribution is permuted (chi2 {chi2:.2f})")
-                add_stat("keyword_substitution", 0.8, "same evidence as simple substitution, keyword-generated alphabet")
+                add_stat(
+                    "substitution",
+                    0.9,
+                    f"IC {ic:.4f} is English-like but the distribution is permuted (chi2 {chi2:.2f})",
+                )
+                add_stat(
+                    "keyword_substitution", 0.8, "same evidence as simple substitution, keyword-generated alphabet"
+                )
                 add_stat("atbash", 0.35, "a reciprocal alphabet map is a special case of substitution")
             else:
                 pf_score, pf_reason = _playfair_tells(stream)
@@ -581,7 +588,9 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
                         round(0.2 + 0.2 * weight, 2),
                         f"IC {ic:.4f} is low for a monoalphabetic cipher, but at {len(stream)} letters IC is noisy",
                     )
-                    add_stat("playfair", round(0.15 + 0.2 * weight, 2), "a polygraphic cipher flattens IC the same way")
+                    add_stat(
+                        "playfair", round(0.15 + 0.2 * weight, 2), "a polygraphic cipher flattens IC the same way"
+                    )
 
     # 3. Fall back to each cipher's own likelihood estimate.
     if not out:

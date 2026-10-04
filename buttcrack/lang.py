@@ -255,6 +255,7 @@ def resolve_language(name: str) -> str:
     known = ", ".join(LANGUAGES)
     raise ValueError(f"unknown language {name!r}; known: {known} (or 'auto')")
 
+
 #: Cost of a letter in a string that is not in the dictionary (log10 units).
 #: The per-letter term is what makes the Viterbi pass prefer
 #: ``riveratdawn`` -> ``river at dawn`` over one long invented word.
@@ -452,7 +453,12 @@ class LanguageModel:
 
     # -- n-gram scoring ----------------------------------------------------- #
     def ngram_score(
-        self, text: str, order: int | None = None, *, total: bool = False, normalise: bool = True,
+        self,
+        text: str,
+        order: int | None = None,
+        *,
+        total: bool = False,
+        normalise: bool = True,
         max_chars: int = MAX_SCORE_CHARS,
     ) -> float:
         """Mean (or summed) log10 probability of ``text`` under the n-gram model.
@@ -570,9 +576,7 @@ class LanguageModel:
         if not letters:
             return 0.0, 0.0, words
         known_all = sum(len(w) for w in words if len(w) > 1 and w in self.words)
-        known_long = sum(
-            len(w) for w in words if len(w) >= WORD_COVERAGE_MIN_LEN and w in self.words
-        )
+        known_long = sum(len(w) for w in words if len(w) >= WORD_COVERAGE_MIN_LEN and w in self.words)
         return known_all / letters, known_long / letters, words
 
     # -- composite ---------------------------------------------------------- #
@@ -598,9 +602,9 @@ class LanguageModel:
         n = len(sample)
         weights = SHORT_WEIGHTS if n < SHORT_REWEIGHT_LETTERS else WEIGHTS
         if with_words:
-            confidence = weights["fitness"] * ramp(fit, FITNESS_GOOD, FITNESS_BAD) + weights[
-                "words"
-            ] * ramp(coverage_long, WORDS_GOOD, WORDS_BAD)
+            confidence = weights["fitness"] * ramp(fit, FITNESS_GOOD, FITNESS_BAD) + weights["words"] * ramp(
+                coverage_long, WORDS_GOOD, WORDS_BAD
+            )
         else:
             # No dictionary view: the fitness ramp has to carry the verdict on
             # its own, against this language's own endpoints.  Measured on real
@@ -617,9 +621,7 @@ class LanguageModel:
         # short fragment would otherwise be able to claim a confident solve and
         # outrank a real, longer answer.
         if n < MIN_TRUSTED_LETTERS:
-            confidence *= SHORT_SAMPLE_FLOOR + (1.0 - SHORT_SAMPLE_FLOOR) * (
-                n / MIN_TRUSTED_LETTERS
-            )
+            confidence *= SHORT_SAMPLE_FLOOR + (1.0 - SHORT_SAMPLE_FLOOR) * (n / MIN_TRUSTED_LETTERS)
             if n < FRAGMENT_LETTERS:
                 confidence = min(confidence, FRAGMENT_CAP)
         return LanguageScore(

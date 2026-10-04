@@ -202,9 +202,7 @@ def check_installation(report: SelfTestReport, verbose: bool) -> None:
             detail += " -- expected a full model; run scripts/build_language_model.py"
     except Exception as error:  # pragma: no cover - a broken install
         ok, detail = False, f"{type(error).__name__}: {error}"
-    report.checks.append(
-        Check("installation", "language model", ok, detail, time.time() - started)
-    )
+    report.checks.append(Check("installation", "language model", ok, detail, time.time() - started))
 
     started = time.time()
     names = {c.info.name for c in ALL_CIPHERS}
@@ -249,8 +247,7 @@ def check_vectors(report: SelfTestReport, verbose: bool) -> None:
         except Exception as error:
             ok, detail = False, f"{type(error).__name__}: {error}"
         report.checks.append(
-            Check("vectors", f"{name}({key!r})" if key is not None else name, ok, detail,
-                  time.time() - started)
+            Check("vectors", f"{name}({key!r})" if key is not None else name, ok, detail, time.time() - started)
         )
 
 
@@ -306,17 +303,12 @@ def check_detection(report: SelfTestReport, verbose: bool) -> None:
             hypotheses, _stats = identify(text, model)
             top = hypotheses[0].cipher if hypotheses else "none"
             ok = top == expected
-            detail = (
-                f"top hypothesis {top} ({hypotheses[0].likelihood:.2f})"
-                if hypotheses
-                else "no hypotheses"
-            )
+            detail = f"top hypothesis {top} ({hypotheses[0].likelihood:.2f})" if hypotheses else "no hypotheses"
             if not ok:
                 detail += f", expected {expected}"
         except Exception as error:
             ok, detail = False, f"{type(error).__name__}: {error}"
-        report.checks.append(Check("detection", f"{name} -> {expected}", ok, detail,
-                                   time.time() - started))
+        report.checks.append(Check("detection", f"{name} -> {expected}", ok, detail, time.time() - started))
 
 
 #: Break checks: (label, cipher, key, plaintext, budget, expected chain or None).
@@ -376,13 +368,16 @@ STACK_BREAKS: tuple[tuple[str, str, Any, float], ...] = (
     ("rail fence over Caesar", "rail_fence+caesar", 5, 25.0),
     ("reverse over Vigenere", "reverse+vigenere", "LAMP", 25.0),
     # The advertised depth, end to end: five steps, two of them ciphers.
-    ("five layers: hex, base64, Morse, reverse, Caesar",
-     "base16+base64+morse+reverse+caesar", 7, 25.0),
+    ("five layers: hex, base64, Morse, reverse, Caesar", "base16+base64+morse+reverse+caesar", 7, 25.0),
     # Six *ciphers*, no encodings: five transpositions over a ROT13.  Solvable
     # because transpositions and monoalphabetic substitutions commute, so the
     # whole stack is one permutation plus one substitution.
-    ("six ciphers: reverse, rail fence, skip, reverse, rail fence, ROT13",
-     "reverse+rail_fence+skip+reverse+rail_fence+rot13", None, 30.0),
+    (
+        "six ciphers: reverse, rail fence, skip, reverse, rail fence, ROT13",
+        "reverse+rail_fence+skip+reverse+rail_fence+rot13",
+        None,
+        30.0,
+    ),
 )
 
 #: Expensive searches, only run with ``--slow``.  The last field is what the
@@ -406,13 +401,11 @@ SLOW_BREAKS: tuple[tuple[str, str, Any, str, float, str | None, str], ...] = (
     # 27-cell cube *and* a period, so neither unhinted search finishes from
     # scratch.  Both are graded like Bifid: name the cipher, and prove the
     # exact plaintext comes back when the key is supplied.
-    ("Four-square", "four_square", {"top": "EXAMPLE", "bottom": "KEYWORD"},
-     LONG_PROSE * 2, 60.0, None, "hinted"),
+    ("Four-square", "four_square", {"top": "EXAMPLE", "bottom": "KEYWORD"}, LONG_PROSE * 2, 60.0, None, "hinted"),
     ("Trifid", "trifid", {"key": "TRIFID", "period": 5}, LONG_PROSE * 2, 60.0, None, "hinted"),
     # The wheel cipher needs 250+ letters and a real slice of time: measured
     # ~2-in-3 solves inside a 20 s slice at 250 letters, better at 500.
-    ("M-94 wheel cipher", "m94",
-     {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}, LONG_PROSE, 120.0, None, "exact"),
+    ("M-94 wheel cipher", "m94", {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}, LONG_PROSE, 120.0, None, "exact"),
 )
 
 #: Short prose per shipped language, used by the language checks.  Detection
@@ -497,8 +490,7 @@ def check_breaks(
             else:
                 ok, extra = _check_partial(name, key, text, ciphertext, result, workers, expect)
             detail = (
-                f"{result.path} key={result.key_repr} confidence={result.confidence:.3f} "
-                f"in {result.elapsed:.1f}s"
+                f"{result.path} key={result.key_repr} confidence={result.confidence:.3f} in {result.elapsed:.1f}s"
             )
             if expect != "exact":
                 detail += extra
@@ -567,10 +559,8 @@ def _check_partial(
         return ok, detail
     progress_ok = expect != "partial" or similarity > 0.5
     ok = bool(named and hinted_ok and progress_ok)
-    extra = (
-        f" (unhinted: {similarity * 100:.0f}% of the message recovered, "
-        f"confidence {result.confidence:.3f}"
-        + ("; exact with the key)" if hinted_ok else "; the key did NOT reproduce the plaintext)")
+    extra = f" (unhinted: {similarity * 100:.0f}% of the message recovered, confidence {result.confidence:.3f}" + (
+        "; exact with the key)" if hinted_ok else "; the key did NOT reproduce the plaintext)"
     )
     if not named:
         extra += f" [named {result.path}, expected {inner}]"
@@ -641,14 +631,14 @@ def check_languages(report: SelfTestReport, verbose: bool) -> None:
             if not ranked or ranked[0][0] != name:
                 problems.append(f"detect_language ranks {ranked[0][0] if ranked else 'nothing'} first")
             ok = not problems
-            detail = "; ".join(problems) if problems else (
-                f"{model.ngram_count(4):,} quadgrams, detects as {name} ({ranked[0][1]:.2f})"
+            detail = (
+                "; ".join(problems)
+                if problems
+                else (f"{model.ngram_count(4):,} quadgrams, detects as {name} ({ranked[0][1]:.2f})")
             )
         except Exception as error:
             ok, detail = False, f"{type(error).__name__}: {error}"
-        report.checks.append(
-            Check("languages", f"{name} model", ok, detail, time.time() - started)
-        )
+        report.checks.append(Check("languages", f"{name} model", ok, detail, time.time() - started))
 
     # A cheap cipher in each language: the engine has to accept the language,
     # judge the plaintext honestly, and hand the message back.  Recovery is
@@ -674,9 +664,7 @@ def check_languages(report: SelfTestReport, verbose: bool) -> None:
                 detail += " (near miss on rare letters -- see dictionary-less note)"
         except Exception as error:
             ok, detail = False, f"{type(error).__name__}: {error}"
-        report.checks.append(
-            Check("languages", f"caesar in {name}", ok, detail, time.time() - started)
-        )
+        report.checks.append(Check("languages", f"caesar in {name}", ok, detail, time.time() - started))
 
     # Auto mode: probe, re-probe on the language note, and solve under the
     # model that actually fits the text.
@@ -692,9 +680,7 @@ def check_languages(report: SelfTestReport, verbose: bool) -> None:
         )
     except Exception as error:
         ok, detail = False, f"{type(error).__name__}: {error}"
-    report.checks.append(
-        Check("languages", "auto-detect French", ok, detail, time.time() - started)
-    )
+    report.checks.append(Check("languages", "auto-detect French", ok, detail, time.time() - started))
 
 
 def check_report_shape(report: SelfTestReport, verbose: bool) -> None:
@@ -747,10 +733,7 @@ def run_selftest(
     if not json_output:
         print(pal.bold(f"buttcrack {__version__} self-test"), file=out)
         print(
-            pal.dim(
-                f"python {sys.version.split()[0]}, {workers} worker(s), "
-                f"{'quick' if quick else 'slow'} mode"
-            ),
+            pal.dim(f"python {sys.version.split()[0]}, {workers} worker(s), {'quick' if quick else 'slow'} mode"),
             file=out,
         )
         print(file=out)

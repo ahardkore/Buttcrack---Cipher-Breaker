@@ -102,7 +102,10 @@ CASES = [
     ),
     (
         "6 ciphers deep",
-        enc("reverse", enc("rail_fence", enc("skip", enc("reverse", enc("rail_fence", enc("rot13", SENTENCE), 3)), 5), 4)),
+        enc(
+            "reverse",
+            enc("rail_fence", enc("skip", enc("reverse", enc("rail_fence", enc("rot13", SENTENCE), 3)), 5), 4),
+        ),
         SENTENCE,
         30,
     ),
@@ -132,10 +135,7 @@ def main() -> int:
         got, want = squash(report.plaintext)[:60], squash(plaintext)[:60]
         ok = got == want
         passed += ok
-        print(
-            f"{'PASS' if ok else 'FAIL'} {label:24} {elapsed:5.1f}s "
-            f"conf={report.confidence:.2f} {report.path}"
-        )
+        print(f"{'PASS' if ok else 'FAIL'} {label:24} {elapsed:5.1f}s conf={report.confidence:.2f} {report.path}")
         if not ok:
             print(f"      got  {got}")
     print(f"\n{passed}/{len(CASES)} passed in {total:.0f}s")
