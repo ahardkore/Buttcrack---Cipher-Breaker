@@ -1,8 +1,8 @@
 /* buttcrack — web interface
  *
  * Vanilla JS, no build step, no dependencies.  The page talks to four endpoints
- * on the same origin (/api/health, /api/ciphers, /api/identify, /api/transform)
- * plus a job pair for cracking (/api/crack -> /api/job/<id>), which it polls so
+ * on the same origin (/api/health, /api/ciphers, /api/assistant, /api/identify,
+ * /api/transform) plus a job pair for cracking (/api/crack -> /api/job/<id>), which it polls so
  * the search log streams while the engine works in a background thread.
  *
  * Everything the engine sends back is inserted with textContent: ciphertext and
@@ -44,6 +44,11 @@ const SAMPLES = [
     label: "morse",
     text:
       "- .... . / .-. .- .. .-.. .-- .- -.-- / ... - .- - .. --- -. / .- - / .- ... .... ..-. --- .-. -.. / .-- .- ... / .-. . -... ..- .. .-.. - / .- ..-. - . .-. / - .... . / .-- .- .-. .-.-.-",
+  },
+  {
+    label: "PK1 (verified)",
+    text:
+      "MQRALWVSJIMSXGJSVWQPHJMDINKXGIMHNKYUTXTTGJCYIABTJUMQEOFBITNBMONGVWETDLAIJPQYMZIKBQVRXZHUIJVDJLTQHIQYHEQKFTPTJYCONAFXYWQIBONAYXGWJFFIQMVXNVQYQFMWKFEJQYZFBWKXBKDQLJRELWGWDKHECRSFBKOVQJCPYDNKXYHE",
   },
   { label: "base64(caesar)", text: "UGhodyB3a2ggZnJ4dWxodSBlaHZsZ2ggd2toIGlyeHF3ZGxxIGR3IHFycnEgZHFnIGV1bHFqIHdraCB2aGZycWcgaGF5aG9yc2ggemx3ayBicngu" },
   {
@@ -220,6 +225,7 @@ function activateTab(name) {
 function wireBreak() {
   $("crack").addEventListener("click", () => startCrack());
   $("identify").addEventListener("click", () => runIdentify());
+  $("assistant").addEventListener("click", () => runAssistant());
   $("clear").addEventListener("click", () => {
     $("input").value = "";
     resetResult();
@@ -290,6 +296,7 @@ function resetResult() {
   stopPolling();
   $("result-card").hidden = true;
   $("progress-card").hidden = true;
+  $("assistant-card").hidden = true;
   hideError();
   clear($("log"));
   state.renderedLines = 0;
@@ -297,6 +304,7 @@ function resetResult() {
   $("progress-bar").style.width = "0%";
   $("crack").disabled = false;
   $("identify").disabled = false;
+  $("assistant").disabled = false;
 }
 
 async function startCrack() {
@@ -440,6 +448,9 @@ function renderMeta(report, best, notes) {
     ["also known as", notes.also_known_as || "", false],
     ["language note", notes.language || "", false],
     ["method", notes.method || "", false],
+    ["verification", notes.verification_status || "", false],
+    ["corpus record", notes.corpus_match || "", true],
+    ["construction", notes.mechanism || "", false],
     ["evidence", notes.evidence || "", false],
     ["language", report.language || "", false],
     ["reads as", report.language_detected || "", false],
@@ -575,6 +586,66 @@ async function runIdentify() {
     showError(error.message || String(error));
   } finally {
     $("identify").disabled = false;
+  }
+}
+
+function renderAssistant(result) {
+  const card = $("assistant-card");
+  const list = $("assistant-recommendations");
+  clear(list);
+  card.hidden = false;
+  const verified = result.status === "verified_exact_match";
+  $("assistant-status").textContent = verified ? "verified exact match" : "recommendations only";
+  for (const recommendation of result.recommendations || []) {
+    const item = make("li");
+    item.appendChild(make("span", "name", `${recommendation.name} (${recommendation.confidence})`));
+    item.appendChild(make("span", "reason", recommendation.reason));
+    item.appendChild(make("span", "reason", `scope: ${recommendation.scope}`));
+    list.appendChild(item);
+  }
+  if (!list.childElementCount) list.appendChild(make("li", "empty", "No local recommendation was produced."));
+
+  const match = result.exact_match;
+  const matchPanel = $("assistant-match");
+  const matchMeta = $("assistant-match-meta");
+  clear(matchMeta);
+  matchPanel.hidden = !match;
+  if (!match) return;
+  const rows = [
+    ["record", match.id],
+    ["title", match.title],
+    ["construction", match.mechanism],
+    ["key material", match.key],
+    ["plaintext SHA-256", match.plaintext_sha256],
+    ["verification", match.verification],
+  ];
+  for (const [label, value] of rows) {
+    const wrap = make("div");
+    wrap.appendChild(make("dt", null, label));
+    wrap.appendChild(make("dd", label === "record" ? "accent" : null, value));
+    matchMeta.appendChild(wrap);
+  }
+}
+
+async function runAssistant() {
+  const text = $("input").value;
+  if (!text.trim()) {
+    showError("Paste some ciphertext first.");
+    return;
+  }
+  hideError();
+  $("assistant").disabled = true;
+  try {
+    const result = await api("/api/assistant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    renderAssistant(result);
+  } catch (error) {
+    showError(error.message || String(error));
+  } finally {
+    $("assistant").disabled = false;
   }
 }
 

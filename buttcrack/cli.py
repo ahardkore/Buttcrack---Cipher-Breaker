@@ -447,18 +447,12 @@ def cmd_crack(args: argparse.Namespace) -> int:
 
 
 def cmd_assistant(args: argparse.Namespace) -> int:
-    """Give transparent local attack recommendations; never claims a break."""
-    from .assistant import explain, recommend
+    """Give transparent local recommendations or report an exact corpus match."""
+    from .assistant import analysis, explain
 
     text = read_input(args)
     if args.json:
-        payload = {
-            "status": "recommendations_only",
-            "network": False,
-            "model": "explainable-local-planner",
-            "recommendations": [item.__dict__ for item in recommend(text)],
-        }
-        print(json.dumps(payload, indent=2 if args.pretty else None))
+        print(json.dumps(analysis(text), indent=2 if args.pretty else None))
     else:
         print(explain(text))
     return 0

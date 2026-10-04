@@ -50,6 +50,7 @@ from .lang import (
     get_model,
     resolve_language,
 )
+from .paradigm import exact_candidate
 from .results import AttackLog, Candidate, CrackReport
 from .text import A26, letters_only, respaced, restore_shape, trim
 
@@ -399,6 +400,35 @@ class Solver:
             exhaustive=self.exhaustive,
         )
         pool = CandidatePool(self.model)
+
+        # PK1–PK10 are a recovered, versioned corpus.  An exact normalized
+        # ciphertext equality is different from a statistical guess: return it
+        # immediately, retain the construction/sha evidence in the report, and
+        # do not spend the user's search budget recreating a known archive item.
+        known = exact_candidate(text, self.model)
+        if known is not None:
+            pool.add(known)
+            now = time.time()
+            report.attacks.append(
+                AttackLog(
+                    cipher=known.cipher,
+                    started=started,
+                    finished=now,
+                    status="solved",
+                    tried=1,
+                    best_confidence=1.0,
+                    detail=(
+                        f"{known.notes['corpus_match']} exact canonical-corpus match; "
+                        "stored recovered construction and plaintext digest checked"
+                    ),
+                )
+            )
+            self._say(
+                f"verified {known.notes['corpus_match']} exact Paradigm Kryptos corpus match; "
+                "returning the locally verified construction",
+                1.0,
+            )
+            return self._finish(report, pool, ctx, text, started, stats)
 
         # ...but "reads as English" is not the same as "is the plaintext":
         # percent-encoding leaves every letter in place, so the raw text scores

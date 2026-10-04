@@ -968,6 +968,7 @@ def solver_html() -> str:
             ("substitution", "Substitution"),
             ("layered", "Layered"),
             ("morse", "Morse"),
+            ("pk1", "PK1 verified"),
         ]
     )
     return f"""<section class="solver-shell" aria-label="Cipher solver">
@@ -985,8 +986,8 @@ def solver_html() -> str:
     </div>
     <details class="solver-limits">
       <summary>What this browser solver can—and cannot—do</summary>
-      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution.</p>
-      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. Its ranking model is tuned for English, so a high score is a lead to verify with the method, key, and source context—not a guarantee.</p>
+      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, KRYPTOS-alphabet Quagmire III, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution. It also recognizes the ten published Paradigm Kryptos PK1–PK10 ciphertexts by exact normalized equality and labels those results separately as verified corpus matches.</p>
+      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. A high language-model score is a lead to verify with the method, key, and source context—not a guarantee. The PK label is only emitted for an exact canonical-corpus match, never merely for similar length or style.</p>
       <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
     </details>
     <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
@@ -1089,6 +1090,7 @@ def page(
 </footer>
 
 <script src="model.js"></script>
+<script src="paradigm.js"></script>
 <script src="app.js"></script>
 {extra_scripts}
 </body>

@@ -86,6 +86,7 @@
         <div class="actions">
           <button class="primary" id="crack">Break it</button>
           <button id="identify">Identify only</button>
+          <button id="assistant">Ask local agent</button>
           <button class="ghost" id="clear">Clear</button>
           <span class="shortcut">⌘/Ctrl + Enter</span>
         </div>
@@ -138,6 +139,19 @@
             <thead><tr><th>Cipher</th><th>Status</th><th>Keys tried</th><th>Best</th><th>Time</th><th>Detail</th></tr></thead>
             <tbody id="attacks"></tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="card" id="assistant-card" hidden>
+        <div class="card-head">
+          <h2>Local cryptanalysis agent</h2>
+          <span class="hint" id="assistant-status">recommendations only</span>
+        </div>
+        <p class="hint">Offline, explainable planning. It never sends the ciphertext to a network service.</p>
+        <ol class="hypotheses" id="assistant-recommendations"></ol>
+        <div class="sub-section" id="assistant-match" hidden>
+          <h3>Verified corpus match</h3>
+          <dl class="meta" id="assistant-match-meta"></dl>
         </div>
       </section>
 
