@@ -413,10 +413,10 @@ function initBookReader() {
     { title: "Prologue: The CIA Sculpture & The 36-Year Mystery", target: "book-ch-prologue" },
     { title: "Chapter 1: The Narrative Arc of Paradigm Kryptos (PK1 – PK7)", target: "book-ch-1" },
     { title: "Chapter 2: PK8 — Verified Solution & Method", target: "book-ch-2" },
-    { title: "Chapter 3: PK9 — Open Research Frontier", target: "book-ch-3" },
-    { title: "Chapter 4: PK10 — Open Research Frontier", target: "book-ch-4" },
+    { title: "Chapter 3: PK9 — Independently Verified Construction", target: "book-ch-3" },
+    { title: "Chapter 4: PK10 — Independently Verified Construction", target: "book-ch-4" },
     { title: "Chapter 5: Research-Integrity Rules", target: "book-ch-5" },
-    { title: "Chapter 6: Next PK9 Steps", target: "book-ch-6" },
+    { title: "Chapter 6: PK9 Recovery and Provenance", target: "book-ch-6" },
     { title: "Chapter 7: Verification Commands", target: "book-ch-7" },
     { title: "Epilogue: Current Solution Status", target: "book-ch-epilogue" }
   ];

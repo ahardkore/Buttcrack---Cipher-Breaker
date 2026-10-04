@@ -7,12 +7,12 @@
 
 An exhaustive, publication-grade cryptanalytic research repository, mathematical proof ledger, interactive web application, and full book manuscript investigating **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**.
 
-> **⚠ Status update (2026-10-03)**: PK1–PK8 and PK10 reproduce their
-> official ciphertexts exactly, and PK9 is now independently reproduced by
-> `verify_pk9_solution.py`. The recovered PK9 construction is
-> `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` with plaintext and digest recorded
-> in `pk_verified_solutions.json`. The public-solve evidence and earlier
-> superseded candidates remain preserved in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+> **⚠ Status update (2026-10-03)**: PK1–PK10 reproduce their official
+> ciphertexts exactly. PK9 is independently reproduced by
+> `verify_pk9_solution.py` using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`;
+> its plaintext and digest are recorded in `pk_verified_solutions.json`. The
+> public-solve evidence and earlier superseded candidates remain preserved in
+> `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 ---
 
@@ -21,7 +21,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 | Deliverable | Description | Location |
 | :--- | :--- | :--- |
 | **Complete Book Manuscript** | 8 detailed chapters detailing the history, mathematics, and decipherment of K1–K4 and PK1–PK10. | [`THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md) |
-| **Executive Cryptanalytic Brief** | Rapid-recall strategic brief on final cryptanalytic verdicts and open frontier guidance. | [`EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](EXECUTIVE_CRYPTANALYTIC_BRIEF.md) |
+| **Executive Cryptanalytic Brief** | Rapid-recall strategic brief on final cryptanalytic verdicts and historical frontier guidance. | [`EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](EXECUTIVE_CRYPTANALYTIC_BRIEF.md) |
 | **Master Solutions Dossier** | Formal mathematical proofs, substitution alphabets, and verbatim plaintexts. | [`PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md`](PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md) |
 | **Workspace Catalog & Hub** | Master index of all project assets, ciphers, and one-line verification commands. | [`WORKSPACE_CATALOG.md`](WORKSPACE_CATALOG.md) |
 | **Forensic Cryptanalytic Audit** | 62 KB exhaustive audit detailing all algorithms, empirical runs, and theorems for PK9 and PK10. | [`CRYPTANALYTIC_AUDIT_PK9_PK10.md`](CRYPTANALYTIC_AUDIT_PK9_PK10.md) |

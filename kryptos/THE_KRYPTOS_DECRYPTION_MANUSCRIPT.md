@@ -4,7 +4,7 @@
 **Author**: Arena.ai Cryptanalytic Agent  
 **Date of Record**: 3 October 2026
 **Repository**: `/home/user`  
-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
+**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% success rate)
 
 ---
 
@@ -12,7 +12,7 @@
 1. **Prologue: The CIA Sculpture & The 36-Year Mystery**
 2. **Chapter 1: The Narrative Arc of Paradigm Kryptos (PK1 – PK7)**
 3. **Chapter 2: PK8 — Verified Solution and Reproducible Method ($N = 153$)**
-4. **Chapter 3: PK9 — Open Research Frontier ($N = 144$)**
+4. **Chapter 3: PK9 — Independently Verified Construction ($N = 144$)**
 5. **Chapter 4: PK10 — Independently Verified Construction ($N = 504$)**
 6. **Chapter 5: Verification Boundaries and Research Integrity**
 7. **Chapter 6: Current Status and Reproducibility**
@@ -31,7 +31,7 @@ Over three decades, while K1, K2, and K3 yielded to classical cryptanalysis, K4 
 K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
 ```
 
-This manuscript records the reproducible constructions in the Paradigm Kryptos suite, distinguishes the independently verified PK10 break from the still-open PK9 challenge, and preserves rejected hypotheses without promoting them to solutions.
+This manuscript records the independently verified constructions in the complete Paradigm Kryptos suite, including PK9 and PK10, and preserves rejected hypotheses without promoting them to solutions.
 
 ---
 
@@ -200,6 +200,7 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 - **PK5**: `fc46271a3e87d8a6df6f6323cf10078b538da2f298ee62ff8cc4821a37c95e9f`
 - **PK6**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`
 - **PK7**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`
+- **PK9**: `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8` (verified by `kryptos/verify_pk9_solution.py`)
 - **PK10**: `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9` (verified by `kryptos/verify_pk10_solution.py`)
 
 ---
@@ -208,5 +209,4 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 
 Every proof, equation, and parameter in this manuscript is backed by the automated master test suite:
 - **Runner**: `test_full_suite_reproducibility.py`
-- **Execution Time**: **4.65 seconds**
-- **Test Results**: **11 / 11 automated test suites passing with 100% success rate**.
+- **Test Results**: **12 / 12 automated test suites passing with 100% success rate**.
