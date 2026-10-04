@@ -194,3 +194,41 @@
     });
   }
 })();
+
+  /* Study aid: copy code examples without changing the article text. */
+  document.querySelectorAll('.wiki-article pre').forEach(function (pre) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-code';
+    button.textContent = 'Copy example';
+    button.addEventListener('click', function () {
+      var text = pre.innerText || pre.textContent || '';
+      if (!navigator.clipboard) { button.textContent = 'Select to copy'; return; }
+      navigator.clipboard.writeText(text).then(function () {
+        button.textContent = 'Copied';
+        window.setTimeout(function () { button.textContent = 'Copy example'; }, 1400);
+      });
+    });
+    pre.parentNode.insertBefore(button, pre);
+  });
+
+  (function studyControls() {
+    var root = document.documentElement;
+    document.querySelectorAll('[data-study]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var mode = button.getAttribute('data-study');
+        root.classList.toggle('study-large', mode === 'larger');
+        root.classList.toggle('study-contrast', mode === 'contrast');
+        if (mode === 'reset') {
+          root.classList.remove('study-large', 'study-contrast');
+          try { localStorage.removeItem('cipher-study-mode'); } catch (_) {}
+        } else {
+          try { localStorage.setItem('cipher-study-mode', mode); } catch (_) {}
+        }
+      });
+    });
+    try {
+      var saved = localStorage.getItem('cipher-study-mode');
+      if (saved === 'larger' || saved === 'contrast') root.classList.add('study-' + saved);
+    } catch (_) {}
+  }());

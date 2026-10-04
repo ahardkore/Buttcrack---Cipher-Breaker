@@ -1,0 +1,7 @@
+{
+  "schema": "pk9-attack-result/v1",
+  "required": ["run_id", "status", "model", "parameters", "candidate", "verification"],
+  "status_values": ["running", "interrupted", "negative", "candidate", "verified"],
+  "verification_required_for_verified": ["exact_round_trip", "independent_recheck"],
+  "notes": "Scores and readable fragments are never sufficient for verified status."
+}

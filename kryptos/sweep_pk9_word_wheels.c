@@ -347,15 +347,23 @@ static void topl_add(TopList *t, Hit *h) {
     t->hits[pos] = *h;
 }
 
+static int perm_start = 0;
+static int perm_end = -1;
+
 static void run_sweep(const signed char *ct_kr, int order_mode, TopList *global_top,
                       float report_above, long long *ncand) {
     long long cnt = 0;
+    int begin = perm_start;
+    int end = perm_end < 0 || perm_end > nperm_active ? nperm_active : perm_end;
+    if (begin < 0) begin = 0;
+    if (begin > end) begin = end;
+    long long completed_perms = 0;
 #pragma omp parallel reduction(+ : cnt)
     {
     TopList local;
     local.n = 0;
 #pragma omp for schedule(dynamic, 4)
-    for (int pai = 0; pai < nperm_active; pai++) {
+    for (int pai = begin; pai < end; pai++) {
         int pi = active_perms[pai];
         const unsigned char *sigma = perms[pi];
         signed char zk[N]; /* un-transposed KRYPTOS-index stream (qt) or raw (tq) */
@@ -413,6 +421,17 @@ static void run_sweep(const signed char *ct_kr, int order_mode, TopList *global_
                     h.plain[N] = 0;
                     topl_add(&local, &h);
                 }
+            }
+        }
+#pragma omp atomic
+        completed_perms++;
+        if (completed_perms % 100 == 0) {
+#pragma omp critical
+            {
+                fprintf(stderr, "progress order=%s perms=%lld/%d candidates=%lld\n",
+                        order_mode == 0 ? "qt" : "tq", completed_perms,
+                        nperm_active, cnt);
+                fflush(stderr);
             }
         }
     } /* end for */
@@ -528,6 +547,10 @@ int main(int argc, char **argv) {
             i++;
         } else if (!strcmp(argv[i], "--top") && i + 1 < argc) want_top = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--report-above") && i + 1 < argc) report_above = atof(argv[++i]);
+        else if (!strcmp(argv[i], "--perm-range") && i + 2 < argc) {
+            perm_start = atoi(argv[++i]);
+            perm_end = atoi(argv[++i]);
+        }
         else if (!strcmp(argv[i], "--keys") && i + 3 < argc) {
             /* Three wheel keys sweep all T8 permutations; an optional fourth
              * argument tests one T8 keyword only. */

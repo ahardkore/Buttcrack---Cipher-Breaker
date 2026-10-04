@@ -2,10 +2,18 @@
 # PK9 wheel-word sweep campaign (2 cores, staged by priority).
 # Each stage logs its own header/footer so partial progress is useful.
 set -u
-cd /home/user/Buttcrack---Cipher-Breaker
-export OMP_NUM_THREADS=2
-BIN=/tmp/sweep_pk9_word_wheels
-LOG=/home/user/Buttcrack---Cipher-Breaker/kryptos/pk9_wheel_campaign.log
+ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+cd "$ROOT"
+export OMP_NUM_THREADS=${OMP_NUM_THREADS:-2}
+BIN=${PK9_WHEEL_BIN:-/tmp/sweep_pk9_word_wheels}
+LOG="$ROOT/kryptos/pk9_wheel_campaign.log"
+
+# Make the campaign reproducible from a clean checkout.  A prebuilt binary is
+# still honored, but a missing/stale binary is rebuilt automatically.
+if [[ ! -x "$BIN" || kryptos/sweep_pk9_word_wheels.c -nt "$BIN" ]]; then
+    cc -O3 -march=native -funroll-loops -fopenmp \
+       -o "$BIN" kryptos/sweep_pk9_word_wheels.c -lm
+fi
 
 run() {
     echo "====================================================================" >> "$LOG"
@@ -15,7 +23,7 @@ run() {
     echo "[$(date -u +%H:%M:%S)] stage done (exit $?)" >> "$LOG"
 }
 
-: > "$LOG"
+# Append rather than truncate: interrupted campaigns retain their audit trail.
 echo "PK9 wheel-word sweep campaign started $(date -u)" >> "$LOG"
 
 # R5: story wheels x ALL 40320 T8 perms, qt order (notation-verified order)

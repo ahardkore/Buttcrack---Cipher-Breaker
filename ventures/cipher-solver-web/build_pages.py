@@ -579,6 +579,16 @@ def wiki_sidebar(current: str) -> str:
     </aside>"""
 
 
+def wiki_figure(wiki: dict) -> str:
+    """Original explanatory SVGs; documentary images remain separately sourced."""
+    asset = "transposition-grid.svg" if wiki.get("family") == "history" else "cipher-wheel.svg"
+    alt = ("Original keyed-alphabet diagram" if asset == "cipher-wheel.svg"
+           else "Original columnar-transposition diagram")
+    return (f'<figure class="wiki-figure"><img src="{asset}" alt="{alt}">'
+            f'<figcaption>{alt}. Original diagram prepared for the Cipher Wiki; '
+            'not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>')
+
+
 def wiki_main(slug: str, h1: str, tagline: str, body: str,
               faq_html: str, wiki: dict) -> str:
     """The encyclopedia layout: sidebar, article card, then the solver."""
@@ -627,9 +637,16 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str,
           <span class="wiki-tab is-here" aria-current="page">Article</span>
           <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
         </nav>
+        <div class="study-controls" aria-label="Reading controls">
+          <span>Reading tools:</span>
+          <button type="button" data-study="larger">Larger text</button>
+          <button type="button" data-study="contrast">High contrast</button>
+          <button type="button" data-study="reset">Reset</button>
+        </div>
         <div class="wiki-article-body">
           {wiki.get("infobox", "")}
           {wiki.get("lead", "")}
+          {wiki_figure(wiki)}
           {toc}
 {body_ids}
         </div>

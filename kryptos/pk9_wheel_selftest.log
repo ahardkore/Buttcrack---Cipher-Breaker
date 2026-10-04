@@ -1,0 +1,5 @@
+vocab: 119 x 123 x 141
+[self-test] PK4 encryption reproduced exactly (224 chars)
+[self-test] control qt round-trip exact; control score = -4.2905
+T8 keyword filter: 26 words -> 26 distinct permutations
+[self-test] control recovered at rank 1 (score -4.2905) of 53659242 candidates

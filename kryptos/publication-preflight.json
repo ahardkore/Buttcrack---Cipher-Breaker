@@ -1,0 +1,29 @@
+{
+  "generated_utc": "2026-10-04T02:27:21.105453+00:00",
+  "word_count": 79884,
+  "footnotes": 0,
+  "figures": 0,
+  "tables": 1,
+  "epub_navigation": true,
+  "cover": {
+    "width": 1536,
+    "height": 1024,
+    "dpi_required": 300,
+    "status": "review"
+  },
+  "kdp_preflight": {
+    "trim": "6x9",
+    "bleed": "review-required",
+    "margins": "review-required",
+    "fonts": "review-required",
+    "images": "review-required"
+  },
+  "rights_ledger": "image-rights.json",
+  "revision_history": [
+    {
+      "revision": "1.1",
+      "date": "2026-10-04",
+      "change": "production EPUB and preflight metadata"
+    }
+  ]
+}
