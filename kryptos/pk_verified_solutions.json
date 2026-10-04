@@ -71,6 +71,17 @@
     "plaintext": "ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER",
     "sha256": "4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c"
   },
+  "PK9": {
+    "status": "SOLVED",
+    "cipher": "Quagmire III (KRYPTOS alphabet) -> Spiral Transposition (12 columns) -> Columnar Transposition (8 columns)",
+    "key": "CLEPSYDRA (Q3) -> Spiral(12) -> BEAMWORK (T8)",
+    "length": 144,
+    "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
+    "plaintext": "ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT",
+    "sha256": "c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8",
+    "verification": "Exact 144/144 encode and decode round-trip in verify_pk9_solution.py.",
+    "source": "TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK9.h; independently reimplemented here."
+  },
   "PK10": {
     "status": "SOLVED",
     "cipher": "Cumulative Quagmire III / columnar / Hill / spiral pipeline over the KRYPTOS alphabet",

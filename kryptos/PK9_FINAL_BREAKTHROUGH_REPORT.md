@@ -1,4 +1,9 @@
-# PK9 Corrected Architecture & Cryptanalytic Audit
+# PK9 HISTORICAL CORRECTED-ARCHITECTURE REPORT — SUPERSEDED
+
+> The period-28/double-columnar model in this report was not the recovered
+> construction. It is retained as explicitly superseded research history. The
+> canonical PK9 result is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, verified
+> by `verify_pk9_solution.py`.
 
 **Cipher Challenge**: Paradigm Kryptos CTF — Challenge 9 (PK9, $N = 144$)  
 **Status**: Flawed Outer-Transposition Model Falsified & Corrected; Pure Outer Substitution Proved  

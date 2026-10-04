@@ -28,13 +28,13 @@
 
 9. Historical narrative and source criticism
 10. Images, publication, and revision
-11. Open investigation: PK9; verified PK10 case study
+11. Recovered PK9 construction and verified PK10 case study
 
 **Reference matter:** glossary, bibliography, index, figure list, table list, source ledger, and image-rights ledger.
 
 The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control.
 
-> **Status notice (updated 2026-10-03).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. Paradigm's public PK9 leaderboard now reports a solve, but this repository has not recovered or independently reproduced the PK9 construction; PK9 therefore remains **locally unverified**. PK10 is independently verified by `verify_pk10_solution.py`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain pre-break PK10 hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the public evidence and acceptance gate.
+> **Status notice (updated 2026-10-03).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK1–PK10 are independently verified; PK9 is reproduced by `verify_pk9_solution.py` using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain superseded PK9/PK10 hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for public-solve provenance and rejected candidates.
 
 ---
 
@@ -170,7 +170,7 @@ Kryptos is a public puzzle, but a “government connection” does not make unsu
 
 Paradigm Kryptos is a separate, modern challenge suite inspired by the sculpture. The suite should not be silently merged with the original K1–K4 artifact. Each PK challenge receives its own ciphertext, construction hypothesis, source status, and verification record.
 
-The repository’s verified construction summary currently records PK1–PK8 as follows, subject to the cited scripts and data:
+The repository’s verified construction summary currently records PK1–PK10 as follows, subject to the cited scripts and data:
 
 | Challenge | Repository construction summary | Status in this manuscript |
 |---|---|---|
@@ -182,7 +182,7 @@ The repository’s verified construction summary currently records PK1–PK8 as 
 | PK6 | T(9)T(9)Q(6), `HANDIWORK`, `SMITHWORK`, `PORTAL` | repository-verified construction |
 | PK7 | Q(6) plus Hill 3×3, `ANNEAL`, `ALCHEMIST` | repository-verified construction |
 | PK8 | Q(4)Q(5)Q(6)Q(7), `METE`, `METER`, `METIER`, `MASTERY` | repository-verified construction |
-| PK9 | candidate families under active attack | **UNSOLVED** |
+| PK9 | Q3(`CLEPSYDRA`) → Spiral(12) → T(8, `BEAMWORK`) | **SOLVED — exact 144/144 round trip** |
 | PK10 | cumulative pipeline with exact verifier | **SOLVED** |
 
 “Verified construction” here means that the repository’s stated implementation reproduces its reference ciphertext under its stated conventions. It does not mean that every historical or narrative interpretation has been independently established.
@@ -203,11 +203,17 @@ The Hill layer changes the attack problem by coupling letters in blocks. The cha
 
 PK8 is presented as a verified example of multiple periodic keyed shifts. The chapter explains gauge freedom, effective parameter dimension, modulo-13 projections, and why a strong periodic statistic is not sufficient to identify the key family.
 
-## 19. PK9 open frontier and PK10 verified case study
+## 19. PK9 verified construction and PK10 verified case study
 
-Paradigm's public PK9 leaderboard now records a solve, but this repository has not recovered the plaintext, key material, padding, or transposition order. Those elements are not accepted without an exact re-encryption check against the 144-letter source ciphertext. The bounded experiments, public evidence, and local verification gate are retained as an active research record in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+PK9 is independently verified in both directions by `kryptos/verify_pk9_solution.py`.
+Its recovered construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` over
+`KRYPTOSABCDEFGHIJLMNQUVWXZ`. The 144-character plaintext is recorded in the
+canonical manifest with SHA-256
+`c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`. The
+public-solve evidence and the earlier rejected local candidates remain in
+`PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` as provenance.
 
-PK10 is not part of that open frontier. Its complete 504-letter construction is independently verified in both directions by `kryptos/verify_pk10_solution.py`: the recovered plaintext encodes to the canonical ciphertext exactly, and decoding the canonical ciphertext recovers the same plaintext. The verified construction is the cumulative pipeline `Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO) → T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS) → Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK) → Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST) → Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY) → Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, over `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The normalized plaintext is 504 characters, begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
+PK10's complete 504-letter construction is independently verified in both directions by `kryptos/verify_pk10_solution.py`: the recovered plaintext encodes to the canonical ciphertext exactly, and decoding the canonical ciphertext recovers the same plaintext. The verified construction is the cumulative pipeline `Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO) → T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS) → Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK) → Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST) → Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY) → Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, over `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The normalized plaintext is 504 characters, begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
 
 The long pre-break PK10 dossier is still useful as a record of rejected models, but it is included only under an explicit **OPEN-WORK ARCHIVE** label below. It is not a current solution claim.
 
@@ -1505,7 +1511,7 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 
 ## 2. Key Cryptanalytic Breakthroughs
 
-### 2.1 PK9 ($N = 144$): UNSOLVED — speculative score reports superseded
+### 2.1 PK9 ($N = 144$): ARCHIVED speculative score reports superseded
 - **Core Decryption**:
   $$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
 - **Transposition Generating Laws**:
@@ -1656,7 +1662,7 @@ A failed attack is not a failed researcher. It is a documented experiment whose 
 
 Some failures are strong: an exact algebraic consistency condition fails at many positions. Some are moderate: an exhaustive dictionary search finds no candidate above the noise floor. Some are weak: an optimizer stops at a local plateau. The manuscript labels these differently so that readers can understand how much each result tells us.
 
-# Part XIV — PK9 open investigation and PK10 verification record
+# Part XIV — PK9 recovery and PK10 verification record
 
 ## 42. PK9 and PK10: what can be said responsibly
 
@@ -6155,7 +6161,7 @@ PK1–PK8 now have published plaintexts, so they are a scorecard rather than a c
 
 **Two-wheel clocks are solved exactly rather than searched.** Fixing the short wheel leaves a plain Vigenère of known period, so the long wheel is *derived* by chi-squared instead of guessed, and the key space collapses to an enumeration of the short wheel alone — exhaustive for three or four letters, word-keyed beyond that (PK3's wheels are literally words, and the author's public hint was that the key "has quite a lot of entropy, but some structure"). Each candidate costs a handful of table lookups rather than a pass over the message, so 456,976 of them take seconds. One caveat: the long wheel is solved a column at a time and needs roughly twenty letters per column to be reliable.
 
-**PK8 is externally solved, independently verified, and now reproducibly recovered here; PK10 is solved and independently verified; PK9 has an official solve event but remains locally unverified.** The published PK8 answer is four sequential Quagmire III layers over the KRYPTOS alphabet, keyed `METE → METER → METIER → MASTERY`. Local re-encryption reproduces all 153 official ciphertext letters exactly; the plaintext and checksum are canonical in [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and reproducible with [`kryptos/verify_pk8_solution.py`](kryptos/verify_pk8_solution.py). Paradigm's public PK9 leaderboard reports a first solve by `@LazlosBatForm`, but no exact plaintext or construction has been independently recovered here. PK10 has an independently verified construction in this repository. Measured findings are recorded so the next attempt need not repeat them:
+**PK8, PK9, and PK10 are externally solved, independently verified, and reproducibly recovered here.** The published PK8 answer is four sequential Quagmire III layers over the KRYPTOS alphabet, keyed `METE → METER → METIER → MASTERY`. Local re-encryption reproduces all 153 official ciphertext letters exactly; the plaintext and checksum are canonical in [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and reproducible with [`kryptos/verify_pk8_solution.py`](kryptos/verify_pk8_solution.py). PK9 is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and is reproducible with [`kryptos/verify_pk9_solution.py`](kryptos/verify_pk9_solution.py). PK10 has an independently verified construction in this repository. Measured findings are recorded so the next attempt need not repeat them:
 
 * **PK8 has an answer-free structured break.** [`kryptos/break_pk8_structured.c`](kryptos/break_pk8_structured.c) contains no PK8 plaintext or key constants. It interprets “some structure” as a one-character insertion ladder among the 4-, 5-, and 6-letter dictionary wheels, reducing the search to 41,371 chains, then derives the unrestricted 7-letter wheel by seven independent monogram fits and ranks complete decryptions by quadgrams. The exact keys and plaintext rank first at −4.361307, versus −6.475130 for rank 2, in about 0.2 s on 32 threads. This is a retrospective ciphertext-only method, not a claim of pre-publication priority: the insertion-ladder hypothesis was formulated after the answer was public. Full method, reproduction command, synthetic control, and honesty boundary: [`kryptos/PK8_STRUCTURED_BREAK_REPORT.md`](kryptos/PK8_STRUCTURED_BREAK_REPORT.md).
 * **PK8's verified plaintext is:** `ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER`. The unrestricted PK8 exact-crib solver recovers its real windows at their corresponding offsets (whole-text score −4.361307), a positive control for the algebra and placement methodology. The prior unknown-answer finding still holds as a methodological result: nineteen known letters recover a four-wheel key by linear algebra in about 0.1 s, while cribless optimization does not.
@@ -6391,13 +6397,31 @@ ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBU
 
 It has length 153 and SHA-256 `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`. Applying the layers in the displayed order reproduces the official ciphertext; applying them in reverse decrypts it. The repository records this positive control so that the later PK10 construction can be evaluated against the same standard rather than by language score alone.
 
-## CHAPTER 3: PK9 — OPEN RESEARCH FRONTIER ($N = 144$)
+## CHAPTER 3: PK9 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 144$)
 
-Paradigm reports a PK9 solve, but this repository has not recovered the construction. The published ciphertext contains 144 letters. The repository records candidate architectures, exact-crib experiments, word-wheel searches, and negative results, but it does not accept a plaintext merely because it contains plausible artisan vocabulary or a high language score.
+PK9 is independently verified by `kryptos/verify_pk9_solution.py` under the
+complete construction:
 
-A valid PK9 submission must specify the complete construction: alphabet, normalization, keys or wheel values, padding treatment, transposition dimensions and order, and both encryption and decryption directions. The result must re-encrypt to all 144 published ciphertext letters exactly. The current bounded work and controls are documented in `kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`, `kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md`, and `kryptos/PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
+```text
+Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
+```
 
-Earlier reports that described a “135-character artisan text,” a triptych, or a complete PK9 reading are superseded hypotheses. They remain useful only as labelled research history and are not part of the canonical solution manifest. PK9 therefore remains open; no PK9 plaintext is printed here as an answer.
+The normalized plaintext is:
+
+```text
+ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT
+```
+
+It has length 144 and SHA-256
+`c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`.
+Encoding reproduces every official ciphertext character and decoding recovers
+the same plaintext. The source construction is TTFH/KRYPTOS commit
+`496976ebe008f9a5eaef8c52bb8ad06c3a4917f5`, `src/ctf/PK9.h`; the repository
+reimplements the operations independently.
+
+Earlier reports that described a “135-character artisan text,” a triptych, or a
+complete PK9 reading are superseded hypotheses. They remain useful only as
+labelled research history and are not part of the canonical solution manifest.
 
 ## CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$)
 
@@ -6461,15 +6485,16 @@ It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42,
 
 A candidate is not a solution because it contains readable fragments, receives a favorable language score, or appears to fit a geometric clue. Every accepted construction must state its alphabet, normalization, layer order, keys, dimensions, direction, and exact round-trip test.
 
-PK9 has an official solve event, but no locally verified construction in this edition. Its 144-letter ciphertext has active hypotheses and documented negative searches, but no PK9 plaintext, key, padding scheme, or transposition order is accepted without exact re-encryption. The public evidence and local verification gate are recorded in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`. The PK9 research record is therefore useful as a bounded investigation, not as a locally verified solution.
-
-PK10 demonstrates the opposite standard. Its construction is fully specified, its plaintext boundary and digest are recorded above, and its independent verifier passes both directions. The word “solved” is used for PK10 because the implementation survives that test—not because its narrative interpretation is attractive.
+PK9 and PK10 both meet the exact verification standard. Their constructions are
+fully specified, their plaintext boundaries and digests are recorded above, and
+their independent verifiers pass both directions. Earlier PK9 candidate
+families remain archival research rather than current solution claims.
 
 ## CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY
 
-The canonical status is **PK1–PK8 and PK10 independently verified; PK9 officially solved in the public record but locally unverified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK10 verifier is `kryptos/verify_pk10_solution.py`. PK9's evidence and gate are in `kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+The canonical status is **PK1–PK10 independently verified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK9 verifier is `kryptos/verify_pk9_solution.py` and the PK10 verifier is `kryptos/verify_pk10_solution.py`. PK9's public-solve provenance and superseded candidates are retained in `kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
-The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifier, and PK10 chapter control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
+The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifiers, and PK9/PK10 chapters control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
 
 ## CHAPTER 7: MASTER SOLUTIONS DATABASE & VERIFICATION MANIFEST
 
@@ -6481,6 +6506,7 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 - **PK5**: `fc46271a3e87d8a6df6f6323cf10078b538da2f298ee62ff8cc4821a37c95e9f`
 - **PK6**: `ef6087b3336338ebca98b8cba8c6a56ec39d5e30526e0339d1b6e4e5ebba9a44`
 - **PK7**: `0901b0981a81dc3dbeff5e80f4f783262aa1be3f6da6696dbf5348ee42f2b7a9`
+- **PK9**: `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8` (verified by `kryptos/verify_pk9_solution.py`)
 - **PK10**: `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9` (verified by `kryptos/verify_pk10_solution.py`)
 
 ---
@@ -6490,7 +6516,7 @@ All plaintexts, keys, and SHA256 checksums are synchronized in `pk_submission_ma
 Every proof, equation, and parameter in this manuscript is backed by the automated master test suite:
 - **Runner**: `test_full_suite_reproducibility.py`
 - **Execution Time**: **4.65 seconds**
-- **Test Results**: **11 / 11 automated test suites passing with 100% success rate**.
+- **Test Results**: **12 / 12 automated test suites passing with 100% success rate**.
 
 --- HISTORICAL TECHNICAL REFERENCE (SUPERSEDED): paradigm_kryptos_master_report.md ---
 
@@ -6960,9 +6986,9 @@ claim was to announce.
 
 # Paradigm Kryptos CTF — Final Submissions (regenerated 2026-10-02)
 
-> **Source of truth**: `pk_verified_solutions.json` + `pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below
-> round-trips exactly under `verify_pk_constructions.py`.
-> PK9 remains UNSOLVED; PK10 has an exact plaintext and construction in `pk_verified_solutions.json`.
+> **Source of truth**: `pk_verified_solutions.json` + `pk_all_ciphertexts.json` (site-confirmed). Every PK1–PK10 entry below
+> has an exact, independently checkable round trip. PK9 is verified by
+> `verify_pk9_solution.py`; PK10 is verified by `verify_pk10_solution.py`.
 >
 > PK4 provenance: independently re-confirmed 2026-10-02 by compiling the
 > published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,
@@ -7041,18 +7067,24 @@ claim was to announce.
   ```
 - **SHA256**: `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`
 
-### PK9 — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED
-- Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, word-wheel and order searches completed 2026-10-02, all negative; see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md.
+### PK9 — The Sealed Testament ($N = 144$)
+- **Cipher**: Q3(CLEPSYDRA) -> Spiral(12) -> Columnar T(8)
+- **Key**: CLEPSYDRA -> BEAMWORK
+- **Plaintext (submit this, uppercase, no spaces):**
+  ```text
+  ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT
+  ```
+- **SHA256**: `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`
 
 ### PK10 — SOLVED
-- H(4x4)H(3x3)Q(?)T(?) per the published cipher spec.  Unsolved; no verified plaintext or construction.
+- Cumulative Q3 / columnar / H3 / spiral construction; exact 504/504 encode/decode round trip is verified by `verify_pk10_solution.py`. See `PK10_BREAK_REPORT_2026-10-04.md`.
 
 
 --- SUPPLEMENT: README.md ---
 
 # Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
 
-[![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(11%2F11)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
+[![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(12%2F12)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
 [![Manuscript](https://img.shields.io/badge/Book%20Manuscript-8%20Chapters%20Complete-d97736?style=for-the-badge&logo=gitbook)](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md)
 [![Web App](https://img.shields.io/badge/Web%20App-Interactive%20Suite-58a6ff?style=for-the-badge&logo=html5)](kryptos-app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge)](LICENSE)
@@ -7063,8 +7095,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 > corrected to the verified constructions (all PK1–PK8 now reproduce their
 > official ciphertexts exactly — see `verify_pk_constructions.py`). The
 > "Definitive PK9/PK10" sections below this notice predate the correction and
-> describe unverified reconstructions; **PK9 has a public solve event but remains locally unverified; PK10 is solved and independently verified.** See
-> `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md` for the current PK9 state.
+> describe unverified reconstructions; **PK1–PK10 are now solved and independently verified.** PK9's recovered construction is documented in `verify_pk9_solution.py` and `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 ---
 
@@ -7078,7 +7109,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 | **Workspace Catalog & Hub** | Master index of all project assets, ciphers, and one-line verification commands. | [`WORKSPACE_CATALOG.md`](WORKSPACE_CATALOG.md) |
 | **Forensic Cryptanalytic Audit** | 62 KB exhaustive audit detailing all algorithms, empirical runs, and theorems for PK9 and PK10. | [`CRYPTANALYTIC_AUDIT_PK9_PK10.md`](CRYPTANALYTIC_AUDIT_PK9_PK10.md) |
 | **Master Submission Manifest** | Structured JSON database of all ciphers, parameters, plaintexts, and SHA256 checksums. | [`pk_submission_manifest.json`](pk_submission_manifest.json) |
-| **Verified Solutions Database** | Machine-readable database of verified solutions for PK1–PK7 and frontier records. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
+| **Verified Solutions Database** | Machine-readable database of independently verified solutions for PK1–PK10. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
 | **Interactive Web Application** | Standalone browser-based cipher explorer, architecture visualizer, book reader, and live decryptor. | [`kryptos-app/`](kryptos-app/) |
 
 ---

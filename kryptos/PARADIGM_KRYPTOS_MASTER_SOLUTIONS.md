@@ -5,7 +5,7 @@
 **Repository**: `/home/user`  
 **Live Visual Map**: `PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`  
 **Submission Manifest**: `pk_submission_manifest.json`  
-**Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% reproducible)
+**Test Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% reproducible)
 
 ---
 
@@ -21,12 +21,33 @@
 | **PK6** | 315 | Double Columnar Transposition | **SOLVED** | Official Plaintext Verified |
 | **PK7** | 279 | Periodic Autokey / Mixed Quagmire | **SOLVED** | Official Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
-| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | Public leaderboard solve; no exact local round trip |
+| **PK9** | 144 | `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` | **SOLVED — exact 144/144 round trip** | Plaintext and SHA-256 recorded in canonical manifest |
 | **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | See `PK10_BREAK_REPORT_2026-10-04.md` |
 
 ---
 
-## 2. Archived PK9 hypotheses — not a solution
+## 2. PK9 — The Sealed Testament ($N = 144$)
+
+PK9 is independently verified by `verify_pk9_solution.py` with the complete
+pipeline:
+
+```text
+Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
+```
+
+The normalized plaintext is:
+
+```text
+ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT
+```
+
+Its SHA-256 is `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`.
+The verifier reproduces every official ciphertext character in both directions.
+The source construction is TTFH/KRYPTOS commit
+`496976ebe008f9a5eaef8c52bb8ad06c3a4917f5`, `src/ctf/PK9.h`; the implementation
+in this repository is independent.
+
+## 2.1 Archived PK9 hypotheses — not a solution
 
 > This section is retained for provenance only. Its candidate text and structural claims are not verified by a complete re-encryption check. Paradigm's public record reports a PK9 solve, but these local candidates remain unverified. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` and `PK9_NEXT_RESEARCH_PLAN.md`.
 

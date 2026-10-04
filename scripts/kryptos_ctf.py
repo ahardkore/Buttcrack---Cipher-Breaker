@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Score the solver against the Paradigm Kryptos CTF corpus.
 
-PK1-PK8 and PK10 have verified solutions, so they are a *scorecard*: the
-plaintext is known and either the generic solver reproduces it or it does not.
-PK10's cumulative construction is verified separately by
-`kryptos/verify_pk10_solution.py`; the generic solver is not expected to infer
-that 21-layer pipeline. PK9 remains open and is reported only as a bounded
-fitness experiment. Nothing here claims a break that the plaintext does not
-demonstrate.
+PK1-PK10 have verified solutions, so they are a *scorecard*: the plaintext is
+known and either the generic solver reproduces it or it does not. PK9 and
+PK10's specialized constructions are verified separately by
+`kryptos/verify_pk9_solution.py` and `kryptos/verify_pk10_solution.py`; the
+generic solver is not expected to infer those pipelines. Nothing here claims a
+break that the plaintext does not demonstrate.
 
     python3 scripts/kryptos_ctf.py [--budget 60] [--only PK1,PK3]
 """
@@ -27,7 +26,7 @@ from buttcrack import solve  # noqa: E402
 from buttcrack.lang import get_model  # noqa: E402
 
 CORPUS = ROOT / "kryptos"
-#: No historical candidate score is promoted for the still-open PK9.
+#: No historical candidate score is promoted; PK9 uses the exact specialized verifier.
 RECORDS = {}
 
 

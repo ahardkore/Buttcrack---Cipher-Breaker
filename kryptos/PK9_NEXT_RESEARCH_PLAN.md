@@ -1,7 +1,7 @@
 # PK9 Next Research Plan: the PK8 Connection
 
-**Date:** 2026-10-02 (status note updated 2026-10-03)  
-**Status:** Public solve observed; active local reconstruction plan; no PK9 plaintext or key is claimed.
+**Date:** 2026-10-02 (superseded by recovered construction 2026-10-04)
+**Status:** Historical pre-recovery plan. PK9 is now independently verified as `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` by `verify_pk9_solution.py`.
 
 ## Correct interpretation of Dan's hint
 
@@ -59,7 +59,7 @@ A result is a candidate only if it supplies:
 3. encryption back to the published PK9 ciphertext, byte-for-byte;
 4. readable plaintext independent of the score used to find it.
 
-Until all four are present, PK9 remains **LOCALLY UNVERIFIED**. The public solve evidence and missing construction data are tracked in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+Those four criteria are now satisfied by `verify_pk9_solution.py`. This document remains a historical record of the failed local search; the recovered construction and plaintext are canonical in `pk_verified_solutions.json`. Public-solve provenance and the superseded candidates are tracked in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 ## First structured-triple result
 

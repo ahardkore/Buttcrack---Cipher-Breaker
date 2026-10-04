@@ -23,7 +23,7 @@ No image will be represented as an official CIA endorsement. AI-generated illust
 - [ ] Complete 350–400-page text expansion.
 - [ ] Verify every K1–K4 transcription against a cited source.
 - [ ] Mark the K4 candidate PROVISIONAL until independently round-trip verified.
-- [x] Synchronize PK9/PK10 status: Paradigm reports a PK9 solve, but the local construction remains unverified; PK10 is independently verified by `verify_pk10_solution.py`. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+- [x] Synchronize PK9/PK10 status: PK9 is independently verified by `verify_pk9_solution.py` as `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`; PK10 is independently verified by `verify_pk10_solution.py`. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for provenance.
 - [ ] Add Chicago-style notes and bibliography.
 - [ ] Add image captions and rights ledger.
 - [ ] Run preflight: embedded fonts, page count, trim size, margins, no clipped text.

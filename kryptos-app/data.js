@@ -111,18 +111,18 @@ const CIPHERS_DATA = {
   },
   PK9: {
     id: "PK9",
-    title: "PK9 — Official solve; construction unverified",
+    title: "PK9 — The Sealed Testament",
     length: 144,
-    status: "UNSOLVED",
+    status: "SOLVED",
     category: "Paradigm Kryptos",
     challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk9",
-    mechanism: "Unknown. A community Q(7) + Q(6) + Q(5) + complete T(8) lead is a working hypothesis, not a recovered construction.",
-    key: "No verified key, layer order, or transposition key.",
+    mechanism: "Quagmire III over the KRYPTOS alphabet, followed by Spiral(12), followed by complete Columnar Transposition T(8)",
+    key: "CLEPSYDRA (Q3) → Spiral(12) → BEAMWORK (T8)",
     ciphertext: "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    plaintext: "",
-    frontier: "Paradigm's public leaderboard now reports a solve, but no verified plaintext or complete construction has been recovered in this repository. Candidate strings are deliberately not displayed as answers.",
-    method: "Current work uses exact crib solvers with synthetic positive controls to test an unverified Q5/Q6/Q7 + T8 hypothesis. Exhaustive tests of PK8's METER / METIER / MASTERY wheels include rotations, reversals, all 26 common KRYPTOS-index offsets, both positions around a complete width-8 transposition, and all 8! column assignments. No language-bearing result was found. These are bounded negative results; they do not establish the architecture or reproduce the official solve.",
-    notes: "Paradigm's public PK9 leaderboard records 145 attempts and first solve by @LazlosBatForm at 2026-10-02 22:29Z. The local status remains UNVERIFIED until exact 144/144 forward and reverse checks pass. See kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md, kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md, and kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md."
+    plaintext: "ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT",
+    frontier: "Exact 144/144 forward encryption and reverse decryption now reproduce the official PK9 ciphertext. The recovered plaintext is the narrator's sealed testament to the Whitesmith.",
+    method: "Independent verifier: kryptos/verify_pk9_solution.py. Encode Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK); decode in reverse. The Q3 operation uses the KRYPTOS keyed alphabet for both top and replacement alphabets.",
+    notes: "Recovered construction independently reimplemented from TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK9.h. Plaintext SHA-256: c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8."
   },
   PK10: {
     id: "PK10",

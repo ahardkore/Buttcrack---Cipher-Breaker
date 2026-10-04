@@ -91,31 +91,34 @@ ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBU
 
 It has length 153 and SHA-256 `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`. Applying the layers in the displayed order reproduces the official ciphertext; applying them in reverse decrypts it. The repository records this positive control so that the later PK10 construction can be evaluated against the same standard rather than by language score alone.
 
-## CHAPTER 3: PK9 — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED ($N = 144$)
+## CHAPTER 3: PK9 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 144$)
 
-Paradigm's public PK9 leaderboard now records a solve, with `@LazlosBatForm`
-first at 2026-10-02 22:29Z; Dan Robinson also publicly announced that PK9 and
-PK10 had fallen. This corrects the public-status description used by earlier
-editions of this manuscript. It does not supply a reproducible answer to this
-repository.
+The public PK9 solve is now independently reproduced in this repository. The
+construction is:
 
-The repository has not recovered the exact 144-character plaintext, the three
-Q-wheel values, the complete T(8) permutation, or the normalization and phase
-conventions. A valid local PK9 record must specify the complete construction:
-alphabet, normalization, keys or wheel values, padding treatment, transposition
-dimensions and order, and both encryption and decryption directions. The result
-must re-encrypt to all 144 published ciphertext letters exactly. The evidence,
-source links, and acceptance gate are documented in
-`kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`; bounded experiments and
-controls remain in `kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`,
-`kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md`, and
-`kryptos/PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
+```text
+Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
+```
+
+Q3 uses `KRYPTOSABCDEFGHIJLMNQUVWXZ` as both the top and replacement alphabet;
+the 12-column spiral starts at the top-right cell and moves down, left, up,
+and right; T(8) is a complete row-filled, column-read columnar transposition
+with distinct keyword `BEAMWORK`. The normalized plaintext is:
+
+```text
+ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT
+```
+
+Its SHA-256 is `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`.
+`kryptos/verify_pk9_solution.py` independently encrypts it to all 144 official
+ciphertext letters and decrypts the ciphertext back to the same plaintext.
+The source construction is publicly available in TTFH/KRYPTOS commit
+`496976ebe008f9a5eaef8c52bb8ad06c3a4917f5`, `src/ctf/PK9.h`; this repository
+reimplements the operations rather than importing that code.
 
 Earlier reports that described a “135-character artisan text,” a triptych, or a
 complete PK9 reading are superseded hypotheses. They remain useful only as
 labelled research history and are not part of the canonical solution manifest.
-PK9 is therefore **officially solved in the public record but locally
-unverified**; no PK9 plaintext is printed here as an answer.
 
 ## CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$)
 
@@ -179,15 +182,13 @@ It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42,
 
 A candidate is not a solution because it contains readable fragments, receives a favorable language score, or appears to fit a geometric clue. Every accepted construction must state its alphabet, normalization, layer order, keys, dimensions, direction, and exact round-trip test.
 
-PK9 has an official solve event but remains locally unverified in this edition. Its 144-letter ciphertext has active hypotheses and documented negative searches, but no PK9 plaintext, key, padding scheme, or transposition order is accepted without exact re-encryption. The PK9 research record is therefore useful as a bounded investigation, not as a locally verified solution.
-
-PK10 demonstrates the opposite standard. Its construction is fully specified, its plaintext boundary and digest are recorded above, and its independent verifier passes both directions. The word “solved” is used for PK10 because the implementation survives that test—not because its narrative interpretation is attractive.
+PK9 and PK10 demonstrate the exact verification standard. Both constructions specify their alphabets, normalization, layer order, keys, dimensions, directions, and digests; independent verifiers pass both directions. Earlier PK9 wheel, padding, and double-columnar candidates remain clearly labelled archival research and do not override the recovered construction.
 
 ## CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY
 
-The canonical status is **PK1–PK8 and PK10 independently verified; PK9 officially solved in the public record but locally unverified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK10 verifier is `kryptos/verify_pk10_solution.py`. PK9's evidence and gate are in `kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+The canonical status is **PK1–PK10 independently verified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK9 verifier is `kryptos/verify_pk9_solution.py` and the PK10 verifier is `kryptos/verify_pk10_solution.py`. PK9's public-solve provenance and superseded candidates remain documented in `kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
-The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifier, and PK10 chapter control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
+The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifiers, and PK9/PK10 chapters control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
 
 ## CHAPTER 7: MASTER SOLUTIONS DATABASE & VERIFICATION MANIFEST
 

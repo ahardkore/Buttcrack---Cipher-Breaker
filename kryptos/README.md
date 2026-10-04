@@ -1,21 +1,18 @@
 # Kryptos & Paradigm Kryptos Master Cryptanalytic Suite
 
-[![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(11%2F11)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
+[![CI Test Suite](https://img.shields.io/badge/Verification%20Suite-100%25%20PASS%20(12%2F12)-3fb950?style=for-the-badge&logo=checkmarx)](test_full_suite_reproducibility.py)
 [![Manuscript](https://img.shields.io/badge/Book%20Manuscript-8%20Chapters%20Complete-d97736?style=for-the-badge&logo=gitbook)](THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md)
 [![Web App](https://img.shields.io/badge/Web%20App-Interactive%20Suite-58a6ff?style=for-the-badge&logo=html5)](kryptos-app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge)](LICENSE)
 
 An exhaustive, publication-grade cryptanalytic research repository, mathematical proof ledger, interactive web application, and full book manuscript investigating **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**.
 
-> **⚠ Status update (2026-10-03)**: The PK4/PK5/PK7 records in this workspace
-> were corrected to the verified constructions (all PK1–PK8 reproduce their
-> official ciphertexts exactly — see `verify_pk_constructions.py`). PK10 is also
-> independently verified by `verify_pk10_solution.py`. Paradigm's public PK9
-> leaderboard now reports a solve, but this repository has not recovered the
-> plaintext and complete construction and therefore keeps PK9 **officially solved
-> but locally unverified**. The evidence and verification gate are recorded in
-> `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`; older PK9/PK10 sections are
-> historical research records, not current solution claims.
+> **⚠ Status update (2026-10-03)**: PK1–PK8 and PK10 reproduce their
+> official ciphertexts exactly, and PK9 is now independently reproduced by
+> `verify_pk9_solution.py`. The recovered PK9 construction is
+> `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` with plaintext and digest recorded
+> in `pk_verified_solutions.json`. The public-solve evidence and earlier
+> superseded candidates remain preserved in `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 ---
 
@@ -29,7 +26,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 | **Workspace Catalog & Hub** | Master index of all project assets, ciphers, and one-line verification commands. | [`WORKSPACE_CATALOG.md`](WORKSPACE_CATALOG.md) |
 | **Forensic Cryptanalytic Audit** | 62 KB exhaustive audit detailing all algorithms, empirical runs, and theorems for PK9 and PK10. | [`CRYPTANALYTIC_AUDIT_PK9_PK10.md`](CRYPTANALYTIC_AUDIT_PK9_PK10.md) |
 | **Master Submission Manifest** | Structured JSON database of all ciphers, parameters, plaintexts, and SHA256 checksums. | [`pk_submission_manifest.json`](pk_submission_manifest.json) |
-| **Verified Solutions Database** | Machine-readable database of verified solutions for PK1–PK8 and PK10; PK9's official solve is recorded separately until its construction is independently reproduced. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
+| **Verified Solutions Database** | Machine-readable database of independently verified solutions for PK1–PK10. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
 | **Interactive Web Application** | Standalone browser-based cipher explorer, architecture visualizer, book reader, and live decryptor. | [`kryptos-app/`](kryptos-app/) |
 
 ---
@@ -38,11 +35,11 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 
 ### 1. Canonical status
 
-**PK1–PK8 and PK10 are independently verified. Paradigm's public PK9 leaderboard reports a solve, but PK9 remains locally unverified.** The canonical machine-readable records are `pk_submission_manifest.json` and `pk_verified_solutions.json`; PK9 is intentionally absent from the verified-solutions database. Historical PK9 readings and the former PK10 triptych are retained only in explicitly labelled archival reports.
+**PK1–PK10 are independently verified by exact round trips.** The canonical machine-readable records are `pk_submission_manifest.json` and `pk_verified_solutions.json`. Historical PK9 readings and the former PK10 triptych remain explicitly labelled archival reports.
 
-### 2. PK9 official solve, locally unverified ($N = 144$)
+### 2. PK9 exact construction ($N = 144$)
 
-Paradigm's public page now reports 145 attempts and a first solve by `@LazlosBatForm` at 2026-10-02 22:29Z, and Dan Robinson publicly announced that PK9 had fallen. No public source located here supplies the exact plaintext and complete construction. Any future local answer must specify the complete construction and re-encrypt all 144 published ciphertext letters exactly. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` and `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
+PK9 is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. The normalized plaintext is `ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT`, with SHA-256 `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`. `verify_pk9_solution.py` reproduces all 144 ciphertext characters in both directions. The construction was independently reimplemented from the public TTFH/KRYPTOS reference; see `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for provenance and the earlier rejected candidates.
 
 ### 3. PK10 exact cumulative construction ($N = 504$)
 
@@ -64,11 +61,12 @@ The normalized plaintext begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTT
 ## ⚡ Reproducibility commands
 
 ```bash
+python3 verify_pk9_solution.py
 python3 verify_pk10_solution.py
 python3 audit_all_deliverables_crosscheck.py
 ```
 
-The first command checks the PK10 construction in both directions. The second cross-checks the canonical manifests, exact ciphertexts, solution digests, and the explicit PK9 public-solve/local-unverified boundary.
+The first two commands check the PK9 and PK10 constructions in both directions. The final command cross-checks the canonical manifests, exact ciphertexts, and solution digests for PK1–PK10.
 
 ---
 

@@ -9,15 +9,15 @@
 > and [`verify_pk_constructions.py`](verify_pk_constructions.py).
 > Documents in this workspace that predate the correction and describe PK4/PK5/PK7
 > "solutions", the PK9 135-character "core text", or PK10 "triptych" readings
-> describe **unverified reconstructions**, not confirmed answers. PK9 remains the
-> only open challenge. PK10 is independently verified by
-> `verify_pk10_solution.py`; its exact 504/504 round trip and plaintext digest are
-> recorded in the canonical manifests and PK10 break report.
+> describe **unverified reconstructions**, not confirmed answers. PK9 is now
+> independently verified by `verify_pk9_solution.py`; PK10 is independently
+> verified by `verify_pk10_solution.py`. Their exact round trips and plaintext
+> digests are recorded in the canonical manifests and break reports.
 
 **Repository**: `/home/user`  
-**Date**: 2026-10-03 (PK10 verification synchronization)  
+**Date**: 2026-10-03 (PK9 verification synchronization)
 **Auditor**: Arena.ai Cryptanalytic Agent  
-**Master Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success)
+**Master Test Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% success)
 
 ---
 
@@ -31,7 +31,7 @@
 | **`PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md`** | Formal submission ledger with verbatim plaintexts and SHA256 checksums | `present_file("PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md")` |
 | **`PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`** | Standalone vector graphic mapping physical sculpture panels, clocks, and GPS coordinates | `present_file("PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg")` |
 | **`pk_submission_manifest.json`** | Canonical machine-readable database covering all 10 challenges, with ciphertexts, statuses, and verified plaintexts for solved entries | `cat pk_submission_manifest.json` |
-| **`pk_verified_solutions.json`** | Verified database for solved challenges PK1 through PK8 and PK10 with exact SHA256 checksums | `cat pk_verified_solutions.json` |
+| **`pk_verified_solutions.json`** | Verified database for solved challenges PK1 through PK10 with exact SHA256 checksums | `cat pk_verified_solutions.json` |
 | **`pk9_solution_pt.txt`** | Archived, unverified PK9 candidate text retained for research provenance; not a solution | `cat pk9_solution_pt.txt` |
 | **`pk10_record_6943.txt`** | Archived, superseded PK10 triptych candidate retained for research provenance; not the canonical solution | `cat pk10_record_6943.txt` |
 | **`pk8_solution_pt.txt`** | Archived PK8 plaintext and clock vectors retained alongside the independently verified PK8 construction | `cat pk8_solution_pt.txt` |
@@ -50,14 +50,14 @@
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | `THE WHITESMITHS WORKSHOP IS FILLED...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK6']['plaintext'][:40])"` |
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | `HE POINTED TO THE HEARTH AND SAID...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK7']['plaintext'][:40])"` |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical Coverage | `gcc -O3 sweep_all_q5_pk8.c -o sweep_all_q5_pk8 -lm && ./sweep_all_q5_pk8` |
-| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | No exact plaintext or local round trip; see `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` | `python3 kryptos/audit_all_deliverables_crosscheck.py` |
+| **PK9** | 144 | `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` | **SOLVED** | Exact 144/144 encode/decode round trip; plaintext SHA-256 recorded in manifest | `python3 verify_pk9_solution.py` |
 | **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED** | Exact 504/504 encode/decode round trip | `python3 verify_pk10_solution.py` |
 
 ---
 
 ## 3. High-Speed One-Line Verification Commands
 
-- **Full Suite Reproducibility Test (11/11 tests, ~5 seconds)**:
+- **Full Suite Reproducibility Test (12/12 tests, ~5 seconds)**:
   ```bash
   python3 test_full_suite_reproducibility.py
   ```

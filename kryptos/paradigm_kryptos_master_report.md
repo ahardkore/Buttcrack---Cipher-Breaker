@@ -1,14 +1,14 @@
 # PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT
 **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
-**Status**: HISTORICAL / SUPERSEDED — predates the public PK9 solve; PK9 is locally unverified and PK10 is independently verified by `verify_pk10_solution.py`
+**Status**: HISTORICAL / SUPERSEDED — predates the recovered PK9 construction; PK9 and PK10 are independently verified by `verify_pk9_solution.py` and `verify_pk10_solution.py`
 
-> This report preserves an earlier analytical model for research provenance. Its PK9/PK10 candidate interpretations and additive-clock claims are not the current canonical result. The current status is **PK1–PK8 solved, PK9 open, PK10 solved and independently verified**; see `pk_submission_manifest.json`, `pk_verified_solutions.json`, and `PK10_BREAK_REPORT_2026-10-04.md`.
+> This report preserves an earlier analytical model for research provenance. Its PK9/PK10 candidate interpretations and additive-clock claims are not the current canonical result. The current status is **PK1–PK10 solved and independently verified**; see `pk_submission_manifest.json`, `pk_verified_solutions.json`, and `PK10_BREAK_REPORT_2026-10-04.md`.
 
 ---
 
 ## 1. Executive Summary & Master Ledger
 
-This historical report records an earlier mathematical and linguistic analysis of the **Paradigm Kryptos CTF** series. The PK9 and PK10 candidate material below is superseded: Paradigm now reports a PK9 solve, but its construction remains locally unverified; PK10 is established by the exact cumulative construction in `verify_pk10_solution.py`. The verified PK10 pipeline and digest in the canonical verifier control over the hypotheses retained here.
+This historical report records an earlier mathematical and linguistic analysis of the **Paradigm Kryptos CTF** series. The PK9 and PK10 candidate material below is superseded. PK9 is established by the exact `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` construction in `verify_pk9_solution.py`, and PK10 by the exact cumulative construction in `verify_pk10_solution.py`. The verified pipelines and digests control over the hypotheses retained here.
 
 All three late-stage ciphers belong to an interlocking family of **additive Chinese Remainder Theorem (CRT) sum-clocks** operating over the keyed Kryptos alphabet (`KRYPTOSABCDEFGHIJLMNQUVWXZ`), linked by a shared modular architecture and thematic narrative.
 

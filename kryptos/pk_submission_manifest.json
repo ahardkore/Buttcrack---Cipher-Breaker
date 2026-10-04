@@ -103,6 +103,19 @@
     "sha256": "4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c",
     "verification": "Round-trip verified in verify_pk_constructions.py; ciphertexts match the official challenge pages."
   },
+  "PK9": {
+    "status": "SOLVED",
+    "challenge_id": "PK9",
+    "title": "PK9 \u2014 The Sealed Testament",
+    "cipher_mechanism": "Quagmire III (KRYPTOS alphabet) -> Spiral Transposition (12 columns) -> Columnar Transposition (8 columns)",
+    "key": "CLEPSYDRA (Q3) -> Spiral(12) -> BEAMWORK (T8)",
+    "ciphertext_length": 144,
+    "plaintext_length": 144,
+    "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
+    "plaintext": "ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT",
+    "sha256": "c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8",
+    "verification": "Exact encode/decode round-trip in verify_pk9_solution.py; ciphertext matches the official challenge page."
+  },
   "PK10": {
     "status": "SOLVED",
     "challenge_id": "PK10",
@@ -115,14 +128,5 @@
     "plaintext": "IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU",
     "sha256": "a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9",
     "verification": "Exact encode/decode round-trip in verify_pk10_solution.py; ciphertext matches the official challenge page."
-  },
-  "PK9": {
-    "status": "UNSOLVED",
-    "challenge_id": "PK9",
-    "title": "PK9",
-    "ciphertext_length": 144,
-    "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    "result": "Paradigm's public leaderboard reports a first solve by @LazlosBatForm at 2026-10-02 22:29Z, but the exact plaintext and construction have not been recovered or independently reproduced here. Q(7)Q(6)Q(5)T(8) is the published cipher specification; local status remains UNSOLVED until all 144 ciphertext characters pass forward and reverse checks. See PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md.",
-    "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
   }
 }

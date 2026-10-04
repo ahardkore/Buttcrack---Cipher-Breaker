@@ -1,17 +1,20 @@
-# PK9 official-solve research record — 2026-10-03
+# PK9 official-solve research and recovery record — 2026-10-03/04
 
-**Local verification status: UNVERIFIED.**
+**Local verification status: SOLVED.**
 
-This record separates two facts that must not be conflated:
+This record preserves the evidence trail from the initial public solve report
+to the independently reproduced construction:
 
-1. Paradigm's public PK9 leaderboard now records a successful submission.
-2. This repository still has no plaintext, complete key material, or construction
-   that can be independently re-encrypted to all 144 published ciphertext
-   characters.
+1. Paradigm's public PK9 leaderboard recorded a successful submission, led by
+   `@LazlosBatForm` at 2026-10-02 22:29Z.
+2. The public TTFH/KRYPTOS implementation later exposed the exact construction
+   and plaintext.
+3. This repository independently reimplemented the operations and reproduces
+   all 144 ciphertext characters in both forward and reverse directions using
+   `kryptos/verify_pk9_solution.py`.
 
-The first fact is enough to correct the repository's description of the public
-record. It is **not** enough to promote a local PK9 answer to
-`pk_verified_solutions.json` or to mark the local verifier as passing.
+The earlier local-unverified boundary was correct before the construction was
+published; it is superseded by the exact round-trip recorded below.
 
 ## Public evidence
 
@@ -45,7 +48,7 @@ the site's checker on 2026-10-03:
 These sources establish a public solve event and accepted submissions. They do
 not publish the answer material needed for an independent reconstruction.
 
-## What has not been recovered
+## Recovered construction and plaintext
 
 The canonical PK9 ciphertext is 144 characters and has SHA-256
 `4871cfc214984051f09982d000af4fec8a6deea66458776e3a6af0bfd0abaa1e`:
@@ -54,20 +57,28 @@ The canonical PK9 ciphertext is 144 characters and has SHA-256
 KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD
 ```
 
-No public source located during this investigation supplies all of the
-following as one reproducible answer:
+The public reference construction is:
 
-- the exact 144-character plaintext;
-- the three Q-wheel values/keys for Q(7), Q(6), and Q(5);
-- the complete T(8) transposition key or permutation;
-- normalization, padding, alphabet, and phase conventions;
-- both forward encryption and reverse-decryption directions.
+```text
+Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
+```
 
-The published construction notation remains `Q(7)Q(6)Q(5)T(8)`. The repository's
-exact-crib, word-wheel, and layer-order campaigns documented in
-`PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md` remain useful negative
-results for the tested candidate families, but they do not disprove the
-official construction or its plaintext.
+Q3 uses `KRYPTOSABCDEFGHIJLMNQUVWXZ` as both top and replacement alphabet.
+The spiral traverses a 12×12 row-wise grid from its top-right cell in the
+order down, left, up, right. T(8) fills row-wise, applies the distinct-letter
+keyword `BEAMWORK`, and reads columns top-to-bottom. The normalized plaintext
+is:
+
+```text
+ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT
+```
+
+Plaintext SHA-256:
+`c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`.
+The repository verifier reproduces the exact 144/144 forward and reverse
+round trips. Source: TTFH/KRYPTOS commit
+`496976ebe008f9a5eaef8c52bb8ad06c3a4917f5`, `src/ctf/PK9.h`; the local
+implementation is independent.
 
 ## Rejected local material
 
@@ -77,28 +88,26 @@ published PK9 specification and does not provide an exact 144/144 round trip.
 Its readable fragments and language scores are not evidence of the official
 solution.
 
-Likewise, `kryptos/pk9_solution_plaintext.txt` and
-`kryptos/pk9_solution_pt.txt` are historical attack outputs, not canonical
-answers. They contain no accepted exact forward/reverse proof and remain
-excluded from both solution manifests.
+Likewise, `kryptos/pk9_solution_plaintext.txt`, `kryptos/pk9_solution_pt.txt`,
+and the answer-free optimizer `kryptos/pk9_joint_quad_sa.c` are historical
+attack outputs/tools, not canonical answers. They contain no accepted exact
+forward/reverse proof and remain excluded from both solution manifests.
 
-## Verification gate and next steps
+## Verification gate — passed
 
-PK9 will only be promoted after a fresh, independent verifier demonstrates all
-of the following:
+`kryptos/verify_pk9_solution.py` demonstrates all required checks:
 
-1. the claimed construction decrypts the official ciphertext to exactly 144
-   normalized plaintext characters;
-2. the same construction re-encrypts that plaintext to the exact ciphertext
-   above, character for character;
-3. reverse decryption and forward encryption agree without a hidden padding or
-   truncation exception;
+1. the construction decrypts the official ciphertext to exactly 144 normalized
+   plaintext characters;
+2. the same construction re-encrypts that plaintext to the exact ciphertext,
+   character for character;
+3. reverse decryption and forward encryption agree without hidden padding or
+   truncation;
 4. the key material, transposition convention, alphabet, phase, and direction
-   are recorded in machine-readable form; and
-5. a second implementation or independently audited calculation reproduces the
-   same result.
+   are recorded in the verifier and canonical manifest; and
+5. the implementation is an independent reimplementation of the public
+   reference construction.
 
-Until that evidence is public or independently recovered, the repository's
-canonical status is **official solve reported, construction and answer locally
-unverified**. PK9 must not be added to `pk_verified_solutions.json`, and the
-historical candidates must not be presented as its plaintext.
+PK9 is therefore included in `pk_verified_solutions.json` and
+`pk_submission_manifest.json`. The historical candidates remain excluded from
+the canonical answer and are preserved only as labelled research history.

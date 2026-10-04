@@ -3,9 +3,9 @@
 > **Superseded status, 2026-10-04:** This is a historical snapshot. The PK10
 > candidate frontier below predates the exact cumulative-pipeline break. PK10 is
 > now verified in `verify_pk10_solution.py`; see
-> `PK10_BREAK_REPORT_2026-10-04.md`. Paradigm's public record also reports a
-> PK9 solve, but no PK9 construction has been independently reproduced here.
-> The older PK9/PK10 material is retained only for research provenance.
+> `PK10_BREAK_REPORT_2026-10-04.md`. PK9 is now independently reproduced as
+> `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` by `verify_pk9_solution.py`.
+> The older PK9/PK10 material below is retained only for research provenance.
 >
 **Suite**: Paradigm Kryptos CTF (Target Challenges PK8, PK9, PK10)  
 **Date of Audit**: September 23, 2026  

@@ -1,7 +1,7 @@
-# PK9 Cryptanalytic Ledger & Definitive Proof Compendium
+# PK9 Cryptanalytic Ledger — HISTORICAL / SUPERSEDED & Definitive Proof Compendium
 
 **Target**: Paradigm Kryptos Challenge 9 (PK9, $N=144$)  
-**Status**: Unsolved Master Puzzle ($0$ Solvers on Leaderboard, $98$ Official Attempts)  
+**Status**: Historical pre-recovery ledger; canonical PK9 is solved by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and verified by `verify_pk9_solution.py`
 **Date**: September 21, 2026  
 **Lead Cryptanalyst**: Agent Mode (Arena.ai)
 
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary & Master Cryptanalytic Breakthroughs
 
-PK9 ($N=144$) is the penultimate and hardest challenge in Dan Robinson's 10-puzzle Paradigm Kryptos CTF. While PK1 through PK8 have all been solved, PK9 and PK10 remain unbroken. This ledger documents the exhaustive cryptanalysis of PK9 across three interconnected research fronts:
+PK9 ($N=144$) was the penultimate and hardest challenge in Dan Robinson's 10-puzzle Paradigm Kryptos CTF at the time of this ledger. PK9 is now independently solved; this document preserves the exhaustive pre-recovery cryptanalysis across three interconnected research fronts:
 
 1. **The PK8 Architectural Connection**: Exact mathematical deconstruction of PK8's $Q_4 Q_5 Q_6 Q_7$ sum-clock engine, cross-ciphertext mutual information ($L_1 = 0.1364$), and the mechanism behind Dan Robinson's hint: *"solving PK9 probably would help with solving PK8... But PK9 is harder."*
 2. **Multi-Clock Additive Sum-Clock Systems**: Complete enumeration, effective parameter dimension bounds, and exhaustive arbitrary-shift / mod-13 sweeps across clock families $\{4, 7\}$, $\{5, 7\}$, $\{6, 7\}$, $\{7, 8\}$, $\{7, 9\}$, $\{4, 5, 7\}$, $\{5, 6, 7\}$, and $\{4, 5, 6, 7\}$. Evaluated all **2,249,728** arbitrary $(4, 7)$ combinations in 1.15s and all **58,492,928** arbitrary $(5, 7)$ combinations in 1.03s.

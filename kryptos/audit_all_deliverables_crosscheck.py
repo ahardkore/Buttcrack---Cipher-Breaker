@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Cross-check canonical Paradigm Kryptos manifests without promoting candidates.
 
-PK1-PK8 and PK10 are verified solutions. Paradigm's public PK9 leaderboard
-reports a solve, but this repository has no independently reproduced PK9
-construction. PK9 therefore remains explicitly unverified in the local
-manifest and must not contain candidate plaintext, guessed keys, or speculative
-parameters. The script is location-independent and exits non-zero on defects.
+PK1-PK10 are verified solutions. PK9's public solve is independently
+reproduced here from the recovered construction and must not be represented by
+an unverified candidate. The script is location-independent and exits non-zero
+on defects.
 """
 from __future__ import annotations
 
@@ -53,7 +52,7 @@ def main() -> int:
         if not ciphertext.isalpha() or not ciphertext.isupper():
             errors.append(f"{key}: ciphertext is not uppercase A-Z")
 
-        if i <= 8 or i == 10:
+        if i <= 10:
             solution = verified.get(key)
             if entry.get("status") != "SOLVED":
                 errors.append(f"{key}: verified challenge is not marked SOLVED")
@@ -70,26 +69,16 @@ def main() -> int:
             if entry.get("sha256") != digest:
                 errors.append(f"{key}: plaintext SHA-256 mismatch")
         else:
-            if entry.get("status") != "UNSOLVED":
-                errors.append(f"{key}: must remain locally UNVERIFIED/UNSOLVED until exact round-trip verification")
-            forbidden = {
-                "plaintext", "candidate_plaintext", "core_plaintext", "core_length",
-                "p1_permutation", "p2_permutation", "keystream_28", "core_36_columns",
-            }
-            present = sorted(forbidden & set(entry))
-            if present:
-                errors.append(f"{key}: unsolved canonical entry contains candidate fields: {', '.join(present)}")
-            if not entry.get("verification_requirement"):
-                errors.append(f"{key}: missing verification requirement")
+            errors.append(f"{key}: unexpected challenge outside verified range")
 
-    extra_verified = set(verified) - ({f"PK{i}" for i in range(1, 9)} | {"PK10"})
+    extra_verified = set(verified) - {f"PK{i}" for i in range(1, 11)}
     if extra_verified:
-        errors.append("verified solutions improperly include unsolved entries: " + ", ".join(sorted(extra_verified)))
+        errors.append("verified solutions contain unexpected entries: " + ", ".join(sorted(extra_verified)))
 
     required = [
         "pk_submission_manifest.json", "pk_verified_solutions.json",
         "pk_all_ciphertexts.json", "verify_pk_constructions.py",
-        "verify_pk8_solution.py", "verify_pk10_solution.py", "PK8_STRUCTURED_BREAK_REPORT.md",
+        "verify_pk8_solution.py", "verify_pk9_solution.py", "verify_pk10_solution.py", "PK8_STRUCTURED_BREAK_REPORT.md",
         "PK9_Q567_T8_EXACT_CRIB_REPORT.md", "PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md", "PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md",
     ]
     for name in required:
@@ -97,14 +86,14 @@ def main() -> int:
             errors.append(f"missing required deliverable: {name}")
 
     print("Paradigm Kryptos canonical deliverable audit")
-    print(f"  verified solutions: {len(verified)} (expected 9: PK1-PK8 and PK10)")
+    print(f"  verified solutions: {len(verified)} (expected 10: PK1-PK10)")
     print(f"  manifest entries:   {len(manifest)} (expected 10)")
     print(f"  defects:            {len(errors)}")
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print("PASS: PK1-PK8 and PK10 verified; PK9 is publicly solved but locally unverified.")
+    print("PASS: PK1-PK10 verified; PK9 exact round trip is independently reproduced.")
     return 0
 
 

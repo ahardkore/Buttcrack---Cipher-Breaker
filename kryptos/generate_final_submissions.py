@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Master submission generator for Paradigm Kryptos (PK1-PK10).
 
-2026-10-04 UPDATE.  PK10 is now included after an exact independent
+2026-10-04 UPDATE.  PK9 and PK10 are included after exact independent
 round-trip verification.  The previous version hard-coded plaintexts for PK4,
 PK5 and PK7 that were early-session candidate narratives, NOT verified
 solutions, and it OVERWROTE pk_verified_solutions.json with them.  That is how
@@ -34,20 +34,11 @@ TITLES = {
     "PK6": "PK6 — The Whitesmith's Workshop",
     "PK7": "PK7 — Three Weeks In (the Craft)",
     "PK8": "PK8 — Leaving the Whitesmith",
+    "PK9": "PK9 — The Sealed Testament",
     "PK10": "PK10 — The Archive's Successor",
 }
 
-SOLVED = [f"PK{i}" for i in range(1, 9)] + ["PK10"]
-UNSOLVED_NOTES = {
-    "PK9": (
-        "Paradigm's public leaderboard reports a first solve by @LazlosBatForm "
-        "at 2026-10-02 22:29Z, but the exact plaintext and construction have not "
-        "been recovered or independently reproduced here. Q(7)Q(6)Q(5)T(8) is "
-        "the published cipher specification; local status remains UNSOLVED until "
-        "all 144 ciphertext characters pass forward and reverse checks. See "
-        "PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md."
-    ),
-}
+SOLVED = [f"PK{i}" for i in range(1, 11)]
 
 
 def main() -> None:
@@ -80,20 +71,12 @@ def main() -> None:
                 "Exact encode/decode round-trip in verify_pk10_solution.py; "
                 "ciphertext matches the official challenge page."
                 if pk == "PK10" else
+                "Exact encode/decode round-trip in verify_pk9_solution.py; "
+                "ciphertext matches the official challenge page."
+                if pk == "PK9" else
                 "Round-trip verified in verify_pk_constructions.py; "
                 "ciphertexts match the official challenge pages."
             ),
-        }
-    for pk, note in UNSOLVED_NOTES.items():
-        manifest[pk] = {
-            "status": "UNSOLVED",
-            "challenge_id": pk,
-            "title": pk,
-            "ciphertext_length": len(cts[pk]),
-            "ciphertext": cts[pk],
-            "result": note,
-            "verification_requirement":
-                "A proposed answer must re-encrypt to every published ciphertext character.",
         }
     (ROOT / "pk_submission_manifest.json").write_text(json.dumps(manifest, indent=2))
 
@@ -105,10 +88,9 @@ def main() -> None:
         "> **Source of truth**: `pk_verified_solutions.json` + "
         "`pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below",
         "> round-trips exactly under the PK-specific verifiers.",
-        "> Paradigm's public leaderboard reports a PK9 solve, but no exact plaintext or",
-        "> construction has been independently reproduced here; PK10 is independently",
-        "> round-trip verified by `verify_pk10_solution.py`. See",
-        "> `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the evidence and gate.",
+        "> PK1-PK10 are recorded below with exact, independently checkable round trips.",
+        "> PK9's recovered construction is verified by `verify_pk9_solution.py`;",
+        "> PK10's recovered construction is verified by `verify_pk10_solution.py`.",
         ">",
         "> PK4 provenance: independently re-confirmed 2026-10-02 by compiling the",
         "> published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,",
@@ -129,8 +111,6 @@ def main() -> None:
             f"- **SHA256**: `{hashlib.sha256(s['plaintext'].encode()).hexdigest()}`",
             "",
         ]
-    for pk, note in UNSOLVED_NOTES.items():
-        lines += [f"### {pk} — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED", f"- {note}", ""]
     (ROOT / "PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md").write_text("\n".join(lines))
 
     print("Regenerated pk_submission_manifest.json and "

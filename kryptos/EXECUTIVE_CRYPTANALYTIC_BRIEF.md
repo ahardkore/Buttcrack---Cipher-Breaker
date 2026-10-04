@@ -1,6 +1,6 @@
 # EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — HISTORICAL
 
-> **Superseded status (2026-10-03):** Paradigm's public record reports a PK9 solve, but this repository has not recovered or independently reproduced the PK9 construction. The PK9 material below is preserved as clearly labelled research history, not as a solution. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+> **Historical status note (updated 2026-10-03):** This brief preserves the pre-recovery PK9 search record. PK9 is now independently solved by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and verified by `verify_pk9_solution.py`; the speculative material below remains research history. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the recovery provenance.
 
 **Date**: 2026-09-22  
 **Author**: Arena.ai Cryptanalytic Agent  
@@ -11,14 +11,14 @@
 - `PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md` (Official Submission & SHA256 Ledger)  
 - `PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg` (Visual Vector Architecture Map)  
 - `pk_submission_manifest.json` (Repaired Machine-Readable Suite Database)  
-- `pk_verified_solutions.json` (Verified Plaintexts PK1–PK7 Database)  
-- `test_full_suite_reproducibility.py` (Automated Master Test Runner: 11/11 Passing)
+- `pk_verified_solutions.json` (Verified Plaintexts PK1–PK10 Database)
+- `test_full_suite_reproducibility.py` (Automated Master Test Runner: 12/12 Passing)
 
 ---
 
 ## 1. Executive Summary & Verification Ledger
 
-Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1–PK8 and PK10 have locally recorded exact verification; the public PK9 solve has not yet been independently reconstructed in this repository:
+Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1–PK10 now have locally recorded exact verification. This brief's older PK9 attack material remains clearly labelled historical:
 
 | Challenge | Length ($N$) | Cipher Architecture | Cryptanalytic Status | Linguistic & Information Metrics |
 | :--- | :--- | :--- | :--- | :--- |
@@ -30,14 +30,19 @@ Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1�
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Verbatim Plaintext Verified |
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
-| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | No exact local round trip |
+| **PK9** | 144 | Q3(`CLEPSYDRA`) → Spiral(12) → T(8, `BEAMWORK`) | **SOLVED — exact 144/144 round trip** | Plaintext SHA-256 `c8e1b890…` |
 | **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | Plaintext SHA-256 `a2db145f…` |
 
 ---
 
 ## 2. Key Cryptanalytic Breakthroughs
 
-### 2.1 PK9 ($N = 144$): OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED — speculative score reports superseded
+### 2.1 PK9 ($N = 144$): recovered construction; speculative score reports superseded
+The exact construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. The
+normalized plaintext is
+`ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT`, with SHA-256 `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`. Exact forward and reverse verification is in `verify_pk9_solution.py`.
+
+The following candidate architecture and score analysis is retained as history:
 - **Core Decryption**:
   $$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
 - **Transposition Generating Laws**:
