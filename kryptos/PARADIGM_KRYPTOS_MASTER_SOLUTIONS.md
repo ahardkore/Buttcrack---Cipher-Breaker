@@ -21,14 +21,14 @@
 | **PK6** | 315 | Double Columnar Transposition | **SOLVED** | Official Plaintext Verified |
 | **PK7** | 279 | Periodic Autokey / Mixed Quagmire | **SOLVED** | Official Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
-| **PK9** | 144 | Two-Stage Double Columnar + Keystream $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
+| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | Public leaderboard solve; no exact local round trip |
 | **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | See `PK10_BREAK_REPORT_2026-10-04.md` |
 
 ---
 
 ## 2. Archived PK9 hypotheses — not a solution
 
-> This section is retained for provenance only. Its candidate text and structural claims are not verified by a complete re-encryption check. PK9 remains unsolved. See `PK9_NEXT_RESEARCH_PLAN.md`.
+> This section is retained for provenance only. Its candidate text and structural claims are not verified by a complete re-encryption check. Paradigm's public record reports a PK9 solve, but these local candidates remain unverified. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` and `PK9_NEXT_RESEARCH_PLAN.md`.
 
 ### 2.1 Cryptographic Parameters & Reflection Invariants
 - **Cipher Architecture**:

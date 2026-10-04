@@ -1,9 +1,11 @@
 # CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER (historical)
 
-> **Superseded status, 2026-10-04:** The PK10 candidate frontier below predates
-> the exact cumulative-pipeline break. PK10 is now verified in
-> `verify_pk10_solution.py`; see `PK10_BREAK_REPORT_2026-10-04.md`. The older
-> 7/8/9-clock and 12×42 material is retained only for research provenance.
+> **Superseded status, 2026-10-04:** This is a historical snapshot. The PK10
+> candidate frontier below predates the exact cumulative-pipeline break. PK10 is
+> now verified in `verify_pk10_solution.py`; see
+> `PK10_BREAK_REPORT_2026-10-04.md`. Paradigm's public record also reports a
+> PK9 solve, but no PK9 construction has been independently reproduced here.
+> The older PK9/PK10 material is retained only for research provenance.
 >
 **Suite**: Paradigm Kryptos CTF (Target Challenges PK8, PK9, PK10)  
 **Date of Audit**: September 23, 2026  
@@ -663,7 +665,7 @@ Row 11: U N E R U L Y A R R F W Y I G J V G P G Y I | A N | H O | U P | I D A D 
        - $t = 84$ (Row 4, Col 9): Yields `'Q'` in **`QUNGLAYIM`**.
        - $t = 140$ (Row 1, Col 15): Yields `'J'` in **`SKWJER`**.
        - *Proof of Rigidity*: Modifying $s[0] = 25$ destroys **`DEFUNCT`**, **`PRAY`**, **`ALSO`**, and **`ORES`**. The shift $s[0] = 25$ is mathematically locked by four independent cross-row words, proving that **`SKWJER`** and **`QUNGLAYIM`** are the cryptographer's authentic phonetic Early Modern spellings.
-  - **Superseded claim:** an earlier scoring run described PK9 as resolved. It was not round-trip verified and must not be treated as a solution. PK9 remains unsolved; see `PK9_NEXT_RESEARCH_PLAN.md`.
+  - **Superseded claim:** an earlier scoring run described PK9 as resolved. It was not round-trip verified and must not be treated as a solution. The local candidate remains unverified; see `PK9_NEXT_RESEARCH_PLAN.md` and `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 ---
 
@@ -690,5 +692,5 @@ An automated statistical and information-theoretic audit of all 10 ciphers in th
 
 1. **PK1 – PK7**: Complete, official solutions validated on leaderboard.
 2. **PK8**: Solved after 86 days by Kevin Hu; confidential in custody. Keystream parity vector $\mathbf{q}_7 = [0,1,1,1,0,0,0]_2$ verified.
-3. **PK9**: **UNSOLVED WORLDWIDE**. Current empirical frontier stands at `-5.2493` with 90.1% valid English quadgrams and 86.8% coherent continuous English prose.
+3. **PK9**: **PUBLIC SOLVE OBSERVED; LOCAL CONSTRUCTION UNVERIFIED**. The historical empirical frontier stood at `-5.2493` with 90.1% valid English quadgrams and 86.8% coherent continuous English prose; those scores are not a solution.
 4. **PK10**: **UNSOLVED WORLDWIDE**. Current empirical frontier stands at `-6.9436` with 60.3% valid English quadgrams, 2.38% rare letters, and $+4.37\sigma$ parity alignment.

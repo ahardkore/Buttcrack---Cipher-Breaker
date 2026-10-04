@@ -133,7 +133,7 @@
       <div class="sculpture-container">
         <h2>Paradigm Kryptos Sculpture & Physical Architecture Map</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">
-          Status and verification map for solved PK1–PK8 and PK10, with PK9 remaining an open research frontier.
+          Status and verification map for solved PK1–PK8 and PK10, plus the officially reported but locally unverified PK9 solve.
         </p>
         <div class="sculpture-svg-wrapper">
           <img src="architecture.svg" alt="Paradigm Kryptos Architecture Map" style="max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; background: #0b0e14;">
@@ -165,7 +165,7 @@
 K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
 </code></pre>
 <div style="height: 8px;"></div>
-<p style="margin-bottom: 10px; color: var(--text-main);">This research reader separates verified results from active investigation: it documents the solved PK1–PK8 and PK10 constructions, while keeping PK9 open and refusing to present speculation as a decryption.</p>
+<p style="margin-bottom: 10px; color: var(--text-main);">This research reader separates verified results from active investigation: it documents the solved PK1–PK8 and PK10 constructions, records Paradigm's official PK9 solve event, and refuses to present an unreproduced plaintext or construction as a decryption.</p>
 <div style="height: 8px;"></div>
 <p style="margin-bottom: 10px; color: var(--text-main);">---</p>
 <div style="height: 8px;"></div>
@@ -226,8 +226,8 @@ K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
             <p style="margin-bottom: 10px; color: var(--text-main);">A retrospective ciphertext-only recovery is also included in <code>break_pk8_structured.c</code>: enumerate dictionary insertion ladders of lengths 4, 5, and 6; score each residual period-7 slice to recover the final wheel; then rank the resulting complete decryptions with English quadgrams. The rank-one chain is <code>METE → METER → METIER</code> and the recovered seven-letter wheel is <code>MASTERY</code>. This is a reproducible recovery method, not a claim that PK8 had been independently solved before the public answer appeared.</p>
           </div>
           <div id="book-ch-3" class="book-chapter-block" style="margin-bottom: 40px;">
-            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 3: PK9 — OPEN RESEARCH FRONTIER (N = 144)</p>
-            <p style="margin-bottom: 10px; color: var(--text-main);">PK9 is unsolved. No PK9 plaintext, key, padding scheme, or transposition order presented in this application should be treated as established unless it comes with a full re-encryption check against the 144-letter source ciphertext.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 3: PK9 — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED (N = 144)</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">Paradigm's public leaderboard now reports a PK9 solve, but this repository has not recovered the plaintext, key material, padding scheme, or transposition order. Nothing presented in this application should be treated as an independently verified PK9 answer unless it comes with a full 144/144 re-encryption check against the source ciphertext.</p>
             <h3 style="color: var(--copper-glow); margin-top: 1.25rem; font-size: 1.15rem;">3.1 Current bounded work</h3>
             <p style="margin-bottom: 10px; color: var(--text-main);">A public community lead models three Quagmire III wheels of lengths 5, 6, and 7 with a complete width-8 transposition. This is an <strong>unverified hypothesis</strong>, not an official construction. The exact crib tools test finite portions of that hypothesis with planted controls that recover known synthetic messages before they are used on PK9.</p>
             <p style="margin-bottom: 10px; color: var(--text-main);">Current negative results include an exhaustive direct PK8-wheel bridge: all rotations and reversals of <code>METER / METIER / MASTERY</code>, all 26 common KRYPTOS-index offsets, both layer orders around a complete width-8 transposition, and all <code>8!</code> column assignments. Insertion-ladder word families and generated narrative and short-letter crib corpora have also been tested. These results rule out only the tested combinations. They do not prove the proposed architecture, nor do they yield a plaintext.</p>
@@ -270,7 +270,7 @@ cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
           </div>
           <div id="book-ch-epilogue" class="book-chapter-block" style="margin-bottom: 40px;">
             <p style="margin-bottom: 10px; color: var(--text-main);">EPILOGUE: STATUS AS OF 2026-10-03</p>
-            <p style="margin-bottom: 10px; color: var(--text-main);">PK1–PK8 and PK10 are solved by exact, independently checkable round trips. PK9 remains open on the official Paradigm leaderboard. The PK10 construction and verifier are recorded in <code>kryptos/verify_pk10_solution.py</code>.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK1–PK8 and PK10 are solved by exact, independently checkable round trips. Paradigm's official PK9 leaderboard now reports a solve, but the answer remains locally unverified here. The PK10 construction and verifier are recorded in <code>kryptos/verify_pk10_solution.py</code>; PK9 evidence and the verification gate are recorded in <code>kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md</code>.</p>
           </div>
         </article>
       </div>

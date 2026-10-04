@@ -50,7 +50,7 @@
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | `THE WHITESMITHS WORKSHOP IS FILLED...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK6']['plaintext'][:40])"` |
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | `HE POINTED TO THE HEARTH AND SAID...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK7']['plaintext'][:40])"` |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical Coverage | `gcc -O3 sweep_all_q5_pk8.c -o sweep_all_q5_pk8 -lm && ./sweep_all_q5_pk8` |
-| **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)**; IoC `0.06081` | `cat pk9_solution_pt.txt` |
+| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | No exact plaintext or local round trip; see `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` | `python3 kryptos/audit_all_deliverables_crosscheck.py` |
 | **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED** | Exact 504/504 encode/decode round trip | `python3 verify_pk10_solution.py` |
 
 ---

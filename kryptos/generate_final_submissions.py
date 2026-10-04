@@ -40,9 +40,12 @@ TITLES = {
 SOLVED = [f"PK{i}" for i in range(1, 9)] + ["PK10"]
 UNSOLVED_NOTES = {
     "PK9": (
-        "Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, "
-        "word-wheel and order searches completed 2026-10-02, all negative; see "
-        "PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md."
+        "Paradigm's public leaderboard reports a first solve by @LazlosBatForm "
+        "at 2026-10-02 22:29Z, but the exact plaintext and construction have not "
+        "been recovered or independently reproduced here. Q(7)Q(6)Q(5)T(8) is "
+        "the published cipher specification; local status remains UNSOLVED until "
+        "all 144 ciphertext characters pass forward and reverse checks. See "
+        "PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md."
     ),
 }
 
@@ -102,8 +105,10 @@ def main() -> None:
         "> **Source of truth**: `pk_verified_solutions.json` + "
         "`pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below",
         "> round-trips exactly under the PK-specific verifiers.",
-        "> PK9 remains unsolved; PK10 is independently round-trip verified by",
-        "> `verify_pk10_solution.py`.",
+        "> Paradigm's public leaderboard reports a PK9 solve, but no exact plaintext or",
+        "> construction has been independently reproduced here; PK10 is independently",
+        "> round-trip verified by `verify_pk10_solution.py`. See",
+        "> `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for the evidence and gate.",
         ">",
         "> PK4 provenance: independently re-confirmed 2026-10-02 by compiling the",
         "> published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,",
@@ -125,7 +130,7 @@ def main() -> None:
             "",
         ]
     for pk, note in UNSOLVED_NOTES.items():
-        lines += [f"### {pk} — UNSOLVED", f"- {note}", ""]
+        lines += [f"### {pk} — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED", f"- {note}", ""]
     (ROOT / "PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md").write_text("\n".join(lines))
 
     print("Regenerated pk_submission_manifest.json and "

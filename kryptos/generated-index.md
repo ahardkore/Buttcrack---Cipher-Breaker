@@ -515,7 +515,7 @@
 - # PK6 — The Whitesmith's Workshop ($N = 315$) — source line 7017
 - # PK7 — Three Weeks In (the Craft) ($N = 279$) — source line 7026
 - # PK8 — Leaving the Whitesmith ($N = 153$) — source line 7035
-- # PK9 — UNSOLVED — source line 7044
+- # PK9 — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED — source line 7044
 - # PK10 — SOLVED — source line 7047
 - Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 7053
 - 🏛️ Executive Cryptanalytic Deliverables — source line 7071

@@ -122,7 +122,7 @@
     "title": "PK9",
     "ciphertext_length": 144,
     "ciphertext": "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    "result": "Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, word-wheel and order searches completed 2026-10-02, all negative; see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md.",
+    "result": "Paradigm's public leaderboard reports a first solve by @LazlosBatForm at 2026-10-02 22:29Z, but the exact plaintext and construction have not been recovered or independently reproduced here. Q(7)Q(6)Q(5)T(8) is the published cipher specification; local status remains UNSOLVED until all 144 ciphertext characters pass forward and reverse checks. See PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md.",
     "verification_requirement": "A proposed answer must re-encrypt to every published ciphertext character."
   }
 }

@@ -111,7 +111,7 @@ const CIPHERS_DATA = {
   },
   PK9: {
     id: "PK9",
-    title: "PK9 — Open Challenge",
+    title: "PK9 — Official solve; construction unverified",
     length: 144,
     status: "UNSOLVED",
     category: "Paradigm Kryptos",
@@ -120,9 +120,9 @@ const CIPHERS_DATA = {
     key: "No verified key, layer order, or transposition key.",
     ciphertext: "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
     plaintext: "",
-    frontier: "No verified plaintext has been recovered. Candidate strings are deliberately not displayed as answers.",
-    method: "Current work uses exact crib solvers with synthetic positive controls to test an unverified Q5/Q6/Q7 + T8 hypothesis. Exhaustive tests of PK8's METER / METIER / MASTERY wheels include rotations, reversals, all 26 common KRYPTOS-index offsets, both positions around a complete width-8 transposition, and all 8! column assignments. No language-bearing result was found. These are bounded negative results; they do not establish the architecture.",
-    notes: "The official Paradigm leaderboard listed PK9 as unsolved on 2026-10-01. See kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md and kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md for assumptions, controls, and exclusions."
+    frontier: "Paradigm's public leaderboard now reports a solve, but no verified plaintext or complete construction has been recovered in this repository. Candidate strings are deliberately not displayed as answers.",
+    method: "Current work uses exact crib solvers with synthetic positive controls to test an unverified Q5/Q6/Q7 + T8 hypothesis. Exhaustive tests of PK8's METER / METIER / MASTERY wheels include rotations, reversals, all 26 common KRYPTOS-index offsets, both positions around a complete width-8 transposition, and all 8! column assignments. No language-bearing result was found. These are bounded negative results; they do not establish the architecture or reproduce the official solve.",
+    notes: "Paradigm's public PK9 leaderboard records 145 attempts and first solve by @LazlosBatForm at 2026-10-02 22:29Z. The local status remains UNVERIFIED until exact 144/144 forward and reverse checks pass. See kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md, kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md, and kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md."
   },
   PK10: {
     id: "PK10",

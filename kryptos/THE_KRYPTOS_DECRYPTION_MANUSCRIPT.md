@@ -91,13 +91,31 @@ ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBU
 
 It has length 153 and SHA-256 `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`. Applying the layers in the displayed order reproduces the official ciphertext; applying them in reverse decrypts it. The repository records this positive control so that the later PK10 construction can be evaluated against the same standard rather than by language score alone.
 
-## CHAPTER 3: PK9 — OPEN RESEARCH FRONTIER ($N = 144$)
+## CHAPTER 3: PK9 — OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED ($N = 144$)
 
-PK9 is the only remaining open challenge in the current Paradigm Kryptos record. The published ciphertext contains 144 letters. The repository records candidate architectures, exact-crib experiments, word-wheel searches, and negative results, but it does not accept a plaintext merely because it contains plausible artisan vocabulary or a high language score.
+Paradigm's public PK9 leaderboard now records a solve, with `@LazlosBatForm`
+first at 2026-10-02 22:29Z; Dan Robinson also publicly announced that PK9 and
+PK10 had fallen. This corrects the public-status description used by earlier
+editions of this manuscript. It does not supply a reproducible answer to this
+repository.
 
-A valid PK9 submission must specify the complete construction: alphabet, normalization, keys or wheel values, padding treatment, transposition dimensions and order, and both encryption and decryption directions. The result must re-encrypt to all 144 published ciphertext letters exactly. The current bounded work and controls are documented in `kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`, `kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md`, and `kryptos/PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
+The repository has not recovered the exact 144-character plaintext, the three
+Q-wheel values, the complete T(8) permutation, or the normalization and phase
+conventions. A valid local PK9 record must specify the complete construction:
+alphabet, normalization, keys or wheel values, padding treatment, transposition
+dimensions and order, and both encryption and decryption directions. The result
+must re-encrypt to all 144 published ciphertext letters exactly. The evidence,
+source links, and acceptance gate are documented in
+`kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`; bounded experiments and
+controls remain in `kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`,
+`kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md`, and
+`kryptos/PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
 
-Earlier reports that described a “135-character artisan text,” a triptych, or a complete PK9 reading are superseded hypotheses. They remain useful only as labelled research history and are not part of the canonical solution manifest. PK9 therefore remains open; no PK9 plaintext is printed here as an answer.
+Earlier reports that described a “135-character artisan text,” a triptych, or a
+complete PK9 reading are superseded hypotheses. They remain useful only as
+labelled research history and are not part of the canonical solution manifest.
+PK9 is therefore **officially solved in the public record but locally
+unverified**; no PK9 plaintext is printed here as an answer.
 
 ## CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$)
 
@@ -161,13 +179,13 @@ It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42,
 
 A candidate is not a solution because it contains readable fragments, receives a favorable language score, or appears to fit a geometric clue. Every accepted construction must state its alphabet, normalization, layer order, keys, dimensions, direction, and exact round-trip test.
 
-PK9 remains the only open Paradigm Kryptos challenge in this edition. Its 144-letter ciphertext has active hypotheses and documented negative searches, but no PK9 plaintext, key, padding scheme, or transposition order is accepted without exact re-encryption. The PK9 research record is therefore useful as a bounded investigation, not as a solved chapter.
+PK9 has an official solve event but remains locally unverified in this edition. Its 144-letter ciphertext has active hypotheses and documented negative searches, but no PK9 plaintext, key, padding scheme, or transposition order is accepted without exact re-encryption. The PK9 research record is therefore useful as a bounded investigation, not as a locally verified solution.
 
 PK10 demonstrates the opposite standard. Its construction is fully specified, its plaintext boundary and digest are recorded above, and its independent verifier passes both directions. The word “solved” is used for PK10 because the implementation survives that test—not because its narrative interpretation is attractive.
 
 ## CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY
 
-The canonical status is **PK1–PK8 solved, PK9 open, PK10 solved and independently verified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK10 verifier is `kryptos/verify_pk10_solution.py`.
+The canonical status is **PK1–PK8 and PK10 independently verified; PK9 officially solved in the public record but locally unverified**. The machine-readable manifests are `kryptos/pk_submission_manifest.json` and `kryptos/pk_verified_solutions.json`; the PK10 verifier is `kryptos/verify_pk10_solution.py`. PK9's evidence and gate are in `kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 The book and the application distinguish current evidence from historical material. Reports with headings such as “OPEN-WORK ARCHIVE” preserve the hypotheses that were tested before the PK10 break, while the current status notice, manifest, verifier, and PK10 chapter control. Rebuilding the application and publication artifacts from these sources is part of the reproducibility record.
 

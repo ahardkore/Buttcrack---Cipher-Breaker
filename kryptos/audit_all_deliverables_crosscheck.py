@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Cross-check canonical Paradigm Kryptos manifests without promoting candidates.
 
-PK1-PK8 and PK10 are verified solutions. PK9 remains explicitly unsolved and
-must not be required to contain candidate plaintext, guessed keys, or
-speculative parameters. The script is location-independent and exits non-zero
-on defects.
+PK1-PK8 and PK10 are verified solutions. Paradigm's public PK9 leaderboard
+reports a solve, but this repository has no independently reproduced PK9
+construction. PK9 therefore remains explicitly unverified in the local
+manifest and must not contain candidate plaintext, guessed keys, or speculative
+parameters. The script is location-independent and exits non-zero on defects.
 """
 from __future__ import annotations
 
@@ -70,7 +71,7 @@ def main() -> int:
                 errors.append(f"{key}: plaintext SHA-256 mismatch")
         else:
             if entry.get("status") != "UNSOLVED":
-                errors.append(f"{key}: must remain UNSOLVED until exact round-trip verification")
+                errors.append(f"{key}: must remain locally UNVERIFIED/UNSOLVED until exact round-trip verification")
             forbidden = {
                 "plaintext", "candidate_plaintext", "core_plaintext", "core_length",
                 "p1_permutation", "p2_permutation", "keystream_28", "core_36_columns",
@@ -89,7 +90,7 @@ def main() -> int:
         "pk_submission_manifest.json", "pk_verified_solutions.json",
         "pk_all_ciphertexts.json", "verify_pk_constructions.py",
         "verify_pk8_solution.py", "verify_pk10_solution.py", "PK8_STRUCTURED_BREAK_REPORT.md",
-        "PK9_Q567_T8_EXACT_CRIB_REPORT.md", "PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md",
+        "PK9_Q567_T8_EXACT_CRIB_REPORT.md", "PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md", "PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md",
     ]
     for name in required:
         if not (ROOT / name).is_file():
@@ -103,7 +104,7 @@ def main() -> int:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print("PASS: PK1-PK8 and PK10 verified; PK9 remains cleanly marked unsolved.")
+    print("PASS: PK1-PK8 and PK10 verified; PK9 is publicly solved but locally unverified.")
     return 0
 
 

@@ -90,4 +90,6 @@ criterion is an exact local encode/decode round trip, not a language score or
 an attractive fragment.
 
 The verified record is stored in `pk_verified_solutions.json` and the generated
-submission manifest. PK9 remains open.
+submission manifest. Paradigm's public record now reports a PK9 solve, but this
+repository has not recovered the construction; PK9 remains locally unverified.
+See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
