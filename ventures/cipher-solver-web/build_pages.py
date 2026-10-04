@@ -637,6 +637,31 @@ WIKI_FAMILY_FIGURES = {
 # redirects to the current original file; the Commons page is linked in the
 # caption so the author and license remain visible to readers.
 WIKI_DOCUMENTARY_FIGURES = {
+    "caesar-cipher-wiki.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Caesar%20Shift%20Cipher%20Wheel.png",
+        "https://commons.wikimedia.org/wiki/File:Caesar_Shift_Cipher_Wheel.png",
+        "Caesar shift cipher wheel",
+    ),
+    "vigenere-cipher-wiki.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Vigenere%20Cipher.PNG",
+        "https://commons.wikimedia.org/wiki/File:Vigenere_Cipher.PNG",
+        "Vigenère cipher tableau",
+    ),
+    "playfair-cipher-wiki.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Playfair%20Cipher%20building%20grid%20omitted%20letters.png",
+        "https://commons.wikimedia.org/wiki/File:Playfair_Cipher_building_grid_omitted_letters.png",
+        "Building a Playfair cipher square",
+    ),
+    "polybius-cipher-wiki.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Polybius%20square.png",
+        "https://commons.wikimedia.org/wiki/File:Polybius_square.png",
+        "Polybius square",
+    ),
+    "xor-repeating-cipher-wiki.html": (
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Xor%20Encrypt%20Xor.svg",
+        "https://commons.wikimedia.org/wiki/Category:Ciphers",
+        "XOR encryption diagram",
+    ),
     "history-of-codebreaking.html": (
         "https://commons.wikimedia.org/wiki/Special:FilePath/Enigma.JPG",
         "https://commons.wikimedia.org/wiki/File:Enigma.JPG",
