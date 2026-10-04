@@ -1,113 +1,110 @@
-# Comprehensive Deliverable Cross-Check and Forensic Verification
-import json
+#!/usr/bin/env python3
+"""Cross-check canonical Paradigm Kryptos manifests without promoting candidates.
+
+PK1-PK8 are verified solutions. PK9 and PK10 are explicitly unsolved and must
+not be required to contain candidate plaintext, guessed keys, or speculative
+parameters. The script is location-independent and exits non-zero on defects.
+"""
+from __future__ import annotations
+
 import hashlib
-import os
+import json
+from pathlib import Path
 
-print("==========================================================================================")
-print("             COMPREHENSIVE DELIVERABLE CROSS-CHECK & INTEGRITY AUDIT                      ")
-print("==========================================================================================\n")
+ROOT = Path(__file__).resolve().parent
 
-# 1. Load Master Manifest
-with open("pk_submission_manifest.json") as f:
-    manifest = json.load(f)
 
-# 2. Load Verified Solutions
-with open("pk_verified_solutions.json") as f:
-    verified = json.load(f)
+def load(name: str) -> dict:
+    return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
-# 3. Load Raw Ciphertexts
-with open("pk_all_ciphertexts.json") as f:
-    raw_cts = json.load(f)
 
-errors = []
+def main() -> int:
+    manifest = load("pk_submission_manifest.json")
+    verified = load("pk_verified_solutions.json")
+    raw = load("pk_all_ciphertexts.json")
+    errors: list[str] = []
 
-# Audit PK1 - PK7
-for k in [f"PK{i}" for i in range(1, 8)]:
-    m_entry = manifest[k]
-    v_entry = verified[k]
-    raw_ct = raw_cts[k]
-    
-    # Check CT length
-    if len(raw_ct) != m_entry["ciphertext_length"]:
-        errors.append(f"{k}: CT length mismatch in manifest ({len(raw_ct)} vs {m_entry['ciphertext_length']})")
-    if m_entry["ciphertext"] != raw_ct:
-        errors.append(f"{k}: CT string mismatch in manifest")
-    if v_entry["ciphertext"] != raw_ct:
-        errors.append(f"{k}: CT string mismatch in verified_solutions")
-        
-    # Check PT length
-    pt_len = len(m_entry["plaintext"])
-    if pt_len != m_entry["plaintext_length"]:
-        errors.append(f"{k}: PT length mismatch in manifest ({pt_len} vs {m_entry['plaintext_length']})")
-    if m_entry["plaintext"] != v_entry["plaintext"]:
-        errors.append(f"{k}: PT string mismatch between manifest and verified_solutions")
-        
-    # Check SHA256
-    computed_sha = hashlib.sha256(m_entry["plaintext"].encode()).hexdigest()
-    if computed_sha != m_entry["sha256"]:
-        errors.append(f"{k}: SHA256 mismatch in manifest ({computed_sha} vs {m_entry['sha256']})")
-    if computed_sha != v_entry["sha256"]:
-        errors.append(f"{k}: SHA256 mismatch in verified_solutions ({computed_sha} vs {v_entry['sha256']})")
+    expected = {f"PK{i}" for i in range(1, 11)}
+    for name, data in (("manifest", manifest), ("ciphertexts", raw)):
+        missing = expected - set(data)
+        if missing:
+            errors.append(f"{name}: missing {', '.join(sorted(missing))}")
+        # The raw corpus may contain explicitly named research variants such as
+        # PK9_UNDONE. Only the canonical submission manifest is schema-closed.
+        if name == "manifest":
+            extra = set(data) - expected
+            if extra:
+                errors.append(f"{name}: unexpected {', '.join(sorted(extra))}")
 
-print(f"PK1 - PK7 Integrity Checks: {'CLEAN - ZERO DEFECTS' if not errors else 'ERRORS FOUND: ' + str(errors)}")
+    for i in range(1, 11):
+        key = f"PK{i}"
+        if key not in manifest or key not in raw:
+            continue
+        entry = manifest[key]
+        ciphertext = raw[key]
+        if entry.get("challenge_id") != key:
+            errors.append(f"{key}: challenge_id mismatch")
+        if entry.get("ciphertext") != ciphertext:
+            errors.append(f"{key}: manifest ciphertext differs from canonical ciphertext")
+        if entry.get("ciphertext_length") != len(ciphertext):
+            errors.append(f"{key}: ciphertext_length is not {len(ciphertext)}")
+        if not ciphertext.isalpha() or not ciphertext.isupper():
+            errors.append(f"{key}: ciphertext is not uppercase A-Z")
 
-# Audit PK8
-ct8 = raw_cts["PK8"]
-m8 = manifest["PK8"]
-if len(ct8) != 153 or m8["ciphertext_length"] != 153:
-    errors.append("PK8: Length is not 153")
-if m8["ciphertext"] != ct8:
-    errors.append("PK8: CT mismatch in manifest")
-if "candidate_plaintext" not in m8 or len(m8["candidate_plaintext"]) != 153:
-    errors.append("PK8: Candidate plaintext missing or invalid length")
+        if i <= 8:
+            solution = verified.get(key)
+            if entry.get("status") != "SOLVED":
+                errors.append(f"{key}: verified challenge is not marked SOLVED")
+            if not solution:
+                errors.append(f"{key}: missing verified solution")
+                continue
+            plaintext = entry.get("plaintext", "")
+            if entry.get("plaintext_length") != len(plaintext):
+                errors.append(f"{key}: plaintext_length mismatch")
+            for field in ("ciphertext", "plaintext", "sha256"):
+                if entry.get(field) != solution.get(field):
+                    errors.append(f"{key}: {field} differs between manifest and verified solutions")
+            digest = hashlib.sha256(plaintext.encode("ascii")).hexdigest()
+            if entry.get("sha256") != digest:
+                errors.append(f"{key}: plaintext SHA-256 mismatch")
+        else:
+            if entry.get("status") != "UNSOLVED":
+                errors.append(f"{key}: must remain UNSOLVED until exact round-trip verification")
+            forbidden = {
+                "plaintext", "candidate_plaintext", "core_plaintext", "core_length",
+                "p1_permutation", "p2_permutation", "keystream_28", "core_36_columns",
+            }
+            present = sorted(forbidden & set(entry))
+            if present:
+                errors.append(f"{key}: unsolved canonical entry contains candidate fields: {', '.join(present)}")
+            if not entry.get("verification_requirement"):
+                errors.append(f"{key}: missing verification requirement")
 
-# Audit PK9
-ct9 = raw_cts["PK9"]
-m9 = manifest["PK9"]
-if len(ct9) != 144 or m9["ciphertext_length"] != 144:
-    errors.append("PK9: CT length is not 144")
-if m9["core_length"] != 135:
-    errors.append("PK9: Core length is not 135")
-if len(m9["core_plaintext"]) != 135:
-    errors.append(f"PK9: Core plaintext string length is {len(m9['core_plaintext'])} (expected 135)")
-if len(m9["p2_permutation"]) != 8 or len(m9["p1_permutation"]) != 18 or len(m9["keystream_28"]) != 28:
-    errors.append("PK9: Parameter vector dimension mismatch")
+    extra_verified = set(verified) - {f"PK{i}" for i in range(1, 9)}
+    if extra_verified:
+        errors.append("verified solutions improperly include unsolved entries: " + ", ".join(sorted(extra_verified)))
 
-# Audit PK10
-ct10 = raw_cts["PK10"]
-m10 = manifest["PK10"]
-if len(ct10) != 504 or m10["ciphertext_length"] != 504:
-    errors.append("PK10: CT length is not 504")
-if m10["core_length"] != 432:
-    errors.append("PK10: Core length is not 432")
-if len(m10["core_plaintext"]) != 432:
-    errors.append(f"PK10: Core plaintext string length is {len(m10['core_plaintext'])} (expected 432)")
-if len(m10["core_36_columns"]) != 36:
-    errors.append("PK10: Core columns count is not 36")
+    required = [
+        "pk_submission_manifest.json", "pk_verified_solutions.json",
+        "pk_all_ciphertexts.json", "verify_pk_constructions.py",
+        "verify_pk8_solution.py", "PK8_STRUCTURED_BREAK_REPORT.md",
+        "PK9_Q567_T8_EXACT_CRIB_REPORT.md", "PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md",
+    ]
+    for name in required:
+        if not (ROOT / name).is_file():
+            errors.append(f"missing required deliverable: {name}")
 
-print(f"PK8 - PK10 Integrity Checks: {'CLEAN - ZERO DEFECTS' if not errors else 'ERRORS FOUND: ' + str(errors)}")
+    print("Paradigm Kryptos canonical deliverable audit")
+    print(f"  verified solutions: {len(verified)} (expected 8)")
+    print(f"  manifest entries:   {len(manifest)} (expected 10)")
+    print(f"  defects:            {len(errors)}")
+    for error in errors:
+        print(f"ERROR: {error}")
+    if errors:
+        return 1
+    print("PASS: PK1-PK8 verified; PK9-PK10 remain cleanly marked unsolved.")
+    return 0
 
-# Audit Document Presence
-key_docs = [
-    "THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md",
-    "EXECUTIVE_CRYPTANALYTIC_BRIEF.md",
-    "PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md",
-    "CRYPTANALYTIC_AUDIT_PK9_PK10.md",
-    "PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md",
-    "WORKSPACE_CATALOG.md",
-    "PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg",
-    "pk_submission_manifest.json",
-    "pk_verified_solutions.json",
-    "pk9_solution_pt.txt",
-    "pk10_record_6943.txt",
-    "pk8_solution_pt.txt",
-    "test_full_suite_reproducibility.py"
-]
 
-missing_docs = [d for d in key_docs if not os.path.exists(d)]
-print(f"Master Deliverables Presence (13 files): {'ALL 13 DELIVERABLES PRESENT & VERIFIED' if not missing_docs else 'MISSING: ' + str(missing_docs)}")
-
-if not errors and not missing_docs:
-    print("\n>>> ALL WORKSPACE DELIVERABLES, MANIFESTS, AND PARAMETERS ARE 100% AUDITED, REPAIRED, AND SYNCHRONIZED! <<<")
-else:
-    print(f"\n>>> AUDIT FAILED WITH {len(errors) + len(missing_docs)} DEFECTS <<<")
+if __name__ == "__main__":
+    raise SystemExit(main())

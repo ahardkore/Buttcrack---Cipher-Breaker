@@ -35,6 +35,7 @@ NAV = [
     ("history-of-codebreaking.html", "History"),
     ("windows-app.html", "Windows app"),
     ("downloads.html", "Puzzle books"),
+    ("book.html", "Kryptos book"),
     ("caesar-cipher-decoder.html", "Caesar"),
     ("vigenere-cipher-solver.html", "Vigenère"),
     ("substitution-cipher-solver.html", "Substitution"),

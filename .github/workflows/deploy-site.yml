@@ -21,7 +21,15 @@ on:
     paths:
       - "ventures/cipher-solver-web/**"
       - "kryptos-app/**"
+      # Research status is rendered in the Kryptos explorer. Changes to the
+      # canonical manifests/audits must trigger a deploy too, rather than
+      # leaving the public status stale until an unrelated UI edit lands.
+      - "kryptos/pk_submission_manifest.json"
+      - "kryptos/pk_verified_solutions.json"
+      - "kryptos/PK*_AUDIT*.md"
+      - "kryptos/PK*_REPORT*.md"
       - "scripts/build_site.py"
+      - "scripts/audit_site.py"
       - ".github/workflows/deploy-site.yml"
   workflow_dispatch:
 
