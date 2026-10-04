@@ -1,4 +1,6 @@
-# EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10)
+# EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — HISTORICAL
+
+> **Superseded status (2026-10-03):** Paradigm's public record reports a PK9 solve, but this repository has not recovered or independently reproduced the PK9 construction. The PK9 material below is preserved as clearly labelled research history, not as a solution. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
 
 **Date**: 2026-09-22  
 **Author**: Arena.ai Cryptanalytic Agent  
@@ -16,7 +18,7 @@
 
 ## 1. Executive Summary & Verification Ledger
 
-Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, every cipher has been forensically audited, mathematically decomposed, and brought to verified resolution:
+Across the 10-challenge **Paradigm Kryptos** suite created by Dan Robinson, PK1–PK8 and PK10 have locally recorded exact verification; the public PK9 solve has not yet been independently reconstructed in this repository:
 
 | Challenge | Length ($N$) | Cipher Architecture | Cryptanalytic Status | Linguistic & Information Metrics |
 | :--- | :--- | :--- | :--- | :--- |
@@ -28,14 +30,14 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 | **PK6** | 315 | Double Columnar ($9 \times 35, 9 \times 35$) + Quagmire III | **SOLVED** | Verbatim Plaintext Verified |
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
-| **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
-| **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |
+| **PK9** | 144 | Published spec Q(7)Q(6)Q(5)T(8); construction not recovered | **OFFICIAL SOLVE — LOCAL UNVERIFIED** | No exact local round trip |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | Plaintext SHA-256 `a2db145f…` |
 
 ---
 
 ## 2. Key Cryptanalytic Breakthroughs
 
-### 2.1 PK9 ($N = 144$): UNSOLVED — speculative score reports superseded
+### 2.1 PK9 ($N = 144$): OFFICIAL SOLVE, LOCAL CONSTRUCTION UNVERIFIED — speculative score reports superseded
 - **Core Decryption**:
   $$\text{Plaintext } P \xrightarrow{T_1(p_1, 18)} \text{mid} \xrightarrow{T_2(p_2, 8)} Z \xrightarrow{S_{28}} C_9$$
 - **Transposition Generating Laws**:

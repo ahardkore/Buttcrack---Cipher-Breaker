@@ -67,7 +67,7 @@ tests = [
     {
         "name": "Master Submission Manifest Synchronization",
         "cmd": ["python3", "generate_final_submissions.py"],
-        "expect_str": "Updated pk_submission_manifest.json successfully."
+        "expect_str": "Regenerated pk_submission_manifest.json and PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md from the verified ground truth."
     }
 ]
 

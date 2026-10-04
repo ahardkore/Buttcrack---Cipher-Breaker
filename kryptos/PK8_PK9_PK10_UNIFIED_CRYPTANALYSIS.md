@@ -1,4 +1,12 @@
-# UNIFIED CRYPTANALYTIC DOSSIER: PK8, PK9, AND PK10
+# UNIFIED CRYPTANALYTIC DOSSIER: PK8, PK9, AND PK10 (historical)
+
+> **Superseded status, 2026-10-04:** PK10 is now solved by the cumulative
+> pipeline in `verify_pk10_solution.py`. The older additive-clock conclusions
+> below are retained as a record of discarded hypotheses; they are not the
+> current PK10 architecture. Paradigm's public record now reports a PK9 solve,
+> but no PK9 construction has been independently reproduced here; local status
+> remains unverified. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`.
+
 **Author**: Cryptanalytic Operations & Mathematical Research  
 **Target Challenges**: Paradigm Kryptos CTF — PK8 ($N=153$), PK9 ($N=144$), PK10 ($N=504$)  
 **Status**: Comprehensive Mathematical Ledger, Forensic Deconstruction, Exhaustive Verifications, and Active Frontiers  

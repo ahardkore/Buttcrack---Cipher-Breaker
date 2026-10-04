@@ -7,12 +7,15 @@
 
 An exhaustive, publication-grade cryptanalytic research repository, mathematical proof ledger, interactive web application, and full book manuscript investigating **Jim Sanborn's CIA Kryptos sculpture (K1–K4)** and **Dan Robinson's Paradigm Kryptos suite (PK1–PK10)**.
 
-> **⚠ Correction (2026-10-02)**: The PK4/PK5/PK7 records in this workspace were
-> corrected to the verified constructions (all PK1–PK8 now reproduce their
-> official ciphertexts exactly — see `verify_pk_constructions.py`). The
-> "Definitive PK9/PK10" sections below this notice predate the correction and
-> describe unverified reconstructions; **PK9 and PK10 remain unsolved.** See
-> `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md` for the current PK9 state.
+> **⚠ Status update (2026-10-03)**: The PK4/PK5/PK7 records in this workspace
+> were corrected to the verified constructions (all PK1–PK8 reproduce their
+> official ciphertexts exactly — see `verify_pk_constructions.py`). PK10 is also
+> independently verified by `verify_pk10_solution.py`. Paradigm's public PK9
+> leaderboard now reports a solve, but this repository has not recovered the
+> plaintext and complete construction and therefore keeps PK9 **officially solved
+> but locally unverified**. The evidence and verification gate are recorded in
+> `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md`; older PK9/PK10 sections are
+> historical research records, not current solution claims.
 
 ---
 
@@ -26,67 +29,46 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 | **Workspace Catalog & Hub** | Master index of all project assets, ciphers, and one-line verification commands. | [`WORKSPACE_CATALOG.md`](WORKSPACE_CATALOG.md) |
 | **Forensic Cryptanalytic Audit** | 62 KB exhaustive audit detailing all algorithms, empirical runs, and theorems for PK9 and PK10. | [`CRYPTANALYTIC_AUDIT_PK9_PK10.md`](CRYPTANALYTIC_AUDIT_PK9_PK10.md) |
 | **Master Submission Manifest** | Structured JSON database of all ciphers, parameters, plaintexts, and SHA256 checksums. | [`pk_submission_manifest.json`](pk_submission_manifest.json) |
-| **Verified Solutions Database** | Machine-readable database of verified solutions for PK1–PK7 and frontier records. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
+| **Verified Solutions Database** | Machine-readable database of verified solutions for PK1–PK8 and PK10; PK9's official solve is recorded separately until its construction is independently reproduced. | [`pk_verified_solutions.json`](pk_verified_solutions.json) |
 | **Interactive Web Application** | Standalone browser-based cipher explorer, architecture visualizer, book reader, and live decryptor. | [`kryptos-app/`](kryptos-app/) |
 
 ---
 
-## 🔬 Core Discoveries & Mathematical Invariants
+## 🔬 Current Verification Record
 
-### 1. The Dual-Cipher GPS Sculpture Theorem
-Padding nulls across PK9 and PK10 embed the exact geographic coordinates of Jim Sanborn's physical Kryptos sculpture at CIA Headquarters in Langley, Virginia:
-$$\mathbf{38^\circ \; 57' \; 6'' \text{ N}, \quad 77^\circ \; 8' \; 44'' \text{ W} \quad (77.14^\circ \text{ W})}$$
-* **$38^\circ \text{ N}$**: $\sum_{\text{Kr}}(\text{PK10 Col } 1) - \sum_{\text{Kr}}(\text{PK10 Col } 5) = 166 - 128 = 38$
-* **$57' \text{ N}$**: $\sum_{\text{Kr}}(\text{PK9 Head 4: } \text{JVRM}) = 16 + 22 + 1 + 18 = 57$
-* **$6'' \text{ N}$**: $\sum_{\text{Kr,1}}(\text{PK9 All 9: } \text{JVRMBAUON}) = 126 \equiv 6 \pmod{60}$
-* **$77^\circ \text{ W}$**: $\sum_{\text{Std}}(\text{PK10 Row 0: } \text{LUJDPT}) = 77$
-* **$8' \text{ W}$**: $\sum_{\text{Kr}}(\text{PK10 Col } 40) - \sum_{\text{Kr}}(\text{PK10 Col } 29) = 155 - 147 = 8$
-* **$44'' \text{ W}$**: $\sum_{\text{Std}}(\text{PK10 Col } 40) - \sum_{\text{Std}}(\text{PK10 Col } 5) = 152 - 108 = 44$
-* **Decimal Longitude**: Mean ASCII value of the 72 PK10 padding letters $= 5,554 / 72 = 77.14^\circ \text{ W}$ (matches $77.1455^\circ \text{ W}$)
-* **Modular Invariants**: PK9 Tail `AUON` $= 52 \equiv 0 \pmod{26}$; PK10 Col 0 $= 156 \equiv 0 \pmod{26}$.
+### 1. Canonical status
 
-### 2. Definitive PK9 Solution State ($N = 144 \to 135$)
-* Trimming the 9 coordinate padding characters (`JVRMB` head, `AUON` tail) reveals a 135-character authentic medieval artisan core text.
-* Scored at **$-5.0481$** with **$93.9\%$ valid English quadgrams** (124/132), Monogram IoC $= 0.06081$, and zero rare letters ('X' / 'Z').
-* Regularized whitesmith reading achieves **$99.3\%$ valid quadgrams** ($-4.7282$).
+**PK1–PK8 and PK10 are independently verified. Paradigm's public PK9 leaderboard reports a solve, but PK9 remains locally unverified.** The canonical machine-readable records are `pk_submission_manifest.json` and `pk_verified_solutions.json`; PK9 is intentionally absent from the verified-solutions database. Historical PK9 readings and the former PK10 triptych are retained only in explicitly labelled archival reports.
 
-### 3. Definitive PK10 Modular Triptych ($N = 504 \to 432$)
-* $12 \times 36$ core matrix ($3 \times 144 = 432$ characters) perfectly stationary across 3 million descent steps.
-* Controlled by 3-clock substitution harmonic $\{Q_7, Q_8, Q_9\}$ with $\operatorname{lcm} = 504$.
-* Clock 7 spells $\mathbf{KCOLDYX} \equiv \text{\textbf{COLD LOCK}}$ in the Kryptos alphabet.
-* Yields $70.1\%$ verified lexical word coverage (303/432 characters) and terminates with the universal artisan colophon `ID BY US`.
+### 2. PK9 official solve, locally unverified ($N = 144$)
+
+Paradigm's public page now reports 145 attempts and a first solve by `@LazlosBatForm` at 2026-10-02 22:29Z, and Dan Robinson publicly announced that PK9 had fallen. No public source located here supplies the exact plaintext and complete construction. Any future local answer must specify the complete construction and re-encrypt all 144 published ciphertext letters exactly. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` and `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md`.
+
+### 3. PK10 exact cumulative construction ($N = 504$)
+
+PK10 is verified by `verify_pk10_solution.py` with an exact 504/504 encode/decode round trip. Its forward pipeline is:
+
+```text
+Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO)
+→ T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS)
+→ Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK)
+→ Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST)
+→ Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY)
+→ Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
+```
+
+The normalized plaintext begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`. Earlier 7/8/9-clock and 12×42 candidates are superseded research artifacts.
 
 ---
 
-## ⚡ 1-Second Suite Verification
-
-Run the comprehensive test suite verifying all 11 cryptanalytic modules, mathematical proofs, and database hashes:
+## ⚡ Reproducibility commands
 
 ```bash
-python3 test_full_suite_reproducibility.py
+python3 verify_pk10_solution.py
+python3 audit_all_deliverables_crosscheck.py
 ```
 
-Expected output:
-```
-================================================================================
-PARADIGM KRYPTOS CRYPTANALYTIC SUITE — FULL REPRODUCIBILITY VERIFICATION
-================================================================================
-[PASS] Test 1: Solved challenges PK1-PK7 verified against canonical solutions.
-[PASS] Test 2: Master submission manifest structure and integrity verified.
-[PASS] Test 3: PK9 core decryption (135 chars) validated.
-[PASS] Test 4: PK10 432-char core grid and parameters validated.
-[PASS] Test 5: PK8 decoupled solution parameters validated.
-[PASS] Test 6: Dual-Cipher GPS Sculpture Theorem arithmetic validated.
-[PASS] Test 7: Mathematical Theorems 1-5 verified.
-[PASS] Test 8: PK10 Column sequence Stationarity validated.
-[PASS] Test 9: PK10 Clock-7 KCOLDYX ('COLD LOCK') mnemonic validated.
-[PASS] Test 10: CIA Langley GPS coordinate values verified.
-[PASS] Test 11: Core Plaintext Artifacts Files exist and match manifests.
-================================================================================
-RESULTS: 11 / 11 tests passed successfully in 4.65s.
-ALL CRYPTANALYTIC THEOREMS, MATRICES, AND KEYS ARE 100% REPRODUCIBLE.
-================================================================================
-```
+The first command checks the PK10 construction in both directions. The second cross-checks the canonical manifests, exact ciphertexts, solution digests, and the explicit PK9 public-solve/local-unverified boundary.
 
 ---
 

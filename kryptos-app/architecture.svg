@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%" role="img" aria-labelledby="title description">
   <title id="title">Paradigm Kryptos verification and research map</title>
-  <desc id="description">PK1 through PK8 are solved, with the verified PK8 Quagmire III construction shown. PK9 and PK10 are explicitly marked open research problems.</desc>
+  <desc id="description">PK1 through PK8 and PK10 have exact round-trip verifications. PK9 remains an open research problem.</desc>
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#0d1117"/>
@@ -49,12 +49,12 @@
   <path d="M 210 420 L 990 420" stroke="#30363d" stroke-width="2" stroke-dasharray="7 8"/>
   <text x="600" y="410" text-anchor="middle" fill="#8b949e" font-family="system-ui, sans-serif" font-size="13">Verification boundary</text>
 
-  <rect x="40" y="465" width="540" height="180" rx="10" fill="#161b22" stroke="#f85149" stroke-width="2"/>
-  <rect x="40" y="465" width="540" height="42" rx="10" fill="#da3633"/>
-  <text x="310" y="493" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">PK10: OPEN (N = 504)</text>
-  <text x="65" y="545" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">No verified plaintext or construction is known.</text>
-  <text x="65" y="575" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Candidate grids, word fragments, and clock vectors remain hypotheses.</text>
-  <text x="65" y="614" fill="#f0883e" font-family="system-ui, sans-serif" font-size="13">The explorer intentionally withholds a “plaintext” field.</text>
+  <rect x="40" y="465" width="540" height="180" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <rect x="40" y="465" width="540" height="42" rx="10" fill="url(#solved)"/>
+  <text x="310" y="493" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="700">PK10: VERIFIED (N = 504)</text>
+  <text x="65" y="545" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Cumulative Quagmire, columnar, Hill, and spiral layers.</text>
+  <text x="65" y="575" fill="#c9d1d9" font-family="system-ui, sans-serif" font-size="14">Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK) completes the chain.</text>
+  <text x="65" y="614" fill="#7ee787" font-family="monospace" font-size="13">504 / 504 ciphertext characters match</text>
 
   <rect x="620" y="465" width="540" height="180" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
   <rect x="620" y="465" width="540" height="42" rx="10" fill="#6e40c9"/>

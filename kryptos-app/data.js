@@ -111,7 +111,7 @@ const CIPHERS_DATA = {
   },
   PK9: {
     id: "PK9",
-    title: "PK9 — Open Challenge",
+    title: "PK9 — Official solve; construction unverified",
     length: 144,
     status: "UNSOLVED",
     category: "Paradigm Kryptos",
@@ -120,24 +120,23 @@ const CIPHERS_DATA = {
     key: "No verified key, layer order, or transposition key.",
     ciphertext: "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
     plaintext: "",
-    frontier: "No verified plaintext has been recovered. Candidate strings are deliberately not displayed as answers.",
-    method: "Current work uses exact crib solvers with synthetic positive controls to test an unverified Q5/Q6/Q7 + T8 hypothesis. Exhaustive tests of PK8's METER / METIER / MASTERY wheels include rotations, reversals, all 26 common KRYPTOS-index offsets, both positions around a complete width-8 transposition, and all 8! column assignments. No language-bearing result was found. These are bounded negative results; they do not establish the architecture.",
-    notes: "The official Paradigm leaderboard listed PK9 as unsolved on 2026-10-01. See kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md and kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md for assumptions, controls, and exclusions."
+    frontier: "Paradigm's public leaderboard now reports a solve, but no verified plaintext or complete construction has been recovered in this repository. Candidate strings are deliberately not displayed as answers.",
+    method: "Current work uses exact crib solvers with synthetic positive controls to test an unverified Q5/Q6/Q7 + T8 hypothesis. Exhaustive tests of PK8's METER / METIER / MASTERY wheels include rotations, reversals, all 26 common KRYPTOS-index offsets, both positions around a complete width-8 transposition, and all 8! column assignments. No language-bearing result was found. These are bounded negative results; they do not establish the architecture or reproduce the official solve.",
+    notes: "Paradigm's public PK9 leaderboard records 145 attempts and first solve by @LazlosBatForm at 2026-10-02 22:29Z. The local status remains UNVERIFIED until exact 144/144 forward and reverse checks pass. See kryptos/PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md, kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md, and kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md."
   },
   PK10: {
     id: "PK10",
-    title: "PK10 — Open Challenge",
+    title: "PK10 — The Archive's Successor",
     length: 504,
-    status: "UNSOLVED",
+    status: "SOLVED",
     category: "Paradigm Kryptos",
     challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk10",
-    mechanism: "Published specification: H(4×4) → H(3×3) → Q(?) → T(?). Matrix keys, Quagmire parameters, transposition width, and conventions remain unknown.",
-    key: "No verified matrices, Quagmire key, transposition key, or construction.",
+    mechanism: "Cumulative Quagmire III, columnar, Hill, spiral, and columnar layers over the KRYPTOS alphabet",
+    key: "PROVENANCE → MARGINS → ORDINATE → PENTIMENTO → UNDERLAY → OCHRE → VERDIGRIS → TWOYEARS → PK4 plaintext → HANDIWORK → SMITHWORK → PORTAL → ANNEAL → ALCHEMIST → METE → METER → METIER → MASTERY → CLEPSYDRA → Spiral(12) → BEAMWORK",
     ciphertext: "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
-    plaintext: "",
-    frontier: "No verified plaintext has been recovered. Apparent word fragments or high-scoring arrangements are research candidates, not decryptions.",
-    method: "The correct attack target is the published H(4×4) → H(3×3) → Q(?) → T(?) pipeline. The 504-letter length gives 126 four-letter Hill blocks, 168 three-letter Hill blocks, and 42 joint 12-letter alignment units. Earlier additive {7,8,9}-clock and 12×42 candidates do not implement the published pipeline and are retained only as negative search artifacts.",
-    notes: "The official Paradigm leaderboard listed PK10 with no solver on 2026-10-04. Architecture audit: kryptos/PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md."
+    plaintext: "IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU",
+    method: "Exact 504/504 encode and decode round-trip in kryptos/verify_pk10_solution.py. Q3 uses the KRYPTOS keyed alphabet; the complete cumulative pipeline is listed in the verifier.",
+    notes: "Recovered construction independently reimplemented from TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK10.h. Plaintext SHA-256: a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9."
   },
   K1: {
     id: "K1",

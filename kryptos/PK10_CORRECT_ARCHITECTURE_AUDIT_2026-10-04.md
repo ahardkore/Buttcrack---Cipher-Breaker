@@ -1,8 +1,14 @@
-# PK10 Correct-Architecture Audit — 2026-10-04
+# PK10 Correct-Architecture Audit — 2026-10-04 (superseded)
 
-## Result
+> **Status update, 2026-10-04:** This pre-break audit is retained as a record of
+> the rejected 7/8/9-clock search direction. PK10 is now solved. See
+> [`PK10_BREAK_REPORT_2026-10-04.md`](PK10_BREAK_REPORT_2026-10-04.md) and
+> [`verify_pk10_solution.py`](verify_pk10_solution.py) for the exact cumulative
+> construction and 504/504 round-trip verification.
 
-PK10 remains unsolved. The next attack must use the published construction
+## Historical result
+
+PK10 remained unsolved at the time of this audit. The next attack must use the published construction
 
 ```text
 H(4x4) H(3x3) Q(?) T(?)
