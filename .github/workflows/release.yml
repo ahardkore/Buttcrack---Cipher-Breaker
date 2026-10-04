@@ -1,44 +1,74 @@
-name: release-artifacts
-on: [push, pull_request, workflow_dispatch]
+name: Release artifacts
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   checks:
+    name: release checks (${{ matrix.os }})
     strategy:
-      matrix: {os: [ubuntu-latest, windows-latest]}
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
+        with:
+          python-version: "3.11"
+
       - name: Install package and build tools
         run: python -m pip install --upgrade pip pyinstaller .
+
       - name: Unit and offline release checks
-        env: {BUTTCRACK_OFFLINE: '1'}
+        env:
+          BUTTCRACK_OFFLINE: "1"
         run: |
           python -m unittest discover -s tests -q
           python scripts/release_checks.py
+
       - name: Build PyInstaller artifact
         shell: bash
         run: pyinstaller --noconfirm packaging/windows/buttcrack.spec
+
       - name: Windows startup smoke test
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $p = Start-Process dist/buttcrack/buttcrack.exe -ArgumentList '--help' -PassThru -Wait
           if ($p.ExitCode -ne 0) { exit $p.ExitCode }
+
       - name: Package size threshold
         shell: bash
         run: python scripts/ci_release.py size dist 250
+
       - name: SHA-256 artifacts
         shell: bash
         run: python scripts/ci_release.py sha256 dist > dist/SHA256SUMS.json
+
       - uses: actions/upload-artifact@v4
-        with: {name: buttcrack-${{ matrix.os }}, path: dist}
+        with:
+          name: buttcrack-${{ matrix.os }}
+          path: dist
+
   clean-install:
+    name: clean install
     runs-on: ubuntu-latest
     needs: checks
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
+        with:
+          python-version: "3.11"
+
       - run: python -m pip install . --no-deps
       - run: python -c "import buttcrack; from buttcrack.project import Project; print('clean install OK')"
