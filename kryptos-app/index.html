@@ -234,9 +234,9 @@ K R Y P T O S A B C D E F G H I J L M N Q U V W X Z
             <p style="margin-bottom: 10px; color: var(--text-main);">The research ledgers are <code>kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md</code> and <code>kryptos/PK9_PK8_PHASE_BRIDGE_REPORT.md</code>.</p>
           </div>
           <div id="book-ch-4" class="book-chapter-block" style="margin-bottom: 40px;">
-            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 4: PK10 — OPEN RESEARCH FRONTIER (N = 504)</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">PK10 is unsolved. Its published specification is <strong>H(4×4) → H(3×3) → Q(?) → T(?)</strong>: two Hill layers, an unknown Quagmire layer, and an unknown transposition. The 504 letters divide into 126 four-letter blocks and 168 three-letter blocks; those boundaries realign every 12 letters.</p>
-<p style="margin-bottom: 10px; color: var(--text-main);">Earlier additive {7,8,9}-clock and 12×42 candidates do not implement that published pipeline. They are negative search artifacts, not decryptions. A valid PK10 solution must state both matrices and all cipher conventions, then reproduce every ciphertext character by exact re-encryption.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 4: PK10 — SOLVED (N = 504)</p>
+<p style="margin-bottom: 10px; color: var(--text-main);">PK10 is solved by the cumulative construction recovered in <code>kryptos/verify_pk10_solution.py</code>. It applies the verified PK1–PK8 layers, then <strong>Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)</strong>, all over the KRYPTOS keyed alphabet. The verifier performs both directions and matches all 504 ciphertext letters exactly.</p>
+<p style="margin-bottom: 10px; color: var(--text-main);">The recovered plaintext begins <code>IHAVENOTREADTHESTRAND</code> and ends <code>ANDILEAVETHEKNOTTOYOU</code>. Its SHA-256 is <code>a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9</code>. Earlier additive {7,8,9}-clock and 12×42 candidates were false research artifacts and are no longer part of the canonical result.</p>
           </div>
           <div id="book-ch-5" class="book-chapter-block" style="margin-bottom: 40px;">
             <p style="margin-bottom: 10px; color: var(--text-main);">CHAPTER 5: RESEARCH-INTEGRITY RULES</p>
@@ -263,7 +263,7 @@ cc -O3 -march=native -fopenmp kryptos/crack_pk9_q567_t8_crib.c -o /tmp/pk9 -lm
           </div>
           <div id="book-ch-epilogue" class="book-chapter-block" style="margin-bottom: 40px;">
             <p style="margin-bottom: 10px; color: var(--text-main);">EPILOGUE: STATUS AS OF 2026-10-01</p>
-            <p style="margin-bottom: 10px; color: var(--text-main);">PK1–PK8 are solved. PK9 and PK10 remain open on the official Paradigm leaderboard. This reader will show future answers only after a complete, independently checkable round trip.</p>
+            <p style="margin-bottom: 10px; color: var(--text-main);">PK1–PK8 and PK10 are solved by exact, independently checkable round trips. PK9 remains open on the official Paradigm leaderboard. The PK10 construction and verifier are recorded in <code>kryptos/verify_pk10_solution.py</code>.</p>
           </div>
         </article>
       </div>

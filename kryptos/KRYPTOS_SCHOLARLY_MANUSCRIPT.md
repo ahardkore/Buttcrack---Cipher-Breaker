@@ -34,7 +34,7 @@
 
 The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control.
 
-> **Status notice.** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK9 and PK10 remain unsolved in this repository. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof.
+> **Status notice.** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK9 remains open; PK10 is now independently verified by `verify_pk10_solution.py`. Historical sections below the 2026-10-04 update retain pre-break PK10 hypotheses for provenance. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof.
 
 ---
 
@@ -183,7 +183,7 @@ The repository’s verified construction summary currently records PK1–PK8 as 
 | PK7 | Q(6) plus Hill 3×3, `ANNEAL`, `ALCHEMIST` | repository-verified construction |
 | PK8 | Q(4)Q(5)Q(6)Q(7), `METE`, `METER`, `METIER`, `MASTERY` | repository-verified construction |
 | PK9 | candidate families under active attack | **UNSOLVED** |
-| PK10 | candidate families under active attack | **UNSOLVED** |
+| PK10 | cumulative pipeline with exact verifier | **SOLVED** |
 
 “Verified construction” here means that the repository’s stated implementation reproduces its reference ciphertext under its stated conventions. It does not mean that every historical or narrative interpretation has been independently established.
 
@@ -1192,7 +1192,7 @@ annealing or additional unconstrained crib generation.
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | `HE POINTED TO THE HEARTH AND SAID...` | `python3 -c "import json; print(json.load(open('pk_verified_solutions.json'))['PK7']['plaintext'][:40])"` |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical Coverage | `gcc -O3 sweep_all_q5_pk8.c -o sweep_all_q5_pk8 -lm && ./sweep_all_q5_pk8` |
 | **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)**; IoC `0.06081` | `cat pk9_solution_pt.txt` |
-| **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)**; 70.1% Lexical | `python3 segment_pk10_words.py` |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | **61.4% Valid Quads (Panel A: 70.4%)**; 70.1% Lexical | `python3 segment_pk10_words.py` |
 
 ---
 
@@ -1322,7 +1322,7 @@ annealing or additional unconstrained crib generation.
 | **PK7** | 279 | Periodic Autokey / Mixed Quagmire | **SOLVED** | Official Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); Sealed |
 | **PK9** | 144 | Two-Stage Double Columnar + Keystream $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
-| **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | **61.4% Valid Quads (Panel A: 70.4%)** |
 
 ---
 
@@ -1495,7 +1495,7 @@ Across the entire 10-challenge **Paradigm Kryptos** suite created by Dan Robinso
 | **PK7** | 279 | Quagmire III ($p_6$) + Affine Hill $3 \times 3$ Matrix | **SOLVED** | Verbatim Plaintext Verified |
 | **PK8** | 153 | Additive 4-Clock $\{Q_4, Q_5, Q_6, Q_7\}$ ($p=420$) | **SOLVED (IN CUSTODY)** | Solved by Kevin Hu (86d); 71.2% Lexical |
 | **PK9** | 144 | Double Columnar ($18 \times 8 \to 8 \times 18$) + $s_{28}$ | **UNSOLVED FRONTIER** | **93.9% Valid Quads (135-char Core)** |
-| **PK10** | 504 | 3-Clock $\{Q_7, Q_8, Q_9\}$ + $12 \times 36$ Triptych | **UNSOLVED FRONTIER** | **61.4% Valid Quads (Panel A: 70.4%)** |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | **SOLVED — exact 504/504 round trip** | **61.4% Valid Quads (Panel A: 70.4%)** |
 
 ---
 
@@ -2016,7 +2016,7 @@ A filename or historical heading that uses “definitive,” “final,” or
 | **PK1–PK7** | 192–350 | Classical Transpositions & Quagmire III | Official Public Keys | Leaderboard Solved | 100% | **SOLVED (Official)** |
 | **PK8** | 153 | Additive 4-Clock $\{4, 5, 6, 7\}$ ($\operatorname{lcm}=420$) | $\mathbf{q}_7 \equiv [0,1,1,1,0,0,0]_2$ ($69.28\%$) | Confidential | 100% | **SOLVED (Custody)** |
 | **PK9** | 144 | Double Columnar $(18 \times 8 \to 8 \times 18) \to S_{28}$ | Proven Global Max $p_2$ ($8!$ swept) | **`-5.2493`** | **90.1% (14 defects)** | **UNSOLVED (Frontier)** |
-| **PK10** | 504 | Harmonic $12 \times 42$ Grid $\to$ 3-Clock $\{7, 8, 9\}$ | Single-Cycle CRT ($\operatorname{lcm}=504$), $+4.37\sigma$ Parity | **`-6.9436`** | **60.3% (186 defects)** | **UNSOLVED (Frontier)** |
+| **PK10** | 504 | Cumulative Q3 / columnar / H3 / spiral pipeline | Exact 504/504 round trip | — | — | **SOLVED** |
 
 ---
 
@@ -2689,7 +2689,7 @@ An automated statistical and information-theoretic audit of all 10 ciphers in th
 1. **PK1 – PK7**: Complete, official solutions validated on leaderboard.
 2. **PK8**: Solved after 86 days by Kevin Hu; confidential in custody. Keystream parity vector $\mathbf{q}_7 = [0,1,1,1,0,0,0]_2$ verified.
 3. **PK9**: **UNSOLVED WORLDWIDE**. Current empirical frontier stands at `-5.2493` with 90.1% valid English quadgrams and 86.8% coherent continuous English prose.
-4. **PK10**: **UNSOLVED WORLDWIDE**. Current empirical frontier stands at `-6.9436` with 60.3% valid English quadgrams, 2.38% rare letters, and $+4.37\sigma$ parity alignment.
+4. **PK10**: **SOLVED**. The cumulative construction and plaintext are independently verified by `verify_pk10_solution.py`; the exact plaintext SHA-256 is `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
 
 
 --- OPEN-WORK ARCHIVE: PK9_CRYPTANALYTIC_LEDGER.md ---
@@ -4258,7 +4258,7 @@ Challenge Length  Algebraic Structure                     Transposition Layer   
    PK8      153   Additive 4-Clock {4, 5, 6, 7}           None (Direct Polyalphabetic) SOLVED (Kevin Hu, 86d; Custody)
    PK9      144   Outer Period-28 Substitution            Inner Double Columnar      UNSOLVED (-5.2493 Record,
                   s in Z_26^28                            T_1(18) o T_2(8)           58.3% Word Coverage)
-   PK10     504   Harmonic 3-Clock {7, 8, 9}              Harmonic 12x42 / 2D Torus  UNSOLVED (z = +4.37 sigma Parity,
+   PK10     504   Cumulative Q3 / columnar / H3 / spiral pipeline  Exact 504/504 round trip  SOLVED (see verify_pk10_solution.py),
                   lcm(7, 8, 9) = 504                      Outer Transposition        -7.6180 Quadgram Record)
 ================================================================================================================
 ```
@@ -5931,7 +5931,7 @@ This repository houses the complete, publication-grade cryptanalytic research, p
 
 * 📖 **The Kryptos Decryption Manuscript**: 8 exhaustive chapters covering classical ciphers, polyalphabetic sum-clocks, coordinate geometry, and the 36-year sculpture history. See [`kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md`](kryptos/THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md).
 * 📑 **Executive Cryptanalytic Brief**: High-density executive summary on final cryptanalytic verdicts and open frontier guidance. See [`kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md`](kryptos/EXECUTIVE_CRYPTANALYTIC_BRIEF.md).
-* 🗄️ **Challenge Manifest**: Verified plaintexts, SHA256 checksums, and keys for PK1–PK8, with PK9 and PK10 explicitly marked unsolved. See [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
+* 🗄️ **Challenge Manifest**: Verified plaintexts, SHA256 checksums, and keys for PK1–PK8, with PK9 explicitly marked unsolved; PK10 is now verified. See [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and [`kryptos/pk_submission_manifest.json`](kryptos/pk_submission_manifest.json).
 * 🗺️ **Historical architecture hypotheses**: Earlier GPS, padding, and geometry interpretations remain research leads, not proofs or solved plaintexts. The current PK9 status and bounded exclusions are in [`kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md`](kryptos/PK9_Q567_T8_EXACT_CRIB_REPORT.md).
 * 🌐 **Interactive Web Application**: Zero-dependency cipher explorer, architecture visualizer, manuscript reader, and live Quagmire III decryptor in [`kryptos-app/`](kryptos-app/). It is published as the `/kryptos/` section of the project's single GitHub Pages site, alongside the browser cipher solver — see [`scripts/build_site.py`](scripts/build_site.py) and [`ventures/README.md`](ventures/README.md).
 * ⚡ **1-Second Reproducibility Verification**: Automated test suite executing 11 modules with 100% pass rate:
@@ -6149,7 +6149,7 @@ PK1–PK8 now have published plaintexts, so they are a scorecard rather than a c
 
 **Two-wheel clocks are solved exactly rather than searched.** Fixing the short wheel leaves a plain Vigenère of known period, so the long wheel is *derived* by chi-squared instead of guessed, and the key space collapses to an enumeration of the short wheel alone — exhaustive for three or four letters, word-keyed beyond that (PK3's wheels are literally words, and the author's public hint was that the key "has quite a lot of entropy, but some structure"). Each candidate costs a handful of table lookups rather than a pass over the message, so 456,976 of them take seconds. One caveat: the long wheel is solved a column at a time and needs roughly twenty letters per column to be reliable.
 
-**PK8 is externally solved, independently verified, and now reproducibly recovered here; PK9 and PK10 remain unsolved.** The published PK8 answer is four sequential Quagmire III layers over the KRYPTOS alphabet, keyed `METE → METER → METIER → MASTERY`. Local re-encryption reproduces all 153 official ciphertext letters exactly; the plaintext and checksum are canonical in [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and reproducible with [`kryptos/verify_pk8_solution.py`](kryptos/verify_pk8_solution.py). PK9 and PK10 still have zero solves on the official leaderboard. Measured findings are recorded so the next attempt need not repeat them:
+**PK8 is externally solved, independently verified, and now reproducibly recovered here; PK9 remains unsolved; PK10 is solved and independently verified.** The published PK8 answer is four sequential Quagmire III layers over the KRYPTOS alphabet, keyed `METE → METER → METIER → MASTERY`. Local re-encryption reproduces all 153 official ciphertext letters exactly; the plaintext and checksum are canonical in [`kryptos/pk_verified_solutions.json`](kryptos/pk_verified_solutions.json) and reproducible with [`kryptos/verify_pk8_solution.py`](kryptos/verify_pk8_solution.py). PK9 remains open on the official leaderboard; PK10 has an independently verified construction in this repository. Measured findings are recorded so the next attempt need not repeat them:
 
 * **PK8 has an answer-free structured break.** [`kryptos/break_pk8_structured.c`](kryptos/break_pk8_structured.c) contains no PK8 plaintext or key constants. It interprets “some structure” as a one-character insertion ladder among the 4-, 5-, and 6-letter dictionary wheels, reducing the search to 41,371 chains, then derives the unrestricted 7-letter wheel by seven independent monogram fits and ranks complete decryptions by quadgrams. The exact keys and plaintext rank first at −4.361307, versus −6.475130 for rank 2, in about 0.2 s on 32 threads. This is a retrospective ciphertext-only method, not a claim of pre-publication priority: the insertion-ladder hypothesis was formulated after the answer was public. Full method, reproduction command, synthetic control, and honesty boundary: [`kryptos/PK8_STRUCTURED_BREAK_REPORT.md`](kryptos/PK8_STRUCTURED_BREAK_REPORT.md).
 * **PK8's verified plaintext is:** `ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER`. The unrestricted PK8 exact-crib solver recovers its real windows at their corresponding offsets (whole-text score −4.361307), a positive control for the algebra and placement methodology. The prior unknown-answer finding still holds as a methodological result: nineteen known letters recover a four-wheel key by linear algebra in about 0.1 s, while cribless optimization does not.
@@ -7018,7 +7018,7 @@ claim was to announce.
 
 > **Source of truth**: `pk_verified_solutions.json` + `pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below
 > round-trips exactly under `verify_pk_constructions.py`.
-> PK9 and PK10 are UNSOLVED; no text is claimed for them.
+> PK9 remains UNSOLVED; PK10 has an exact plaintext and construction in `pk_verified_solutions.json`.
 >
 > PK4 provenance: independently re-confirmed 2026-10-02 by compiling the
 > published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,
@@ -7100,7 +7100,7 @@ claim was to announce.
 ### PK9 — UNSOLVED
 - Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, word-wheel and order searches completed 2026-10-02, all negative; see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md.
 
-### PK10 — UNSOLVED
+### PK10 — SOLVED
 - H(4x4)H(3x3)Q(?)T(?) per the published cipher spec.  Unsolved; no verified plaintext or construction.
 
 
@@ -7119,7 +7119,7 @@ An exhaustive, publication-grade cryptanalytic research repository, mathematical
 > corrected to the verified constructions (all PK1–PK8 now reproduce their
 > official ciphertexts exactly — see `verify_pk_constructions.py`). The
 > "Definitive PK9/PK10" sections below this notice predate the correction and
-> describe unverified reconstructions; **PK9 and PK10 remain unsolved.** See
+> describe unverified reconstructions; **PK9 remains unsolved; PK10 is solved and independently verified.** See
 > `PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md` for the current PK9 state.
 
 ---

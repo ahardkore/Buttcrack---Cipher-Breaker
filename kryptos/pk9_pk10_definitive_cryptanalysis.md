@@ -1,4 +1,10 @@
-# Definitive Cryptanalytic Ledger: PK8, PK9, and PK10
+# Definitive Cryptanalytic Ledger: PK8, PK9, and PK10 (historical)
+
+> **Superseded status, 2026-10-04:** PK10 now has an exact cumulative-pipeline
+> verification. See `PK10_BREAK_REPORT_2026-10-04.md` and
+> `verify_pk10_solution.py`. PK9 remains open. The candidate PK10 material in
+> this file is historical and must not be treated as the recovered solution.
+
 **Universal Unimodular Bases, CRT Single-Cycle Theorem, and Cross-Cipher Homologies**
 *Date: September 22, 2026*
 

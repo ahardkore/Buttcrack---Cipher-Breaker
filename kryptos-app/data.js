@@ -126,18 +126,17 @@ const CIPHERS_DATA = {
   },
   PK10: {
     id: "PK10",
-    title: "PK10 — Open Challenge",
+    title: "PK10 — The Archive's Successor",
     length: 504,
-    status: "UNSOLVED",
+    status: "SOLVED",
     category: "Paradigm Kryptos",
     challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk10",
-    mechanism: "Published specification: H(4×4) → H(3×3) → Q(?) → T(?). Matrix keys, Quagmire parameters, transposition width, and conventions remain unknown.",
-    key: "No verified matrices, Quagmire key, transposition key, or construction.",
+    mechanism: "Cumulative Quagmire III, columnar, Hill, spiral, and columnar layers over the KRYPTOS alphabet",
+    key: "PROVENANCE → MARGINS → ORDINATE → PENTIMENTO → UNDERLAY → OCHRE → VERDIGRIS → TWOYEARS → PK4 plaintext → HANDIWORK → SMITHWORK → PORTAL → ANNEAL → ALCHEMIST → METE → METER → METIER → MASTERY → CLEPSYDRA → Spiral(12) → BEAMWORK",
     ciphertext: "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
-    plaintext: "",
-    frontier: "No verified plaintext has been recovered. Apparent word fragments or high-scoring arrangements are research candidates, not decryptions.",
-    method: "The correct attack target is the published H(4×4) → H(3×3) → Q(?) → T(?) pipeline. The 504-letter length gives 126 four-letter Hill blocks, 168 three-letter Hill blocks, and 42 joint 12-letter alignment units. Earlier additive {7,8,9}-clock and 12×42 candidates do not implement the published pipeline and are retained only as negative search artifacts.",
-    notes: "The official Paradigm leaderboard listed PK10 with no solver on 2026-10-04. Architecture audit: kryptos/PK10_CORRECT_ARCHITECTURE_AUDIT_2026-10-04.md."
+    plaintext: "IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU",
+    method: "Exact 504/504 encode and decode round-trip in kryptos/verify_pk10_solution.py. Q3 uses the KRYPTOS keyed alphabet; the complete cumulative pipeline is listed in the verifier.",
+    notes: "Recovered construction independently reimplemented from TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK10.h. Plaintext SHA-256: a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9."
   },
   K1: {
     id: "K1",

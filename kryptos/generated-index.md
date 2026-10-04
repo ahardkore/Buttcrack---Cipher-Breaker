@@ -526,7 +526,7 @@
 - # PK7 — Three Weeks In (the Craft) ($N = 279$) — source line 7082
 - # PK8 — Leaving the Whitesmith ($N = 153$) — source line 7091
 - # PK9 — UNSOLVED — source line 7100
-- # PK10 — UNSOLVED — source line 7103
+- # PK10 — SOLVED — exact cumulative round trip; see PK10_BREAK_REPORT_2026-10-04.md
 - Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 7109
 - 🏛️ Executive Cryptanalytic Deliverables — source line 7127
 - 🔬 Core Discoveries & Mathematical Invariants — source line 7142

@@ -1,8 +1,9 @@
-# Paradigm Kryptos CTF — Final Submissions (regenerated 2026-10-02)
+# Paradigm Kryptos CTF — Final Submissions (regenerated 2026-10-04)
 
 > **Source of truth**: `pk_verified_solutions.json` + `pk_all_ciphertexts.json` (site-confirmed).  Every solved entry below
-> round-trips exactly under `verify_pk_constructions.py`.
-> PK9 and PK10 are UNSOLVED; no text is claimed for them.
+> round-trips exactly under the PK-specific verifiers.
+> PK9 remains unsolved; PK10 is independently round-trip verified by
+> `verify_pk10_solution.py`.
 >
 > PK4 provenance: independently re-confirmed 2026-10-02 by compiling the
 > published solver code of @TTFH3500 (github.com/TTFH/KRYPTOS,
@@ -81,8 +82,14 @@
   ```
 - **SHA256**: `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c`
 
+### PK10 — The Archive's Successor ($N = 504$)
+- **Cipher**: Cumulative Quagmire III / columnar / Hill / spiral pipeline over the KRYPTOS alphabet
+- **Key**: Q3(PROVENANCE) -> T(MARGINS) -> Q3(ORDINATE) -> Q3(PENTIMENTO) -> T(UNDERLAY) -> Q3(OCHRE) -> Q3(VERDIGRIS) -> T(TWOYEARS) -> Q3(PK4 plaintext) -> T(HANDIWORK) -> T(SMITHWORK) -> Q3(PORTAL) -> Q3(ANNEAL) -> H3(ALCHEMIST) -> Q3(METE) -> Q3(METER) -> Q3(METIER) -> Q3(MASTERY) -> Q3(CLEPSYDRA) -> Spiral(12) -> T(BEAMWORK)
+- **Plaintext (submit this, uppercase, no spaces):**
+  ```text
+  IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU
+  ```
+- **SHA256**: `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`
+
 ### PK9 — UNSOLVED
 - Q(7)Q(6)Q(5)T(8) per the published cipher spec.  Extensive exact-crib, word-wheel and order searches completed 2026-10-02, all negative; see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md.
-
-### PK10 — UNSOLVED
-- H(4x4)H(3x3)Q(?)T(?) per the published cipher spec.  Unsolved; no verified plaintext or construction.

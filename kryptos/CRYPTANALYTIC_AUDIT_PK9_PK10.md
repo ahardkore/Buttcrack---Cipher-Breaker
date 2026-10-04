@@ -1,4 +1,10 @@
-# CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER
+# CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER (historical)
+
+> **Superseded status, 2026-10-04:** The PK10 candidate frontier below predates
+> the exact cumulative-pipeline break. PK10 is now verified in
+> `verify_pk10_solution.py`; see `PK10_BREAK_REPORT_2026-10-04.md`. The older
+> 7/8/9-clock and 12×42 material is retained only for research provenance.
+>
 **Suite**: Paradigm Kryptos CTF (Target Challenges PK8, PK9, PK10)  
 **Date of Audit**: September 23, 2026  
 **Auditor**: Cryptanalytic Operations & Mathematical Research  
