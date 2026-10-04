@@ -26,17 +26,60 @@ from .base import CHEAP, CipherInfo, CrackContext, Family
 from .encodings import _Encoding
 
 MORSE = {
-    "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.",
-    "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
-    "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.",
-    "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
-    "Y": "-.--", "Z": "--..",
-    "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-",
-    "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----.",
-    ".": ".-.-.-", ",": "--..--", "?": "..--..", "'": ".----.", "!": "-.-.--",
-    "/": "-..-.", "(": "-.--.", ")": "-.--.-", "&": ".-...", ":": "---...",
-    ";": "-.-.-.", "=": "-...-", "+": ".-.-.", "-": "-....-", "_": "..--.-",
-    '"': ".-..-.", "$": "...-..-", "@": ".--.-.",
+    "A": ".-",
+    "B": "-...",
+    "C": "-.-.",
+    "D": "-..",
+    "E": ".",
+    "F": "..-.",
+    "G": "--.",
+    "H": "....",
+    "I": "..",
+    "J": ".---",
+    "K": "-.-",
+    "L": ".-..",
+    "M": "--",
+    "N": "-.",
+    "O": "---",
+    "P": ".--.",
+    "Q": "--.-",
+    "R": ".-.",
+    "S": "...",
+    "T": "-",
+    "U": "..-",
+    "V": "...-",
+    "W": ".--",
+    "X": "-..-",
+    "Y": "-.--",
+    "Z": "--..",
+    "0": "-----",
+    "1": ".----",
+    "2": "..---",
+    "3": "...--",
+    "4": "....-",
+    "5": ".....",
+    "6": "-....",
+    "7": "--...",
+    "8": "---..",
+    "9": "----.",
+    ".": ".-.-.-",
+    ",": "--..--",
+    "?": "..--..",
+    "'": ".----.",
+    "!": "-.-.--",
+    "/": "-..-.",
+    "(": "-.--.",
+    ")": "-.--.-",
+    "&": ".-...",
+    ":": "---...",
+    ";": "-.-.-.",
+    "=": "-...-",
+    "+": ".-.-.",
+    "-": "-....-",
+    "_": "..--.-",
+    '"': ".-..-.",
+    "$": "...-..-",
+    "@": ".--.-.",
 }
 MORSE_DECODE = {v: k for k, v in MORSE.items()}
 
@@ -44,10 +87,32 @@ MORSE_DECODE = {v: k for k, v in MORSE.items()}
 #: share one code and U and V share another, exactly as Bacon specified.  When
 #: decoding, the shared codes resolve to I and U (the earlier letter).
 BACON_26 = [
-    "AAAAA", "AAAAB", "AAABA", "AAABB", "AABAA", "AABAB", "AABBA", "AABBB",
-    "ABAAA", "ABAAA", "ABAAB", "ABABA", "ABABB", "ABBAA", "ABBAB", "ABBBA",
-    "ABBBB", "BAAAA", "BAAAB", "BAABA", "BAABB", "BAABB", "BABAA", "BABAB",
-    "BABBA", "BABBB",
+    "AAAAA",
+    "AAAAB",
+    "AAABA",
+    "AAABB",
+    "AABAA",
+    "AABAB",
+    "AABBA",
+    "AABBB",
+    "ABAAA",
+    "ABAAA",
+    "ABAAB",
+    "ABABA",
+    "ABABB",
+    "ABBAA",
+    "ABBAB",
+    "ABBBA",
+    "ABBBB",
+    "BAAAA",
+    "BAAAB",
+    "BAABA",
+    "BAABB",
+    "BAABB",
+    "BABAA",
+    "BABAB",
+    "BABBA",
+    "BABBB",
 ]
 
 
@@ -110,9 +175,7 @@ class Morse(_Encoding):
     def decode(self, text: str) -> str:
         words = []
         for word in text.split("/"):
-            letters = [
-                MORSE_DECODE[g] for g in self._symbols(word) if g in MORSE_DECODE
-            ]
+            letters = [MORSE_DECODE[g] for g in self._symbols(word) if g in MORSE_DECODE]
             if letters:
                 words.append("".join(letters))
         return " ".join(words)
@@ -355,9 +418,7 @@ class Polybius(_Encoding):
             if digits[i] in "12345" and digits[i + 1] in "12345"
         )
         if transposed:
-            yield ctx.candidate(
-                self.name, transposed, {"grid": A25, "order": "column-row"}, steps=ctx.steps
-            )
+            yield ctx.candidate(self.name, transposed, {"grid": A25, "order": "column-row"}, steps=ctx.steps)
 
 
 #: Tap (or "knock") code: the Polybius square struck out as counts of taps.
@@ -387,8 +448,13 @@ class TapCode(_Encoding):
     def _groups(text: str) -> list[int]:
         """Tap runs as counts. Accepts dots, middots, X, knocks and digits."""
         normalised = (
-            text.replace("\u00b7", ".").replace("\u2022", ".").replace("*", ".")
-            .replace("x", ".").replace("X", ".").replace("o", ".").replace("O", ".")
+            text.replace("\u00b7", ".")
+            .replace("\u2022", ".")
+            .replace("*", ".")
+            .replace("x", ".")
+            .replace("X", ".")
+            .replace("o", ".")
+            .replace("O", ".")
         )
         runs = [g for g in re.split(r"[^.]+", normalised) if g]
         return [len(g) for g in runs]
@@ -423,19 +489,53 @@ class TapCode(_Encoding):
 #: The NATO/ICAO spelling alphabet, plus the spellings that predate it or are
 #: simply misspelled in puzzles ("alfa"/"alpha", "juliett"/"juliet", "xray").
 NATO = {
-    "A": "Alfa", "B": "Bravo", "C": "Charlie", "D": "Delta", "E": "Echo",
-    "F": "Foxtrot", "G": "Golf", "H": "Hotel", "I": "India", "J": "Juliett",
-    "K": "Kilo", "L": "Lima", "M": "Mike", "N": "November", "O": "Oscar",
-    "P": "Papa", "Q": "Quebec", "R": "Romeo", "S": "Sierra", "T": "Tango",
-    "U": "Uniform", "V": "Victor", "W": "Whiskey", "X": "Xray", "Y": "Yankee",
+    "A": "Alfa",
+    "B": "Bravo",
+    "C": "Charlie",
+    "D": "Delta",
+    "E": "Echo",
+    "F": "Foxtrot",
+    "G": "Golf",
+    "H": "Hotel",
+    "I": "India",
+    "J": "Juliett",
+    "K": "Kilo",
+    "L": "Lima",
+    "M": "Mike",
+    "N": "November",
+    "O": "Oscar",
+    "P": "Papa",
+    "Q": "Quebec",
+    "R": "Romeo",
+    "S": "Sierra",
+    "T": "Tango",
+    "U": "Uniform",
+    "V": "Victor",
+    "W": "Whiskey",
+    "X": "Xray",
+    "Y": "Yankee",
     "Z": "Zulu",
-    "0": "Zero", "1": "One", "2": "Two", "3": "Three", "4": "Four",
-    "5": "Five", "6": "Six", "7": "Seven", "8": "Eight", "9": "Nine",
+    "0": "Zero",
+    "1": "One",
+    "2": "Two",
+    "3": "Three",
+    "4": "Four",
+    "5": "Five",
+    "6": "Six",
+    "7": "Seven",
+    "8": "Eight",
+    "9": "Nine",
 }
 NATO_DECODE = {v.lower(): k for k, v in NATO.items()}
-NATO_DECODE.update({
-    "alpha": "A", "juliet": "J", "x-ray": "X", "whisky": "W", "niner": "9",
-})
+NATO_DECODE.update(
+    {
+        "alpha": "A",
+        "juliet": "J",
+        "x-ray": "X",
+        "whisky": "W",
+        "niner": "9",
+    }
+)
 
 
 class NatoPhonetic(_Encoding):
@@ -476,11 +576,32 @@ class NatoPhonetic(_Encoding):
 #: Unicode braille patterns are a bit field: dot 1 = 0x01, dot 2 = 0x02, and so
 #: on, offset from U+2800.  Grade 1 braille letters are the standard assignment.
 BRAILLE_LETTERS = {
-    "A": 0x01, "B": 0x03, "C": 0x09, "D": 0x19, "E": 0x11, "F": 0x0B,
-    "G": 0x1B, "H": 0x13, "I": 0x0A, "J": 0x1A, "K": 0x05, "L": 0x07,
-    "M": 0x0D, "N": 0x1D, "O": 0x15, "P": 0x0F, "Q": 0x1F, "R": 0x17,
-    "S": 0x0E, "T": 0x1E, "U": 0x25, "V": 0x27, "W": 0x3A, "X": 0x2D,
-    "Y": 0x3D, "Z": 0x35,
+    "A": 0x01,
+    "B": 0x03,
+    "C": 0x09,
+    "D": 0x19,
+    "E": 0x11,
+    "F": 0x0B,
+    "G": 0x1B,
+    "H": 0x13,
+    "I": 0x0A,
+    "J": 0x1A,
+    "K": 0x05,
+    "L": 0x07,
+    "M": 0x0D,
+    "N": 0x1D,
+    "O": 0x15,
+    "P": 0x0F,
+    "Q": 0x1F,
+    "R": 0x17,
+    "S": 0x0E,
+    "T": 0x1E,
+    "U": 0x25,
+    "V": 0x27,
+    "W": 0x3A,
+    "X": 0x2D,
+    "Y": 0x3D,
+    "Z": 0x35,
 }
 BRAILLE_DECODE = {chr(0x2800 + bits): letter for letter, bits in BRAILLE_LETTERS.items()}
 BRAILLE_DECODE["\u2800"] = " "
@@ -532,12 +653,35 @@ class Braille(_Encoding):
 #: switches to the figures table mid-message is vanishingly rare and decoding
 #: it wrongly is worse than leaving the character out.
 ITA2_LETTERS = {
-    "00000": "", "00100": " ", "01000": "\n", "00010": "\n",
-    "11000": "A", "10011": "B", "01110": "C", "10010": "D", "10000": "E",
-    "10110": "F", "01011": "G", "00101": "H", "01100": "I", "11010": "J",
-    "11110": "K", "01001": "L", "00111": "M", "00110": "N", "00011": "O",
-    "01101": "P", "11101": "Q", "01010": "R", "10100": "S", "00001": "T",
-    "11100": "U", "01111": "V", "11001": "W", "10111": "X", "10101": "Y",
+    "00000": "",
+    "00100": " ",
+    "01000": "\n",
+    "00010": "\n",
+    "11000": "A",
+    "10011": "B",
+    "01110": "C",
+    "10010": "D",
+    "10000": "E",
+    "10110": "F",
+    "01011": "G",
+    "00101": "H",
+    "01100": "I",
+    "11010": "J",
+    "11110": "K",
+    "01001": "L",
+    "00111": "M",
+    "00110": "N",
+    "00011": "O",
+    "01101": "P",
+    "11101": "Q",
+    "01010": "R",
+    "10100": "S",
+    "00001": "T",
+    "11100": "U",
+    "01111": "V",
+    "11001": "W",
+    "10111": "X",
+    "10101": "Y",
     "10001": "Z",
 }
 ITA2_ENCODE = {v: k for k, v in ITA2_LETTERS.items() if v.strip()}

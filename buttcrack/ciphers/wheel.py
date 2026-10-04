@@ -127,9 +127,7 @@ def parse_key(key: Any) -> tuple[str, int]:
         else:
             order = text.replace(",", "").replace(" ", "").upper()
     if len(order) != 25 or len(set(order)) != 25 or any(ch not in DISK_IDS for ch in order):
-        raise ValueError(
-            f"an M-94 order is 25 distinct disk letters from {DISK_IDS} (or numbers 1-25), got {key!r}"
-        )
+        raise ValueError(f"an M-94 order is 25 distinct disk letters from {DISK_IDS} (or numbers 1-25), got {key!r}")
     if not 0 <= row < 26:
         raise ValueError(f"read row must be 0-25, got {row}")
     return order, row
@@ -156,9 +154,7 @@ def best_reading(stream: str, order: str, model, cap: int = 400) -> tuple[float,
     best = (-99.0, 0, "")
     for row in range(26):
         text = stream[:cap]
-        plain = "".join(
-            rows[_disk_index(order[i % 25])][row][ord(ch) - 65] for i, ch in enumerate(text)
-        )
+        plain = "".join(rows[_disk_index(order[i % 25])][row][ord(ch) - 65] for i, ch in enumerate(text))
         value = model.search_fitness(plain)
         if value > best[0]:
             best = (value, row, plain)
@@ -180,16 +176,12 @@ def _search_reading(stream: str, order: list[int], model, keep: int = 3, prefix:
     head = stream[:prefix]
     ranked = []
     for row in range(26):
-        plain = "".join(
-            rows[order[i % 25]][row][ord(ch) - 65] for i, ch in enumerate(head)
-        )
+        plain = "".join(rows[order[i % 25]][row][ord(ch) - 65] for i, ch in enumerate(head))
         ranked.append((model.search_fitness(plain), row))
     ranked.sort(reverse=True)
     best = -99.0
     for _, row in ranked[:keep]:
-        plain = "".join(
-            rows[order[i % 25]][row][ord(ch) - 65] for i, ch in enumerate(stream)
-        )
+        plain = "".join(rows[order[i % 25]][row][ord(ch) - 65] for i, ch in enumerate(stream))
         value = model.search_fitness(plain)
         if value > best:
             best = value
@@ -252,9 +244,7 @@ def _m94_worker(payload: tuple) -> tuple:
         # the worst outcome for a search this expensive.
         if r and deadline is not None and time.time() >= deadline:
             break
-        order, fit, evals = _m94_climb(
-            stream, model, rng, max_evals=max_evals, deadline=None if r == 0 else deadline
-        )
+        order, fit, evals = _m94_climb(stream, model, rng, max_evals=max_evals, deadline=None if r == 0 else deadline)
         used = r + 1
         evals_total += evals
         order_str = "".join(DISK_IDS[i] for i in order)
@@ -351,8 +341,12 @@ class M94(Cipher):
                 row = best_reading(stream, order, ctx.model, cap=len(stream))[1]
                 plain = _apply(stream, order, row)
             yield self.candidate(
-                stream, plain, {"order": order, "row": row}, ctx,
-                method="hinted key", columns=25,
+                stream,
+                plain,
+                {"order": order, "row": row},
+                ctx,
+                method="hinted key",
+                columns=25,
             )
             return
 
@@ -405,8 +399,12 @@ class M94(Cipher):
                     "try --budget 120, more ciphertext (200+ letters), or --hint key=<order>"
                 )
             yield self.candidate(
-                stream, plain, {"order": order, "row": row}, ctx,
-                columns=25, **notes,
+                stream,
+                plain,
+                {"order": order, "row": row},
+                ctx,
+                columns=25,
+                **notes,
             )
             emitted += 1
             if emitted >= 3:

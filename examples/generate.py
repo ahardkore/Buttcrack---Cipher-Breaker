@@ -77,36 +77,96 @@ PUZZLES: tuple[tuple[str, str, str, Callable[[str], str], str, str, float], ...]
     ("03-vigenere", "easy", "A repeating keyword.", cipher("vigenere", "LANTERN"), "LANTERN", PROSE, 20),
     ("04-morse", "easy", "Morse code, spaces between letters.", cipher("morse"), "none", SHORT, 10),
     ("05-base64-caesar", "easy", "Base64 around a shift.", _layers(cipher("caesar", 11), b64), "11", PROSE, 15),
-    ("06-columnar", "medium", "A columnar transposition: the letters are all there, in the wrong order.",
-     cipher("columnar", "SPIES"), "SPIES", PROSE, 30),
+    (
+        "06-columnar",
+        "medium",
+        "A columnar transposition: the letters are all there, in the wrong order.",
+        cipher("columnar", "SPIES"),
+        "SPIES",
+        PROSE,
+        30,
+    ),
     # The XOR ciphers already emit their payload as hex, so there is no base16
     # layer to add here: wrapping them again would produce a digits-only string,
     # which is genuinely ambiguous with decimal ASCII and the solver refuses to
     # guess between the two.
-    ("07-hex-xor", "medium", "A repeating-key XOR over raw bytes; the payload arrives as hex.",
-     cipher("xor_repeating", "LAMP"), "LAMP", PROSE, 30),
+    (
+        "07-hex-xor",
+        "medium",
+        "A repeating-key XOR over raw bytes; the payload arrives as hex.",
+        cipher("xor_repeating", "LAMP"),
+        "LAMP",
+        PROSE,
+        30,
+    ),
     ("08-rail-fence", "medium", "Rail fence, four rails.", cipher("rail_fence", 4), "4", PROSE, 20),
-    ("09-affine", "medium", "A linear map: multiply by 5, add 8.", cipher("affine", {"a": 5, "b": 8}),
-     "a=5, b=8", PROSE, 20),
-    ("10-base32-base64", "medium", "Two encodings stacked, no cipher underneath.",
-     _layers(b64, b32), "none", PROSE, 20),
-    ("11-autokey", "hard", "An autokey: a short primer, then the plaintext itself as the key.",
-     cipher("autokey", "PRIMER"), "PRIMER", PROSE, 40),
-    ("12-substitution", "hard", "A keyword-mixed alphabet. Needs a real search.",
-     cipher("keyword_substitution", "GALAXY"), "GALAXY", PROSE * 2, 90),
-    ("13-three-layers", "hard", "Base64 around the hex payload of a repeating-key XOR: three "
-     "layers deep, and the key belongs to the innermost one.",
-     _layers(cipher("xor_repeating", "VENICE"), b64), "VENICE", PROSE, 40),
-    ("14-bacon", "hard", "Bacon's A/B alphabet, then base32.",
-     _layers(cipher("bacon"), b32), "none", SHORT, 30),
-    ("15-playfair", "brutal", "A 5x5 grid. Expect most of the letters, not always all of them; "
-     "`--hint key=MONARCHY` finishes it at once.",
-     cipher("playfair", "MONARCHY"), "MONARCHY", PROSE * 3, 120),
-    ("16-m94", "brutal", "The Army's 25-wheel M-94: every position runs through its own mixed "
-     "alphabet, 25! possible spindle orders. Measured 3/3 exact at this length and budget; "
-     "`--hint key=<order>` finishes it at once.",
-     cipher("m94", {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}),
-     "order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9", PROSE * 2, 120),
+    (
+        "09-affine",
+        "medium",
+        "A linear map: multiply by 5, add 8.",
+        cipher("affine", {"a": 5, "b": 8}),
+        "a=5, b=8",
+        PROSE,
+        20,
+    ),
+    (
+        "10-base32-base64",
+        "medium",
+        "Two encodings stacked, no cipher underneath.",
+        _layers(b64, b32),
+        "none",
+        PROSE,
+        20,
+    ),
+    (
+        "11-autokey",
+        "hard",
+        "An autokey: a short primer, then the plaintext itself as the key.",
+        cipher("autokey", "PRIMER"),
+        "PRIMER",
+        PROSE,
+        40,
+    ),
+    (
+        "12-substitution",
+        "hard",
+        "A keyword-mixed alphabet. Needs a real search.",
+        cipher("keyword_substitution", "GALAXY"),
+        "GALAXY",
+        PROSE * 2,
+        90,
+    ),
+    (
+        "13-three-layers",
+        "hard",
+        "Base64 around the hex payload of a repeating-key XOR: three "
+        "layers deep, and the key belongs to the innermost one.",
+        _layers(cipher("xor_repeating", "VENICE"), b64),
+        "VENICE",
+        PROSE,
+        40,
+    ),
+    ("14-bacon", "hard", "Bacon's A/B alphabet, then base32.", _layers(cipher("bacon"), b32), "none", SHORT, 30),
+    (
+        "15-playfair",
+        "brutal",
+        "A 5x5 grid. Expect most of the letters, not always all of them; `--hint key=MONARCHY` finishes it at once.",
+        cipher("playfair", "MONARCHY"),
+        "MONARCHY",
+        PROSE * 3,
+        120,
+    ),
+    (
+        "16-m94",
+        "brutal",
+        "The Army's 25-wheel M-94: every position runs through its own mixed "
+        "alphabet, 25! possible spindle orders. Measured 3/3 exact at this length and budget; "
+        "`--hint key=<order>` finishes it at once.",
+        cipher("m94", {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}),
+        "order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9",
+        PROSE * 2,
+        120,
+    ),
 )
 
 
@@ -209,11 +269,7 @@ def check() -> int:
             # the cipher is named, and handing over the key finishes it at once.
             ratio = similarity(got, want)
             hinted = solve(ciphertext, budget=30, workers=2, hints={"key": key})
-            ok = (
-                report.cipher == "playfair"
-                and hinted.solved
-                and fold(hinted.plaintext, name) == want
-            )
+            ok = report.cipher == "playfair" and hinted.solved and fold(hinted.plaintext, name) == want
             detail = (
                 f"unhinted {report.confidence:.3f} ({ratio * 100:.0f}% of the message), "
                 f"hinted {hinted.confidence:.3f} exact={fold(hinted.plaintext, name) == want}"
@@ -221,7 +277,9 @@ def check() -> int:
         else:
             ok = report.solved and got == want
             detail = f"{report.confidence:.3f} via {report.path}"
-        print(f"  {'pass' if ok else 'FAIL'}  {name:<20} {difficulty:<7} key={key:<12} {detail} in {time.time() - started:.1f}s")
+        print(
+            f"  {'pass' if ok else 'FAIL'}  {name:<20} {difficulty:<7} key={key:<12} {detail} in {time.time() - started:.1f}s"
+        )
         failures += 0 if ok else 1
     return failures
 

@@ -188,8 +188,7 @@ def synthesise_corpus(
     weights = [float(c) for _, c in unigrams]
     uni = _Sampler(words, weights, rng)
     succ_samplers = {
-        head: _Sampler([w for w, _ in succ], [float(c) for _, c in succ], rng)
-        for head, succ in bigrams.items()
+        head: _Sampler([w for w, _ in succ], [float(c) for _, c in succ], rng) for head, succ in bigrams.items()
     }
     out: list[str] = []
     append = out.append
@@ -280,7 +279,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--min-count", type=int, default=50_000, help="minimum unigram corpus count to keep")
     ap.add_argument("--max-words", type=int, default=150_000, help="vocabulary ceiling")
     ap.add_argument("--bigram-p", type=float, default=0.5, help="probability of following the word-bigram table")
-    ap.add_argument("--head-limit", type=int, default=20_000, help="bigram successor tables for the N most common words")
+    ap.add_argument(
+        "--head-limit", type=int, default=20_000, help="bigram successor tables for the N most common words"
+    )
     ap.add_argument("--per-word", type=int, default=64, help="successors to keep per head word")
     ap.add_argument("--dict-words", type=int, default=80_000, help="dictionary size to ship")
     ap.add_argument("--seed", type=int, default=20260923, help="RNG seed (deterministic output)")

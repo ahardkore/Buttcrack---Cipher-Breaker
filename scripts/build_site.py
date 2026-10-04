@@ -21,6 +21,7 @@ Run it locally exactly as the deploy does::
 Source files that are only build inputs (Python generators, the Node test
 harness, the raw corpus) are left out of the published tree.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -87,9 +88,7 @@ PAID_BINARY_SUFFIXES = {".exe", ".msi"}
 
 def refuse_paid_binaries(tree: Path) -> None:
     """Fail the deploy rather than publish something that is for sale."""
-    strays = sorted(
-        path for path in tree.rglob("*") if path.suffix.lower() in PAID_BINARY_SUFFIXES
-    )
+    strays = sorted(path for path in tree.rglob("*") if path.suffix.lower() in PAID_BINARY_SUFFIXES)
     if not strays:
         return
     listing = "\n  ".join(str(path.relative_to(tree)) for path in strays)

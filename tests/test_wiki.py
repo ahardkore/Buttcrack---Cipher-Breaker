@@ -48,8 +48,7 @@ class TestSpecCoversRegistry(unittest.TestCase):
         specs = wc.cipher_page_specs()
         by_slug = {s["slug"]: s for s in specs}
         for name in wc.HAND_WRITTEN:
-            self.assertNotIn(wc.wiki_slug(name), by_slug,
-                             f"{name} is hand-written; a generated spec would shadow it")
+            self.assertNotIn(wc.wiki_slug(name), by_slug, f"{name} is hand-written; a generated spec would shadow it")
         for cipher in wc.all_ciphers():
             name = cipher.info.name
             if name in wc.HAND_WRITTEN:
@@ -67,9 +66,7 @@ class TestSpecCoversRegistry(unittest.TestCase):
         # Search engines truncate around 160 characters; a description built
         # past that is a registry edit away from a mangled snippet.
         for spec in wc.cipher_page_specs():
-            self.assertLessEqual(
-                len(spec["desc"]), 165,
-                f"{spec['slug']} description is {len(spec['desc'])} chars")
+            self.assertLessEqual(len(spec["desc"]), 165, f"{spec['slug']} description is {len(spec['desc'])} chars")
 
     def test_examples_are_real_output(self):
         checked = 0
@@ -81,13 +78,9 @@ class TestSpecCoversRegistry(unittest.TestCase):
             plaintext, shown, _key_display = ex
             sample = wc.SAMPLE_OVERRIDES.get(name, wc.SAMPLE_PLAINTEXT)
             key = cipher.info.example_key
-            ciphertext = (
-                cipher.encrypt(sample, key)
-                if key not in (None, "") else cipher.encrypt(sample)
-            )
+            ciphertext = cipher.encrypt(sample, key) if key not in (None, "") else cipher.encrypt(sample)
             expected = ciphertext if len(ciphertext) <= 240 else ciphertext[:237] + "..."
-            self.assertEqual(shown, expected,
-                             f"{name}: worked example is not the cipher's own output")
+            self.assertEqual(shown, expected, f"{name}: worked example is not the cipher's own output")
             self.assertGreater(len(plaintext), 0)
             checked += 1
         self.assertGreaterEqual(checked, 40, "expected examples for most ciphers")
@@ -104,8 +97,7 @@ class TestUnsolvedArchive(unittest.TestCase):
             self.assertTrue(item["boundary"])
 
     def test_archive_page_is_a_wiki_spec(self):
-        spec = next((item for item in bp.WIKI_PAGES
-                     if item["slug"] == "unsolved-ciphers.html"), None)
+        spec = next((item for item in bp.WIKI_PAGES if item["slug"] == "unsolved-ciphers.html"), None)
         self.assertIsNotNone(spec)
         self.assertIn("Verification boundary", spec["body"])
         self.assertIn("D’Agapeyeff Cipher", spec["body"])
@@ -114,10 +106,7 @@ class TestUnsolvedArchive(unittest.TestCase):
 
 class TestTableOfContents(unittest.TestCase):
     def test_anchors_exist_and_nest(self):
-        body = ("<h2>One</h2><p>x</p>"
-                "<h3>Deep</h3><p>y</p>"
-                '<h2 id="kept">Two</h2>'
-                "<h3 data-notoc>Hidden</h3>")
+        body = '<h2>One</h2><p>x</p><h3>Deep</h3><p>y</p><h2 id="kept">Two</h2><h3 data-notoc>Hidden</h3>'
         new_body, toc = bp.with_toc(body)
         self.assertIn('id="one"', new_body)
         self.assertIn('id="deep"', new_body)
@@ -128,7 +117,7 @@ class TestTableOfContents(unittest.TestCase):
         self.assertIn('href="#kept"', toc)
         self.assertNotIn("Hidden", toc)
         # the h3 nests inside the h2's <li>, not beside it
-        self.assertIn("<ul><li><a href=\"#deep\">Deep</a></li></ul></li>", toc)
+        self.assertIn('<ul><li><a href="#deep">Deep</a></li></ul></li>', toc)
 
     def test_repeated_headings_get_suffixes(self):
         body = "<h2>Shift</h2><p>a</p><h2>Shift</h2><p>b</p>"
@@ -149,15 +138,14 @@ class TestLinkChecker(unittest.TestCase):
             bp.check_internal_links(written)
 
     def test_catches_missing_anchor(self):
-        written = {"a.html": '<a href="b.html#nowhere">x</a>',
-                   "b.html": "<p>no ids</p>"}
+        written = {"a.html": '<a href="b.html#nowhere">x</a>', "b.html": "<p>no ids</p>"}
         with self.assertRaises(SystemExit):
             bp.check_internal_links(written)
 
     def test_accepts_valid_links_and_exemptions(self):
         written = {
             "a.html": '<a href="b.html#there">x</a> <a href="https://x.example/">y</a>'
-                      ' <a href="mailto:s@example">z</a>',
+            ' <a href="mailto:s@example">z</a>',
             "b.html": '<p id="there">hi</p>',
         }
         bp.check_internal_links(written)  # must not raise
@@ -166,8 +154,8 @@ class TestLinkChecker(unittest.TestCase):
 class TestPaymentUrls(unittest.TestCase):
     def test_live_url_passes(self):
         self.assertEqual(
-            bp.payment_url("https://buy.stripe.com/abc123", "payment_link"),
-            "https://buy.stripe.com/abc123")
+            bp.payment_url("https://buy.stripe.com/abc123", "payment_link"), "https://buy.stripe.com/abc123"
+        )
 
     def test_empty_is_allowed(self):
         self.assertEqual(bp.payment_url("", "payment_link"), "")
@@ -187,9 +175,7 @@ class TestPaymentUrls(unittest.TestCase):
     def test_non_stripe_host_is_a_note_not_a_gate(self):
         # A non-Stripe checkout host is allowed but flagged in the build log;
         # only misconfigured *Stripe* states are hard failures.
-        self.assertEqual(
-            bp.payment_url("https://example.com/pay", "payment_link"),
-            "https://example.com/pay")
+        self.assertEqual(bp.payment_url("https://example.com/pay", "payment_link"), "https://example.com/pay")
 
 
 class TestAdSense(unittest.TestCase):
@@ -208,9 +194,7 @@ class TestAdSense(unittest.TestCase):
 
     def test_loader_is_googles_snippet(self):
         head = bp.adsense_head()
-        self.assertIn(
-            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-            f"?client={self.client}", head)
+        self.assertIn(f"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={self.client}", head)
         self.assertIn("async", head)
         self.assertIn('crossorigin="anonymous"', head)
 
@@ -220,15 +204,17 @@ class TestAdSense(unittest.TestCase):
     def test_build_site_injects_the_same_tag(self):
         # scripts/build_site.py adds the tag to the hand-written Kryptos page.
         # It must be byte-for-byte the generated one, from the same site.json.
-        build_site = _load("build_site_test_module",
-                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        build_site = _load(
+            "build_site_test_module", Path(__file__).resolve().parents[1] / "scripts" / "build_site.py"
+        )
         self.assertEqual(build_site.adsense_loader().strip(), bp.adsense_head().strip())
 
     def test_injection_is_idempotent(self):
         import tempfile
 
-        build_site = _load("build_site_test_module2",
-                           Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+        build_site = _load(
+            "build_site_test_module2", Path(__file__).resolve().parents[1] / "scripts" / "build_site.py"
+        )
         with tempfile.TemporaryDirectory() as tmp:
             page = Path(tmp) / "page.html"
             page.write_text("<html><head><title>t</title></head><body></body></html>")
@@ -257,16 +243,16 @@ class TestCustomDomain(unittest.TestCase):
 
     def setUp(self):
         self.build_site = _load(
-            "build_site_domain_module",
-            Path(__file__).resolve().parents[1] / "scripts" / "build_site.py")
+            "build_site_domain_module", Path(__file__).resolve().parents[1] / "scripts" / "build_site.py"
+        )
         self.base = bp.CFG["base_url"]
 
     def test_cname_matches_base_url(self):
         from urllib.parse import urlparse
+
         host = urlparse(self.base).hostname
         if host.endswith(".github.io"):
-            self.assertEqual(self.build_site.custom_domain(), "",
-                             "a github.io base_url must produce no CNAME")
+            self.assertEqual(self.build_site.custom_domain(), "", "a github.io base_url must produce no CNAME")
         else:
             self.assertEqual(self.build_site.custom_domain(), host)
 
@@ -275,6 +261,7 @@ class TestCustomDomain(unittest.TestCase):
         # in repository settings, and the site silently reverts to github.io.
         import tempfile
         from urllib.parse import urlparse
+
         host = urlparse(self.base).hostname
         with tempfile.TemporaryDirectory() as tmp:
             written = self.build_site.write_cname(Path(tmp))
@@ -284,21 +271,19 @@ class TestCustomDomain(unittest.TestCase):
             else:
                 self.assertEqual(written, host)
                 self.assertEqual(cname.read_text().strip(), host)
-                self.assertNotIn("/", cname.read_text(),
-                                 "a CNAME holds a bare hostname, not a URL")
+                self.assertNotIn("/", cname.read_text(), "a CNAME holds a bare hostname, not a URL")
 
     def test_kryptos_canonical_matches_base_url(self):
         # kryptos-app is hand-written: nothing regenerates this URL, so it can
         # only be kept honest by being checked.
-        page = (Path(__file__).resolve().parents[1]
-                / "kryptos-app" / "index.html").read_text(encoding="utf-8")
+        page = (Path(__file__).resolve().parents[1] / "kryptos-app" / "index.html").read_text(encoding="utf-8")
         expected = f'<link rel="canonical" href="{self.base}/kryptos/">'
-        self.assertIn(expected, page,
-                      "kryptos-app/index.html canonical is out of step with base_url")
+        self.assertIn(expected, page, "kryptos-app/index.html canonical is out of step with base_url")
         self.assertIn(f'content="{self.base}/kryptos/"', page)
 
     def test_ads_txt_only_on_a_real_domain(self):
         from urllib.parse import urlparse
+
         host = urlparse(self.base).hostname
         line = bp.write_ads_txt()
         if not bp.CFG["adsense_client"] or host.endswith(".github.io"):
@@ -313,6 +298,7 @@ class TestCustomDomain(unittest.TestCase):
 class TestBrowserBreakableSet(unittest.TestCase):
     def test_members_exist_and_are_registered(self):
         from buttcrack.ciphers import all_ciphers
+
         names = {c.info.name for c in all_ciphers()}
         for name in wc.BROWSER_BREAKABLE:
             self.assertIn(name, names, f"BROWSER_BREAKABLE names {name!r}, not a cipher")

@@ -29,9 +29,7 @@ SLOW = os.environ.get("BUTTCRACK_SLOW") == "1"
 
 class TestRegistry(unittest.TestCase):
     def test_six_languages(self):
-        self.assertEqual(
-            set(LANGUAGES), {"english", "french", "german", "italian", "latin", "spanish"}
-        )
+        self.assertEqual(set(LANGUAGES), {"english", "french", "german", "italian", "latin", "spanish"})
 
     def test_english_is_probed_first(self):
         # Probing order in solve_auto: English first, so the common case pays
@@ -56,9 +54,7 @@ class TestModelLoading(unittest.TestCase):
                 model = get_model(name)
                 self.assertEqual(model.language, name)
                 for order in (2, 3, 4):
-                    self.assertGreater(
-                        model.ngram_count(order), 100, f"{name} {order}-grams missing"
-                    )
+                    self.assertGreater(model.ngram_count(order), 100, f"{name} {order}-grams missing")
 
     def test_models_are_cached_per_language(self):
         self.assertIs(get_model("french"), get_model("french"))

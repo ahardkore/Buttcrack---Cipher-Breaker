@@ -142,9 +142,7 @@ class TrayIcon:
         kernel32 = ctypes.windll.kernel32
 
         lresult = ctypes.c_ssize_t
-        wndproc_type = ctypes.WINFUNCTYPE(
-            lresult, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM
-        )
+        wndproc_type = ctypes.WINFUNCTYPE(lresult, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)
 
         class WNDCLASSEXW(ctypes.Structure):
             _fields_ = [
@@ -195,22 +193,40 @@ class TrayIcon:
         user32.DefWindowProcW.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
         user32.CreateWindowExW.restype = wintypes.HWND
         user32.CreateWindowExW.argtypes = [
-            wintypes.DWORD, wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.DWORD,
-            ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,
-            wintypes.HWND, wintypes.HMENU, wintypes.HINSTANCE, wintypes.LPVOID,
+            wintypes.DWORD,
+            wintypes.LPCWSTR,
+            wintypes.LPCWSTR,
+            wintypes.DWORD,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            wintypes.HWND,
+            wintypes.HMENU,
+            wintypes.HINSTANCE,
+            wintypes.LPVOID,
         ]
         user32.LoadImageW.restype = wintypes.HANDLE
         user32.LoadImageW.argtypes = [
-            wintypes.HINSTANCE, wintypes.LPCWSTR, wintypes.UINT,
-            ctypes.c_int, ctypes.c_int, wintypes.UINT,
+            wintypes.HINSTANCE,
+            wintypes.LPCWSTR,
+            wintypes.UINT,
+            ctypes.c_int,
+            ctypes.c_int,
+            wintypes.UINT,
         ]
         user32.LoadIconW.restype = wintypes.HICON
         user32.LoadIconW.argtypes = [wintypes.HINSTANCE, wintypes.LPCWSTR]
         user32.CreatePopupMenu.restype = wintypes.HMENU
         user32.TrackPopupMenu.restype = ctypes.c_int
         user32.TrackPopupMenu.argtypes = [
-            wintypes.HMENU, wintypes.UINT, ctypes.c_int, ctypes.c_int,
-            ctypes.c_int, wintypes.HWND, wintypes.LPVOID,
+            wintypes.HMENU,
+            wintypes.UINT,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            wintypes.HWND,
+            wintypes.LPVOID,
         ]
         shell32.Shell_NotifyIconW.restype = wintypes.BOOL
         shell32.Shell_NotifyIconW.argtypes = [wintypes.DWORD, ctypes.POINTER(NOTIFYICONDATAW)]
@@ -259,9 +275,18 @@ class TrayIcon:
         # A message-only window: never painted, never in the task bar, but it
         # has a queue, which is all the shell needs to deliver icon events to.
         hwnd = user32.CreateWindowExW(
-            0, class_name, self.title, 0,
-            _CW_USEDEFAULT, _CW_USEDEFAULT, _CW_USEDEFAULT, _CW_USEDEFAULT,
-            _HWND_MESSAGE, None, instance, None,
+            0,
+            class_name,
+            self.title,
+            0,
+            _CW_USEDEFAULT,
+            _CW_USEDEFAULT,
+            _CW_USEDEFAULT,
+            _CW_USEDEFAULT,
+            _HWND_MESSAGE,
+            None,
+            instance,
+            None,
         )
         if not hwnd:
             raise OSError("CreateWindowExW failed")
@@ -269,9 +294,7 @@ class TrayIcon:
 
         hicon = 0
         if self.icon_path:
-            hicon = user32.LoadImageW(
-                None, self.icon_path, _IMAGE_ICON, 0, 0, _LR_LOADFROMFILE | _LR_DEFAULTSIZE
-            )
+            hicon = user32.LoadImageW(None, self.icon_path, _IMAGE_ICON, 0, 0, _LR_LOADFROMFILE | _LR_DEFAULTSIZE)
         if not hicon:
             hicon = user32.LoadIconW(None, ctypes.cast(_IDI_APPLICATION, wintypes.LPCWSTR))
         self._hicon = hicon
@@ -297,9 +320,7 @@ class TrayIcon:
 
         user32 = ctypes.windll.user32
         user32.GetMessageW.restype = ctypes.c_int
-        user32.GetMessageW.argtypes = [
-            ctypes.POINTER(wintypes.MSG), wintypes.HWND, wintypes.UINT, wintypes.UINT
-        ]
+        user32.GetMessageW.argtypes = [ctypes.POINTER(wintypes.MSG), wintypes.HWND, wintypes.UINT, wintypes.UINT]
         message = wintypes.MSG()
         while True:
             result = user32.GetMessageW(ctypes.byref(message), None, 0, 0)
@@ -328,8 +349,13 @@ class TrayIcon:
             # the documented quirk of showing a menu from a hidden window.
             user32.SetForegroundWindow(hwnd)
             chosen = user32.TrackPopupMenu(
-                menu, _TPM_RIGHTBUTTON | _TPM_RETURNCMD | _TPM_NONOTIFY,
-                point.x, point.y, 0, hwnd, None,
+                menu,
+                _TPM_RIGHTBUTTON | _TPM_RETURNCMD | _TPM_NONOTIFY,
+                point.x,
+                point.y,
+                0,
+                hwnd,
+                None,
             )
             user32.PostMessageW(hwnd, 0, 0, 0)  # WM_NULL, the other half of the quirk
             if chosen:

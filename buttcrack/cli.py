@@ -273,11 +273,17 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
     if report.hypotheses and not args.quiet:
         top = report.hypotheses[0]
         others = ", ".join(h.cipher for h in report.hypotheses[1:3])
-        print(pal.dim(f"identified {pal.cyan(top.cipher)} ({top.likelihood:.0%})"
-                      + (f" \u00b7 also considered: {others}" if others else "")))
+        print(
+            pal.dim(
+                f"identified {pal.cyan(top.cipher)} ({top.likelihood:.0%})"
+                + (f" \u00b7 also considered: {others}" if others else "")
+            )
+        )
         if args.verbose:
             for hypothesis in report.hypotheses:
-                print(pal.dim(f"           {hypothesis.cipher:<22} {hypothesis.likelihood:>5.0%}  {hypothesis.reason}"))
+                print(
+                    pal.dim(f"           {hypothesis.cipher:<22} {hypothesis.likelihood:>5.0%}  {hypothesis.reason}")
+                )
     print(rule(pal))
     print()
     print(verdict_line(report, pal))
@@ -314,8 +320,13 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
     keyword = report.notes.get("keyword")
     if keyword and keyword != report.key_repr:
         rows.append(("keyword", str(keyword)))
-    rows.append(("evidence", f"fitness {report.best.fitness:.2f} log10/char"
-                             + (f", words {report.best.score.words:.0%}" if report.best.score else "")))
+    rows.append(
+        (
+            "evidence",
+            f"fitness {report.best.fitness:.2f} log10/char"
+            + (f", words {report.best.score.words:.0%}" if report.best.score else ""),
+        )
+    )
     for note_key in ("key_length", "period_quality", "column_ic", "restarts", "evaluations", "iterations"):
         if note_key in report.notes:
             rows.append((note_key.replace("_", " "), str(report.notes[note_key])))
@@ -329,14 +340,10 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
     for name, value in rows:
         print(f"    {pal.dim(name.ljust(label))}  {value}")
 
-    alternatives = [
-        c
-        for c in report.candidates[1:]
-        if c.plaintext != report.plaintext and c.confidence >= 0.05
-    ]
+    alternatives = [c for c in report.candidates[1:] if c.plaintext != report.plaintext and c.confidence >= 0.05]
     if alternatives and args.candidates > 0:
         print()
-        print(pal.bold(f"  alternatives ({len(alternatives[:args.candidates])} of {len(alternatives)})"))
+        print(pal.bold(f"  alternatives ({len(alternatives[: args.candidates])} of {len(alternatives)})"))
         for index, candidate in enumerate(alternatives[: args.candidates], start=2):
             chain = candidate.path if candidate.steps else candidate.cipher
             print(
@@ -349,9 +356,7 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
         print()
         print(pal.bold("  attack log"))
         for attack in report.attacks:
-            colour = {"solved": pal.green, "improved": pal.yellow, "budget": pal.red}.get(
-                attack.status, pal.dim
-            )
+            colour = {"solved": pal.green, "improved": pal.yellow, "budget": pal.red}.get(attack.status, pal.dim)
             print(
                 f"    {attack.cipher:<22} {pad(attack.status, 10, colour)} {attack.elapsed:6.2f}s "
                 f"tried={attack.tried:<6} best={attack.best_confidence:.3f} {pal.dim(attack.detail)}"
@@ -375,8 +380,10 @@ def hint_text(report: CrackReport) -> str:
         )
     if stats.get("entropy", 0) > 7.4 or stats.get("high_bytes"):
         tips.append("the input looks like raw bytes: modern cryptography (AES, RSA) is not brute-forceable here")
-    tips.append("try --budget 120 for hard classical ciphers, --hint-key-length N if you know the period, "
-                "or --verbose to watch the search")
+    tips.append(
+        "try --budget 120 for hard classical ciphers, --hint-key-length N if you know the period, "
+        "or --verbose to watch the search"
+    )
     return "next: " + "; ".join(tips)
 
 
@@ -418,8 +425,9 @@ def cmd_crack(args: argparse.Namespace) -> int:
         report = solve(ciphertext, language=args.language, **options)
 
     if args.json:
-        payload = report.as_dict(plaintext_limit=args.limit if args.limit else None,
-                                 max_candidates=max(args.candidates, 1))
+        payload = report.as_dict(
+            plaintext_limit=args.limit if args.limit else None, max_candidates=max(args.candidates, 1)
+        )
         payload["input"] = {"length": len(ciphertext), "preview": truncate(ciphertext, 200)}
         json.dump(payload, sys.stdout, indent=2 if args.pretty else None, ensure_ascii=False)
         sys.stdout.write("\n")
@@ -441,6 +449,7 @@ def cmd_crack(args: argparse.Namespace) -> int:
 def cmd_assistant(args: argparse.Namespace) -> int:
     """Give transparent local attack recommendations; never claims a break."""
     from .assistant import explain, recommend
+
     text = read_input(args)
     if args.json:
         payload = {
@@ -457,13 +466,20 @@ def cmd_assistant(args: argparse.Namespace) -> int:
 
 def cmd_crib(args: argparse.Namespace) -> int:
     from .crib import consistent_period, implied_shifts
+
     shifts = implied_shifts(args.ciphertext, args.crib, args.offset)
-    print(json.dumps({"offset": args.offset, "shifts": shifts, "period_consistent": consistent_period(shifts, args.period)}, indent=2))
+    print(
+        json.dumps(
+            {"offset": args.offset, "shifts": shifts, "period_consistent": consistent_period(shifts, args.period)},
+            indent=2,
+        )
+    )
     return 0
 
 
 def cmd_transpose(args: argparse.Namespace) -> int:
     from .transposition import decrypt, encrypt
+
     fn = encrypt if args.action == "encrypt" else decrypt
     print(fn(args.text, args.keyword))
     return 0
@@ -471,18 +487,35 @@ def cmd_transpose(args: argparse.Namespace) -> int:
 
 def cmd_results(args: argparse.Namespace) -> int:
     from .results_db import ResultDB
+
     db = ResultDB(args.database)
     if args.leaderboard:
         print(json.dumps(db.leaderboard(args.limit, attack=args.attack), indent=2))
         return 0
     rows = db.recent(args.limit, attack=args.attack, status=args.status)
-    print(json.dumps([{"attack": r[0], "status": r[1], "score": r[2], "candidate": r[3], "verification": r[4], "created_utc": r[5]} for r in rows], indent=2))
+    print(
+        json.dumps(
+            [
+                {
+                    "attack": r[0],
+                    "status": r[1],
+                    "score": r[2],
+                    "candidate": r[3],
+                    "verification": r[4],
+                    "created_utc": r[5],
+                }
+                for r in rows
+            ],
+            indent=2,
+        )
+    )
     return 0
 
 
 def cmd_project(args: argparse.Namespace) -> int:
     """Create or inspect a portable cryptanalysis session."""
     from .project import Project
+
     if args.project_action == "init":
         text = read_input(args)
         project = Project(ciphertext=text, source=args.source or "cli")
@@ -502,14 +535,19 @@ def cmd_project(args: argparse.Namespace) -> int:
         project.save(args.project_file)
         print(f"recorded candidate in {args.project_file}; verification remains required")
         return 0
-    print(json.dumps({
-        "schema": project.schema,
-        "ciphertext_sha256": project.ciphertext_sha256,
-        "ciphertext_length": len(project.ciphertext),
-        "attacks": len(project.attacks),
-        "candidates": len(project.candidates),
-        "notes": len(project.notes),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "schema": project.schema,
+                "ciphertext_sha256": project.ciphertext_sha256,
+                "ciphertext_length": len(project.ciphertext),
+                "attacks": len(project.attacks),
+                "candidates": len(project.candidates),
+                "notes": len(project.notes),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -533,7 +571,10 @@ def cmd_identify(args: argparse.Namespace) -> int:
 
     print(rule(pal, "characterisation"))
     rows = [
-        ("length", f"{stats.length} characters ({stats.letters} letters, {stats.digits} digits, {stats.spaces} spaces)"),
+        (
+            "length",
+            f"{stats.length} characters ({stats.letters} letters, {stats.digits} digits, {stats.spaces} spaces)",
+        ),
         ("charset", stats.charset),
         ("index of coincidence", f"{stats.ic:.4f}  (English ~0.066, random ~0.038)"),
         ("chi-squared / char", f"{stats.chi2_per_char:.3f}  (English < 0.6)"),
@@ -542,7 +583,9 @@ def cmd_identify(args: argparse.Namespace) -> int:
         ("reads as English", f"{stats.confidence:.0%}"),
     ]
     if stats.extra.get("best_period", 1) > 1:
-        rows.append(("best period", f"{stats.extra['best_period']} (coset IC {stats.extra.get('best_period_ic', 0):.4f})"))
+        rows.append(
+            ("best period", f"{stats.extra['best_period']} (coset IC {stats.extra.get('best_period_ic', 0):.4f})")
+        )
     label = max(len(name) for name, _ in rows)
     for name, value in rows:
         print(f"  {pal.dim(name.ljust(label))}  {value}")
@@ -552,7 +595,9 @@ def cmd_identify(args: argparse.Namespace) -> int:
         print("  nothing matches: this may not be an English-language cipher text")
     for hypothesis in hypotheses:
         bar = "\u2588" * int(round(hypothesis.likelihood * 20))
-        colour = pal.green if hypothesis.likelihood >= 0.75 else (pal.yellow if hypothesis.likelihood >= 0.4 else pal.dim)
+        colour = (
+            pal.green if hypothesis.likelihood >= 0.75 else (pal.yellow if hypothesis.likelihood >= 0.4 else pal.dim)
+        )
         print(f"  {colour(f'{hypothesis.likelihood:>5.0%}')} {pad(hypothesis.cipher, 24, pal.cyan)} {pal.dim(bar)}")
         print(f"         {pal.dim(textwrap.shorten(hypothesis.reason, max(40, terminal_width() - 12)))}")
     print()
@@ -687,7 +732,10 @@ def cmd_show(args: argparse.Namespace) -> int:
         ("example key", repr(info.example_key)),
         ("min. text", f"{info.min_length} characters"),
         ("search cost", f"{info.cost:.0f}"),
-        ("exhaustive", "yes \u2014 the whole keyspace is covered" if info.deterministic else "no \u2014 heuristic search"),
+        (
+            "exhaustive",
+            "yes \u2014 the whole keyspace is covered" if info.deterministic else "no \u2014 heuristic search",
+        ),
         ("peelable layer", "yes" if info.layer else "no"),
         ("alphabet", info.alphabet if len(info.alphabet) <= 26 else f"{len(info.alphabet)} symbols"),
     ]
@@ -716,10 +764,18 @@ def cmd_show(args: argparse.Namespace) -> int:
 
 DEMO_CASES: tuple[tuple[str, str, Any], ...] = (
     ("caesar", "Meet the courier beside the fountain at noon and bring the second envelope with you.", 7),
-    ("vigenere", "The council of Venice has decreed that all merchant vessels must pay the new harbour tax.", "SECRET"),
+    (
+        "vigenere",
+        "The council of Venice has decreed that all merchant vessels must pay the new harbour tax.",
+        "SECRET",
+    ),
     ("columnar", "Deliver the sealed package to the contact waiting beneath the clock tower at midnight.", "SPIES"),
-    ("keyword_substitution", "Mathematics is the language in which nature has chosen to write the universe, "
-                             "and every equation is a sentence waiting to be understood.", "GALAXY"),
+    (
+        "keyword_substitution",
+        "Mathematics is the language in which nature has chosen to write the universe, "
+        "and every equation is a sentence waiting to be understood.",
+        "GALAXY",
+    ),
     ("morse", "The railway station at Ashford was rebuilt after the war and now houses a small museum.", None),
 )
 
@@ -728,9 +784,13 @@ def cmd_demo(args: argparse.Namespace) -> int:
     """Encrypt a few messages, then break them without being told what they are."""
     pal = make_palette(args)
     print(rule(pal, f"{PROGRAM} {__version__} \u2014 demo"))
-    print(wrap_block(
-        "Each message below is encrypted with a different cipher, wrapped in an encoding where "
-        "that is interesting, and then handed to the solver with no hints at all.", "  "))
+    print(
+        wrap_block(
+            "Each message below is encrypted with a different cipher, wrapped in an encoding where "
+            "that is interesting, and then handed to the solver with no hints at all.",
+            "  ",
+        )
+    )
     print()
     failures = 0
     for name, plaintext, key in DEMO_CASES:
@@ -742,14 +802,17 @@ def cmd_demo(args: argparse.Namespace) -> int:
         else:
             expected_chain = name
         started = time.time()
-        report = solve(ciphertext, budget=args.budget, workers=args.workers,
-                       language=getattr(args, "language", "english"))
+        report = solve(
+            ciphertext, budget=args.budget, workers=args.workers, language=getattr(args, "language", "english")
+        )
         elapsed = time.time() - started
         ok = report.solved and letters_only(report.plaintext) == letters_only(plaintext)
         failures += 0 if ok else 1
         mark = pal.green("solved") if ok else pal.red("FAILED")
-        print(f"  {pad(cipher.info.title, 22, pal.bold)} {mark} {pal.dim(f'{elapsed:5.2f}s')} "
-              f"conf {report.confidence:.2f}  {pal.cyan(report.path)}")
+        print(
+            f"  {pad(cipher.info.title, 22, pal.bold)} {mark} {pal.dim(f'{elapsed:5.2f}s')} "
+            f"conf {report.confidence:.2f}  {pal.cyan(report.path)}"
+        )
         print(pal.dim(f"    ciphertext  {truncate(ciphertext, terminal_width() - 18)}"))
         print(f"    key         {report.key_repr}   {pal.dim(f'(expected chain: {expected_chain})')}")
         print(f"    plaintext   {truncate(report.formatted, terminal_width() - 18)}")
@@ -797,20 +860,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=PROGRAM,
         description="Automatic cipher breaker: identifies the cipher, recovers the key, "
-                    "reads the plaintext -- including layered puzzles.",
+        "reads the plaintext -- including layered puzzles.",
         epilog="examples:\n"
-               f"  {PROGRAM} \"Wkh txlfn eurzq ira\"\n"
-               f"  {PROGRAM} --file puzzle.txt --budget 60 --verbose\n"
-               f"  cat puzzle.txt | {PROGRAM} --json\n"
-               f"  {PROGRAM} encrypt vigenere --key LEMON \"meet me at noon\"\n"
-               f"  {PROGRAM} --file puzzle.txt --budget 120 --workers 4\n"
-               f"  {PROGRAM} --file puzzle.txt --hint key=LEMON\n"
-               f"  {PROGRAM} --file puzzle.txt --hint key=hex:ff10 --hint period=7\n"
-               f"  {PROGRAM} identify --file puzzle.txt\n"
-               f"  {PROGRAM} ciphers --verbose\n"
-               f"  {PROGRAM} demo\n"
-               f"  {PROGRAM} serve --port 8080\n"
-               f"  {PROGRAM} app\n",
+        f'  {PROGRAM} "Wkh txlfn eurzq ira"\n'
+        f"  {PROGRAM} --file puzzle.txt --budget 60 --verbose\n"
+        f"  cat puzzle.txt | {PROGRAM} --json\n"
+        f'  {PROGRAM} encrypt vigenere --key LEMON "meet me at noon"\n'
+        f"  {PROGRAM} --file puzzle.txt --budget 120 --workers 4\n"
+        f"  {PROGRAM} --file puzzle.txt --hint key=LEMON\n"
+        f"  {PROGRAM} --file puzzle.txt --hint key=hex:ff10 --hint period=7\n"
+        f"  {PROGRAM} identify --file puzzle.txt\n"
+        f"  {PROGRAM} ciphers --verbose\n"
+        f"  {PROGRAM} demo\n"
+        f"  {PROGRAM} serve --port 8080\n"
+        f"  {PROGRAM} app\n",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command")
@@ -819,41 +882,58 @@ def build_parser() -> argparse.ArgumentParser:
     def add_crack_options(target: argparse.ArgumentParser) -> None:
         target.add_argument("text", nargs="*", help="ciphertext (or '-' / omit to read stdin)")
         target.add_argument("--file", "-f", help="read the ciphertext from a file ('-' for stdin)")
-        target.add_argument("--budget", "-b", type=float, default=30.0,
-                            help="seconds to spend searching (default: 30)")
-        target.add_argument("--workers", "-w", type=int, default=os.cpu_count() or 1,
-                            help="parallel workers (default: number of CPUs)")
-        target.add_argument("--depth", "-d", type=int, default=6,
-                            help="how many layers to peel or unwrap (default: 6)")
+        target.add_argument(
+            "--budget", "-b", type=float, default=30.0, help="seconds to spend searching (default: 30)"
+        )
+        target.add_argument(
+            "--workers",
+            "-w",
+            type=int,
+            default=os.cpu_count() or 1,
+            help="parallel workers (default: number of CPUs)",
+        )
+        target.add_argument(
+            "--depth", "-d", type=int, default=6, help="how many layers to peel or unwrap (default: 6)"
+        )
         target.add_argument("--key", help="hint: the key, if you already know it")
         target.add_argument("--key-length", type=int, help="hint: period of a repeating key")
         target.add_argument("--width", type=int, help="hint: grid width for a transposition")
         target.add_argument("--seed", type=int, help="hint: fixed search seed (reproducibility)")
         target.add_argument("--crib", help="hint: a phrase you expect in the plaintext")
-        target.add_argument("--hint", action="append", metavar="NAME=VALUE",
-                            help="hint for the search, repeatable: key=LEMON, key=hex:ff10, "
-                                 "period=7, rails=4, width=6, seed=1")
-        target.add_argument("--candidates", "-n", type=int, default=5,
-                            help="how many alternative readings to show (default: 5)")
+        target.add_argument(
+            "--hint",
+            action="append",
+            metavar="NAME=VALUE",
+            help="hint for the search, repeatable: key=LEMON, key=hex:ff10, period=7, rails=4, width=6, seed=1",
+        )
+        target.add_argument(
+            "--candidates", "-n", type=int, default=5, help="how many alternative readings to show (default: 5)"
+        )
         target.add_argument("--limit", type=int, default=0, help="truncate the printed plaintext")
-        target.add_argument("--language", "-l", default="english", metavar="LANG",
-                            type=language_name,
-                            help="plaintext language model: english (default), french, german, "
-                                 "italian, latin, spanish, or 'auto' to probe all (auto spends up "
-                                 "to half the budget deciding, then solves under the best fit); "
-                                 "ISO aliases like 'fr' or 'es-419' are accepted")
-        target.add_argument("--exhaustive", action="store_true",
-                            help="enumerate whole keyspaces even where the search would prune")
+        target.add_argument(
+            "--language",
+            "-l",
+            default="english",
+            metavar="LANG",
+            type=language_name,
+            help="plaintext language model: english (default), french, german, "
+            "italian, latin, spanish, or 'auto' to probe all (auto spends up "
+            "to half the budget deciding, then solves under the best fit); "
+            "ISO aliases like 'fr' or 'es-419' are accepted",
+        )
+        target.add_argument(
+            "--exhaustive", action="store_true", help="enumerate whole keyspaces even where the search would prune"
+        )
         target.add_argument("--json", action="store_true", help="machine-readable output")
         target.add_argument("--pretty", action="store_true", help="indent --json output")
         target.add_argument("--quiet", "-q", action="store_true", help="print only the plaintext")
         target.add_argument("--verbose", "-v", action="store_true", help="live progress and attack log")
         target.add_argument("--no-color", action="store_true", help="disable ANSI colour")
-        target.add_argument("--set-exit-code", action="store_true",
-                            help="exit 1 when the ciphertext was not broken")
+        target.add_argument("--set-exit-code", action="store_true", help="exit 1 when the ciphertext was not broken")
 
-    crack = sub.add_parser("crack", help="break a ciphertext (the default command)",
-                           formatter_class=argparse.RawDescriptionHelpFormatter)
+    crack = sub.add_parser(
+        "crack", help="break a ciphertext (the default command)", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     add_crack_options(crack)
     crack.set_defaults(func=cmd_crack)
 
@@ -956,10 +1036,10 @@ def build_parser() -> argparse.ArgumentParser:
     # Quick is the default, but saying so out loud is worth the flag: "run the
     # cheap checks" and "run everything" should both be spellable.
     scope = selftest.add_mutually_exclusive_group()
-    scope.add_argument("--slow", action="store_true",
-                       help="include the expensive searches (substitution, Playfair, Bifid)")
-    scope.add_argument("--quick", action="store_true",
-                       help="skip the expensive searches (this is the default)")
+    scope.add_argument(
+        "--slow", action="store_true", help="include the expensive searches (substitution, Playfair, Bifid)"
+    )
+    scope.add_argument("--quick", action="store_true", help="skip the expensive searches (this is the default)")
     selftest.add_argument("--verbose", "-v", action="store_true")
     selftest.add_argument("--json", action="store_true")
     selftest.add_argument("--workers", "-w", type=int, default=os.cpu_count() or 1)
@@ -978,8 +1058,7 @@ def build_parser() -> argparse.ArgumentParser:
     # puts in the Start menu: loopback only, any free port, and a window to
     # close.  Same interface, opposite defaults, so neither has to compromise.
     app = sub.add_parser("app", help="run the desktop application (local web UI, 127.0.0.1 only)")
-    app.add_argument("--port", "-p", type=int, default=0,
-                     help="port to use (default: 8080, or any free port)")
+    app.add_argument("--port", "-p", type=int, default=0, help="port to use (default: 8080, or any free port)")
     app.add_argument("--no-browser", action="store_true", help="do not open a browser on startup")
     app.add_argument("--console", action="store_true", help="no control window; run in the terminal")
     app.add_argument("--no-color", action="store_true")
@@ -989,7 +1068,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 SUBCOMMANDS = (
-    "crack", "assistant", "project", "results", "crib", "transpose", "identify", "encrypt", "decrypt", "ciphers", "show", "demo", "selftest", "serve", "app",
+    "crack",
+    "assistant",
+    "project",
+    "results",
+    "crib",
+    "transpose",
+    "identify",
+    "encrypt",
+    "decrypt",
+    "ciphers",
+    "show",
+    "demo",
+    "selftest",
+    "serve",
+    "app",
 )
 
 

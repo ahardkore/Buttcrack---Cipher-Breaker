@@ -55,8 +55,8 @@ def encrypt(plaintext: str, cipher: str | Cipher, key: Any = None) -> str:
 def decrypt(ciphertext: str, cipher: str | Cipher, key: Any = None) -> str:
     """Decrypt ``ciphertext`` with a named cipher and key.
 
-        >>> decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")
-        'Meet me at noon.'
+    >>> decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")
+    'Meet me at noon.'
     """
     target = cipher if isinstance(cipher, Cipher) else get(str(cipher))
     return target.decrypt(ciphertext, target.info.example_key if key is None else key)

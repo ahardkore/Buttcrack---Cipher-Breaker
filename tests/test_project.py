@@ -8,11 +8,22 @@ from buttcrack.project import Project
 class ProjectTests(unittest.TestCase):
     def test_structured_state_round_trip(self):
         import tempfile
-        project = Project(source="desktop", verification={"algorithm":"Vigenere","result":"mismatch"}, crib_placements=[{"crib":"TEST","offset":2}], transposition={"fill":"row-fill","history":["grid"]}, scoring_records=[{"provider":"QuadgramScore","value":1.2}], campaign={"total_chunks":10}, assistant_outputs=[{"text":"hypothesis"}])
-        candidate = project.add_candidate("PLAINTEXT", {"score": -1})
-        project.record_candidate_verification(0, "failed", {"reason":"round trip"})
+
+        project = Project(
+            source="desktop",
+            verification={"algorithm": "Vigenere", "result": "mismatch"},
+            crib_placements=[{"crib": "TEST", "offset": 2}],
+            transposition={"fill": "row-fill", "history": ["grid"]},
+            scoring_records=[{"provider": "QuadgramScore", "value": 1.2}],
+            campaign={"total_chunks": 10},
+            assistant_outputs=[{"text": "hypothesis"}],
+        )
+        project.add_candidate("PLAINTEXT", {"score": -1})
+        project.record_candidate_verification(0, "failed", {"reason": "round trip"})
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "project.json"; project.save(path); loaded = Project.load(path)
+            path = Path(directory) / "project.json"
+            project.save(path)
+            loaded = Project.load(path)
         self.assertEqual(loaded.verification["result"], "mismatch")
         self.assertEqual(loaded.crib_placements[0]["offset"], 2)
         self.assertEqual(loaded.transposition["history"], ["grid"])

@@ -141,8 +141,7 @@ class ColumnarTransposition(Cipher):
             pos += length
         height = full + (1 if rem else 0)
         return "".join(
-            "".join(columns[col][row] for col in range(width) if row < len(columns[col]))
-            for row in range(height)
+            "".join(columns[col][row] for col in range(width) if row < len(columns[col])) for row in range(height)
         )
 
     # -- attack helpers ----------------------------------------------------- #
@@ -205,11 +204,7 @@ class ColumnarTransposition(Cipher):
             if position >= size:
                 continue
             base = mask * size
-            live = [
-                (dp[base + last], last)
-                for last in range(size)
-                if (mask >> last) & 1 and dp[base + last] > neg
-            ]
+            live = [(dp[base + last], last) for last in range(size) if (mask >> last) & 1 and dp[base + last] > neg]
             if not live:
                 continue
             for v in groups_i[slot_group[position]]:
@@ -337,9 +332,7 @@ class ColumnarTransposition(Cipher):
             full, rem = divmod(n, width)
             if full < 3:
                 continue  # too few rows for the bigram statistics to mean anything
-            patterns: list[tuple[int, ...]] = (
-                [()] if rem == 0 else list(combinations(range(width), rem))
-            )
+            patterns: list[tuple[int, ...]] = [()] if rem == 0 else list(combinations(range(width), rem))
             if len(patterns) > self.max_patterns:
                 rng.shuffle(patterns)
                 patterns = sorted(patterns[: self.max_patterns])
@@ -362,9 +355,7 @@ class ColumnarTransposition(Cipher):
                 segments, groups = self._slice(stream, width, pattern)
                 scores = self._pair_scores(segments, ctx, max_rows=24)
                 seed = sum((self._greedy_path(scores, g) for g in groups), [])
-                prelim.append(
-                    (ctx.model.search_fitness(self.rebuild(stream, invert_path(seed))), pattern)
-                )
+                prelim.append((ctx.model.search_fitness(self.rebuild(stream, invert_path(seed))), pattern))
             prelim.sort(key=lambda t: -t[0])
             leaders = patterns if len(patterns) == 1 else [p for _, p in prelim[: self.pattern_leaders]]
 
@@ -414,9 +405,7 @@ class ColumnarTransposition(Cipher):
         results.sort(key=Candidate.sort_key)
         yield from results
 
-    def _exhaustive(
-        self, stream: str, groups: list[list[int]], ctx: CrackContext
-    ) -> tuple[list[int] | None, float]:
+    def _exhaustive(self, stream: str, groups: list[list[int]], ctx: CrackContext) -> tuple[list[int] | None, float]:
         """Try every ordering within each group and keep the best quadgram score."""
         best_path, best_fit = None, float("-inf")
         combos = [list(permutations(g)) for g in groups]
@@ -793,10 +782,7 @@ class Myszkowski(Cipher):
     @staticmethod
     def _groups(ranks: tuple[int, ...]) -> list[list[int]]:
         """Column indices per read group, in rank order."""
-        return [
-            [i for i, r in enumerate(ranks) if r == rank]
-            for rank in sorted(set(ranks))
-        ]
+        return [[i for i, r in enumerate(ranks) if r == rank] for rank in sorted(set(ranks))]
 
     # -- transforms --------------------------------------------------------- #
     def encrypt(self, plaintext: str, key: Any = "TOMATO") -> str:
@@ -903,9 +889,7 @@ class Myszkowski(Cipher):
                         neighbours.append(trial)
                 for trial in neighbours:
                     canonical = list(self._canonical(tuple(trial)))
-                    trial_fit = ctx.model.search_fitness(
-                        self._rebuild(stream, tuple(canonical))
-                    )
+                    trial_fit = ctx.model.search_fitness(self._rebuild(stream, tuple(canonical)))
                     if trial_fit > fit + 1e-9:
                         current, fit, improved = canonical, trial_fit, True
             if fit > best_fit:
@@ -926,8 +910,11 @@ class Myszkowski(Cipher):
         if hint is not None:
             ranks = self.normalise_key(hint)
             yield ctx.candidate(
-                self.name, self._rebuild(stream, ranks), {"key": hint, "ranks": list(ranks)},
-                steps=ctx.steps, method="hint",
+                self.name,
+                self._rebuild(stream, ranks),
+                {"key": hint, "ranks": list(ranks)},
+                steps=ctx.steps,
+                method="hint",
             )
             return
         rng = random.Random(ctx.hints.get("seed", 4242))
@@ -1087,8 +1074,11 @@ class Amsco(Cipher):
                 order = tuple(key_to_order(hint))
                 results.append(
                     ctx.candidate(
-                        self.name, self._rebuild(stream, order, start),
-                        {"order": list(order), "start": start}, steps=ctx.steps, method="hint",
+                        self.name,
+                        self._rebuild(stream, order, start),
+                        {"order": list(order), "start": start},
+                        steps=ctx.steps,
+                        method="hint",
                     )
                 )
             results.sort(key=Candidate.sort_key)

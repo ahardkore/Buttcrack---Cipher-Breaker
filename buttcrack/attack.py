@@ -1,4 +1,5 @@
 """Common attack-job protocol for explainable and resumable searches."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -45,7 +46,8 @@ def merge_result(previous: AttackResult, current: AttackResult) -> AttackResult:
         status=current.status,
         progress=max(previous.progress, current.progress),
         best_score=max(x for x in (previous.best_score, current.best_score) if x is not None)
-        if any(x is not None for x in (previous.best_score, current.best_score)) else None,
+        if any(x is not None for x in (previous.best_score, current.best_score))
+        else None,
         candidates=unique[:100],
         checkpoint=current.checkpoint or previous.checkpoint,
         message=current.message,

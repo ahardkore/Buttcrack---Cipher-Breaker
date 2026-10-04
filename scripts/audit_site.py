@@ -29,6 +29,7 @@ front door.
 
 Exit status is non-zero if any *error* is found; warnings are advisory.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -49,8 +50,20 @@ DESC_MIN = 70
 DESC_MAX = 165
 
 VOID_TAGS = {
-    "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
-    "meta", "param", "source", "track", "wbr",
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
 }
 
 #: Form controls that need an accessible name.
@@ -135,9 +148,7 @@ class Page(HTMLParser):
             if a.get("href"):
                 self.links.append(("href", a["href"], line))
             self._open_anchor = []
-            self._anchor_named = bool(
-                a.get("aria-label") or a.get("title") or a.get("aria-labelledby")
-            )
+            self._anchor_named = bool(a.get("aria-label") or a.get("title") or a.get("aria-labelledby"))
             self._anchor_line = line
         elif tag in LABELLED_TAGS:
             exempt = tag == "input" and a.get("type", "text").lower() in UNLABELLED_INPUT_TYPES
@@ -187,7 +198,8 @@ class Page(HTMLParser):
         super().close()
         # <p> and <li> are allowed to be left open by the HTML parsing spec.
         self.unclosed = [
-            (t, line) for t, line in self._stack
+            (t, line)
+            for t, line in self._stack
             if t not in {"p", "li", "dt", "dd", "option", "tr", "td", "th", "thead", "tbody"}
         ]
 
@@ -245,12 +257,12 @@ def check_links(site: Path, pages: dict[Path, Page], report: Report) -> None:
                 continue
             dest = resolve(site, path, value)
             if dest is None:
-                report.error(f"{rel}:{line}", f"{attr}=\"{value}\" escapes the site root")
+                report.error(f"{rel}:{line}", f'{attr}="{value}" escapes the site root')
                 continue
             if not dest.exists():
                 report.error(
                     f"{rel}:{line}",
-                    f"broken {attr} \"{value}\" -> missing {dest.relative_to(site.resolve())}",
+                    f'broken {attr} "{value}" -> missing {dest.relative_to(site.resolve())}',
                 )
                 continue
             if "#" in value:
@@ -259,7 +271,7 @@ def check_links(site: Path, pages: dict[Path, Page], report: Report) -> None:
                 if frag and target_page is not None and frag not in target_page.ids:
                     report.error(
                         f"{rel}:{line}",
-                        f"link \"{value}\" points at #{frag}, which does not exist on "
+                        f'link "{value}" points at #{frag}, which does not exist on '
                         f"{dest.relative_to(site.resolve())}",
                     )
 
@@ -295,7 +307,9 @@ def check_head(site: Path, pages: dict[Path, Page], base_url: str, report: Repor
         else:
             titles[page.title].append(where)
             if len(page.title) > TITLE_MAX:
-                report.warn(where, f"title is {len(page.title)} chars (over {TITLE_MAX}, will be truncated in results)")
+                report.warn(
+                    where, f"title is {len(page.title)} chars (over {TITLE_MAX}, will be truncated in results)"
+                )
 
         desc = page.meta.get("description", "").strip()
         if not desc:
@@ -362,7 +376,7 @@ def check_structure(site: Path, pages: dict[Path, Page], report: Report) -> None
             if not control_id or control_id not in page.labels_for:
                 report.error(f"{where}:{line}", f"<{tag}> has no label and no aria-label")
         for element_id, line in page.duplicate_ids:
-            report.error(f"{where}:{line}", f"duplicate id=\"{element_id}\"")
+            report.error(f"{where}:{line}", f'duplicate id="{element_id}"')
         for tag, line in page.unclosed:
             report.error(f"{where}:{line}", f"<{tag}> is never closed")
 
@@ -383,18 +397,14 @@ def check_sitemap(site: Path, pages: dict[Path, Page], base_url: str, report: Re
         if base_url and not loc.startswith(base_url):
             report.error("sitemap.xml", f"{loc} is not under base_url {base_url}")
             continue
-        rel = loc[len(base_url):].lstrip("/") if base_url else loc
+        rel = loc[len(base_url) :].lstrip("/") if base_url else loc
         if rel in ("", "/") or rel.endswith("/"):
             rel = f"{rel}index.html"
         listed.add(rel)
         if not (site / rel).exists():
             report.error("sitemap.xml", f"lists {rel}, which is not in the built site")
 
-    indexable = {
-        str(p.relative_to(site))
-        for p in pages
-        if "noindex" not in pages[p].meta.get("robots", "").lower()
-    }
+    indexable = {str(p.relative_to(site)) for p in pages if "noindex" not in pages[p].meta.get("robots", "").lower()}
     # Thank-you pages are intentionally noindex; 404 is never listed.
     for missing in sorted(indexable - listed - {"404.html"}):
         report.warn("sitemap.xml", f"does not list {missing}")
@@ -501,20 +511,16 @@ def base_url_from_site_json() -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("site", nargs="?", default=str(ROOT / "_site"),
-                        help="the assembled site directory (default: ./_site)")
-    parser.add_argument("--base-url", default=None,
-                        help="override the base URL used to check canonicals")
-    parser.add_argument("--strict", action="store_true",
-                        help="treat warnings as failures too")
+    parser.add_argument(
+        "site", nargs="?", default=str(ROOT / "_site"), help="the assembled site directory (default: ./_site)"
+    )
+    parser.add_argument("--base-url", default=None, help="override the base URL used to check canonicals")
+    parser.add_argument("--strict", action="store_true", help="treat warnings as failures too")
     args = parser.parse_args(argv)
 
     site = Path(args.site).resolve()
     if not site.is_dir():
-        raise SystemExit(
-            f"no assembled site at {site}\n"
-            "Build it first: python3 scripts/build_site.py --out _site"
-        )
+        raise SystemExit(f"no assembled site at {site}\nBuild it first: python3 scripts/build_site.py --out _site")
 
     base_url = args.base_url if args.base_url is not None else base_url_from_site_json()
     base_url = base_url.rstrip("/")

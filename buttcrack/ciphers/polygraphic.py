@@ -273,10 +273,10 @@ class Playfair(Cipher):
 
 #: Playfair search tuning.  Every number here was measured on a 1,600-letter
 #: ciphertext; see :func:`_playfair_worker` for the figures.
-PLAYFAIR_SEED_WINDOW = 400     #: characters scored while the population is still noise
-PLAYFAIR_POLISH_FITNESS = -5.6 #: switch to scoring the whole text past this point
-PLAYFAIR_POPULATION = 12       #: grids kept alive at once
-PLAYFAIR_STAGNATION = 25       #: generations without progress before the tail is reseeded
+PLAYFAIR_SEED_WINDOW = 400  #: characters scored while the population is still noise
+PLAYFAIR_POLISH_FITNESS = -5.6  #: switch to scoring the whole text past this point
+PLAYFAIR_POPULATION = 12  #: grids kept alive at once
+PLAYFAIR_STAGNATION = 25  #: generations without progress before the tail is reseeded
 
 
 def _playfair_ensemble_worker(payload: tuple) -> tuple:
@@ -312,9 +312,7 @@ def _playfair_anneal_worker(payload: tuple) -> tuple:
     window = min(n, PLAYFAIR_SEED_WINDOW)
 
     def fitness(grid: list[str]) -> float:
-        return model.ngram_score(
-            apply_grid(stream, "".join(grid), True), normalise=False, max_chars=window
-        )
+        return model.ngram_score(apply_grid(stream, "".join(grid), True), normalise=False, max_chars=window)
 
     started = time.time()
     total = max(0.01, min(deadline, hard_deadline) - started)

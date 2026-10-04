@@ -1,4 +1,5 @@
 """Exact, human-readable round-trip verification helpers."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" role="img" aria-labelledby="title desc">
+<title>Polyalphabetic cipher tableau</title><desc>Rows of shifted alphabets illustrate how a keyword selects a different alphabet for each letter.</desc>
+<rect width="900" height="330" rx="18" fill="#10151d"/><g fill="#f3eadb" font-family="ui-monospace,monospace" font-size="20" text-anchor="middle">
+<text x="450" y="42" fill="#f0883e" font-family="sans-serif" font-size="24">KEYWORD → SELECTED ALPHABET</text>
+<g opacity=".92"><text x="55" y="92">A</text><text x="55" y="140">B</text><text x="55" y="188">C</text><text x="55" y="236">D</text><text x="55" y="284">E</text></g>
+<g fill="#d8b08d"><text x="130" y="92">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</text><text x="130" y="140">B C D E F G H I J K L M N O P Q R S T U V W X Y Z A</text><text x="130" y="188">C D E F G H I J K L M N O P Q R S T U V W X Y Z A B</text><text x="130" y="236">D E F G H I J K L M N O P Q R S T U V W X Y Z A B C</text><text x="130" y="284">E F G H I J K L M N O P Q R S T U V W X Y Z A B C D</text></g></g></svg>

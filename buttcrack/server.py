@@ -206,8 +206,7 @@ class Handler(BaseHTTPRequestHandler):
                         "layers": [c.info.name for c in layer_ciphers()],
                         "model": get_model().meta,
                         "languages": [
-                            {"name": name, "quadgrams": get_model(name).ngram_count(4)}
-                            for name in LANGUAGES
+                            {"name": name, "quadgrams": get_model(name).ngram_count(4)} for name in LANGUAGES
                         ],
                     }
                 )
@@ -256,9 +255,7 @@ class Handler(BaseHTTPRequestHandler):
                 if not text.strip():
                     return self._error(400, "no text given")
                 hypotheses, stats = identify(text)
-                return self._json(
-                    {"stats": stats.as_dict(), "hypotheses": [h.as_dict() for h in hypotheses]}
-                )
+                return self._json({"stats": stats.as_dict(), "hypotheses": [h.as_dict() for h in hypotheses]})
             if path == "/api/transform":
                 return self._transform(body)
             return self._error(404, f"unknown endpoint {path}")

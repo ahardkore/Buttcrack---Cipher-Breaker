@@ -339,10 +339,7 @@ class SumClock(_KeyedPeriodic):
                 periods = [len(wheel) for wheel in wheels]
             elif key.get("keys"):
                 index = self._index(alphabet)
-                wheels = [
-                    [index[c] for c in letters_only(str(word)).upper() if c in index]
-                    for word in key["keys"]
-                ]
+                wheels = [[index[c] for c in letters_only(str(word)).upper() if c in index] for word in key["keys"]]
                 periods = [len(wheel) for wheel in wheels]
         elif isinstance(key, (tuple, list)):
             periods = [int(p) for p in key]
@@ -570,8 +567,7 @@ class SumClock(_KeyedPeriodic):
         results: list[tuple[float, list[list[int]], str]] = []
         for _total, wheel_short, wheel_long in scored[:verify]:
             plain = "".join(
-                alphabet[(positions[t] - wheel_short[t % short] - wheel_long[t % long]) % 26]
-                for t in range(n)
+                alphabet[(positions[t] - wheel_short[t % short] - wheel_long[t % long]) % 26] for t in range(n)
             )
             results.append((ctx.model.search_fitness(plain), [list(wheel_short), wheel_long], plain))
         results.sort(key=lambda row: -row[0])
@@ -708,10 +704,7 @@ class SumClock(_KeyedPeriodic):
         stream = [index[c] for c in self.prepare(ciphertext) if c in index]
         taps = self.annihilator(periods)
         span = max(taps)
-        return [
-            sum(sign * stream[t + off] for off, sign in taps.items()) % 26
-            for t in range(len(stream) - span)
-        ]
+        return [sum(sign * stream[t + off] for off, sign in taps.items()) % 26 for t in range(len(stream) - span)]
 
     def scan_corpus(
         self,
@@ -880,9 +873,7 @@ class SumClock(_KeyedPeriodic):
             for r in range(len(matrix)):
                 if r != row_index and matrix[r][column] % prime:
                     factor = matrix[r][column]
-                    matrix[r] = [
-                        (a - factor * b) % prime for a, b in zip(matrix[r], matrix[row_index])
-                    ]
+                    matrix[r] = [(a - factor * b) % prime for a, b in zip(matrix[r], matrix[row_index])]
             pivots.append(column)
             row_index += 1
             if row_index == len(matrix):
@@ -996,9 +987,7 @@ class SumClock(_KeyedPeriodic):
                     return
                 produced += 1
                 # x == v2 (mod 2), x == v13 (mod 13)  ->  x = 13*v2*13^-1 + 2*v13*2^-1
-                solution = [
-                    (13 * a + 14 * b) % 26 for a, b in zip(v2, v13)
-                ]
+                solution = [(13 * a + 14 * b) % 26 for a, b in zip(v2, v13)]
                 wheels = []
                 cursor = 0
                 for period in periods:
@@ -1061,10 +1050,7 @@ class SumClock(_KeyedPeriodic):
                 return None
             solutions[prime] = solved
         # Lift both prime components to Z/26 by CRT: 13*x2 + 14*x13.
-        particular = [
-            (13 * a + 14 * b) % 26
-            for a, b in zip(solutions[2][0], solutions[13][0])
-        ]
+        particular = [(13 * a + 14 * b) % 26 for a, b in zip(solutions[2][0], solutions[13][0])]
         # Pair the two nullspace bases by free column and CRT them together, so
         # the subspace has one Z/26 generator per free dimension instead of one
         # per prime component.  Keeping them separate works but doubles the
@@ -1134,9 +1120,7 @@ class SumClock(_KeyedPeriodic):
                         flat = [(f + c * v) % 26 for f, v in zip(flat, vector)]
                 return self._unflatten(flat, periods)
 
-            current = ctx.model.search_fitness(
-                self._apply(stream, alphabet, materialise(coefficients), -1)
-            )
+            current = ctx.model.search_fitness(self._apply(stream, alphabet, materialise(coefficients), -1))
             steps = 400 * max(1, len(basis))
             for step in range(steps):
                 if ctx.expired() or time.time() > deadline:
@@ -1152,7 +1136,7 @@ class SumClock(_KeyedPeriodic):
                 if move < 0.45:
                     coefficients[i] = rng.randrange(26)
                 elif move < 0.70:
-                    coefficients[i] = (previous + 13) % 26          # flip the bit
+                    coefficients[i] = (previous + 13) % 26  # flip the bit
                 elif move < 0.90:
                     coefficients[i] = (previous + 2 * rng.randrange(1, 13)) % 26
                 else:
@@ -1160,9 +1144,7 @@ class SumClock(_KeyedPeriodic):
                 wheels = materialise(coefficients)
                 plain = self._apply(stream, alphabet, wheels, -1)
                 fitness = ctx.model.search_fitness(plain)
-                if fitness > current or rng.random() < math.exp(
-                    max(-60.0, (fitness - current) / max(temp, 1e-6))
-                ):
+                if fitness > current or rng.random() < math.exp(max(-60.0, (fitness - current) / max(temp, 1e-6))):
                     current = fitness
                     if best is None or fitness > best[0]:
                         best = (fitness, offset, wheels, plain)
@@ -1204,11 +1186,7 @@ class SumClock(_KeyedPeriodic):
         seen: set[str] = set()
         # Offset 0 first: a crib is usually the opening phrase, and finding it
         # there ends the scan before the other 130 placements are tried.
-        span = (
-            list(offsets)
-            if offsets is not None
-            else [0] + list(range(1, max(1, len(stream) - len(crib) + 1)))
-        )
+        span = list(offsets) if offsets is not None else [0] + list(range(1, max(1, len(stream) - len(crib) + 1)))
         for offset in span:
             if ctx.expired():
                 break
@@ -1330,9 +1308,7 @@ class SumClock(_KeyedPeriodic):
                 for _ in range(self.kick_size):
                     w = rng.randrange(len(trial))
                     trial[w][rng.randrange(len(trial[w]))] = rng.randrange(26)
-                kicked, kicked_fit = self._anneal(
-                    stream, alphabet, periods, ctx, rng, wheels=trial, sweeps=90
-                )
+                kicked, kicked_fit = self._anneal(stream, alphabet, periods, ctx, rng, wheels=trial, sweeps=90)
                 if kicked_fit > best[1]:
                     best = ([list(w) for w in kicked], kicked_fit)
                     if best[1] > SOLVED_FITNESS:
@@ -1385,9 +1361,7 @@ class SumClock(_KeyedPeriodic):
                 for periods in shapes:
                     if ctx.expired():
                         break
-                    found = self.crack_with_crib(
-                        stream, str(crib), ctx, periods=periods, alphabet=alphabet
-                    )
+                    found = self.crack_with_crib(stream, str(crib), ctx, periods=periods, alphabet=alphabet)
                     for fitness, offset, wheels, plain in found[:3]:
                         results.append(
                             ctx.candidate(
@@ -1443,7 +1417,12 @@ class SumClock(_KeyedPeriodic):
             if len(shapes) == 1:
                 # The shape was given; spend the whole budget on it.
                 found = self._search(
-                    stream, alphabet, shapes[0], ctx, rng, self.invest_restarts,
+                    stream,
+                    alphabet,
+                    shapes[0],
+                    ctx,
+                    rng,
+                    self.invest_restarts,
                     seconds=max(1.0, ctx.remaining() * 0.95),
                 )
                 if found:
@@ -1460,9 +1439,7 @@ class SumClock(_KeyedPeriodic):
                 candidates = self._short_wheel_candidates(short, alphabet, ctx)
                 if candidates is None:
                     continue
-                exact = self.solve_two_wheels(
-                    stream, alphabet, short, long, ctx, candidates=candidates, keep=2
-                )
+                exact = self.solve_two_wheels(stream, alphabet, short, long, ctx, candidates=candidates, keep=2)
                 for fitness, wheels, plain in exact[:1]:
                     results.append(
                         ctx.candidate(
@@ -1495,9 +1472,7 @@ class SumClock(_KeyedPeriodic):
                     break
                 if sum(periods) * self.min_letters_per_column > len(stream) * 2:
                     continue  # more unknowns than the text can pay for
-                found = self._search(
-                    stream, alphabet, periods, ctx, rng, self.scout_restarts, kicks=0
-                )
+                found = self._search(stream, alphabet, periods, ctx, rng, self.scout_restarts, kicks=0)
                 if found is None:
                     continue
                 scouted.append((found[1], list(periods), found[0]))
@@ -1522,7 +1497,12 @@ class SumClock(_KeyedPeriodic):
                 if ctx.expired() or ctx.remaining() < 1.0:
                     break
                 found = self._search(
-                    stream, alphabet, periods, ctx, rng, self.invest_restarts,
+                    stream,
+                    alphabet,
+                    periods,
+                    ctx,
+                    rng,
+                    self.invest_restarts,
                     seconds=min(share, max(1.0, ctx.remaining() * 0.9)),
                 )
                 if found:

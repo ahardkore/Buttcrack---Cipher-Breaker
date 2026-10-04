@@ -76,8 +76,7 @@ LAYOUT_HOSTILE = frozenset({"rot47", "reverse"})
 #: just one shift, and a substitution on top of a substitution is a single
 #: substitution, so recursing into them can only re-find what the sweep at this
 #: node already found.
-RECURSIVE_CIPHERS = frozenset({"reverse", "rail_fence", "skip", "route",
-                               "columnar", "myszkowski", "amsco"})
+RECURSIVE_CIPHERS = frozenset({"reverse", "rail_fence", "skip", "route", "columnar", "myszkowski", "amsco"})
 
 #: ROT47 is deliberately absent: it is an involution over printable ASCII, so
 #: applying it to a letters-only text produces punctuation, and a chain of them
@@ -125,6 +124,7 @@ AMBIGUOUS_RECURSIVE = frozenset({"rail_fence", "skip", "reverse"})
 #: because twenty readings times 312 keys is no longer free and would come out
 #: of the budget of the attack that was going to work.
 PROBE_CHEAP = ("caesar", "atbash", "rot13")
+
 
 def descent_evidence(depth: int) -> float:
     """How convincing a layer must look to be peeled at this depth.
@@ -225,6 +225,7 @@ PHASE_SLICES = {CHEAP: 3.0, MODERATE: 6.0, EXPENSIVE: 25.0, BRUTAL: 20.0}
 #: puzzle needs (a six-layer stack with two plausible readings per level is 63)
 #: and well below the point where bookkeeping shows up in a profile.
 MAX_NODES = 400
+
 
 #: Share of the remaining time a child node may take.  Deeper nodes get a
 #: larger share of a smaller pot: at depth 5 the answer is either down this
@@ -364,7 +365,9 @@ class Solver:
         started = time.time()
         text = trim(ciphertext)
         report = CrackReport(
-            ciphertext=ciphertext, budget=self.budget, workers=self.workers,
+            ciphertext=ciphertext,
+            budget=self.budget,
+            workers=self.workers,
             language=self.model.language,
         )
         if not text:
@@ -403,11 +406,7 @@ class Solver:
         # a structural layer, that layer gets to claim the answer, and the
         # plain-text reading is held back as a fallback.
         layer_names = {layer.info.name for layer in layer_ciphers()}
-        indicated = [
-            h.cipher
-            for h in hypotheses
-            if h.cipher in layer_names and h.likelihood >= STRONG_LAYER
-        ]
+        indicated = [h.cipher for h in hypotheses if h.cipher in layer_names and h.likelihood >= STRONG_LAYER]
         identity = ctx.candidate("none", text, None, steps=())
         if not indicated:
             pool.add(identity)
@@ -468,9 +467,7 @@ class Solver:
         """
         if ctx.expired() or pool.certain:
             return
-        self._explored[fingerprint(text)] = max(
-            self._explored.get(fingerprint(text), -1), MODE_RANK[mode]
-        )
+        self._explored[fingerprint(text)] = max(self._explored.get(fingerprint(text), -1), MODE_RANK[mode])
         self._nodes += 1
         if self._nodes > MAX_NODES:
             self._say(f"node budget reached ({MAX_NODES}); ranking what was found", 0.95)
@@ -506,11 +503,7 @@ class Solver:
                 layer.info.name,
             ),
         )
-        strong = [
-            layer
-            for layer in applicable
-            if likelihoods.get(layer.info.name, 0.0) >= STRONG_LAYER
-        ]
+        strong = [layer for layer in applicable if likelihoods.get(layer.info.name, 0.0) >= STRONG_LAYER]
         # A handful of keyless substitutions run before anything is peeled.
         # They cost a millisecond each and they close a real hole: ROT47 output
         # is punctuation-heavy ASCII, which is *also* valid base85, so the
@@ -534,7 +527,12 @@ class Solver:
                 if pool.certain or ctx.expired():
                     break
                 self._descend(
-                    layer, text, ctx, depth, pool, report,
+                    layer,
+                    text,
+                    ctx,
+                    depth,
+                    pool,
+                    report,
                     likelihoods.get(layer.info.name, 0.0),
                 )
             if pool.certain:
@@ -542,11 +540,7 @@ class Solver:
             # A structural reading that produces English ends the question: no
             # amount of hill climbing on the encoded blob beats "this was
             # base64, and inside it was a sentence".
-            if (
-                pool.best
-                and pool.best.confidence >= SOLVED_CONFIDENCE
-                and pool.best.confidence > before
-            ):
+            if pool.best and pool.best.confidence >= SOLVED_CONFIDENCE and pool.best.confidence > before:
                 return
 
         # The rest of the cheap tier: fast enough to run before peeling
@@ -607,8 +601,13 @@ class Solver:
             reserve = ctx.remaining() * RECURSION_RESERVE if depth < self.max_depth else 0.0
             attack_ctx = ctx.child(budget=max(1.0, ctx.remaining() - reserve))
             self._attack(
-                text, attack_ctx, pool, likelihoods, report,
-                costs=(EXPENSIVE, BRUTAL), sink=produced,
+                text,
+                attack_ctx,
+                pool,
+                likelihoods,
+                report,
+                costs=(EXPENSIVE, BRUTAL),
+                sink=produced,
             )
             if pool.certain or ctx.expired():
                 return
@@ -652,8 +651,14 @@ class Solver:
         # `reverse` above all, which is keyless and so has exactly one reading.
         if depth < self.max_depth and not pool.certain:
             self._recurse_candidates(
-                produced, ctx, depth, pool, report, cipher_depth,
-                child_mode="bounded", limit=3,
+                produced,
+                ctx,
+                depth,
+                pool,
+                report,
+                cipher_depth,
+                child_mode="bounded",
+                limit=3,
             )
 
         # Attack-then-peel: a candidate plaintext may itself be an encoding.
@@ -704,9 +709,7 @@ class Solver:
         from .ciphers import try_get
 
         letters = letters_only(text)
-        ranked = sorted(
-            PRE_PEEL_CIPHERS, key=lambda n: -(likelihoods or {}).get(n, 0.0)
-        )
+        ranked = sorted(PRE_PEEL_CIPHERS, key=lambda n: -(likelihoods or {}).get(n, 0.0))
         for name in ranked:
             if pool.certain or ctx.expired():
                 return
@@ -856,19 +859,13 @@ class Solver:
         expected = [ref[A26[i]] * len(letters) for i in range(26)]
 
         def chi(mapped: list[int]) -> float:
-            return sum(
-                (mapped[i] - expected[i]) ** 2 / expected[i]
-                for i in range(26)
-                if expected[i] > 0
-            )
+            return sum((mapped[i] - expected[i]) ** 2 / expected[i] for i in range(26) if expected[i] > 0)
 
         best = min(chi([counts[(i + shift) % 26] for i in range(26)]) for shift in range(26))
         best = min(best, chi([counts[25 - i] for i in range(26)]))
         return best / len(letters) <= CHAIN_GATE_CHI
 
-    def _monoalphabetic_candidates(
-        self, text: str, ctx: CrackContext, keep: int = 3
-    ) -> list[tuple[str, Any, str]]:
+    def _monoalphabetic_candidates(self, text: str, ctx: CrackContext, keep: int = 3) -> list[tuple[str, Any, str]]:
         """The most likely monoalphabetic corrections for ``text``, applied.
 
         Returns ``(cipher name, key, corrected text)``, always including the
@@ -905,8 +902,11 @@ class Solver:
         # slice of the state allowance, so a wrong one tried first is states
         # the right one never gets.
         scored: list[tuple[float, str, Any]] = [
-            (chi([counts[(i + shift) % 26] for i in range(26)]),
-             "none" if shift == 0 else ("rot13" if shift == 13 else "caesar"), shift)
+            (
+                chi([counts[(i + shift) % 26] for i in range(26)]),
+                "none" if shift == 0 else ("rot13" if shift == 13 else "caesar"),
+                shift,
+            )
             for shift in range(26)
         ]
         scored.append((chi([counts[25 - i] for i in range(26)]), "atbash", None))
@@ -918,9 +918,7 @@ class Solver:
             if name == "atbash":
                 mapped = "".join(A26[25 - A26.index(c)] if c in A26 else c for c in text.upper())
             else:
-                mapped = "".join(
-                    A26[(A26.index(c) - int(key)) % 26] if c in A26 else c for c in text.upper()
-                )
+                mapped = "".join(A26[(A26.index(c) - int(key)) % 26] if c in A26 else c for c in text.upper())
             out.append((name, key, mapped))
         return out
 
@@ -1049,24 +1047,34 @@ class Solver:
                             # An all-transposition stack: the last step is the
                             # one that gets the credit and the key.
                             self._say(f"chain found: {' -> '.join(named)}", 0.95, cipher=named[-1])
-                            pool.add(ctx.with_steps(named[:-1]).candidate(
-                                named[-1], inner, key, steps=named[:-1],
-                                method="chain search (composed transpositions)",
-                            ))
+                            pool.add(
+                                ctx.with_steps(named[:-1]).candidate(
+                                    named[-1],
+                                    inner,
+                                    key,
+                                    steps=named[:-1],
+                                    method="chain search (composed transpositions)",
+                                )
+                            )
                         else:
                             self._say(
                                 f"chain found: {' -> '.join(named)} -> {sub_name}",
                                 0.95,
                                 cipher=sub_name,
                             )
-                            pool.add(ctx.with_steps(named).candidate(
-                                sub_name, inner, sub_key, steps=named,
-                                method=(
-                                    "chain search: the substitution was read off the letter "
-                                    "histogram, which transpositions leave untouched, then the "
-                                    "permutation stack was composed"
-                                ),
-                            ))
+                            pool.add(
+                                ctx.with_steps(named).candidate(
+                                    sub_name,
+                                    inner,
+                                    sub_key,
+                                    steps=named,
+                                    method=(
+                                        "chain search: the substitution was read off the letter "
+                                        "histogram, which transpositions leave untouched, then the "
+                                        "permutation stack was composed"
+                                    ),
+                                )
+                            )
                         if pool.certain:
                             return
                 frontier = nxt
@@ -1169,13 +1177,16 @@ class Solver:
                 share = min(share, AMBIGUOUS_CHILD_SECONDS)
             child = ctx.with_steps(chain, budget=share, depth=depth + 1)
             self._explore(
-                body, child, depth + 1, pool, report,
-                mode=child_mode, cipher_depth=cipher_depth + 1,
+                body,
+                child,
+                depth + 1,
+                pool,
+                report,
+                mode=child_mode,
+                cipher_depth=cipher_depth + 1,
             )
 
-    def _blend_priors(
-        self, text: str, ctx: CrackContext, likelihoods: dict[str, float]
-    ) -> dict[str, float]:
+    def _blend_priors(self, text: str, ctx: CrackContext, likelihoods: dict[str, float]) -> dict[str, float]:
         """Take each cipher's own reading of the text into account when ordering.
 
         :meth:`identify` looks at the text alone, but a cipher can also see where
@@ -1342,8 +1353,7 @@ class Solver:
         tried = 0
         best_before = pool.best_confidence
         self._say(
-            f"attacking with {cipher.info.title} "
-            f"({cipher.info.family.value}, {slice_seconds:.0f}s slice)",
+            f"attacking with {cipher.info.title} ({cipher.info.family.value}, {slice_seconds:.0f}s slice)",
             -1.0,
             cipher=cipher.info.name,
         )
@@ -1631,6 +1641,7 @@ def solve_auto(
                 report.language_detected = detected
             report.budget = budget  # the answer stands for the whole budget
             return report
+
     # No probe solved outright: hand the rest of the budget to whichever
     # language read the most text so far.  Rank by best confidence, then by
     # how much was found at all -- a probe that produced nothing scores below

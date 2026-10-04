@@ -135,9 +135,7 @@ class TestCipher(unittest.TestCase):
         ciphertext = self.m94.encrypt("A" * 25, {"order": ORDER, "row": 1})
         # With every disk turned to A on the reading row, one turn of the
         # spindle shows the second letter of each disk in order.
-        self.assertEqual(
-            ciphertext, "".join(disks()[DISK_IDS.index(ch)][1] for ch in ORDER)
-        )
+        self.assertEqual(ciphertext, "".join(disks()[DISK_IDS.index(ch)][1] for ch in ORDER))
 
     def test_keys_are_not_enumerable(self):
         with self.assertRaises(NotImplementedError):
