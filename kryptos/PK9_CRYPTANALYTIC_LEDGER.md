@@ -3,7 +3,7 @@
 **Target**: Paradigm Kryptos Challenge 9 (PK9, $N=144$)  
 **Status**: Historical pre-recovery ledger; canonical PK9 is solved by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` and verified by `verify_pk9_solution.py`
 **Date**: September 21, 2026  
-**Lead Cryptanalyst**: Agent Mode (Arena.ai)
+**Lead Cryptanalyst**: Aaron Hard
 
 ---
 

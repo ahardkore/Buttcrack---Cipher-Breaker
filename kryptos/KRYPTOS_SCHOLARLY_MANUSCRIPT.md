@@ -1590,7 +1590,7 @@ annealing or additional unconstrained crib generation.
 
 **Repository**: `/home/user`  
 **Date**: 2026-09-22 (catalog) · 2026-10-02 (correction)  
-**Auditor**: Arena.ai Cryptanalytic Agent  
+**Auditor**: Aaron Hard  
 **Master Test Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success)
 
 ---
@@ -1725,7 +1725,7 @@ annealing or additional unconstrained crib generation.
   README: old CTF solutions dossier, candidate_narrative_18.txt,
   extract_narrative_18.py, test_pk8_classical_families.py,
   test_pk9_28char_canonical_phrases.py, and the root patch snapshot
-  (arena_session_patch_4_snapshot.diff).
+  (session_patch_4_snapshot.diff).
 - `grep THESTRINGSMEASURE` now hits ONLY `kryptos/archive/`.
 
 
@@ -1734,7 +1734,7 @@ annealing or additional unconstrained crib generation.
 # PARADIGM KRYPTOS: DEFINITIVE MASTER CRYPTANALYTIC AUDIT & REPORT
 
 **Date of Record**: 2026-09-22  
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Repository**: `/home/user`  
 **Live Visual Map**: `PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`  
 **Submission Manifest**: `pk_submission_manifest.json`  
@@ -1900,7 +1900,7 @@ The entire cryptanalytic audit is backed by the automated master test suite:
 # EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10)
 
 **Date**: 2026-09-22  
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Repository**: `/home/user`  
 **Master Deliverables**:  
 - `PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md` (Full Technical Solutions Dossier)  
@@ -3134,7 +3134,7 @@ An automated statistical and information-theoretic audit of all 10 ciphers in th
 **Target**: Paradigm Kryptos Challenge 9 (PK9, $N=144$)  
 **Status**: Unsolved Master Puzzle ($0$ Solvers on Leaderboard, $98$ Official Attempts)  
 **Date**: September 21, 2026  
-**Lead Cryptanalyst**: Agent Mode (Arena.ai)
+**Lead Cryptanalyst**: Aaron Hard
 
 ---
 
@@ -6730,7 +6730,7 @@ confidence thresholds in `buttcrack/lang.py`.
 # THE KRYPTOS DECRYPTION MANUSCRIPT
 ## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Date of Record**: 3 October 2026
 **Reproducibility**: repository verification suite — 11 / 11 tests passing (100%)
 
@@ -6938,7 +6938,7 @@ Every proof, equation, and parameter in this manuscript is backed by the automat
 > This report predates the verified PK10 cumulative pipeline. Its PK9/PK10 candidate analysis is archival only; current status is PK9 open and PK10 independently verified.
 
 # PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT
-**Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
+**Author**: Aaron Hard | **Date**: September 22, 2026  
 **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
 
 ---

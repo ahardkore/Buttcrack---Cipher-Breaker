@@ -1,5 +1,5 @@
 # PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT
-**Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
+**Author**: Aaron Hard | **Date**: September 22, 2026  
 **Status**: HISTORICAL / SUPERSEDED — predates the recovered PK9 construction; PK9 and PK10 are independently verified by `verify_pk9_solution.py` and `verify_pk10_solution.py`
 
 > This report preserves an earlier analytical model for research provenance. Its PK9/PK10 candidate interpretations and additive-clock claims are not the current canonical result. The current status is **PK1–PK10 solved and independently verified**; see `pk_submission_manifest.json`, `pk_verified_solutions.json`, and `PK10_BREAK_REPORT_2026-10-04.md`.

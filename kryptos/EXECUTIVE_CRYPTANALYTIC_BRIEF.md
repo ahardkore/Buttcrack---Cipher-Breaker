@@ -3,7 +3,7 @@
 > **Historical status note (updated 2026-10-03):** The ledger below is the current canonical summary. The detailed PK4–PK10 attack narratives elsewhere in this brief preserve superseded research, including pre-recovery PK9 and old PK8/PK10 candidate models; they are not verification records. PK9 is independently reproduced by `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` in `verify_pk9_solution.py`. See `pk_verified_solutions.json` and `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for canonical data and recovery provenance.
 
 **Date**: 2026-09-22  
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Repository**: `/home/user`  
 **Master Deliverables**:  
 - `PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md` (Full Technical Solutions Dossier)  

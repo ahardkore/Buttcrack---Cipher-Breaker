@@ -1,7 +1,7 @@
 # PARADIGM KRYPTOS: DEFINITIVE MASTER CRYPTANALYTIC AUDIT & REPORT
 
 **Date of Record**: 2026-09-22  
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Repository**: `/home/user`  
 **Live Visual Map**: `PARADIGM_KRYPTOS_ARCHITECTURE_MAP.svg`  
 **Submission Manifest**: `pk_submission_manifest.json`  
