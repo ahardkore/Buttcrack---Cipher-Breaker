@@ -1,0 +1,61 @@
+KRYPTOS K4 — CRIB-CONSTRAINED COMPOSITE SEARCH
+==============================================================================
+
+Pre-check: IoC is invariant under transposition AND under
+monoalphabetic substitution.
+  K4 IoC          0.0361
+  English IoC     0.0667
+  random IoC      0.0385
+  -> transposition x MONOalphabetic substitution is impossible in either
+     order, under any key. The substitution stage must be polyalphabetic.
+
+Loaded 258,337 English quadgrams for scoring.
+Reference: fluent 97-letter English scores about -391
+
+Dictionary-derived column orders: 165,413 distinct patterns across L=4..16
+
+  L= 4 columns (     24 orders) ->      0 crib-consistent configurations
+  L= 5 columns (    120 orders) ->      0 crib-consistent configurations
+  L= 6 columns (    720 orders) ->      0 crib-consistent configurations
+  L= 7 columns (  4,893 orders) ->      0 crib-consistent configurations
+  L= 8 columns ( 20,014 orders) ->      6 crib-consistent configurations
+  L= 9 columns ( 32,100 orders) ->      0 crib-consistent configurations
+  L=10 columns ( 32,775 orders) ->      0 crib-consistent configurations
+  L=11 columns ( 27,468 orders) ->      1 crib-consistent configurations
+  L=12 columns ( 21,368 orders) ->     10 crib-consistent configurations
+  L=13 columns ( 15,430 orders) ->      1 crib-consistent configurations
+  L=14 columns ( 10,063 orders) ->      0 crib-consistent configurations
+  L=15 columns (    315 orders) ->      0 crib-consistent configurations
+  L=16 columns (    123 orders) ->      0 crib-consistent configurations
+
+Tested 17,202,952 configurations in 23.3s
+Crib-consistent survivors (<= 2 free residues): 18
+
+Best-scoring candidate plaintexts:
+------------------------------------------------------------------------------
+        -622  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIUREARODYANTBXYWEASTNORTHEASTASDMAUOFUVEZIOJNQUHLSTXTGKMKSBERLINCLOCKPTSHYFCJFOWUANHPWJWBALX  
+        -622  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIUREARODNANTBXYWEASTNORTHEASTASDMAUOFUVTZIOJNQUHLSTXTGKMKSBERLINCLOCKPTSHYFCJFOWUANHEWJWBALX  
+        -623  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIUREARODUANTBXYWEASTNORTHEASTASDMAUOFUVAZIOJNQUHLSTXTGKMKSBERLINCLOCKPTSHYFCJFOWUANHLWJWBALX  
+        -623  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIUREARODCANTBXYWEASTNORTHEASTASDMAUOFUVIZIOJNQUHLSTXTGKMKSBERLINCLOCKPTSHYFCJFOWUANHTWJWBALX  
+        -624  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURHARODYANTBXYWEASTNORTHEASTASDMAUOFUVEZIOJNQUHOSTXTGKMKSBERLINCLOCKPTSHYFCJFRWUANHPWJWBALX  
+        -624  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURTARODYANTBXYWEASTNORTHEASTASDMAUOFUVEZIOJNQUHASTXTGKMKSBERLINCLOCKPTSHYFCJFDWUANHPWJWBALX  
+        -625  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURHARODNANTBXYWEASTNORTHEASTASDMAUOFUVTZIOJNQUHOSTXTGKMKSBERLINCLOCKPTSHYFCJFRWUANHEWJWBALX  
+        -625  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURTARODNANTBXYWEASTNORTHEASTASDMAUOFUVTZIOJNQUHASTXTGKMKSBERLINCLOCKPTSHYFCJFDWUANHEWJWBALX  
+        -625  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURHARODUANTBXYWEASTNORTHEASTASDMAUOFUVAZIOJNQUHOSTXTGKMKSBERLINCLOCKPTSHYFCJFRWUANHLWJWBALX  
+        -625  cols=12 key=UNSEIGNORIAL case=B alpha=standard period=26
+              ESJLPIURTARODUANTBXYWEASTNORTHEASTASDMAUOFUVAZIOJNQUHASTXTGKMKSBERLINCLOCKPTSHYFCJFDWUANHLWJWBALX  
+
+==============================================================================
+VERDICT: no configuration in this family yields English.
+Columnar transposition composed with a periodic polyalphabetic cipher is
+eliminated for every dictionary-keyword column order of length 4-16
+and period <= 26, in both composition orders, both alphabets.

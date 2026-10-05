@@ -168,6 +168,8 @@ Compare PK8/PK9/PK10, which are correctly promoted: they re-encrypt to the offic
 
 ---
 
+*Active attack results:* see [`K4_NEGATIVE_RESULTS_2026-10-05.md`](K4_NEGATIVE_RESULTS_2026-10-05.md) — structural keystreams, clock counters, and transposition composed with periodic polyalphabetic substitution are all now eliminated, each validated against planted ciphers.
+
 *Harnesses:*
 - `kryptos/verify_k4_claim.py` — exits 0 while the claim remains unverified, exits 1 if a genuine round trip is ever found.
 - `kryptos/backbuild_falsification.py` — tests whether the proposed architecture can be back-built at all (it cannot), and the MDL accounting for why a wider back-build would prove nothing.

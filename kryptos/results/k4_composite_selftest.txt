@@ -1,0 +1,11 @@
+PLANTED-CIPHER SELF-TEST
+==============================================================================
+  PASS  case=A cols=5 period=3 alpha=standard crib-consistent=True key-agrees=True decrypts=True
+  PASS  case=B cols=7 period=4 alpha=KRYPTOS  crib-consistent=True key-agrees=True decrypts=True
+  PASS  case=A cols=4 period=2 alpha=KRYPTOS  crib-consistent=True key-agrees=True decrypts=True
+  PASS  case=B cols=6 period=5 alpha=standard crib-consistent=True key-agrees=True decrypts=True
+
+  Negative control: the true config must also survive while wrong ones die.
+  119/119 wrong column orders correctly rejected
+
+SELF-TEST PASSED — the search can find what it looks for.
