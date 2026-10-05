@@ -87,7 +87,48 @@ It is a 73-letter free parameter absorbing whatever filler we chose, not a key.
 
 The digests in the report are hashes **of our own candidate**, computed by our own script. They are self-consistent and prove nothing. The oracle is Paradigm's committed hash of Sanborn's authenticated plaintext, which is secret; the only way to test a candidate is to submit it to the portal at \$1 per submission. **No submission, receipt, or portal response exists anywhere in this repository.** The sentence above asserts an external confirmation that never happened and should be struck.
 
-### 3.5 The corpus contradicts itself
+### 3.5 The architecture is falsified, not merely unproven
+
+*Added 2026-10-05, in response to "can we back-build the cipher to prove our claim?" Harness: `backbuild_falsification.py`.*
+
+The card-plus-gate design imposes constraints **independent of which plaintext you pick**. Wherever two positions share a lane *and* a helper letter they must share a card value, so their shifts may differ by at most the gate: −1, 0, or +1. The tableau rows produce **15 such forced pairs**.
+
+| Candidate | Constraints met |
+|---|---|
+| Our claimed K4 plaintext | **1 / 15** |
+| Random 97-letter strings, mean (n = 100,000) | 1.73 / 15 |
+| Random strings, best of 100,000 | 9 / 15 |
+
+84.5% of random strings score at least as well as ours. Per-pair hit rate: chance 0.115, ours 0.067.
+
+**Our plaintext performs worse than chance against the very architecture invented to explain it.** No back-build of that shape exists — not "has not been found," but cannot exist. To fit, the model must abandon the card structure entirely and allow one free shift per position, which is a one-time pad.
+
+### 3.6 Why a wider back-build would still prove nothing
+
+Any plaintext fits if you widen the mechanism. Back-building a per-position keystream reproduces K4 at 97/97 for our candidate *and* for `MYHOVERCRAFTISFULLOFEELS…`. A method that certifies every answer certifies none.
+
+The formal statement is a minimum-description-length argument:
+
+| | bits |
+|---|---|
+| Cost to specify a per-position keystream (trivial back-build) | 456 |
+| Cost to specify 4 helper cards + 97 gate bits | 586 |
+| Content explained — 73 non-anchor letters, uniform over 26 | 343 |
+| Content explained — 73 non-anchor letters, English ≈1.5 b/char | 110 |
+
+Cheapest model 456 bits against the most generous content estimate of 343: **net compression −113 bits**. The mechanism costs more to state than the plaintext it recovers, so it is a restatement of the data, not an explanation of it.
+
+### 3.7 What would actually constitute proof
+
+A back-build is evidence only if the mechanism is pinned down without reference to the plaintext. All three must hold:
+
+1. Every constant — cards, gate map, lane assignment, traversal order — derived from public data only (sculpture geometry, carved tableau, Sanborn's published clues). No value fitted to the output.
+2. The specification published and timestamped **before** the decode is run.
+3. Run forward from ciphertext alone it emits readable English, and the four anchors fall out **unforced**, having never been used as inputs.
+
+Condition 3 carries the evidence: 24 anchor letters landing correctly by accident is ≈26⁻²⁴, about 1 in 10³⁴. A mechanism achieving that blind has proved itself. The current model fails condition 1 — its cards are back-solved from the plaintext — which is precisely why it reaches 97/97 and means nothing.
+
+### 3.8 The corpus contradicts itself
 
 `KRYPTOS_REPORT.md` line 608, "Bottom line":
 
@@ -122,8 +163,11 @@ Compare PK8/PK9/PK10, which are correctly promoted: they re-encrypt to the offic
 3. Drop the phrase "Arithmetic check … holds with 100% uniformity across all 97 positions", or annotate it as an identity with no evidential content.
 4. Fix `kryptos_paradigm_hash_engine.py`: the spaced string is labelled 117 chars; it is 118.
 5. If the sections are kept, regenerate `KRYPTOS_SCHOLARLY_MANUSCRIPT.{pdf,epub}` so the published artifacts match.
-6. The one test that would settle it: pay the \$1 and submit the 97-character string to Paradigm's portal. Record the response — pass or fail — in `pk_verified_solutions.json`.
+6. Treat the card-plus-gate architecture as **refuted** (§3.5), not as work in progress. Any future mechanism must be derived forward from public data and published before it is run (§3.7).
+7. The one test available today: pay the \$1 and submit the 97-character string to Paradigm's portal. Record the response — pass or fail — in `pk_verified_solutions.json`. It returns exactly one bit.
 
 ---
 
-*Harness:* `kryptos/verify_k4_claim.py` — exits 0 while the claim remains unverified, exits 1 if a genuine round trip is ever found.
+*Harnesses:*
+- `kryptos/verify_k4_claim.py` — exits 0 while the claim remains unverified, exits 1 if a genuine round trip is ever found.
+- `kryptos/backbuild_falsification.py` — tests whether the proposed architecture can be back-built at all (it cannot), and the MDL accounting for why a wider back-build would prove nothing.
