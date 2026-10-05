@@ -690,18 +690,34 @@ synthesized the first complete, unified mechanical framework for K4:
 
 3. **The 97-character plaintext reconstruction:**
 
+> **STATUS — UNVERIFIED RECONSTRUCTION, NOT A SOLVE.** The text below is the
+> solvekryptos.com reconstruction attributed to Matt Lacy (first published
+> 2025-12-11). It is neither artist-confirmed nor cryptanalytically recovered,
+> and it has never passed an exact reverse-cipher round trip. solvekryptos.com
+> itself downgraded the claim in 2026 to "internally consistent, not
+> independently recovered from public data." See
+> [`K4_CLAIM_STATUS_AUDIT_2026-10-05.md`](K4_CLAIM_STATUS_AUDIT_2026-10-05.md);
+> measure it with [`verify_k4_claim.py`](verify_k4_claim.py).
+
 > THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR POSITION X COMMISSION
 > BERLIN CLOCK WHICH IS NORTHEAST OF HERE X
 
-   - **Arithmetic check:** $R = (C - P) \pmod{26}$ holds with 100% uniformity across all 97 positions.
+   - **Arithmetic identity (no evidential content):** $R = (C - P) \pmod{26}$ is
+     satisfied at all 97 positions, but $R$ is *defined* as $C - P$, so the identity
+     holds for **every** 97-letter string — including uniformly random ones. It
+     discriminates nothing and must not be read as verification.
    - **Anchors:** preserves all four confirmed anchors exactly:
      - Pos 22–25: `EAST` (`FLRV`, shifts `[1, 11, 25, 2]`)
      - Pos 26–34: `NORTHEAST` (`QQPRNGKSS`, shifts `[3, 2, 24, 24, 6, 2, 10, 0, 25]`)
      - Pos 64–69: `BERLIN` (`NYPVTT`, shifts `[12, 20, 24, 10, 11, 6]`)
      - Pos 70–74: `CLOCK` (`MZFPK`, shifts `[10, 14, 17, 13, 0]`)
    - **Pos 74 fixed point:** Plaintext `K` encrypts to Ciphertext `K` ($R = 0$).
-   - **Decomposition:** $R = r + \text{gate}$, where a position-defined one-bit gate (0 or 1)
-     adjusts the base shift derived from the physical helper letter $T$.
+   - **Decomposition (fails):** the proposed $R = r + \text{gate}$ — a position-defined
+     one-bit gate (0 or 1) adjusting a base shift read from the physical helper letter
+     $T$ — puts the gate in $\{0, 1\}$ at only **8 of 96 positions** in its best
+     configuration, where chance alone predicts $\approx 7.4$. The substitution cards
+     that would close the gap are back-solved *from* the plaintext, so they fit 97/97
+     by construction rather than by derivation.
    - **Navigational validation:** from the Kryptos compass rose at CIA Langley to the
      Weltzeituhr at Alexanderplatz, the great-circle geodesic bearing is **44.4°**
      (due Northeast), perfectly validating both `EAST NORTHEAST` and `NORTHEAST OF HERE`.
@@ -748,9 +764,9 @@ To prevent anyone—including Paradigm’s own engineers—from learning the sol
 - **The Online Verification Portal:** Solvers enter their candidate on the 97-character grid. The server computes `SHA-256(submission)` and queries Google Cloud KMS to check if the HMAC tag matches.
 
 #### 2. Canonical Plaintexts & Cryptographic Hashes
-Using [`kryptos_paradigm_hash_engine.py`](kryptos_paradigm_hash_engine.py), we generated the deterministic SHA-256 and SHA-512 cryptographic digests for all verified K4 and K5 solutions:
+Using [`kryptos_paradigm_hash_engine.py`](kryptos_paradigm_hash_engine.py), we generated the deterministic SHA-256 and SHA-512 cryptographic digests for our **unverified candidate** K4 and K5 reconstructions. These are hashes *of our own candidate strings*; they are self-consistent by construction and carry no evidential weight. The only oracle is Paradigm's committed hash of Sanborn's authenticated plaintext, which is secret:
 
-##### A. K4 Canonical Plaintext (97 Characters, Continuous Uppercase):
+##### A. K4 Candidate Plaintext — unverified (97 Characters, Continuous Uppercase):
 - **Plaintext String:**
   `THECOMPASSROSEISHEREXEASTNORTHEASTTHISISYOURPOSITIONXCOMMISSIONBERLINCLOCKWHICHISNORTHEASTOFHEREX`
 - **SHA-256 Hash:**
@@ -758,19 +774,19 @@ Using [`kryptos_paradigm_hash_engine.py`](kryptos_paradigm_hash_engine.py), we g
 - **SHA-512 Hash:**
   `443ca1251fe12e6554f981820f19d2b5d5bba45b9d4a27ffc040f0ae8858f047...`
 
-##### B. K4 Formatted Plaintext (With Single-Space Word Breaks):
+##### B. K4 Candidate Plaintext — unverified (With Single-Space Word Breaks, 118 chars):
 - **Plaintext String:**
   `THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR POSITION X COMMISSION BERLIN CLOCK WHICH IS NORTHEAST OF HERE X`
 - **SHA-256 Hash:**
   `16972c2eb1f7154db5e88e39f0c2f89b5c70ef44438b5bbd499c71acdcdfc200`
 
-##### C. K5 Primary Solution (97 Characters, Survey Marker Resolution):
+##### C. K5 Candidate — speculative (97 Characters, Survey Marker Resolution):
 - **Plaintext String:**
   `THECOMPASSROSEISHEREXEASTSOUTHEASTTHISISYOURPOSITIONXITSBURIEDOUTTHERESOMEWHEREATTHESURVEYMARKERX`
 - **SHA-256 Hash:**
   `5beb1bc1a6adf2e741c0c99bbdb8cf0aee02342d155a9cfb3576f02dccd1a92d`
 
-Submitting the 97-character canonical K4 string into the Paradigm portal matches the pre-computed hash, providing instantaneous verification without exposing classified grounds.
+**No submission to the Paradigm portal has been made, and no portal response has ever been received.** An earlier revision of this document asserted that the portal had matched this hash; that claim was unsupported and has been withdrawn. Submitting the string is the one test that would settle the question, and until a portal acceptance is recorded here the candidate remains a hypothesis.
 
 ---
 

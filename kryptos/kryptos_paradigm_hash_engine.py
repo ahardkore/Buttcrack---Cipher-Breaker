@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """PARADIGM CRYPTOGRAPHIC HASH ENGINE
-Computes and verifies SHA-256 digests for all canonical K4 and K5 plaintexts
-matching the Paradigm verification portal specifications.
+
+Computes SHA-256/512 digests for our CANDIDATE K4 and K5 plaintexts.
+
+IMPORTANT: these are hashes of our own unverified candidate strings. They are
+self-consistent by construction and prove nothing about correctness. Paradigm's
+committed hash of Sanborn's authenticated plaintext is secret, so a digest
+computed here cannot be compared against it -- the only test is submitting the
+string to the portal. See K4_CLAIM_STATUS_AUDIT_2026-10-05.md and
+verify_k4_claim.py.
 """
 
 import hashlib
@@ -9,7 +16,7 @@ import hashlib
 texts = [
     ("K4 Canonical Continuous (97 chars)",
      "THECOMPASSROSEISHEREXEASTNORTHEASTTHISISYOURPOSITIONXCOMMISSIONBERLINCLOCKWHICHISNORTHEASTOFHEREX"),
-    ("K4 Formatted Spaced (117 chars)",
+    ("K4 Formatted Spaced (118 chars)",
      "THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR POSITION X COMMISSION BERLIN CLOCK WHICH IS NORTHEAST OF HERE X"),
     ("K5 Candidate A - Survey Marker (97 chars)",
      "THECOMPASSROSEISHEREXEASTSOUTHEASTTHISISYOURPOSITIONXITSBURIEDOUTTHERESOMEWHEREATTHESURVEYMARKERX"),
@@ -20,7 +27,7 @@ texts = [
 ]
 
 print("=" * 80)
-print("PARADIGM CYPHER VERIFICATION HASH RECONCILIATION")
+print("PARADIGM CANDIDATE-STRING HASH LEDGER (unverified candidates)")
 print("=" * 80)
 
 for label, txt in texts:
