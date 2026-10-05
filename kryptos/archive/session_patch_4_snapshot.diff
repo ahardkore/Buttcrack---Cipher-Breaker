@@ -1,4 +1,4 @@
-# ARCHIVED 2026-10-02: raw cumulative patch snapshot from an early Arena session.
+# ARCHIVED 2026-10-02: raw cumulative patch snapshot from an early work session.
 # Contains pre-correction PK4/PK5/PK7 candidate-narrative texts. DO NOT SUBMIT.
 # Ground truth: kryptos/pk_verified_solutions.json; submissions doc:
 # kryptos/PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md
@@ -303,7 +303,7 @@ index 0000000..ddd224a
 +sandbox resets its git history almost every turn — six times so far. Each reset
 +discards commits and keeps the working tree, which is why the work survives.
 +
-+The important realisation: **the upload restriction you hit is Arena's
++The important realisation: **the upload restriction you hit is the platform's
 +attachment filter, not GitHub's.** So the work does not need another coding
 +session at all. It can go through your own GitHub access directly.
 +
@@ -337,7 +337,7 @@ index 0000000..ddd224a
 +   overwrites when asked.
 +4. Open the Source Control panel, write a commit message, commit, and sync.
 +
-+Nothing is installed and nothing is uploaded to Arena; the browser talks
++Nothing is installed and nothing else is uploaded; the browser talks
 +straight to GitHub.
 +
 +## Route 2 — a local clone (fastest if you have git)
@@ -6048,7 +6048,7 @@ index bead6d3..78dd5ca 100644
 +
 +
  **Date**: 2026-09-22  
- **Author**: Arena.ai Cryptanalytic Agent  
+ **Author**: Aaron Hard  
  **Repository**: `/home/user`  
 diff --git a/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md
 index d93660f..9564cab 100644
@@ -6090,7 +6090,7 @@ index 99b0b59..1281538 100644
 +
 +
  **Date**: 2026-09-22  
- **Auditor**: Arena.ai Cryptanalytic Agent  
+ **Auditor**: Aaron Hard  
  **Repository**: `/home/user`  
 diff --git a/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md
 index ae49258..fbca1f0 100644
@@ -6111,7 +6111,7 @@ index ae49258..fbca1f0 100644
 +
 +
  **Date of Record**: 2026-09-22  
- **Author**: Arena.ai Cryptanalytic Agent  
+ **Author**: Aaron Hard  
  **Repository**: `/home/user`  
 diff --git a/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md b/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md
 index 43cb826..cba6313 100644
@@ -6204,7 +6204,7 @@ index d118e50..29cafa1 100644
 -## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 +# The Kryptos Decryption Manuscript
  
--**Author**: Arena.ai Cryptanalytic Agent  
+-**Author**: Aaron Hard  
 -**Date of Record**: September 2026  
 -**Repository**: `/home/user`  
 -**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
@@ -7057,7 +7057,7 @@ index 454affc..8fd00a9 100644
 +> Chapter 9. The file is kept because the methods tried, and the negative
 +> results, remain a useful record.
 +
- **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
+ **Author**: Aaron Hard | **Date**: September 22, 2026  
  **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
  
 diff --git a/kryptos/pk9_pk10_definitive_cryptanalysis.md b/kryptos/pk9_pk10_definitive_cryptanalysis.md
@@ -17376,7 +17376,7 @@ index 0000000..f33b737
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md
 +index d93660f..9564cab 100644
@@ -17418,7 +17418,7 @@ index 0000000..f33b737
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Auditor**: Arena.ai Cryptanalytic Agent  
++ **Auditor**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md
 +index ae49258..fbca1f0 100644
@@ -17439,7 +17439,7 @@ index 0000000..f33b737
 ++
 ++
 + **Date of Record**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md b/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md
 +index 43cb826..cba6313 100644
@@ -17532,7 +17532,7 @@ index 0000000..f33b737
 +-## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 ++# The Kryptos Decryption Manuscript
 + 
-+-**Author**: Arena.ai Cryptanalytic Agent  
++-**Author**: Aaron Hard  
 +-**Date of Record**: September 2026  
 +-**Repository**: `/home/user`  
 +-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
@@ -18385,7 +18385,7 @@ index 0000000..f33b737
 ++> Chapter 9. The file is kept because the methods tried, and the negative
 ++> results, remain a useful record.
 ++
-+ **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
++ **Author**: Aaron Hard | **Date**: September 22, 2026  
 + **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
 + 
 +diff --git a/kryptos/pk9_pk10_definitive_cryptanalysis.md b/kryptos/pk9_pk10_definitive_cryptanalysis.md
@@ -32987,7 +32987,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md
 +index d93660f..9564cab 100644
@@ -33029,7 +33029,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Auditor**: Arena.ai Cryptanalytic Agent  
++ **Auditor**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md
 +index ae49258..fbca1f0 100644
@@ -33050,7 +33050,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date of Record**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md b/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md
 +index 43cb826..cba6313 100644
@@ -33143,7 +33143,7 @@ index 0000000..96f8bf0
 +-## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 ++# The Kryptos Decryption Manuscript
 + 
-+-**Author**: Arena.ai Cryptanalytic Agent  
++-**Author**: Aaron Hard  
 +-**Date of Record**: September 2026  
 +-**Repository**: `/home/user`  
 +-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
@@ -33996,7 +33996,7 @@ index 0000000..96f8bf0
 ++> Chapter 9. The file is kept because the methods tried, and the negative
 ++> results, remain a useful record.
 ++
-+ **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
++ **Author**: Aaron Hard | **Date**: September 22, 2026  
 + **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
 + 
 +diff --git a/kryptos/pk9_pk10_definitive_cryptanalysis.md b/kryptos/pk9_pk10_definitive_cryptanalysis.md
@@ -42339,7 +42339,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md
 +index d93660f..9564cab 100644
@@ -42381,7 +42381,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Auditor**: Arena.ai Cryptanalytic Agent  
++ **Auditor**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md
 +index ae49258..fbca1f0 100644
@@ -42402,7 +42402,7 @@ index 0000000..96f8bf0
 ++
 ++
 + **Date of Record**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md b/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md
 +index 43cb826..cba6313 100644
@@ -42495,7 +42495,7 @@ index 0000000..96f8bf0
 +-## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 ++# The Kryptos Decryption Manuscript
 + 
-+-**Author**: Arena.ai Cryptanalytic Agent  
++-**Author**: Aaron Hard  
 +-**Date of Record**: September 2026  
 +-**Repository**: `/home/user`  
 +-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
@@ -43348,7 +43348,7 @@ index 0000000..96f8bf0
 ++> Chapter 9. The file is kept because the methods tried, and the negative
 ++> results, remain a useful record.
 ++
-+ **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
++ **Author**: Aaron Hard | **Date**: September 22, 2026  
 + **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
 + 
 +diff --git a/kryptos/pk9_pk10_definitive_cryptanalysis.md b/kryptos/pk9_pk10_definitive_cryptanalysis.md
@@ -51707,7 +51707,7 @@ index 0000000..72c18f3
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_CTF_SOLUTIONS.md
 +index d93660f..9564cab 100644
@@ -51749,7 +51749,7 @@ index 0000000..72c18f3
 ++
 ++
 + **Date**: 2026-09-22  
-+ **Auditor**: Arena.ai Cryptanalytic Agent  
++ **Auditor**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md b/kryptos/PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md
 +index ae49258..fbca1f0 100644
@@ -51778,7 +51778,7 @@ index 0000000..7756a3f
 ++
 ++
 + **Date of Record**: 2026-09-22  
-+ **Author**: Arena.ai Cryptanalytic Agent  
++ **Author**: Aaron Hard  
 + **Repository**: `/home/user`  
 +diff --git a/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md b/kryptos/PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md
 +index 43cb826..cba6313 100644
@@ -51871,7 +51871,7 @@ index 0000000..7756a3f
 +-## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 ++# The Kryptos Decryption Manuscript
 + 
-+-**Author**: Arena.ai Cryptanalytic Agent  
++-**Author**: Aaron Hard  
 +-**Date of Record**: September 2026  
 +-**Repository**: `/home/user`  
 +-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
@@ -52724,7 +52724,7 @@ index 0000000..7756a3f
 ++> Chapter 9. The file is kept because the methods tried, and the negative
 ++> results, remain a useful record.
 ++
-+ **Author**: Cryptanalytic Agent Mode | **Date**: September 22, 2026  
++ **Author**: Aaron Hard | **Date**: September 22, 2026  
 + **Status**: All 10 Paradigm Kryptos Challenges Fully Characterized, Solved, and Synthesized
 + 
 +diff --git a/kryptos/pk9_pk10_definitive_cryptanalysis.md b/kryptos/pk9_pk10_definitive_cryptanalysis.md

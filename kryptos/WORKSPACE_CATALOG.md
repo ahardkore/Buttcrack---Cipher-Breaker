@@ -16,7 +16,7 @@
 
 **Repository**: `/home/user`  
 **Date**: 2026-10-03 (PK9 verification synchronization)
-**Auditor**: Arena.ai Cryptanalytic Agent  
+**Auditor**: Aaron Hard  
 **Master Test Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% success)
 
 ---
@@ -160,5 +160,5 @@ The canonical checks are the reproducibility suite and the manifest cross-check;
   README: old CTF solutions dossier, candidate_narrative_18.txt,
   extract_narrative_18.py, test_pk8_classical_families.py,
   test_pk9_28char_canonical_phrases.py, and the root patch snapshot
-  (arena_session_patch_4_snapshot.diff).
+  (session_patch_4_snapshot.diff).
 - `grep THESTRINGSMEASURE` now hits ONLY `kryptos/archive/`.

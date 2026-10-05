@@ -1,7 +1,7 @@
 # THE KRYPTOS DECRYPTION MANUSCRIPT
 ## A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite
 
-**Author**: Arena.ai Cryptanalytic Agent  
+**Author**: Aaron Hard  
 **Date of Record**: 3 October 2026
 **Reproducibility**: repository verification suite — 12 / 12 tests passing (100%)
 
