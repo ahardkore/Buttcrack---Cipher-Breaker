@@ -41,14 +41,14 @@ def main() -> int:
         title=args.title,
         author=args.author,
         toc_filter=lambda level, title: level <= 2,
-        geometry=dict(
-            page_w=612.0,
-            page_h=792.0,
-            margin_l=72.0,
-            margin_r=72.0,
-            margin_t=72.0,
-            margin_b=64.0,
-        ),
+        geometry={
+            "page_w": 612.0,
+            "page_h": 792.0,
+            "margin_l": 72.0,
+            "margin_r": 72.0,
+            "margin_t": 72.0,
+            "margin_b": 64.0,
+        },
         compress=True,
     )
     result["source"] = str(source)

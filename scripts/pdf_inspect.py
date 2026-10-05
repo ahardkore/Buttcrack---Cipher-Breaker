@@ -34,7 +34,8 @@ WINANSI_HI = {
 
 
 def parse_pages(path):
-    data = open(path, "rb").read()
+    with open(path, "rb") as fh:
+        data = fh.read()
     streams = []
     for m in re.finditer(rb"/Length (\d+)( /Filter /FlateDecode)? >>\nstream\n", data):
         start = m.end()
@@ -87,7 +88,7 @@ def page_lines(ops):
 def main(argv):
     args = list(argv)
     show_pages = set()
-    geo = dict(w=432.0, ml=54.0, mr=54.0, mt=50.0, mb=56.0)
+    geo = {"w": 432.0, "ml": 54.0, "mr": 54.0, "mt": 50.0, "mb": 56.0}
     path = args.pop(0)
     while args:
         a = args.pop(0)
@@ -133,8 +134,8 @@ def main(argv):
     print(f"single-word body lines: {len(single_word_lines)}", single_word_lines[:8])
     stray = []
     for pno, ops in enumerate(pages, 1):
-        for y, segs in page_lines(ops):
-            for x, f, s, t in segs:
+        for _y, segs in page_lines(ops):
+            for _x, f, _s, t in segs:
                 if re.search(r"\w\*|\*\w", t) and f not in ("Courier", "CourierBold"):
                     stray.append((pno, t[:70]))
     print("stray emphasis asterisks outside code:", len(stray), stray[:5])

@@ -777,22 +777,18 @@ class BookPDF:
         lines = self._wrap(words, max_w - indent, max_w)
         lines = self._fix_runt(lines)
         justify = self.justify if justify is None else justify
-        if keep:
+        if keep and len(lines) >= 2 and self.margin_b <= self.y - leading < self.margin_b + leading:
             # Orphan control: never strand a single line at the foot of a page.
-            if len(lines) >= 2 and self.margin_b <= self.y - leading < self.margin_b + leading:
-                self._new_page()
-        drawn = 0
+            self._new_page()
         for idx, ln in enumerate(lines):
             self._need(leading)
-            if keep:
+            if keep and idx >= 1 and idx + 2 == len(lines) and self.y - 2 * leading < self.margin_b:
                 # Widow control: keep a paragraph's final two lines together.
-                if idx + 2 == len(lines) and drawn >= 1 and self.y - 2 * leading < self.margin_b:
-                    self._new_page()
+                self._new_page()
             x0 = self.margin_l + left + (indent if idx == 0 else 0.0)
             line_max = max_w - (indent if idx == 0 else 0.0)
             self._draw_words(x0, self.y, ln, line_max, justify, last=(idx == len(lines) - 1))
             self.y -= leading
-            drawn += 1
         self.y -= self.para_space if space_after is None else space_after
         self._suppress_indent = False
 
@@ -1189,7 +1185,7 @@ def render_book_pdf(
     blocks = parse_markdown(text)
     front, body = _split_front_matter(blocks)
 
-    geo = dict(page_w=432.0, page_h=648.0, margin_l=54.0, margin_r=54.0, margin_t=50.0, margin_b=56.0)
+    geo = {"page_w": 432.0, "page_h": 648.0, "margin_l": 54.0, "margin_r": 54.0, "margin_t": 50.0, "margin_b": 56.0}
     geo.update(geometry or {})
 
     # Pass 1: record the page each body heading lands on.

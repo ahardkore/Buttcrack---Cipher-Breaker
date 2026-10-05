@@ -24,7 +24,12 @@ TIMES_BI = "Times-BoldItalic"
 COURIER = "Courier"
 COURIER_B = "Courier-Bold"
 
-FONTS = [HELV, HELV_B, HELV_O, TIMES, TIMES_B, TIMES_I, TIMES_BI, COURIER, COURIER_B]
+# Fonts declared in every document. Extra fonts (e.g. Times-BoldItalic) are
+# added by Document.save only when a page actually uses them, so documents
+# that stick to the original set — the puzzle books — come out byte-for-byte
+# identical to builds that predate the extra fonts.
+FONTS = [HELV, HELV_B, HELV_O, TIMES, TIMES_B, TIMES_I, COURIER, COURIER_B]
+EXTRA_FONTS = [TIMES_BI]
 
 # Average glyph widths (per 1000 units) for rough text measurement. Courier is
 # monospaced at exactly 600; the proportional fonts use per-character tables
@@ -254,9 +259,16 @@ class Document:
             objects.append(body)
             return len(objects)  # object numbers are 1-based
 
+        # Fonts to declare: the base set, plus any extra font actually used.
+        used = set()
+        for page in self.pages:
+            for op in page.ops:
+                for f in EXTRA_FONTS:
+                    if f"/{f.replace('-', '')} " in op:
+                        used.add(f)
         font_objs = {
             f: add(f"<< /Type /Font /Subtype /Type1 /BaseFont /{f} /Encoding /WinAnsiEncoding >>".encode())
-            for f in FONTS
+            for f in FONTS + [f for f in EXTRA_FONTS if f in used]
         }
         resources = (
             "<< /Font << " + " ".join(f"/{f.replace('-', '')} {n} 0 R" for f, n in font_objs.items()) + " >> >>"
