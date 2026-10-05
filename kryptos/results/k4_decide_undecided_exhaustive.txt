@@ -1,0 +1,46 @@
+DECIDING WHAT THE COMPOSITE SWEEP SKIPPED
+==============================================================================
+
+  exhaustive column orders L=2..9
+
+  fluent English -4.04 per crib-free quadgram, ciphertext -7.74
+  deciding only what --max-unknown 2 would have skipped
+
+  tested 42,547,648 configurations in 57.5s
+  crib-consistent   31,134
+  of those, skipped by the --max-unknown 2 filter: 31,112
+  now decided on determined letters: 31,109
+  too thin for masking (under 20 crib-free grams): 3
+
+  EXACT STAGE — enumerating every fill for the 3 thin cases
+  --------------------------------------------------------------------------
+     -6.65  cols=8 order=(0, 3, 7, 1, 5, 6, 2, 4) case=B alpha=standard p=26 (4 free, ALL 456,976 fills enumerated)
+            LGNPCLALEWASIENNTPROPEASTNORTHEASTFEHOMPQBWEGDZEGRAIRFWMKHCHIGCBERLINCLOCKAPLFCMGCFCZEMOYARGULAIH
+     -6.77  cols=8 order=(0, 3, 7, 1, 6, 5, 2, 4) case=B alpha=standard p=26 (4 free, ALL 456,976 fills enumerated)
+            IKNOCANHEZESINEKTOTOPEASTNORTHEASTBVLLOPZBTQJZDEGIAIQWFVKTCHICGBERLINCLOCKATLOFMGCOEQMEOCERGGALIK
+     -7.75  cols=8 order=(0, 7, 2, 6, 5, 1, 4, 3) case=B alpha=KRYPTOS p=26 (5 free, ALL 11,881,376 fills enumerated)
+            NAIXNAVALUBXEXEKTEFJGEASTNORTHEASTVGUKCUALXXGZXCANYVAGIZJVISBKFBERLINCLOCKPRQSDOBPZJFKMRCHDYXLEJZ
+
+  exact stage decided 3 of 3; 0 still undecided
+
+  best of the previously-skipped set ('?' = undetermined by the cribs):
+  --------------------------------------------------------------------------
+     -6.58  cols=9 order=(7, 0, 3, 1, 4, 6, 2, 5, 8) case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            ORPVUMPY???MVCJULEQROEASTNORTHEAST???NWMIISMAGOCRTOBISITREIS???BERLINCLOCKAKOBMBAMCOUW???WYTPEKWH
+     -6.60  cols=9 order=(8, 5, 3, 1, 4, 6, 7, 2, 0) case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            OFGRUPUK???MVPAUPOYOKEASTNORTHEAST???OPFIJTICUTHRUSTTEECOEAF???BERLINCLOCKLLOWGSGVCWGW???VSXPEXQJ
+     -6.70  cols=9 order=(8, 5, 3, 1, 4, 2, 7, 6, 0) case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            OFUNUPGB???MVKAUPBYOIEASTNORTHEAST???OYCIJOMCUTZRUUNTEERBEAQ???BERLINCLOCKILQWISGHCRGO???VSUMEXWR
+     -6.76  cols=9 order=(5, 2, 1, 4, 0, 3, 7, 8, 6) case=A alpha=standard p=26 (3 free, 46 grams)
+            TDOWASLU???TZELTSCAGKEASTNORTHEAST???ICYDTZRULHMUYAOUBWKNJTW???BERLINCLOCKIVCAROLESAZR???YLIPORMS
+     -6.77  cols=9 order=(7, 2, 3, 1, 4, 0, 6, 8, 5) case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            RKUQUBHO???GVKEARSRKCEASTNORTHEAST???NDCIMERJDORRIUMEDNYTEME???BERLINCLOCKIEJYSAIRCJXK???CAUGEDAZ
+     -6.78  cols=9 order=(7, 5, 3, 1, 4, 0, 2, 8, 6) case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            RKPVUPKH???MVCASICRKOEASTNORTHEAST???NWMIJHTJDOCRUAHEDNTREAX???BERLINCLOCKALSRIAIPCOGC???CATPEXSG
+
+  best -6.58; English -4.04, noise -7.74 — 31% of the way from noise to English
+
+==============================================================================
+ VERDICT: all 31,112 configurations the exhaustive sweep skipped are now
+ decided, and none yields English. The elimination claim for this family
+ no longer rests on anything that went unread.

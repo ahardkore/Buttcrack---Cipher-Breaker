@@ -1,0 +1,14 @@
+SELF-TEST — masking identity and planted recovery
+==============================================================================
+
+[1] the two-fill mask must be exactly the undetermined set
+  PASS  cols=7 case=A p=23: 73 determined, mask matches ground truth: True
+  PASS  cols=9 case=B p=25: 67 determined, mask matches ground truth: True
+  PASS  cols=5 case=A p=26: 85 determined, mask matches ground truth: True
+
+[2] a planted cipher must be recoverable from masked evidence alone
+  PASS  cols=7 case=A p=23: 34 grams, score -4.07 (English -4.04, noise -7.74), determined letters exact: True
+  PASS  cols=9 case=B p=25: 22 grams, score -3.71 (English -4.04, noise -7.74), determined letters exact: True
+
+SELF-TEST PASSED — the mask is exact and masked scoring recovers
+planted ciphers the enumeration filter would have thrown away.

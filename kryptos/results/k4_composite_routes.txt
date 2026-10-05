@@ -1,0 +1,50 @@
+KRYPTOS K4 — CRIB-CONSTRAINED COMPOSITE SEARCH
+==============================================================================
+
+Pre-check: IoC is invariant under transposition AND under
+monoalphabetic substitution.
+  K4 IoC          0.0361
+  English IoC     0.0667
+  random IoC      0.0385
+  -> transposition x MONOalphabetic substitution is impossible in either
+     order, under any key. The substitution stage must be polyalphabetic.
+
+Loaded 258,337 English quadgrams for scoring.
+Reference: fluent 97-letter English scores about -391
+
+Geometric transpositions: 445 distinct permutations
+
+  route perms    (    445 orders) ->    153 crib-consistent,    153 scored
+
+Tested 46,280 configurations in 20.1s
+Crib-consistent: 153   of which scored (<= 3 free residues): 153
+Nothing was skipped: every crib-consistent configuration was read.
+
+Best-scoring candidate plaintexts:
+------------------------------------------------------------------------------
+        -583  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCTLOAQORERSEASTNORTHEASTBYXQJERPPCDLDLWMEHWASLLEYAPPUBERLINCLOCKGAQZWFMNAREETGLIIRDNOIQ  
+        -586  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCELOAQORERSEASTNORTHEASTIYXQJERPPCDLDLWMEHWASLLEYAPPYBERLINCLOCKGAQZWFMNARMETGLIIRDNOIQ  
+        -587  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCHLOAQORERSEASTNORTHEASTMYXQJERPPCDLDLWMEHWASLLEYAPPOBERLINCLOCKGAQZWFMNARUETGLIIRDNOIQ  
+        -589  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCRLOAQORERSEASTNORTHEASTOYXQJERPPCDLDLWMEHWASLLEYAPPMBERLINCLOCKGAQZWFMNARBETGLIIRDNOIQ  
+        -590  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCDLOAQORERSEASTNORTHEASTHYXQJERPPCDLDLWMEHWASLLEYAPPRBERLINCLOCKGAQZWFMNARLETGLIIRDNOIQ  
+        -592  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCPLOAQORERSEASTNORTHEASTAYXQJERPPCDLDLWMEHWASLLEYAPPQBERLINCLOCKGAQZWFMNARDETGLIIRDNOIQ  
+        -593  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCILOAQORERSEASTNORTHEASTNYXQJERPPCDLDLWMEHWASLLEYAPPSBERLINCLOCKGAQZWFMNARVETGLIIRDNOIQ  
+        -593  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCULOAQORERSEASTNORTHEASTZYXQJERPPCDLDLWMEHWASLLEYAPPFBERLINCLOCKGAQZWFMNARYETGLIIRDNOIQ  
+        -594  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCYLOAQORERSEASTNORTHEASTSYXQJERPPCDLDLWMEHWASLLEYAPPNBERLINCLOCKGAQZWFMNARCETGLIIRDNOIQ  
+        -595  cols=route key=cols-plain w=41 case=B alpha=KRYPTOS period=25
+              PEFSEANTJDCKLOAQORERSEASTNORTHEASTTYXQJERPPCDLDLWMEHWASLLEYAPPLBERLINCLOCKGAQZWFMNARAETGLIIRDNOIQ  
+
+==============================================================================
+VERDICT: no configuration in this family yields English.
+Columnar transposition composed with a periodic polyalphabetic cipher is
+eliminated for every geometric/route transposition swept
+and period <= 26, in both composition orders, both alphabets.

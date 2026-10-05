@@ -1,0 +1,57 @@
+KRYPTOS K4 — CRIB-CONSTRAINED COMPOSITE SEARCH
+==============================================================================
+
+Pre-check: IoC is invariant under transposition AND under
+monoalphabetic substitution.
+  K4 IoC          0.0361
+  English IoC     0.0667
+  random IoC      0.0385
+  -> transposition x MONOalphabetic substitution is impossible in either
+     order, under any key. The substitution stage must be polyalphabetic.
+
+Loaded 258,337 English quadgrams for scoring.
+Reference: fluent 97-letter English scores about -391
+
+  L= 2 columns   (      2 orders) ->      0 crib-consistent,      0 scored
+  L= 3 columns   (      6 orders) ->      2 crib-consistent,      0 scored
+  L= 4 columns   (     24 orders) ->      0 crib-consistent,      0 scored
+  L= 5 columns   (    120 orders) ->     16 crib-consistent,      0 scored
+  L= 6 columns   (    720 orders) ->     42 crib-consistent,      0 scored
+  L= 7 columns   (  5,040 orders) ->    696 crib-consistent,      0 scored
+  L= 8 columns   ( 40,320 orders) ->  2,444 crib-consistent,     18 scored
+  L= 9 columns   (362,880 orders) -> 27,934 crib-consistent,      4 scored
+
+Tested 42,547,648 configurations in 51.2s
+Crib-consistent: 31,134   of which scored (<= 2 free residues): 22
+NOTE: 31,112 configurations were crib-consistent but left
+more than 2 key residues free, so they were never read.
+Those are UNDECIDED, not eliminated. Raise --max-unknown to decide them.
+
+Best-scoring candidate plaintexts:
+------------------------------------------------------------------------------
+        -646  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYRGHIWAPLESVOBZHAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIDOUDHJNRJWBCHIZPLD  
+        -649  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYOGHIWAPLESVOBZEAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIAOUDHJNRJWBCEIZPLD  
+        -650  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYGGHIWAPLESVOBZWAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFISOUDHJNRJWBCWIZPLD  
+        -651  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYDGHIWAPLESVOBZTAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIPOUDHJNRJWBCTIZPLD  
+        -654  cols=9 order=(3, 7, 1, 0, 2, 5, 6, 8, 4) case=B alpha=standard period=23
+              HFYWDSIDACLEZESBZIGZKEASTNORTHEASTZHRKXSAUUTLEDQBUDXRHYNNUMYZYXBERLINCLOCKWEWKIUQADHWNGJCPLIIEPID  
+        -654  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYBGHIWAPLESVOBZRAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFINOUDHJNRJWBCRIZPLD  
+        -655  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYUGHIWAPLESVOBZKAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIGOUDHJNRJWBCKIZPLD  
+        -655  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYFGHIWAPLESVOBZVAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIROUDHJNRJWBCVIZPLD  
+        -655  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYNGHIWAPLESVOBZDAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIZOUDHJNRJWBCDIZPLD  
+        -656  cols=9 order=(7, 0, 1, 5, 2, 3, 6, 8, 4) case=B alpha=standard period=23
+              QFYMGHIWAPLESVOBZCAZKEASTNORTHEASTETZTXVAVUSXRDZHUEXBIDNNYMWIUBBERLINCLOCKWWFFIYOUDHJNRJWBCCIZPLD  
+
+==============================================================================
+VERDICT: no configuration in this family yields English.
+Columnar transposition composed with a periodic polyalphabetic cipher is
+eliminated for every column order with L <= 9
+and period <= 26, in both composition orders, both alphabets.
