@@ -1,16 +1,29 @@
 {
-  "generated_utc": "2026-10-05T10:09:28.118202+00:00",
+  "generated_utc": "2026-10-05T11:27:07.424743+00:00",
   "word_count": 84978,
   "footnotes": 0,
   "figures": 0,
   "tables": 1,
-  "epub_navigation": true,
-  "cover": {
-    "width": 1536,
-    "height": 1024,
-    "dpi_required": 300,
-    "status": "review"
+  "epub": {
+    "file": "KRYPTOS_SCHOLARLY_MANUSCRIPT.epub",
+    "chapters": 58,
+    "nav_entries": 346,
+    "endnotes": 0,
+    "stylesheet": "style.css",
+    "cover": {
+      "width": 1536,
+      "height": 1024,
+      "dpi_required": 300,
+      "status": "review"
+    },
+    "validation": {
+      "files": 65,
+      "chapters_with_em": 27,
+      "valid": true,
+      "errors": []
+    }
   },
+  "epub_navigation": true,
   "kdp_preflight": {
     "trim": "6x9",
     "bleed": "review-required",
@@ -22,8 +35,13 @@
   "revision_history": [
     {
       "revision": "1.1",
-      "date": "2026-10-05",
+      "date": "2026-10-03",
       "change": "production EPUB and preflight metadata"
+    },
+    {
+      "revision": "1.2",
+      "date": "2026-10-05",
+      "change": "typographic overhaul: paragraphs merged from hard-wrapped source lines, real emphasis (em/strong) and code spans, per-part chapter files with anchored navigation, book stylesheet, cover page, endnotes and built-in package validation; PDF and EPUB now share the scripts/book_typeset.py engine"
     }
   ]
 }

@@ -20,10 +20,11 @@ HELV_O = "Helvetica-Oblique"
 TIMES = "Times-Roman"
 TIMES_B = "Times-Bold"
 TIMES_I = "Times-Italic"
+TIMES_BI = "Times-BoldItalic"
 COURIER = "Courier"
 COURIER_B = "Courier-Bold"
 
-FONTS = [HELV, HELV_B, HELV_O, TIMES, TIMES_B, TIMES_I, COURIER, COURIER_B]
+FONTS = [HELV, HELV_B, HELV_O, TIMES, TIMES_B, TIMES_I, TIMES_BI, COURIER, COURIER_B]
 
 # Average glyph widths (per 1000 units) for rough text measurement. Courier is
 # monospaced at exactly 600; the proportional fonts use per-character tables
@@ -136,7 +137,7 @@ def text_width(s: str, font: str, size: float) -> float:
     total = sum(_HELV_W.get(ch, 500 if ch in WINANSI else 556) for ch in s)
     if font.startswith("Times"):
         total *= _TIMES_SCALE
-    if font.endswith("-Bold"):
+    if "Bold" in font:
         total *= 1.03
     return total / 1000 * size
 
@@ -207,6 +208,28 @@ class Page:
     def line(self, x1: float, y1: float, x2: float, y2: float, width: float = 0.5, gray: float = 0.0) -> None:
         self.ops.append(f"{gray:.2f} G {width:.2f} w {x1:.2f} {y1:.2f} m {x2:.2f} {y2:.2f} l S")
 
+    def rect(
+        self,
+        x: float,
+        y: float,
+        w: float,
+        h: float,
+        fill_gray: float | None = None,
+        stroke_gray: float | None = None,
+        width: float = 0.5,
+    ) -> None:
+        """Axis-aligned rectangle, optionally filled and/or stroked (gray: 0=black, 1=white)."""
+        ops = ["q"]
+        if fill_gray is not None:
+            ops.append(f"{fill_gray:.2f} g")
+        if stroke_gray is not None:
+            ops.append(f"{stroke_gray:.2f} G {width:.2f} w")
+        mode = "B" if (fill_gray is not None and stroke_gray is not None) else ("f" if fill_gray is not None else "S")
+        ops.append(f"{x:.2f} {y:.2f} {w:.2f} {h:.2f} re")
+        ops.append(mode)
+        ops.append("Q")
+        self.ops.append(" ".join(ops))
+
     def content(self) -> bytes:
         return "\n".join(self.ops).encode("latin-1", "replace")
 
@@ -224,7 +247,7 @@ class Document:
         self.pages.append(page)
         return page
 
-    def save(self, path) -> None:
+    def save(self, path, compress: bool = False) -> None:
         objects: list[bytes] = []
 
         def add(body: bytes) -> int:
@@ -243,7 +266,15 @@ class Document:
         kids = []
         for page in self.pages:
             stream = page.content()
-            content_obj = add(b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream")
+            if compress:
+                import zlib
+
+                stream = zlib.compress(stream)
+                content_obj = add(
+                    b"<< /Length " + str(len(stream)).encode() + b" /Filter /FlateDecode >>\nstream\n" + stream + b"\nendstream"
+                )
+            else:
+                content_obj = add(b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream")
             page_obj = add(
                 f"<< /Type /Page /Parent {pages_obj} 0 R "
                 f"/MediaBox [0 0 {self.width:.2f} {self.height:.2f}] "
