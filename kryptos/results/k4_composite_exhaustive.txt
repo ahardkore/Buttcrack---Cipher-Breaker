@@ -12,17 +12,20 @@ monoalphabetic substitution.
 Loaded 258,337 English quadgrams for scoring.
 Reference: fluent 97-letter English scores about -391
 
-  L= 2 columns (      2 orders) ->      0 crib-consistent configurations
-  L= 3 columns (      6 orders) ->      0 crib-consistent configurations
-  L= 4 columns (     24 orders) ->      0 crib-consistent configurations
-  L= 5 columns (    120 orders) ->      0 crib-consistent configurations
-  L= 6 columns (    720 orders) ->      0 crib-consistent configurations
-  L= 7 columns (  5,040 orders) ->      0 crib-consistent configurations
-  L= 8 columns ( 40,320 orders) ->     18 crib-consistent configurations
-  L= 9 columns (362,880 orders) ->      4 crib-consistent configurations
+  L= 2 columns   (      2 orders) ->      0 crib-consistent,      0 scored
+  L= 3 columns   (      6 orders) ->      2 crib-consistent,      0 scored
+  L= 4 columns   (     24 orders) ->      0 crib-consistent,      0 scored
+  L= 5 columns   (    120 orders) ->     16 crib-consistent,      0 scored
+  L= 6 columns   (    720 orders) ->     42 crib-consistent,      0 scored
+  L= 7 columns   (  5,040 orders) ->    696 crib-consistent,      0 scored
+  L= 8 columns   ( 40,320 orders) ->  2,444 crib-consistent,     18 scored
+  L= 9 columns   (362,880 orders) -> 27,934 crib-consistent,      4 scored
 
-Tested 42,547,648 configurations in 53.8s
-Crib-consistent survivors (<= 2 free residues): 22
+Tested 42,547,648 configurations in 51.2s
+Crib-consistent: 31,134   of which scored (<= 2 free residues): 22
+NOTE: 31,112 configurations were crib-consistent but left
+more than 2 key residues free, so they were never read.
+Those are UNDECIDED, not eliminated. Raise --max-unknown to decide them.
 
 Best-scoring candidate plaintexts:
 ------------------------------------------------------------------------------

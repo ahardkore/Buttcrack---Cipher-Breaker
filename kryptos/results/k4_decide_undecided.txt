@@ -1,0 +1,48 @@
+DECIDING WHAT THE COMPOSITE SWEEP SKIPPED
+==============================================================================
+
+  dictionary column orders: 165,413 patterns across L=4..16
+
+  fluent English -4.04 per crib-free quadgram, ciphertext -7.74
+  deciding only what --max-unknown 2 would have skipped
+
+  tested 17,202,952 configurations in 22.8s
+  crib-consistent   12,653
+  of those, skipped by the --max-unknown 2 filter: 12,635
+  now decided on determined letters: 12,631
+  too thin for masking (under 20 crib-free grams): 4
+
+  EXACT STAGE — enumerating every fill for the 4 thin cases
+  --------------------------------------------------------------------------
+     -6.65  cols=8 key=AGUAVINA case=B alpha=standard p=26 (4 free, ALL 456,976 fills enumerated)
+            LGNPCLALEWASIENNTPROPEASTNORTHEASTFEHOMPQBWEGDZEGRAIRFWMKHCHIGCBERLINCLOCKAPLFCMGCFCZEMOYARGULAIH
+     -6.77  cols=8 key=AIRDROME case=B alpha=standard p=26 (4 free, ALL 456,976 fills enumerated)
+            IKNOCANHEZESINEKTOTOPEASTNORTHEASTBVLLOPZBTQJZDEGIAIQWFVKTCHICGBERLINCLOCKATLOFMGCOEQMEOCERGGALIK
+     -7.26  cols=12 key=ALCOHOLICITY case=B alpha=standard p=26 (5 free, ALL 11,881,376 fills enumerated)
+            GBOFUNDOGOQXFREDIYBPDEASTNORTHEASTGKYCTFABOGZGNMSPINUOMWIBCIRDWBERLINCLOCKJWNBQISCBBKGUSXCQRTYRTH
+     -7.01  cols=12 key=SARCOLOGICAL case=B alpha=KRYPTOS p=26 (5 free, ALL 11,881,376 fills enumerated)
+            FIWIZEEBXSIESMSOHEVXXEASTNORTHEASTNZSLCRBALWZGYANLLOTDQUTQOUTTOBERLINCLOCKYOMHCLACGSKWHOOKBLUZUTQ
+
+  exact stage decided 4 of 4; 0 still undecided
+
+  best of the previously-skipped set ('?' = undetermined by the cribs):
+  --------------------------------------------------------------------------
+     -6.58  cols=11 key=METEOROIDAL case=A alpha=standard p=26 (3 free, 46 grams)
+            LNLEPNSJ???URLESEPOPAEASTNORTHEAST???HSBFCCJANDAVUPOCCAOVADL???BERLINCLOCKUOMEWIWHUALB???ZHFBLKCA
+     -6.62  cols=10 key=ASTEATOSIS case=A alpha=standard p=26 (3 free, 46 grams)
+            MMLEHKRK???EVMMAATHSEEASTNORTHEAST???MOMVEABLAMIRWGNACMMROSM???BERLINCLOCKIJRORSHITHAC???ODDLGSXT
+     -6.63  cols=12 key=ISONITRAMINE case=A alpha=standard p=26 (3 free, 46 grams)
+            DRTNOKKO???NDRHNEMGXJEASTNORTHEAST???PRZDYRDOSEBAREVISOHIJFB???BERLINCLOCKJOCKSFDFLERH???YRDIDMXF
+     -6.80  cols=12 key=INTERVOCALIC case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            RHAIAACR???TMIRPEUHAWEASTNORTHEAST???BRUYQMONNKIXSFOUACRYPSE???BERLINCLOCKVAWEAFIPSPFJ???JICWXEIB
+     -6.82  cols=14 key=CIRCUMMERIDIAN case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            YNKINAHB???CURDUXPTVUEASTNORTHEAST???GLMWRNSARNAHKGINILDPXZI???BERLINCLOCKZFLUEHDOLORR???DBAMURVA
+     -6.86  cols=12 key=CYLINDRICITY case=A alpha=KRYPTOS p=26 (3 free, 46 grams)
+            QHVKHIMT???JENVIEMHRSEASTNORTHEAST???DPEEMMAKAUJOFUYRDADGPIX???BERLINCLOCKQZWDRTSOODQF???LSKAMMEO
+
+  best -6.58; English -4.04, noise -7.74 — 31% of the way from noise to English
+
+==============================================================================
+ VERDICT: all 12,635 configurations the keyword sweep skipped are now
+ decided, and none yields English. The elimination claim for this family
+ no longer rests on anything that went unread.

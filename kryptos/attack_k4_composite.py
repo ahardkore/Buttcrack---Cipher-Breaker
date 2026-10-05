@@ -422,6 +422,7 @@ def main() -> int:
 
     total_configs = 0
     survivors = 0
+    scored = 0
     best: list[tuple[float, str, str]] = []
     started = time.time()
 
@@ -441,6 +442,7 @@ def main() -> int:
 
     for cols, orders, words in schedule:
         col_survivors = 0
+        col_scored = 0
         for order in orders:
             src = list(order) if cols == "route" else columnar_src(N, cols, order)
             for alpha_name, alpha in ALPHABETS.items():
@@ -452,11 +454,13 @@ def main() -> int:
                         key = consistent(pairs, period)
                         if key is None:
                             continue
+                        survivors += 1
+                        col_survivors += 1
                         unknown = [s for s in range(period) if s not in key]
                         if len(unknown) > args.max_unknown:
                             continue
-                        survivors += 1
-                        col_survivors += 1
+                        scored += 1
+                        col_scored += 1
                         for fill in product(range(26), repeat=len(unknown)):
                             full = [key.get(s, 0) for s in range(period)]
                             for slot, val in zip(unknown, fill):
@@ -473,11 +477,18 @@ def main() -> int:
                                 del best[15:]
         label = "route perms" if cols == "route" else f"L={cols:>2} columns"
         print(f"  {label:<14} ({len(orders):>7,} orders) -> "
-              f"{col_survivors:>6,} crib-consistent configurations")
+              f"{col_survivors:>6,} crib-consistent, {col_scored:>6,} scored")
 
     elapsed = time.time() - started
     print(f"\nTested {total_configs:,} configurations in {elapsed:.1f}s")
-    print(f"Crib-consistent survivors (<= {args.max_unknown} free residues): {survivors:,}")
+    print(f"Crib-consistent: {survivors:,}   of which scored "
+          f"(<= {args.max_unknown} free residues): {scored:,}")
+    if survivors > scored:
+        print(f"NOTE: {survivors - scored:,} configurations were crib-consistent but left")
+        print(f"more than {args.max_unknown} key residues free, so they were never read.")
+        print("Those are UNDECIDED, not eliminated. Raise --max-unknown to decide them.")
+    else:
+        print("Nothing was skipped: every crib-consistent configuration was read.")
 
     print("\nBest-scoring candidate plaintexts:")
     print("-" * 78)

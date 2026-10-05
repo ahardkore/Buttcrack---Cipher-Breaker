@@ -14,22 +14,25 @@ Reference: fluent 97-letter English scores about -391
 
 Dictionary-derived column orders: 165,413 distinct patterns across L=4..16
 
-  L= 4 columns (     24 orders) ->      0 crib-consistent configurations
-  L= 5 columns (    120 orders) ->      0 crib-consistent configurations
-  L= 6 columns (    720 orders) ->      0 crib-consistent configurations
-  L= 7 columns (  4,893 orders) ->      0 crib-consistent configurations
-  L= 8 columns ( 20,014 orders) ->      6 crib-consistent configurations
-  L= 9 columns ( 32,100 orders) ->      0 crib-consistent configurations
-  L=10 columns ( 32,775 orders) ->      0 crib-consistent configurations
-  L=11 columns ( 27,468 orders) ->      1 crib-consistent configurations
-  L=12 columns ( 21,368 orders) ->     10 crib-consistent configurations
-  L=13 columns ( 15,430 orders) ->      1 crib-consistent configurations
-  L=14 columns ( 10,063 orders) ->      0 crib-consistent configurations
-  L=15 columns (    315 orders) ->      0 crib-consistent configurations
-  L=16 columns (    123 orders) ->      0 crib-consistent configurations
+  L= 4 columns   (     24 orders) ->      0 crib-consistent,      0 scored
+  L= 5 columns   (    120 orders) ->     16 crib-consistent,      0 scored
+  L= 6 columns   (    720 orders) ->     42 crib-consistent,      0 scored
+  L= 7 columns   (  4,893 orders) ->    682 crib-consistent,      0 scored
+  L= 8 columns   ( 20,014 orders) ->  1,249 crib-consistent,      6 scored
+  L= 9 columns   ( 32,100 orders) ->  2,365 crib-consistent,      0 scored
+  L=10 columns   ( 32,775 orders) ->  2,972 crib-consistent,      0 scored
+  L=11 columns   ( 27,468 orders) ->  1,839 crib-consistent,      1 scored
+  L=12 columns   ( 21,368 orders) ->  1,519 crib-consistent,     10 scored
+  L=13 columns   ( 15,430 orders) ->  1,095 crib-consistent,      1 scored
+  L=14 columns   ( 10,063 orders) ->    834 crib-consistent,      0 scored
+  L=15 columns   (    315 orders) ->     27 crib-consistent,      0 scored
+  L=16 columns   (    123 orders) ->     13 crib-consistent,      0 scored
 
-Tested 17,202,952 configurations in 23.3s
-Crib-consistent survivors (<= 2 free residues): 18
+Tested 17,202,952 configurations in 23.5s
+Crib-consistent: 12,653   of which scored (<= 2 free residues): 18
+NOTE: 12,635 configurations were crib-consistent but left
+more than 2 key residues free, so they were never read.
+Those are UNDECIDED, not eliminated. Raise --max-unknown to decide them.
 
 Best-scoring candidate plaintexts:
 ------------------------------------------------------------------------------

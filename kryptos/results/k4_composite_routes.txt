@@ -14,10 +14,11 @@ Reference: fluent 97-letter English scores about -391
 
 Geometric transpositions: 445 distinct permutations
 
-  route perms    (    445 orders) ->    124 crib-consistent configurations
+  route perms    (    445 orders) ->    153 crib-consistent,    153 scored
 
-Tested 46,280 configurations in 1.9s
-Crib-consistent survivors (<= 2 free residues): 124
+Tested 46,280 configurations in 20.1s
+Crib-consistent: 153   of which scored (<= 3 free residues): 153
+Nothing was skipped: every crib-consistent configuration was read.
 
 Best-scoring candidate plaintexts:
 ------------------------------------------------------------------------------

@@ -1,0 +1,51 @@
+PLANTED-CIPHER SELF-TEST
+==============================================================================
+
+[1] fully determined keys -- crib solve must recover the key and decrypt
+  PASS  pt=KRYPTOS      ct=KRYPTOS      p=3  consistent=True decrypts=True
+  PASS  pt=ABSCISSA     ct=ABCDEFGHIJKL p=4  consistent=True decrypts=True
+  PASS  pt=ABCDEFGHIJKL ct=PALIMPSEST   p=2  consistent=True decrypts=True
+  PASS  pt=QUA          ct=LODESTONE    p=5  consistent=True decrypts=True
+
+[2] negative control -- wrong plaintext alphabet must be contradicted
+  PASS  29/29 wrong plaintext alphabets rejected
+
+[3] THE CRITICAL TEST -- periods brute force cannot reach.
+    Free residues are left unfilled; only the crib-determined letters
+    are scored. The true alphabet pair must still come out on top of a
+    field of decoys, and its determined letters must be exactly right.
+
+  period  free grams*    true  decoys  survive crib  beat true  best decoy
+      14     1     46   -4.16   3,998             0          0          --  PASS
+      18     1     47   -4.08   3,998             0          0          --  PASS
+      19     4     37   -4.14   3,998             0          0          --  PASS
+      20     7     30   -4.04   3,998             0          0          --  PASS
+      21     8     30   -4.16   3,998             0          0          --  PASS
+      22     7     31   -4.17   3,998             0          0          --  PASS
+      23     6     34   -4.07   3,998             0          0          --  PASS
+      24     5     38   -4.03   3,998             0          0          --  PASS
+      25     4     42   -4.08   3,998             0          0          --  PASS
+      26     3     46   -4.09   3,998           624          0       -6.20  PASS
+    (* crib-free grams: anchors excluded, so no credit for crib-copying)
+    (where 0 decoys survive, the crib algebra alone did the rejecting;
+     where many survive, the masked score had to do it -- and did)
+
+[4] crib-free score must separate English from noise at the worst period
+  PASS  p=21, 30 crib-free grams: English -4.16 vs ciphertext -8.03 (gap 3.87)
+
+[5] soundness of the analytic layer -- it must never refute a cipher
+    that demonstrably exists. Each planted cipher below is real, so its
+    own model and period must NOT be flagged impossible.
+  PASS  Quagmire III p=3  planted cipher exists; analytic layer flags it impossible: False
+  PASS  Quagmire I   p=4  planted cipher exists; analytic layer flags it impossible: False
+  PASS  Quagmire II  p=2  planted cipher exists; analytic layer flags it impossible: False
+  PASS  Quagmire III p=26 planted cipher exists; analytic layer flags it impossible: False
+
+[6] the analytic layer applied to the real K4 cribs
+  Quagmire I   refuted for ALL 26! alphabets at  8 of 26 periods: [1, 2, 3, 4, 5, 9, 15, 17]
+  Quagmire II  refuted for ALL 26! alphabets at 13 of 26 periods: [1, 2, 3, 5, 6, 7, 9, 10, 14, 15, 17, 21, 25]
+  Quagmire III refuted for ALL 26! alphabets at 26 of 26 periods: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+  PASS  Quagmire III refuted at every period (e.g. p=1: positions 22,31 force x[F]=x[G])
+
+SELF-TEST PASSED — the sweep can find what it looks for, including
+in the long-period band where the key is only partly determined.

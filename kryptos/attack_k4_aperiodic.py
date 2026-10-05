@@ -36,6 +36,7 @@ Run:  python3 kryptos/attack_k4_aperiodic.py --selftest
 from __future__ import annotations
 
 import argparse
+from functools import lru_cache
 import gzip
 import math
 import sys
@@ -145,6 +146,29 @@ def family_digit_limited() -> None:
 # families 3 & 4 -- progressive keys
 # --------------------------------------------------------------------------
 
+CRIBS = {pos - 1 for pos in ANCHORS}
+MIN_GRAMS = 25
+
+
+@lru_cache(maxsize=None)
+def mask_plan(period: int) -> tuple[tuple[int, ...], tuple[int, ...]]:
+    """(crib-free scorable gram starts, free residues) for a period.
+
+    Which residues the cribs pin depends only on the period, so this is
+    computed once per period rather than once per configuration. Grams
+    touching an anchor are excluded as well: the anchors decrypt correctly by
+    construction in every surviving configuration -- they are what the key was
+    solved from -- so scoring them would reward crib-copying.
+    """
+    covered = {i % period for i in CRIBS}
+    free = tuple(s for s in range(period) if s not in covered)
+    freeset = set(free)
+    ok = [(i % period not in freeset) and i not in CRIBS for i in range(N)]
+    windows = tuple(i for i in range(N - 3)
+                    if ok[i] and ok[i + 1] and ok[i + 2] and ok[i + 3])
+    return windows, free
+
+
 def progressive_fit(pairs: list[tuple[int, int]], period: int, step: int,
                     mode: str) -> dict[int, int] | None:
     base: dict[int, int] = {}
@@ -173,7 +197,7 @@ def family_progressive(max_period: int, max_unknown: int,
         print(f"  exhaustive over p = 1..{max_period}, step = 0..25, both conventions,\n"
               "  both alphabets, both drift modes\n")
 
-    tested = survivors = 0
+    tested = survivors = scored = undecided = 0
     best: list[tuple[float, str, str]] = []
 
     for pname, perm in perms:
@@ -195,36 +219,50 @@ def family_progressive(max_period: int, max_unknown: int,
                             base = progressive_fit(pairs, period, step, mode)
                             if base is None:
                                 continue
-                            unknown = [s for s in range(period) if s not in base]
-                            if len(unknown) > max_unknown:
-                                continue
                             survivors += 1
-                            from itertools import product
-                            for fill in product(range(26), repeat=len(unknown)):
-                                full = dict(base)
-                                for slot, val in zip(unknown, fill):
-                                    full[slot] = val
-                                out = []
-                                for i in range(N):
-                                    drift = step * (i // period) if mode == "cycle" else step * i
-                                    k = (full[i % period] + drift) % 26
-                                    c = idx[ct_eff[i]]
-                                    out.append(alpha[(c - k) % 26] if conv == "vigenere"
-                                               else alpha[(k - c) % 26])
-                                text = "".join(out)
-                                sc = qscore(text, table, floor)
-                                if len(best) < 10 or sc > best[-1][0]:
-                                    best.append((sc, f"{pname} {alpha_name} {conv} "
-                                                     f"{mode} p={period} step={step}", text))
-                                    best.sort(key=lambda t: -t[0])
-                                    del best[10:]
+                            windows, free = mask_plan(period)
+                            if len(windows) < MIN_GRAMS:
+                                undecided += 1
+                                continue
+                            scored += 1
+                            # Decrypt only what the cribs determine. A free
+                            # residue darkens the positions congruent to it and
+                            # nothing else, so the remaining letters settle the
+                            # configuration no matter how it is filled.
+                            out = []
+                            for i in range(N):
+                                k_base = base.get(i % period)
+                                if k_base is None:
+                                    out.append("?")
+                                    continue
+                                drift = step * (i // period) if mode == "cycle" else step * i
+                                k = (k_base + drift) % 26
+                                c = idx[ct_eff[i]]
+                                out.append(alpha[(c - k) % 26] if conv == "vigenere"
+                                           else alpha[(k - c) % 26])
+                            text = "".join(out)
+                            sc = (sum(table.get(text[i:i + 4], floor) for i in windows)
+                                  / len(windows))
+                            if len(best) < 10 or sc > best[-1][0]:
+                                best.append((sc, f"{pname} {alpha_name} {conv} "
+                                                 f"{mode} p={period} step={step} "
+                                                 f"({len(free)} free)", text))
+                                best.sort(key=lambda t: -t[0])
+                                del best[10:]
 
-    print(f"  tested {tested:,} configurations — {survivors:,} crib-consistent")
+    print(f"  tested {tested:,} configurations — {survivors:,} crib-consistent, "
+          f"{scored:,} decided, {undecided:,} undecided")
+    if undecided:
+        print(f"  NOTE: {undecided:,} left under {MIN_GRAMS} crib-free quadgrams and are")
+        print("  UNDECIDED, not eliminated.")
+    elif survivors:
+        print("  Every crib-consistent configuration was decided on crib-free letters;")
+        print("  nothing was skipped and no anchor earned any credit.")
     print("\n  best-scoring plaintexts:")
     for sc, label, text in best[:6]:
         print(f"    {sc:6.2f}  {label}")
         print(f"            {text}")
-    return survivors
+    return survivors, scored, undecided
 
 
 # --------------------------------------------------------------------------
@@ -282,14 +320,24 @@ def main() -> int:
     print("KRYPTOS K4 — APERIODIC AND PROGRESSIVE KEYSTREAMS\n")
     family_running_key(table, floor)
     family_digit_limited()
-    family_progressive(args.max_period, args.max_unknown, False, table, floor)
+    s_id, d_id, u_id = family_progressive(args.max_period, args.max_unknown,
+                                          False, table, floor)
+    s_rt = d_rt = u_rt = 0
     if args.routes:
-        family_progressive(args.max_period, args.max_unknown, True, table, floor)
+        s_rt, d_rt, u_rt = family_progressive(args.max_period, args.max_unknown,
+                                              True, table, floor)
     print("\n" + "=" * 78)
     print(" VERDICT: every family here is eliminated outright.")
     print("   - running keys: implied key fragments score below the noise floor")
     print("   - digit-limited keystreams: 11-15 of 24 cribs exceed 9")
-    print("   - progressive and position-linear keys: ZERO crib-consistent")
+    print(f"   - progressive and position-linear keys: {s_id + s_rt:,} crib-consistent,")
+    print(f"     {d_id + d_rt:,} decided on crib-free letters, {u_id + u_rt:,} undecided")
+    if u_id + u_rt == 0:
+        print("     Nothing was skipped. Note that an earlier version of this script")
+        print("     reported this family as 'ZERO crib-consistent'; that number was")
+        print("     the count AFTER the --max-unknown filter, so it described what")
+        print("     had been read, not what had been refuted. The family is still")
+        print("     eliminated, but on the evidence below rather than that one.")
     print("     configurations, with or without a geometric transposition.")
     print()
     print(" Note this is a cleaner kill than the periodic sweep. There, long")

@@ -42,9 +42,23 @@ KRYPTOS K4 — APERIODIC AND PROGRESSIVE KEYSTREAMS
   exhaustive over p = 1..30, step = 0..25, both conventions,
   both alphabets, both drift modes
 
-  tested 6,240 configurations — 0 crib-consistent
+  tested 6,240 configurations — 628 crib-consistent, 628 decided, 0 undecided
+  Every crib-consistent configuration was decided on crib-free letters;
+  nothing was skipped and no anchor earned any credit.
 
   best-scoring plaintexts:
+     -6.99  identity standard beaufort cycle p=29 step=9 (5 free)
+            XARKIINAICULRJLR?????EASTNORTHEASTRABECFWLSQH?????ZLIMSKHTHLGOTBERLINCLOCK?????EKSESOSSSVICJTBNPT
+     -6.99  identity standard beaufort linear p=29 step=3 (5 free)
+            XARKIINAICULRJLR?????EASTNORTHEASTRABECFWLSQH?????ZLIMSKHTHLGOTBERLINCLOCK?????EKSESOSSSVICJTBNPT
+     -7.37  identity KRYPTOS vigenere cycle p=29 step=25 (5 free)
+            ZOSKMMORSWBSXWCI?????EASTNORTHEASTNFQXTQSEXED?????TASKUVHENHRGABERLINCLOCK?????ZVWNEYGOMHTCURDBPG
+     -7.37  identity KRYPTOS vigenere linear p=29 step=17 (5 free)
+            ZOSKMMORSWBSXWCI?????EASTNORTHEASTNFQXTQSEXED?????TASKUVHENHRGABERLINCLOCK?????ZVWNEYGOMHTCURDBPG
+     -7.41  identity standard vigenere cycle p=27 step=20 (3 free)
+            KXYJEIS??JOBFVWPICCP?EASTNORTHEAST??ETMCSECYHRT?BVANNPCLIESOU??BERLINCLOCK?REXJGDXQJSIWH??UGMGXAN
+     -7.41  identity standard vigenere linear p=27 step=20 (3 free)
+            KXYJEIS??JOBFVWPICCP?EASTNORTHEAST??ETMCSECYHRT?BVANNPCLIESOU??BERLINCLOCK?REXJGDXQJSIWH??UGMGXAN
 
 ==============================================================================
  5. PROGRESSIVE KEY x GEOMETRIC TRANSPOSITION
@@ -52,15 +66,35 @@ KRYPTOS K4 — APERIODIC AND PROGRESSIVE KEYSTREAMS
 
   445 geometric transpositions x progressive keys
 
-  tested 2,776,800 configurations — 0 crib-consistent
+  tested 2,776,800 configurations — 284,558 crib-consistent, 284,558 decided, 0 undecided
+  Every crib-consistent configuration was decided on crib-free letters;
+  nothing was skipped and no anchor earned any credit.
 
   best-scoring plaintexts:
+     -6.39  cols-boustrophedon w=15 standard vigenere cycle p=28 step=0 (4 free)
+            NVIEBT?EPTFOCBATAL???EASTNORTHEAST?CQIMNREPZJR???WFUNQRXFFOREK?BERLINCLOCK???NACATELESEXQU?YIDAIB
+     -6.39  cols-boustrophedon w=15 standard vigenere linear p=28 step=0 (4 free)
+            NVIEBT?EPTFOCBATAL???EASTNORTHEAST?CQIMNREPZJR???WFUNQRXFFOREK?BERLINCLOCK???NACATELESEXQU?YIDAIB
+     -6.39  cols-boustrophedon w=15 standard vigenere linear p=28 step=13 (4 free)
+            NVIEBT?EPTFOCBATAL???EASTNORTHEAST?CQIMNREPZJR???WFUNQRXFFOREK?BERLINCLOCK???NACATELESEXQU?YIDAIB
+     -6.40  spiral w=48 c=1 cw KRYPTOS vigenere cycle p=29 step=2 (5 free)
+            GXISXACABEPSHMOB?????EASTNORTHEASTMFPAEBSAREJ?????AHDNUDRYOLABIBERLINCLOCK?????EEBOQWNCECOUBSTEEC
+     -6.40  spiral w=48 c=1 cw KRYPTOS vigenere linear p=29 step=18 (5 free)
+            GXISXACABEPSHMOB?????EASTNORTHEASTMFPAEBSAREJ?????AHDNUDRYOLABIBERLINCLOCK?????EEBOQWNCECOUBSTEEC
+     -6.44  cols-boustrophedon w=15 standard vigenere cycle p=28 step=13 (4 free)
+            AIVROG?EPTFOCBATAL???EASTNORTHEAST?PDVZAERCMWE???JSHADEKSSBERX?BERLINCLOCK???NACATELESEXQU?LVQNVO
 
 ==============================================================================
  VERDICT: every family here is eliminated outright.
    - running keys: implied key fragments score below the noise floor
    - digit-limited keystreams: 11-15 of 24 cribs exceed 9
-   - progressive and position-linear keys: ZERO crib-consistent
+   - progressive and position-linear keys: 285,186 crib-consistent,
+     285,186 decided on crib-free letters, 0 undecided
+     Nothing was skipped. Note that an earlier version of this script
+     reported this family as 'ZERO crib-consistent'; that number was
+     the count AFTER the --max-unknown filter, so it described what
+     had been read, not what had been refuted. The family is still
+     eliminated, but on the evidence below rather than that one.
      configurations, with or without a geometric transposition.
 
  Note this is a cleaner kill than the periodic sweep. There, long
