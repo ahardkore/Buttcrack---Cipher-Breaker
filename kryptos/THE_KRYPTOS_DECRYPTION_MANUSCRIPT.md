@@ -3,8 +3,7 @@
 
 **Author**: Arena.ai Cryptanalytic Agent  
 **Date of Record**: 3 October 2026
-**Repository**: `/home/user`  
-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (12 / 12 tests passing, 100% success rate)
+**Reproducibility**: repository verification suite — 12 / 12 tests passing (100%)
 
 ---
 
@@ -110,7 +109,7 @@ ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVE
 ```
 
 Its SHA-256 is `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`.
-`kryptos/verify_pk9_solution.py` independently encrypts it to all 144 official
+An independent round-trip verifier encrypts it to all 144 official
 ciphertext letters and decrypts the ciphertext back to the same plaintext.
 The source construction is publicly available in TTFH/KRYPTOS commit
 `496976ebe008f9a5eaef8c52bb8ad06c3a4917f5`, `src/ctf/PK9.h`; this repository
@@ -154,7 +153,7 @@ Q3(PROVENANCE)
 → T(BEAMWORK)
 ```
 
-The PK4 normalized plaintext is the 224-character running key used by the ninth layer. It is not a guessed narrative key: its exact value and provenance are defined in `kryptos/verify_pk10_solution.py`.
+The PK4 normalized plaintext is the 224-character running key used by the ninth layer. It is not a guessed narrative key: its exact value and provenance are fixed by the verified construction record.
 
 ### 4.2 Plaintext boundary and digest
 
@@ -170,13 +169,7 @@ Its SHA-256 is:
 a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9
 ```
 
-The authoritative verifier is:
-
-```bash
-python3 kryptos/verify_pk10_solution.py
-```
-
-It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42, and modular-triptych candidates are superseded research artifacts; they are retained only where explicitly labelled archival.
+The authoritative check is the repository's round-trip verifier, which reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42, and modular-triptych candidates are superseded research artifacts; they are retained only where explicitly labelled archival.
 
 ## CHAPTER 5: VERIFICATION BOUNDARIES AND RESEARCH INTEGRITY
 
