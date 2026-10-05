@@ -104,6 +104,24 @@ Fluent 97-letter English scores about **−391**; the best survivor scores **−
 
 **Verdict: eliminated** for all column orders with L ≤ 9, for all dictionary-keyword orders with L ≤ 16, period ≤ 26, both composition orders, both alphabets.
 
+## 3b. Route / geometric transposition × periodic polyalphabetic — eliminated
+
+K3 was columnar, but Scheidt described a deliberate *"change in the methodology"* for K4, so the non-columnar families a hand encipherer would reach for got their own sweep. 97 is prime, so every grid is ragged.
+
+**445 distinct permutations, 46,280 configurations, 1.9s.** 124 crib-consistent, all overfits.
+
+| Family | permutations |
+|---|---|
+| Spirals (4 corners × 2 directions, w=2..48) | 188 |
+| Rows boustrophedon | 47 |
+| Columns plain | 47 |
+| Columns boustrophedon | 47 |
+| Diagonals | 47 |
+| Antidiagonals | 47 |
+| Rail fence (2–24 rails) | 22 |
+
+Self-tested on planted rail-fence, spiral, and diagonal ciphers in both composition orders — 6/6 recovered. Best survivor scores **−583** against −391 for fluent English, again at period 25, again copying the cribs and emitting noise.
+
 ---
 
 ## 4. What this leaves
@@ -116,13 +134,38 @@ Still standing, roughly in order of promise:
 4. **The intentional misspellings as key material** — IQLUSION, UNDERGRUUND, DESPARATLY, the stray `?`s. Bounded space, strong thematic motivation, `kryptos_errors.py` already exists.
 5. **Hand methods with no clean algebraic form.** Sanborn: *"Who says it is even a math solution?"* Scheidt described masking techniques. Algebraic search may be structurally the wrong tool.
 
-## 5. The highest-value preparation: K5
+## 5. K5 depth attack — tooling built and validated
 
-Paradigm holds K5's ciphertext and has said it will be released. Sanborn confirmed K5 is 97 characters, written at the same time, and **shares coded words in identical positions with K4**.
+Harness: [`k5_depth_attack.py`](k5_depth_attack.py). **Staged and self-tested, waiting on the ciphertext.**
 
-Two ciphertexts under one system, structurally aligned, is a categorically easier problem than one. If the keystream is position-dependent, differencing `C4 − C5` at aligned positions **cancels the keystream entirely** and leaves `P4 − P5` — a classical depth attack, and the most powerful lever that will ever exist against this cipher.
+Paradigm holds K5 and has said it will be released. Sanborn confirmed K5 is 97 characters, written at the same time, and *shares coded words in identical positions with K4*. If the keystream is additive and position-dependent, it cancels:
 
-Building that tooling before release is the single highest-expected-value action available.
+```
+C4[i] − C5[i] = P4[i] − P5[i]        the key is gone, whatever it was
+```
+
+Three consequences, all implemented:
+
+**Detection.** IoC of the difference stream, against the English-minus-English null (0.0397) versus random (0.0385). IoC is permutation-invariant, so **the test still fires even if a shared transposition sits on top of the shared keystream.**
+
+**Free plaintext.** Sanborn released 24 letters of P4; wherever P4 is known, `P5[i] = P4[i] − D[i]`. 24 letters of K5 recovered before any cryptanalysis.
+
+**Shared words self-locate.** "Coded words in identical positions" means `D[i] = 0` exactly where the two plaintexts agree. Runs of zeros *are* the shared words, visible without decrypting anything.
+
+### Validation on synthetic depth
+
+Two English plaintexts under one random 97-symbol keystream, keystream never shown to the attack:
+
+| Step | Result |
+|---|---|
+| Depth detection | IoC(D) = 0.327 vs 0.0385 random — **DEPTH CONFIRMED** |
+| Anchor propagation | 24/24 letters of P5 exact (`NORTHEAST` → `SOUTHEAST`) |
+| Shared-span localisation | 2 spans found, both genuinely shared, zero false positives |
+| Mutual crib drag | `BERLIN` recovered at its true position 64 |
+
+One design note worth recording: the crib drag initially failed. Inside a `D == 0` run every word trivially implies itself and scores as perfect English while carrying no information, which swamped the ranking with ties. Masking the already-recovered zero spans is what makes the drag meaningful — the fix is in `zero_mask()`.
+
+**On release day:** `python3 kryptos/k5_depth_attack.py --c5 <ciphertext>`
 
 ---
 

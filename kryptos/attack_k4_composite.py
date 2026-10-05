@@ -118,6 +118,105 @@ def columnar_src(n: int, cols: int, order: tuple[int, ...]) -> list[int]:
 # the search
 # --------------------------------------------------------------------------
 
+def route_permutations(n: int) -> list[tuple[str, list[int]]]:
+    """Geometric / route transpositions, the non-columnar families.
+
+    K3 was columnar, but Scheidt said K4 involved a deliberate "change in the
+    methodology", so the route ciphers a hand encipherer would reach for are
+    worth their own sweep: boustrophedon reads, spirals from each corner,
+    diagonals, rail fence, and column-wise fill.
+
+    97 is prime, so every grid here is ragged: cell (r, c) exists only where
+    r*w + c < n. Spirals walk the full rectangle and skip absent cells.
+    """
+    out: list[tuple[str, list[int]]] = []
+
+    def grid(w):
+        rows = -(-n // w)
+        return rows, [[r * w + c for c in range(w) if r * w + c < n] for r in range(rows)]
+
+    for w in range(2, 49):
+        rows, g = grid(w)
+
+        out.append((f"rows-boustrophedon w={w}",
+                    [i for r, row in enumerate(g) for i in (row if r % 2 == 0 else row[::-1])]))
+
+        cols = [[g[r][c] for r in range(rows) if c < len(g[r])] for c in range(w)]
+        out.append((f"cols-plain w={w}", [i for col in cols for i in col]))
+        out.append((f"cols-boustrophedon w={w}",
+                    [i for c, col in enumerate(cols) for i in (col if c % 2 == 0 else col[::-1])]))
+
+        diag: dict[int, list[int]] = {}
+        for r, row in enumerate(g):
+            for c, i in enumerate(row):
+                diag.setdefault(r + c, []).append(i)
+        out.append((f"diagonals w={w}", [i for k in sorted(diag) for i in diag[k]]))
+
+        anti: dict[int, list[int]] = {}
+        for r, row in enumerate(g):
+            for c, i in enumerate(row):
+                anti.setdefault(r - c, []).append(i)
+        out.append((f"antidiagonals w={w}", [i for k in sorted(anti) for i in anti[k]]))
+
+        # column-wise fill, row-wise read (the inverse convention)
+        fill = [0] * n
+        k = 0
+        for c in range(w):
+            for r in range(rows):
+                if r * w + c < n:
+                    fill[r * w + c] = k
+                    k += 1
+        out.append((f"colfill-rowread w={w}", [fill.index(j) for j in range(n)]))
+
+        # spirals: 4 corners x 2 directions over the full rectangle
+        for corner in range(4):
+            for clockwise in (True, False):
+                top, bot, left, right = 0, rows - 1, 0, w - 1
+                order: list[int] = []
+                while top <= bot and left <= right:
+                    for c in range(left, right + 1):
+                        order.append(top * w + c)
+                    top += 1
+                    for r in range(top, bot + 1):
+                        order.append(r * w + right)
+                    right -= 1
+                    if top <= bot:
+                        for c in range(right, left - 1, -1):
+                            order.append(bot * w + c)
+                        bot -= 1
+                    if left <= right:
+                        for r in range(bot, top - 1, -1):
+                            order.append(r * w + left)
+                        left += 1
+                seq = [i for i in order if i < n]
+                if corner in (1, 3):
+                    seq = seq[::-1]
+                if not clockwise:
+                    seq = [n - 1 - i for i in seq]
+                if sorted(seq) == list(range(n)):
+                    out.append((f"spiral w={w} c={corner} {'cw' if clockwise else 'ccw'}", seq))
+
+    for rails in range(2, 25):
+        pattern, r, step = [], 0, 1
+        for _ in range(n):
+            pattern.append(r)
+            if r == 0:
+                step = 1
+            elif r == rails - 1:
+                step = -1
+            r += step
+        seq = [i for lvl in range(rails) for i, p_ in enumerate(pattern) if p_ == lvl]
+        out.append((f"railfence rails={rails}", seq))
+
+    seen, uniq = set(), []
+    for name, seq in out:
+        key = tuple(seq)
+        if key not in seen and sorted(seq) == list(range(n)):
+            seen.add(key)
+            uniq.append((name, seq))
+    return uniq
+
+
 def keyword_orders(min_len: int, max_len: int) -> dict[int, list[tuple[tuple[int, ...], str]]]:
     """Column orders derived from real dictionary words, the classical way.
 
@@ -247,6 +346,23 @@ def selftest() -> int:
         print(f"  {status}  case={case} cols={cols} period={len(key)} alpha={alpha_name:<8} "
               f"crib-consistent={found} key-agrees={matches} decrypts={back}")
 
+    # the crib machinery is permutation-agnostic; confirm it on route transpositions too
+    routes = {nm: seq for nm, seq in route_permutations(N)}
+    for nm in ("railfence rails=7", "spiral w=12 c=0 cw", "diagonals w=11"):
+        if nm not in routes:
+            continue
+        src = routes[nm]
+        alpha = ALPHABETS["KRYPTOS"]
+        idx = {c: i for i, c in enumerate(alpha)}
+        key = [6, 17, 3]
+        for case in ("A", "B"):
+            planted = encrypt(case, plain, src, key, alpha, idx)
+            rec = consistent(crib_pairs(src, case, idx, ct=planted), len(key))
+            back = rec is not None and decrypt(case, src, key, alpha, idx, ct=planted) == plain
+            ok &= bool(back)
+            print(f"  {'PASS' if back else 'FAIL'}  case={case} route={nm:<20} "
+                  f"crib-consistent={rec is not None} decrypts={back}")
+
     print(f"\n  Negative control: the true config must also survive while wrong ones die.")
     case, cols, order, alpha_name, key = cases[0]
     alpha = ALPHABETS[alpha_name]
@@ -273,6 +389,8 @@ def main() -> int:
     ap.add_argument("--max-period", type=int, default=26)
     ap.add_argument("--max-unknown", type=int, default=2,
                     help="enumerate key residues left undetermined by the cribs")
+    ap.add_argument("--routes", action="store_true",
+                    help="geometric transpositions: spirals, boustrophedon, diagonals, rail fence")
     ap.add_argument("--keywords", action="store_true",
                     help="use dictionary-derived column orders, reaching L=4..16")
     ap.add_argument("--selftest", action="store_true",
@@ -307,7 +425,12 @@ def main() -> int:
     best: list[tuple[float, str, str]] = []
     started = time.time()
 
-    if args.keywords:
+    if args.routes:
+        routes = route_permutations(N)
+        print(f"Geometric transpositions: {len(routes):,} distinct permutations\n")
+        schedule = [("route", [tuple(s) for _, s in routes],
+                     {tuple(s): nm for nm, s in routes})]
+    elif args.keywords:
         plan = keyword_orders(4, 16)
         total_orders = sum(len(v) for v in plan.values())
         print(f"Dictionary-derived column orders: {total_orders:,} distinct patterns "
@@ -319,7 +442,7 @@ def main() -> int:
     for cols, orders, words in schedule:
         col_survivors = 0
         for order in orders:
-            src = columnar_src(N, cols, order)
+            src = list(order) if cols == "route" else columnar_src(N, cols, order)
             for alpha_name, alpha in ALPHABETS.items():
                 idx = {c: i for i, c in enumerate(alpha)}
                 for case in ("A", "B"):
@@ -348,7 +471,8 @@ def main() -> int:
                                 best.append((sc, label, text))
                                 best.sort(key=lambda t: -t[0])
                                 del best[15:]
-        print(f"  L={cols:>2} columns ({len(orders):>7,} orders) -> "
+        label = "route perms" if cols == "route" else f"L={cols:>2} columns"
+        print(f"  {label:<14} ({len(orders):>7,} orders) -> "
               f"{col_survivors:>6,} crib-consistent configurations")
 
     elapsed = time.time() - started
@@ -368,7 +492,9 @@ def main() -> int:
         return 1
     print("VERDICT: no configuration in this family yields English.")
     print("Columnar transposition composed with a periodic polyalphabetic cipher is")
-    if args.keywords:
+    if args.routes:
+        print("eliminated for every geometric/route transposition swept")
+    elif args.keywords:
         print("eliminated for every dictionary-keyword column order of length 4-16")
     else:
         print(f"eliminated for every column order with L <= {args.max_cols}")

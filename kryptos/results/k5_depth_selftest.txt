@@ -1,0 +1,40 @@
+K5 DEPTH ATTACK — SELF-TEST ON SYNTHETIC DEPTH
+==============================================================================
+
+Planted: two English plaintexts under ONE random 97-symbol keystream.
+  synthetic C4  TRGBSNPEIUNOLKDLWVOGRSFHOZXAMDFSCNXHBRCGFLMKMABHAQDJXCGHQTXXDHFMBQPNWKAKQQEEUQZNBPQPQOZOXKERNXJTP
+  synthetic C5  TRGBSNPEIUNOLKDLWVOGRSFHOEXDMDFSCNXHBRCGFLMKMABHAQDJXILNFFWNZWGFQSLJAMHKAKEEQFWFCVJCPBMJJPCMXDWGP
+
+1. Depth detection (keystream never supplied to the detector)
+   standard   IoC(D)=0.3271  margin=241.49  DEPTH CONFIRMED
+   KRYPTOS    IoC(D)=0.3252  margin=239.87  DEPTH CONFIRMED
+   expected IoC for English-minus-English: 0.0397   random: 0.0385
+   PASS
+
+2. Anchor propagation: P5 = P4 - D at the 24 confirmed positions
+   P4 EAST       -> P5 recovered EAST       actual EAST       ok
+   P4 NORTHEAST  -> P5 recovered SOUTHEAST  actual SOUTHEAST  ok
+   P4 BERLIN     -> P5 recovered UTTHER     actual UTTHER     ok
+   P4 CLOCK      -> P5 recovered ESOME      actual ESOME      ok
+   PASS — 24 letters of K5 recovered with zero cryptanalysis
+
+3. Shared-word localisation: runs of D == 0
+   found 2 shared spans >= 3 letters
+     positions   1-25  (25 letters)  P4/P5 agree: 'THECOMPASSROSEISHEREXEAST'
+     positions  29-53  (25 letters)  P4/P5 agree: 'THEASTTHISISYOURPOSITIONX'
+   PASS — every detected span is genuinely shared
+
+4. Mutual crib drag (top hits should be real words at real positions)
+   masking 50 positions inside D==0 runs (already recovered above)
+     -2.74  pos  58  P4=CURIE        implies P5=OTHET        
+     -2.80  pos  58  P4=BURIN        implies P5=NTHEC        
+     -2.81  pos  58  P4=CURIN        implies P5=OTHEC        
+     -2.85  pos  81  P4=ENORM        implies P5=FTHEL        
+     -2.91  pos  57  P4=CHIOT        implies P5=RTHEP        
+     -2.95  pos  58  P4=CURIO        implies P5=OTHED        
+     -3.01  pos  58  P4=AURIC        implies P5=MTHER        
+     -3.01  pos  64  P4=BERLIN       implies P5=UTTHER       <-- correct
+   PASS — a genuine crib surfaced in the top hits
+
+==============================================================================
+SELF-TEST PASSED — ready for K5.

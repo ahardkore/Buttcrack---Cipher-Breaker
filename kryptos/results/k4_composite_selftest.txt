@@ -4,6 +4,12 @@ PLANTED-CIPHER SELF-TEST
   PASS  case=B cols=7 period=4 alpha=KRYPTOS  crib-consistent=True key-agrees=True decrypts=True
   PASS  case=A cols=4 period=2 alpha=KRYPTOS  crib-consistent=True key-agrees=True decrypts=True
   PASS  case=B cols=6 period=5 alpha=standard crib-consistent=True key-agrees=True decrypts=True
+  PASS  case=A route=railfence rails=7    crib-consistent=True decrypts=True
+  PASS  case=B route=railfence rails=7    crib-consistent=True decrypts=True
+  PASS  case=A route=spiral w=12 c=0 cw   crib-consistent=True decrypts=True
+  PASS  case=B route=spiral w=12 c=0 cw   crib-consistent=True decrypts=True
+  PASS  case=A route=diagonals w=11       crib-consistent=True decrypts=True
+  PASS  case=B route=diagonals w=11       crib-consistent=True decrypts=True
 
   Negative control: the true config must also survive while wrong ones die.
   119/119 wrong column orders correctly rejected
