@@ -77,7 +77,227 @@ The CIA setting matters, but it does not automatically turn every interpretation
 
 The sculpture’s four encrypted passages are conventionally called K1, K2, K3, and K4. K1–K3 were solved publicly; K4, a 97-letter passage, remains the central unsolved section in the historical record used by this manuscript. The plaintexts of K1–K3 are usually read as literary or historical quotations, while K4 has been associated with an archaeological discovery and a spatial clue. Those associations should be cited to the relevant source rather than treated as proof of a proposed completion.
 
-## 2. The CIA, secrecy, and public evidence
+## 2. The people behind Kryptos
+
+*Kryptos* is usually discussed as an object and a cipher. But its 35-year history is
+also a human one — a specific, documented set of people whose choices, admissions,
+quiet solves, and recent discoveries built the record this book works from. This
+chapter introduces them, cites what each one is actually on record as having said or
+done, and flags the one place (the Webster "sealed envelope" story) where Sanborn's
+own public statements disagree with each other across two decades of interviews.
+
+### Jim Sanborn: the artist who became a cryptographer by necessity
+
+Herbert James Sanborn Jr. was born in Washington, D.C. on November 14, 1945, to a
+father who spent thirty years as director of exhibitions at the Library of Congress
+and a mother who worked as a pianist and photo researcher. He grew up in Alexandria,
+Virginia, studied archaeology at Oxford, and graduated from Randolph-Macon College in
+1969 with coursework spanning paleontology, fine arts, and social anthropology before
+earning an M.F.A. in sculpture from the Pratt Institute in 1971
+([Atomic Heritage Foundation](https://ahf.nuclearmuseum.org/ahf/profile/jim-sanborn/);
+[elonka.com biography](https://www.elonka.com/kryptos/sanborn.html)). By the time the
+General Services Administration selected him for the CIA headquarters commission in
+the late 1980s, he had spent roughly a decade applying unsuccessfully to GSA's
+Art-in-Architecture program; he later said his local D.C. ties and his prior
+experience working with classified or sensitive subject matter helped tip the
+selection in his favor ([2005 CNN interview transcript](https://elonka.com/x/2005CNN.html)).
+
+Sanborn had no prior background in cryptography and, by his own account, "wasn't
+particularly good at math" ([CNN, July 25, 2020](https://www.cnn.com/2020/07/25/us/kryptos-secret-message-code-trnd)).
+What he had was a clear artistic goal. Asked decades later why he built an encrypted
+sculpture at all, he put it plainly: "At the time, codes and encoding was an esoteric
+subject. I wanted it to be less so, and I wanted it to be fun. … Any artist's goal
+when they make an artwork is to have the viewer's attention for as long as possible"
+([AP, Nov. 12, 2025](https://www.ap.org/news-highlights/spotlights/2025/kryptos-final-code-remains-unsolved-the-cia-sculptures-creator-is-auctioning-the-solution/)).
+He has repeated versions of the same idea for twenty years — that he wanted the piece
+"to reveal itself like peeling layers off an onion," and designed its four passages,
+in his words, to "unravel like a ball of string" or like "nesting Russian dolls," each
+layer harder than the last (CNN, 2020; AP, 2025). He expected K1–K3 to fall quickly,
+and they did, within a decade; he did not expect K4 to outlast his own career: "I
+didn't think it would go on this long — thirty years — without being deciphered" (CNN,
+2020).
+
+Secrecy was, from the start, part of the artistic design rather than an afterthought.
+Sanborn told CNN in 2005 that his first instinct was "to keep it absolutely secret
+from the Agency and everyone else," before he reconsidered and had the CIA's
+Department of Historical Intelligence review the plaintexts to confirm nothing in them
+was, in his words, "untoward" — the same review process that, decades later, produced
+the archival scraps at the center of the 2025 Smithsonian discovery (see below). He
+has also been candid that maintaining the mystery was always the point, not an
+accident: "I like to be enigmatic, and I love metaphor, and I don't think I want to be
+deciphered any more than Kryptos is deciphered" (2005 CNN transcript). By 2025, at age
+79 and after what AP described as "a series of health scares in recent years,"
+Sanborn — together with his wife, the sculptor Jae Ko — decided to auction the K4 and
+K5 solutions rather than carry the secret indefinitely, telling AP "I no longer have
+the physical, mental or financial resources" to maintain the code alone
+([AP/Yahoo News, Nov. 12, 2025](https://www.yahoo.com/news/articles/solution-goes-auction-cia-hqs-050030992.html)).
+
+### Edward Scheidt: the retired CIA cryptographer who taught him the craft
+
+Sanborn did not design Kryptos's encryption systems alone. Edward M. Scheidt (born
+1939), then the retiring chairman of the CIA's Cryptographic Center after a
+twenty-six-year career in the agency's Office of Communications, met with Sanborn
+"more or less in secret" beginning in late 1988 ([solvekryptos.com/about](https://solvekryptos.com/about);
+tertiary biographical sources mirroring Scheidt's Wikipedia entry). Scheidt taught
+Sanborn several classical and modified encryption frameworks — the Vigenère-family
+system used for K1 and K2, and the transposition system used for K3 — and Sanborn
+then chose and composed the specific texts to encode within them, adding his own
+artistic modifications to the mechanisms Scheidt provided. Scheidt has said publicly
+that he knows the K4 solution, "along with Sanborn and probably someone at the CIA."
+After retiring from the agency in December 1989, Scheidt co-founded the encryption
+company TecSec Inc. in Vienna, Virginia, in 1990, where he continued to work as chief
+scientist for decades afterward.
+
+### William Webster: the sealed envelope, and a contradiction in Sanborn's own account
+
+William Hedgcock Webster (March 6, 1924 – August 8, 2025) is the only person to have
+directed both the FBI (1978–1987) and the CIA (1987–1991)
+([Britannica](https://www.britannica.com/biography/William-H-Webster);
+[International Spy Museum](https://www.spymuseum.org/support-spy/webster-award/william-h-webster/)).
+As CIA Director, Webster presided over Kryptos's dedication on November 3, 1990, and
+became the subject of one of the sculpture's own encoded lines — K2's plaintext
+contains the phrase "ONLY WW THIS WAS HIS LAST MESSAGE," widely read as a reference to
+Webster, who departed the agency the following year.
+
+> **A DOCUMENTED CONTRADICTION, NOT A SETTLED FACT.** Sanborn has given two different,
+> hard-to-reconcile accounts of what he actually told Webster. In a 2005 CNN interview
+> he described handing Webster a sealed envelope "with the intention that Webster
+> would keep it personally," adding that Webster "winked" at him, and that Webster
+> later told "Face the Nation" that the hardest secret he'd had to keep was the one
+> for Kryptos — but Sanborn immediately qualified the claim: "Whether I gave him the
+> whole code, that's open to conjecture" ([2005 CNN transcript](https://elonka.com/x/2005CNN.html)).
+> Nine years later, Wired reported a stronger version of the same episode, stating
+> that Sanborn "was forced to provide Webster with the solution... to reassure the
+> CIA" ([Wired, Nov. 21, 2014](https://www.wired.com/2014/11/second-kryptos-clue/)) —
+> language implying a complete, verified solution was handed over, not an envelope of
+> uncertain contents sealed on trust. This book treats the Webster episode as
+> documented but unresolved: Sanborn's own public statements disagree with each other
+> about whether Webster ever received the complete answer, and no independent record
+> from Webster himself (who died in 2025) or from the CIA confirms either version.
+
+### The three quiet solves of K1–K3 (1992, 1998, 1999)
+
+K1 through K3 were solved three separate times, by three unconnected parties, years
+apart — and the public did not learn about the earliest two solves until long after
+the fact.
+
+**The NSA team (1992–93).** In late 1992, CIA Deputy Director Admiral William O.
+Studeman — a former NSA director — issued an internal challenge to his old agency at
+an NSA awards ceremony; NSA Director Vice Admiral John M. "Mike" McConnell relayed it
+to a small group of agency cryptanalysts. A four-person team, including Ken Miller and
+Dennis McDaniels (two other members remain unnamed in released records), took up the
+challenge and solved K1–K3, reporting their results to the CIA by memo in 1993. The
+work was never publicly announced; it surfaced only indirectly in a 2000 Baltimore Sun
+article, and the underlying documents were not released until 2013–2014, after
+researcher Elonka Dunin filed a Freedom of Information Act request in 2010
+([NSA documents via Elonka Dunin's FOIA release, 2013](https://elonka.com/kryptos/KryptosTimeline.html);
+[Wikipedia, "Kryptos," Solvers](https://en.wikipedia.org/wiki/Kryptos)).
+
+**David Stein (1998).** CIA analyst David Stein worked the puzzle on his own time —
+lunch breaks and evenings — using only pencil and paper, over roughly seven years
+starting around 1991, logging an estimated 400 hours of work. He solved K2 first, on
+February 21, 1998, then K3 and K1. On March 26, 1998, he briefed roughly 250 CIA
+colleagues, including Ed Scheidt, in an agency auditorium. Because his solution
+remained internal CIA business, it was not disclosed publicly until after Gillogly's
+1999 announcement, even though a November 1998 newspaper item had vaguely alluded to
+an unnamed CIA analyst's progress. Stein's own first-person account of the solve,
+"Cracking the Courtyard Crypto," was later declassified and released via the National
+Security Archive ([Wired, June 5, 2013](https://www.wired.com/2013/06/analyst-who-cracked-kryptos/)).
+
+**Jim Gillogly (1999).** Computer scientist Jim Gillogly — a former president of the
+American Cryptogram Association, co-founder (with Jim Reeds) of the Voynich
+Manuscript Mailing List, and the cryptanalyst who had debunked the Beale Ciphers in
+1980 — announced his own solution to K1–K3 publicly on June 8, 1999, in a post to the
+sci.crypt Usenet newsgroup. Working with custom software on a Linux machine, he
+reported solving the three passages over "four evenings." Only after going public did
+he learn from the CIA that both Stein and the NSA team had beaten him to it years
+earlier ([LEMMiNO, "The Unbreakable Kryptos Code"](https://www.lemmi.no/p/the-unbreakable-kryptos-code)).
+
+### Elonka Dunin and the civilian research community
+
+If Kryptos has a central non-government chronicler, it is Elonka Dunin. A video game
+developer at Simutronics from 1990 to 2014, Dunin first visited the sculpture in
+person in 2002 and took rubbings of its text, afterward building and maintaining the
+most-cited independent Kryptos research site and a community of solvers. In 2003 she
+organized the effort that cracked Sanborn's related sculpture *Cyrillic Projector*.
+Her 2010 Freedom of Information Act request to the NSA — results delivered in 2013 —
+is what forced the agency's 1992–93 internal solve into the public record. She
+contributed to the 2009 companion book *Secrets of The Lost Symbol* for Dan Brown's
+novel of the same name, and Brown named a character after her; she later co-authored
+*Codebreaking: A Practical Guide* (2020) with Klaus Schmeh and has served on the board
+of the National Cryptologic Museum Foundation.
+
+### Nicole Friedrich and the 2006 correction to K2
+
+For years, every accepted transcription of K2's final line read "...WEST ID BY ROWS."
+In 2005, Nicole Friedrich, a logician from Vancouver, British Columbia, used
+keyword-cribbing to show that an alternate reading — "...WEST X LAYER TWO" — fit
+better. On April 19, 2006, Sanborn confirmed to the online Kryptos community that she
+was right: he had accidentally omitted a letter from the ciphertext (an X, used
+stylistically to separate sentences, which read as part of "ID BY ROWS" when it was
+missing), and that "LAYER TWO" was the intended, correct ending all along
+([Wikipedia, "Kryptos," Solvers](https://en.wikipedia.org/wiki/Kryptos)). The
+correction mattered beyond a single typo: it strengthened the sculpture's documented
+thematic link to Howard Carter's account of excavating Tutankhamun's tomb (K3's
+plaintext), since Carter's own writing refers to "the second layer" of the tomb's
+painted shrines.
+
+### Jarett Kobek and Richard Byrne: the 2025 Smithsonian discovery
+
+In September 2025, writer Jarett Kobek and journalist Richard Byrne located scraps of
+taped, scrambled text among papers Sanborn had donated to the Smithsonian's Archives
+of American Art — the same Department of Historical Intelligence review materials
+Sanborn had set aside decades earlier. Byrne photographed the documents on September
+2; Kobek spent that evening reassembling five pages of fragments into what appeared to
+be K4's full plaintext. They sent the reconstruction to Sanborn, who confirmed its
+accuracy on September 3 and explained he had mistakenly included the scraps while
+compiling his archive years later during cancer treatment
+([Wikipedia, "Kryptos," Discovery in the Smithsonian Archives](https://en.wikipedia.org/wiki/Kryptos)).
+Sanborn asked the Smithsonian to seal the relevant files for fifty years (until 2075),
+and the auction house's lawyers reportedly threatened Kobek and Byrne over copyright
+and contract-interference claims if they released the text. Both refused to sign
+non-disclosure agreements and have been explicit, repeatedly, that recovering the
+plaintext is not the same as solving the cipher: "Rich and I recovered the plain text.
+There's no way on earth that this is a cryptographic solve, and we have not claimed
+that" (Kobek, quoted via verawren.substack.com and royalexaminer.com). Sanborn made
+the same distinction publicly a few weeks later: "The important distinction is that
+they discovered it. They did not decipher it. They do not have the key. They don't
+have the method with which it's deciphered. … nobody has the method but me" (AP, Nov.
+12, 2025). Third-party attempts to reverse-engineer a plausible encryption mechanism
+from the recovered plaintext — such as the fan site solvekryptos.com's unconfirmed
+"Quagmire III" hypothesis — remain speculation, not an official solution, by the
+discoverers' own repeated statements.
+
+### Dan Robinson, Matt Huang, and Paradigm: the new keepers of K4 and K5
+
+Sanborn's full archive — the K4 solution, the K5 materials, original coding charts,
+and related artifacts — sold at RR Auction in November 2025 for $962,500. The winning
+bidder, revealed the following year, was Paradigm, a San Francisco investment firm
+co-founded in 2018 by Fred Ehrsam and Matt Huang that is best known for backing
+cryptocurrency, AI, and prediction-market companies. Dan Robinson, Paradigm's head of
+research and general partner, became the public face of the purchase alongside Huang.
+Rather than read the solution themselves, the pair had Sanborn enter the K4 plaintext
+directly into a laptop, cryptographically hashed it, deleted the unencrypted text, and
+published only the hash — so that any future submitted solution can be checked for a
+match without Paradigm (or anyone else) ever having read the real answer first. "It
+didn't feel right to buy the secret just so we could learn it. That would be skipping
+the steps," Robinson told the New York Times
+([NYT, June 12, 2026](https://www.nytimes.com/2026/06/12/science/kryptos-sale-cryptography.html)).
+Paradigm has since built a public "Kryptos CTF," a ten-puzzle challenge suite
+(discussed on its own cryptanalytic merits in Part V of this book) intended to draw
+new solvers toward K4, and has said it plans to release the sealed K5 text at a future
+date rather than withhold it indefinitely.
+
+### Why this matters for reading the rest of this book
+
+None of these people's statements, individually, resolve K4. What they do establish
+is a careful, source-by-source map of who actually knows what, and when each claim
+entered the public record — which is the standard this book tries to hold itself to
+whenever it discusses K4 clues, candidate plaintexts, or the Berlin Clock question
+addressed earlier in this chapter.
+
+
+## 3. The CIA, secrecy, and public evidence
 
 The CIA connection is real as provenance and setting. It is not, by itself, evidence that an unknown ciphertext uses a classified algorithm, a hidden one-time pad, or an undisclosed agency key. The strongest evidence remains public: the physical artifact, published ciphertext transcription, statements by the artist and collaborators, and independently reproducible cryptanalysis.
 
@@ -90,7 +310,7 @@ A scholarly account must distinguish:
 
 The final category requires evidence that is generally absent from public discussion. Speculation may be recorded, but it must be labeled speculation.
 
-## 3. Germany and the historical danger of loose association
+## 4. Germany and the historical danger of loose association
 
 Germany enters the history of cryptography through several separate channels: the development and use of classical European ciphers; the First and Second World War cryptographic systems; German cryptanalytic institutions; the Enigma story; wartime intelligence competition; and postwar cultural memory. These are not interchangeable with Kryptos.
 
@@ -98,13 +318,13 @@ A responsible chapter will therefore treat “Germany” as a set of documented 
 
 # Part II — Cipher history and technical foundations
 
-## 4. From substitution to polyalphabetic substitution
+## 5. From substitution to polyalphabetic substitution
 
 The manuscript will introduce monoalphabetic substitution, frequency analysis, nomenclators, homophonic substitution, and polyalphabetic systems. Vigenère’s tableau is presented historically, alongside the important qualification that “Vigenère” is often used loosely for several related constructions.
 
 The central concept is that a substitution is a mapping of symbols, while a polyalphabetic system changes that mapping by position. Repeated-key systems create periodic structure; long keys, autokey systems, and transposition layers alter the observable evidence. A good cryptanalyst tests those distinctions rather than relying on one statistic.
 
-## 5. Quagmire families and keyed alphabets
+## 6. Quagmire families and keyed alphabets
 
 Kryptos-related work frequently uses keyed alphabets. In the repository’s reference convention the alphabet is:
 
@@ -116,23 +336,23 @@ For an additive Quagmire-style layer, indices are taken in that alphabet and the
 
 These details are not cosmetic. Two programs can both be called “Quagmire III” while disagreeing at every character because they use different keyed-alphabet conventions.
 
-## 6. Transposition, fractionation, and layered systems
+## 7. Transposition, fractionation, and layered systems
 
 Columnar transposition preserves letter counts while changing adjacency. Its attack surface includes grid dimensions, incomplete rows, key order, repeated letters in the keyword, and whether the transformation is applied before or after substitution. Double transposition compounds these ambiguities.
 
 Fractionating systems such as Bifid, Playfair, and Four-square alter local statistics differently. Route transpositions and turning grilles introduce geometric hypotheses. A scholarly attack log should record not merely the best score but the search space, initialization, random seed, stopping condition, and independent verification.
 
-## 7. Mechanical and wartime systems
+## 8. Mechanical and wartime systems
 
 The historical survey will cover rotor principles, stepping, reciprocal transformations, indicator systems, Enigma as a family of machines rather than a single “cipher,” and the role of traffic analysis and operational mistakes. It will also discuss the limits of analogy: a modern reader may see a periodicity in Kryptos, but a period peak does not establish a rotor machine, and an intelligence setting does not imply a rotor design.
 
 # Part III — The original Kryptos passages
 
-## 8. K1–K3: what public success teaches
+## 9. K1–K3: what public success teaches
 
 K1–K3 provide controlled examples of how clues, transcription, cipher family, and plaintext confirmation interact. Their successful solutions should be presented with the ciphertext, convention, key material, and re-encoding result. The important methodological lesson is not that one family solves every passage; it is that the accepted solution is constrained by both cryptographic and semantic evidence.
 
-## 9. K4: the 97-character problem and the K5 relationship
+## 10. K4: the 97-character problem and the K5 relationship
 
 K4 is treated here as an open historical cryptanalytic problem unless and until a proposed answer is independently verified. The repository may contain a candidate plaintext or partial reconstruction. It must be labeled **PROVISIONAL K4 CANDIDATE** and accompanied by:
 
@@ -146,27 +366,27 @@ K4 is treated here as an open historical cryptanalytic problem unless and until 
 
 The manuscript must not call the candidate “the correct answer” merely because it reads well, matches a clue, or produces a high language score. As mathematical sweeps and information-theoretic audits prove, K4 is underdetermined from ciphertext alone and cannot be uniquely decrypted until the companion cipher **K5** is publicly released (or verified via Paradigm's cryptographic hash oracle and the sealed Smithsonian archive). If later validation succeeds, this section can be amended without rewriting its evidence history. If it fails, the failure remains part of the scholarly record.
 
-## 10. Clues, plaintext, and retrospective interpretation
+## 11. Clues, plaintext, and retrospective interpretation
 
 The date clues associated with K2, the archaeological and geographic language associated with K3, and the disputed K4 hints are examined as evidence of different strength. A clue can constrain a search, but a clue is not an encryption proof. The manuscript will compare pre-solution and post-solution readings to expose hindsight bias.
 
 # Part IV — Institutional and cultural context
 
-## 11. Intelligence culture without conspiracy inflation
+## 12. Intelligence culture without conspiracy inflation
 
 The CIA context invites legitimate questions about audience, patronage, secrecy, and institutional memory. It also invites unsupported stories. This chapter uses a source hierarchy: artifact documentation and direct statements first; contemporaneous reporting second; later recollection third; anonymous or circular claims last.
 
-## 12. Germany, Europe, and the archive imagination
+## 13. Germany, Europe, and the archive imagination
 
 The European history of scripts, cryptography, espionage, and art is relevant to the cultural vocabulary of *Kryptos*. The chapter will connect documented history—without conflation—to the sculpture’s themes of archives, communication, concealment, and recovery.
 
-## 13. Ethics of publishing cryptanalysis
+## 14. Ethics of publishing cryptanalysis
 
 Kryptos is a public puzzle, but a “government connection” does not make unsupported claims harmless. The manuscript avoids invented classified material, doxxing, credential collection, or claims of agency endorsement. Reproducibility and skepticism are treated as safeguards.
 
 # Part V — Paradigm Kryptos PK1–PK10
 
-## 14. The challenge suite as a cryptanalytic laboratory
+## 15. The challenge suite as a cryptanalytic laboratory
 
 Paradigm Kryptos is not a metaphor or a teaching fiction invented by this project. It is the real "Kryptos CTF" that Paradigm, the venture firm that bought Sanborn's archive, launched publicly at `paradigm.xyz/kryptos-ctf` on June 12, 2026: ten original Kryptos-style ciphertexts (PK1–PK10), each worth $1,000 to its first public solver, $10,000 in total, run with a public leaderboard of named solvers (Paradigm, ["Project Kryptos"](https://www.paradigm.xyz/writing/kryptos); *The New York Times*, June 12, 2026). Every PK ciphertext quoted in this book was cross-checked character-for-character against Paradigm's own published puzzle pages. As of this edition, all ten puzzles have been solved publicly, the last two (PK9 and PK10) on October 2, 2026 by the X users `@LazlosBatForm` and `@forwardsecrecy` respectively — see the public leaderboard for the full solver list and timestamps.
 
@@ -189,23 +409,23 @@ The repository’s verified construction summary currently records PK1–PK10 as
 
 “Verified construction” here means that the repository’s stated implementation reproduces its reference ciphertext under its stated conventions. It does not mean that every historical or narrative interpretation has been independently established.
 
-## 15. PK1–PK3: simple layers and composition
+## 16. PK1–PK3: simple layers and composition
 
 These chapters explain keyed substitution, single transposition, and additive composition. They include hand-worked miniature examples, implementation notes, and test vectors so a reader can reproduce the transformations without trusting a black box.
 
-## 16. PK4–PK6: transposition, key reuse, and narrative expansion
+## 17. PK4–PK6: transposition, key reuse, and narrative expansion
 
 These challenges demonstrate why layer order matters. A transposition before substitution has different observable structure from substitution before transposition. PK5’s long key material also provides a useful warning: a key can be a derived text rather than a dictionary word, increasing the danger of vocabulary-limited attacks.
 
-## 17. PK7: nonlinear transformation
+## 18. PK7: nonlinear transformation
 
 The Hill layer changes the attack problem by coupling letters in blocks. The chapter derives the matrix convention, explains invertibility concerns modulo 26, and records the exact implementation used by the repository.
 
-## 18. PK8: additive multi-clock construction
+## 19. PK8: additive multi-clock construction
 
 PK8 is presented as a verified example of multiple periodic keyed shifts. The chapter explains gauge freedom, effective parameter dimension, modulo-13 projections, and why a strong periodic statistic is not sufficient to identify the key family.
 
-## 19. PK9 verified construction and PK10 verified case study
+## 20. PK9 verified construction and PK10 verified case study
 
 PK9 is independently verified in both directions by `kryptos/verify_pk9_solution.py`.
 Its recovered construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` over
@@ -221,7 +441,7 @@ The long pre-break PK10 dossier is still useful as a record of rejected models, 
 
 # Part VI — Reproducible cryptanalysis
 
-## 21. Experimental design
+## 22. Experimental design
 
 Every attack is a registered experiment. A run record should contain:
 
@@ -238,15 +458,15 @@ round-trip status
 failure reason or acceptance evidence
 ```
 
-## 22. Language models and overfitting
+## 23. Language models and overfitting
 
 Quadgram and word-list scores are ranking tools, not proofs. A 144-character stream offers enough flexibility for optimization to create short English-like fragments by chance. The manuscript compares planted controls, null distributions, independent scoring models, and exact re-encryption.
 
-## 23. Audit of the PK9 campaign
+## 24. Audit of the PK9 campaign
 
 The campaign runner now resolves its repository root dynamically, rebuilds stale binaries, respects thread settings, and preserves logs across restarts. The classical-family harness uses the checked-in vocabulary fallback when an external word list is unavailable. These engineering details belong in the scholarly record because an unreproducible search result is not evidence.
 
-## 24. Evidence ledger template
+## 25. Evidence ledger template
 
 | ID | Attack | Space | Result | Validation | Disposition |
 |---|---|---|---|---|---|
@@ -290,7 +510,7 @@ A scholarly cipher document earns trust by preserving uncertainty. The purpose o
 
 # Part VIII — A working historical narrative
 
-## 25. Why a sculpture can be a cryptographic document
+## 26. Why a sculpture can be a cryptographic document
 
 A cipher is normally encountered as a sequence of symbols detached from the body of its maker. Kryptos complicates that expectation. The carrier is not paper but copper, stone, earth, water, and architectural space. The letters are perforations rather than ink, and the reader’s movement around the object becomes part of the encounter. This materiality changes the evidentiary problem. A transcription can preserve symbol order while losing scale, spacing, orientation, and the visual relationship between encrypted panels.
 
@@ -298,19 +518,19 @@ The historian therefore has two obligations. First, preserve a faithful machine-
 
 The same principle applies to the CIA location. Site can shape meaning without serving as a key. A public institution may commission a work that plays with secrecy because secrecy is part of its cultural vocabulary. That is a historical explanation, not proof of a hidden official message.
 
-## 26. The cryptographic imagination of the twentieth century
+## 27. The cryptographic imagination of the twentieth century
 
 Modern popular culture often compresses a century of cryptography into a few icons: Caesar, Vigenère, Enigma, codebreaking, and the computer. The actual history is less linear. Systems coexist. Telegraph operators use codes for economy; diplomats use nomenclators; armies use field ciphers constrained by speed and training; commercial users adopt systems that balance secrecy and convenience. A cipher is always an artifact of a communication environment.
 
 Kryptos belongs to a late twentieth-century moment in which public knowledge of cryptography was expanding while institutional cryptography remained secretive. The work’s appeal comes partly from this tension. It looks like an official secret but is presented as art. Its ciphertext is physically public while its intended reading is withheld. The work asks the viewer to adopt the habits of an analyst while remaining aware that the object is also a cultural statement.
 
-## 27. The history of frequency analysis
+## 28. The history of frequency analysis
 
 Frequency analysis is not a magic English detector. It relies on assumptions: the language distribution, sample size, normalization, and cipher family. A short ciphertext can produce misleading peaks. A transposition preserves monograms but destroys adjacency; a polyalphabetic system flattens monograms while retaining other periodic traces; fractionation changes both.
 
 The practical lesson for Kryptos research is methodological. A statistic can reject a family, rank candidates, or suggest a period. It rarely identifies a unique plaintext. The strongest result is a chain: a statistical observation motivates a model; the model yields parameters; the parameters encrypt back to the ciphertext; and the resulting plaintext is intelligible independently of the score used to find it.
 
-## 28. From Vigenère to modern reproducibility
+## 29. From Vigenère to modern reproducibility
 
 The historical Vigenère family is important not only for its mechanics but also for the way later writers name related systems. A scholarly report must define its convention instead of relying on a label. The same warning applies to “Kryptos alphabet,” “Quagmire,” “columnar transposition,” and “double transposition.”
 
@@ -318,7 +538,7 @@ In this repository, the convention is written as executable code. That is a stre
 
 # Part IX — Methods chapter for researchers
 
-## 29. The anatomy of a responsible attack
+## 30. The anatomy of a responsible attack
 
 A cryptanalytic attack begins with a question narrower than “can this be solved?” For example: does PK9 equal a Q(5)+Q(6)+Q(7) additive schedule followed by an eight-column transposition with a key drawn from vocabulary V? The question specifies a model and a finite search space.
 
@@ -335,7 +555,7 @@ The attack record then identifies:
 
 A search that finds no answer has different meanings depending on the size of its space. Failure over a narrow vocabulary excludes only that vocabulary under that model. Failure over all permutations of a stated width is stronger. Failure of a language score to rise is weaker than failure of an exact algebraic consistency test.
 
-## 30. Why optimization produces seductive nonsense
+## 31. Why optimization produces seductive nonsense
 
 Optimization is useful because cryptanalytic spaces are large. It is dangerous because language is redundant. A search can assemble fragments such as THE, ING, and ER from unrelated positions while destroying the rest of the message. A score that rewards local quadgrams may therefore prefer a polished chimera over a uniformly grammatical sentence.
 
@@ -351,13 +571,13 @@ A robust workflow uses several defenses:
 6. require exact reconstruction;
 7. record near misses without upgrading them.
 
-## 31. Transcription as an attack surface
+## 32. Transcription as an attack surface
 
 A single transcription error can imitate a cryptographic failure. Conversely, a duplicated block can create a false periodicity and lead an entire search in the wrong direction. Every ciphertext in a scholarly edition should therefore have a canonical string, a displayed grouping, a length assertion, and a checksum.
 
 The displayed form is for human reading. The canonical form is for computation. They must never be edited independently. A build step should regenerate the display from the canonical source and fail if an expected length or character set is violated.
 
-## 32. The role of negative evidence
+## 33. The role of negative evidence
 
 Negative evidence is often undervalued because it does not produce a dramatic plaintext. In a mature research program, it is one of the main products. A successful negative result prevents later researchers from repeating an expensive search and clarifies which assumptions remain open.
 
@@ -365,7 +585,7 @@ The correct wording is precise. “No candidate was found in the tested vocabula
 
 # Part X — Images and visual apparatus
 
-## 33. Image plan for the KDP edition
+## 34. Image plan for the KDP edition
 
 The first edition should use a small number of high-value figures rather than decorative images of uncertain provenance. Recommended figures include:
 
@@ -380,7 +600,7 @@ The first edition should use a small number of high-value figures rather than de
 
 These can be original vector diagrams and need no documentary image license. If a photograph of the sculpture is added, the production ledger must identify photographer, archive, license, and restrictions. A generated illustration must be captioned as an illustration and must not be used to assert what the sculpture, CIA, or historical actors looked like.
 
-## 34. Caption standard
+## 35. Caption standard
 
 Each caption should answer four questions: what is shown, who created it, what source supports the claim, and what the image does not prove. For example:
 
@@ -390,13 +610,13 @@ This standard is intentionally repetitive. A scholarly visual apparatus should m
 
 # Part XI — Publication and revision
 
-## 35. The edition model
+## 36. The edition model
 
 The book should be published as a versioned research edition. The copyright page can identify an edition number and publication date, while the repository preserves the source and build script. A later K4 validation, PK9 break, corrected historical citation, or rights change can then be incorporated transparently.
 
 A revision note should state what changed. It should not silently replace a provisional answer with a new one. The history of error is part of the history of cryptanalysis: wrong keys, flawed transcriptions, and attractive false positives teach future researchers how to design better tests.
 
-## 36. Final author’s note for the working edition
+## 37. Final author’s note for the working edition
 
 This book is written in the conviction that a cipher deserves both ambition and restraint. Ambition drives the search across classical systems, modern computation, historical archives, and material context. Restraint prevents the search from becoming a story generator that mistakes coherence for proof.
 
@@ -533,12 +753,10 @@ the designed puzzle must be solvable from public material. The evidence already
 converges on a navigational reading that needs no decryption: compass rose + lodestone
 + "T IS YOUR POSITION" (Morse panels) → the EAST NORTHEAST anchors → the three Berlin
 Wall slabs on CIA grounds ([Dunin via Wired](https://www.wired.com/2014/11/second-kryptos-clue/))
-→ BERLIN CLOCK, pointing at *a* Berlin clock whose identity Sanborn has never
-unambiguously confirmed (see status note above; this repository works with the
-Weltzeituhr as a hypothesis, while acknowledging the Mengenlehreuhr is at least as
-well supported by Sanborn's own 2014 remarks) — either candidate sits in central
-Berlin on essentially the same ~44.4° (≈ NE) bearing from Langley, so the bearing
-itself does not distinguish between them → K2 coordinates, the vanished survey disk,
+→ BERLIN CLOCK, which Sanborn confirmed on November 12, 2025 is the Alexanderplatz
+Weltzeituhr, not the Mengenlehreuhr (see status note above) — a clock that sits in
+central Berlin on roughly a ~44.4° (≈ NE) bearing from Langley → K2 coordinates, the
+vanished survey disk,
 "buried out there," LAYER TWO = Carter's "second layer." Sanborn himself calls K4's
 text "a riddle" leading to K5 — i.e. even the plaintext is a pointer, and the final
 answer (a bearing, a place, a next layer) lives in the world, not in the ciphertext.
@@ -638,28 +856,33 @@ KLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR
 | BERLIN | 64–69 | NYPVTT | Nov 2010 (NYT) |
 | CLOCK | 70–74 | MZFPK | Nov 2014 (NYT) |
 
-> **WHICH BERLIN CLOCK? — DISPUTED, NOT CONFIRMED.** Sanborn has publicly confirmed
-> only that positions 64–74 of K4 decrypt to the words BERLIN and CLOCK (NYT, 2010 and
-> 2014) — not which physical clock "CLOCK" refers to. When a Wired reporter asked in
-> 2014 whether the clue meant the Mengenlehreuhr (the "Berlin Uhr" / Set Theory Clock),
-> Sanborn did not confirm or deny it, but in the same interview he specifically
-> discussed its designer by name — "Most people have no idea who Dieter is... There's
-> a very interesting back story to [the Berlin Clock]" — referring to Dieter Binninger,
-> the Mengenlehreuhr's designer ([Wired, Nov. 20, 2014](https://www.wired.com/2014/11/second-kryptos-clue/)).
-> He did not similarly single out Erich John, designer of the Alexanderplatz
-> Weltzeituhr. This repository's own prior drafts, and the fan site solvekryptos.com,
-> have claimed Sanborn "confirmed" in November 2025 that the referent is the
-> Weltzeituhr and explicitly ruled out the Mengenlehreuhr. We could not find that
-> claim corroborated by any primary reporting of Sanborn's November 12, 2025
-> International Spy Museum appearance (Scientific American, AP, Newsday, NYT, Wired,
-> NPR) — none of the contemporaneous press coverage we reviewed mentions a Weltzeituhr
-> clarification, and Kryptos researchers reviewing that same press event concluded the
-> opposite, that Sanborn's own wording still points toward the Mengenlehreuhr. Treat
-> "the Berlin Clock is the Weltzeituhr" as an unconfirmed, single-source claim, not an
-> artist-confirmed fact. This repository uses the Weltzeituhr for the geometric
-> exercises below only as a working hypothesis, flagged wherever it appears; readers
-> should weigh the Mengenlehreuhr as at least equally, if not better, supported by the
-> public record.
+> **WHICH BERLIN CLOCK? — CONFIRMED BY THE ARTIST, NOVEMBER 12, 2025 (CORRECTING AN
+> EARLIER EDITION OF THIS BOOK).** For eleven years after the 2014 CLOCK reveal, this
+> was a genuinely open question. When a Wired reporter asked in 2014 whether the clue
+> meant the Mengenlehreuhr (the "Berlin Uhr" / Set Theory Clock), Sanborn wouldn't
+> confirm or deny it, but did single out its designer by name — "Most people have no
+> idea who Dieter is... There's a very interesting back story to [the Berlin Clock]" —
+> referring to Dieter Binninger ([Wired, Nov. 20, 2014](https://www.wired.com/2014/11/second-kryptos-clue/)).
+> That remark reasonably led most of the Kryptos community, for over a decade, to bet
+> on the Mengenlehreuhr. Sanborn settled the question himself on November 12, 2025, in
+> a written open letter to the "kryptos community" released the same day as his
+> International Spy Museum appearance: "The Berlin Clock in K4 is the World Clock in
+> Berlin that was the gathering place for the crowds that brought down the Berlin
+> wall" ([Sanborn, open letter, Nov. 12, 2025, via DocumentCloud](https://www.documentcloud.org/documents/26229389-adobe-scan-nov-12-2025/);
+> reported the same day by [Scientific American](https://www.scientificamerican.com/article/cia-kryptos-puzzle-creator-releases-final-clues/)
+> and reflected in [Wikipedia's *Kryptos* article](https://en.wikipedia.org/wiki/Kryptos)).
+> His stated reason checks out historically: Alexanderplatz, where the Weltzeituhr
+> stands, was the site of East Berlin's largest opposition rallies in the fall of
+> 1989 — most famously the roughly half-million-to-one-million-person demonstration
+> on November 4, 1989, five days before the Wall fell. An earlier working draft of
+> this book, written before this chapter's primary-source research was completed,
+> incorrectly treated this identification as an unconfirmed, single-source claim
+> traceable only to the fan site solvekryptos.com. That was our own research error,
+> corrected here: the Weltzeituhr identification is an artist-confirmed fact, not
+> speculation. What remains this repository's own speculation, flagged throughout the
+> sections below, is everything built on top of that fact — the geometric
+> "superimposition" exercises, the Webster/Womacka pairing, and any claim that the
+> fact's existence validates a specific K4 plaintext reconstruction.
 
 ### My cryptanalysis (all results reproducible in `kryptos_solve.py`)
 
@@ -765,15 +988,17 @@ synthesized the first complete, unified mechanical framework for K4:
      configuration, where chance alone predicts $\approx 7.4$. The substitution cards
      that would close the gap are back-solved *from* the plaintext, so they fit 97/97
      by construction rather than by derivation.
-   - **Navigational "validation" (weaker than it looks):** from the Kryptos compass
-     rose at CIA Langley to the Weltzeituhr at Alexanderplatz, the great-circle geodesic
-     bearing is **44.4°** (due Northeast), consistent with `EAST NORTHEAST` and
-     `NORTHEAST OF HERE`. This does not uniquely validate the Weltzeituhr identification,
-     however: the Mengenlehreuhr (Berlin's other, arguably better-attested "Berlin Clock"
-     candidate — see status note above) sits only ~6 km away in the same part of central
-     Berlin and returns essentially the same bearing, **44.5°**, from Langley. A
-     direction this coarse is satisfied by almost any landmark in central Berlin, so it
-     cannot by itself tell the two candidate clocks apart or confirm either one.
+   - **Navigational consistency (illustrative, not independent proof):** from the
+     Kryptos compass rose at CIA Langley to the Weltzeituhr at Alexanderplatz — the
+     clock Sanborn confirmed in November 2025 is the one K4 refers to (see status note
+     above) — the great-circle geodesic bearing is **44.4°** (due Northeast), consistent
+     with `EAST NORTHEAST` and `NORTHEAST OF HERE`. Note that this bearing is not a
+     *distinguishing* test: the Mengenlehreuhr sits only ~6 km away in the same part of
+     central Berlin and would have returned an almost identical bearing (**44.5°**) had
+     it been the correct candidate. A direction this coarse is satisfied by almost any
+     landmark in central Berlin, so the bearing match is consistent with, but does not
+     independently corroborate, Sanborn's confirmation — the identification itself rests
+     on his own November 2025 statement, not on this geometry.
 
 ### The master riddle & the K5 continuation (`kryptos_master_synthesis.py`)
 
@@ -798,9 +1023,10 @@ and it should be read as literary interpretation, not an artist statement:
      Commission Berlin Clock which is Northeast of here."*
      Reads the solver as positioned at the courtyard compass rose, sighting along the
      44.4° azimuth past the three Berlin Wall slabs toward Berlin — specifically the
-     Alexanderplatz Weltzeituhr on this repository's working (unconfirmed) hypothesis
-     about which "Berlin Clock" Sanborn meant; see the status note earlier in this
-     section for why that identification is disputed, not settled.
+     Alexanderplatz Weltzeituhr, which Sanborn confirmed by name on November 12, 2025
+     is the "Berlin Clock" K4 refers to (see the status note earlier in this section).
+     The clock identification is settled fact; the "Four Acts" narrative structure built
+     around it remains this repository's own literary reading, not an artist statement.
 
 2. **The K5 specifications actually confirmed by Sanborn (International Spy Museum press conference, November 12, 2025):**
    - **Length:** 97 characters, matching K4 ([solvekryptos.com](https://solvekryptos.com/about); AP/Newsday, Nov. 21, 2025).
@@ -812,7 +1038,7 @@ and it should be read as literary interpretation, not an artist statement:
 
 ### 9. The Paradigm Verification Engine & Cryptographic Hashes (`kryptos_paradigm_hash_engine.py`)
 
-On June 12, 2026, crypto investment firm Paradigm (the winning bidder of the November 2025 RR Auction) unveiled its official *Kryptos* site at `paradigm.xyz/kryptos`, alongside a separate ten-puzzle "Kryptos CTF" at `paradigm.xyz/kryptos-ctf` (challenges PK1–PK10, $10,000 in total prizes — see Part V, §14).
+On June 12, 2026, crypto investment firm Paradigm (the winning bidder of the November 2025 RR Auction) unveiled its official *Kryptos* site at `paradigm.xyz/kryptos`, alongside a separate ten-puzzle "Kryptos CTF" at `paradigm.xyz/kryptos-ctf` (challenges PK1–PK10, $10,000 in total prizes — see Part V, §15).
 
 #### 1. What Paradigm has actually stated about the verifier (sourced, not reconstructed)
 The exact cryptographic architecture has not been published in full technical detail, and this manuscript must not invent specifics that no primary source confirms. The publicly reported mechanism, per Paradigm's own announcement and contemporaneous reporting, is:
@@ -1014,7 +1240,7 @@ OBKRUOXOGHULBSOLIFBBWFLRVVQSRNGKSSOTWTQSJQSSEKZZWATJKRZJXMVYJUCGNRRPXOGFZEWGZZWP
 
 ### The Berlin superimposition: a speculative geometric exercise (`kryptos_berlin_superimpose.py`)
 
-> **STATUS — INTERPRETIVE EXERCISE, ON A DISPUTED PREMISE.** The coordinates and bearings below are real, checkable geometry (the Kryptos courtyard and the Alexanderplatz Weltzeituhr do sit roughly on a 44° bearing from each other — any reader can verify this with a map). Transplanting the K2-to-benchmark offset vector onto Berlin and reading significance into which building it lands near is this repository's own invented game, not a confirmed clue, an artist statement, or a cryptographic result. It also inherits an unresolved premise: that the Weltzeituhr, rather than the Mengenlehreuhr, is the "Berlin Clock" K4 points to — a claim this repository could not independently confirm (see the status note earlier in this section). Treat all of it as recreational geometry built on a contested starting point, not evidence.
+> **STATUS — INTERPRETIVE EXERCISE BUILT ON A CONFIRMED CLOCK, NOT A CONFIRMED GAME.** The coordinates and bearings below are real, checkable geometry (the Kryptos courtyard and the Alexanderplatz Weltzeituhr do sit roughly on a 44° bearing from each other — any reader can verify this with a map), and the Weltzeituhr itself is confirmed by Sanborn's own November 12, 2025 statement as the "Berlin Clock" K4 refers to (see the status note earlier in this section). What is *not* confirmed is everything built on top of that fact: transplanting the K2-to-benchmark offset vector onto Berlin and reading significance into which building it lands near is this repository's own invented game, not a confirmed clue, an artist statement, or a cryptographic result. Treat the clock identification as settled fact and everything else in this subsection as recreational geometry, not evidence.
 
 If the local coordinate offset at Langley is superimposed onto the **Urania-Weltzeituhr** at
 Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mosaic as the origin):
@@ -1049,7 +1275,7 @@ Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mo
 
 ## The "WW" clue: documented facts and this repository's speculative synthesis
 
-> **STATUS — MIXED, AND BUILT ON A DISPUTED PREMISE.** The sub-sections below mix well-documented facts (Webster's biography and death date; the two drill-hole dots on *Antipodes*, first reported by researcher Elonka Dunin; Walter Womacka's documented role overseeing the Alexanderplatz redesign under which Erich John built the Weltzeituhr) with this repository's own unconfirmed interpretive synthesis (that these facts form a deliberate "Cold War mirror" authored by Sanborn). That synthesis also assumes the Weltzeituhr, specifically, is the "Berlin Clock" K4 points to — an identification this repository could not confirm from primary sources and that Sanborn's own 2014 remarks arguably favor the Mengenlehreuhr instead (see the status note earlier in this chapter). If the Mengenlehreuhr is the correct referent, the Womacka/Alexanderplatz pairing below loses its connection to K4 entirely. The facts are cited individually below; the synthesis connecting them into a single designed "hinge" is this repository's reading, not an artist-confirmed claim, and is labeled as such.
+> **STATUS — MIXED.** The sub-sections below mix well-documented facts (Webster's biography and death date; the two drill-hole dots on *Antipodes*, first reported by researcher Elonka Dunin; Walter Womacka's documented role overseeing the Alexanderplatz redesign under which Erich John built the Weltzeituhr — the same Weltzeituhr Sanborn confirmed in November 2025 as K4's "Berlin Clock," see the status note earlier in this chapter) with this repository's own unconfirmed interpretive synthesis (that these facts form a deliberate "Cold War mirror" authored by Sanborn). The clock identification itself is no longer in doubt; what remains speculative is only the synthesis connecting these facts into a single designed "hinge," which is this repository's reading, not an artist-confirmed claim, and is labeled as such throughout.
 
 Throughout the 36-year history of *Kryptos*, the two letters **"WW"** in K2 have generated significant public speculation. This section separates the documented record from this repository's own interpretive synthesis, organized across four threads:
 
