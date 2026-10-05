@@ -611,13 +611,24 @@ def main():
             },
             {
                 "revision": "1.2",
-                "date": datetime.date.today().isoformat(),
+                "date": "2026-10-05",
                 "change": (
                     "typographic overhaul: paragraphs merged from hard-wrapped source "
                     "lines, real emphasis (em/strong) and code spans, per-part chapter "
                     "files with anchored navigation, book stylesheet, cover page, "
                     "endnotes and built-in package validation; PDF and EPUB now share "
                     "the scripts/book_typeset.py engine"
+                ),
+            },
+            {
+                "revision": "1.3",
+                "date": datetime.date.today().isoformat(),
+                "change": (
+                    "editorial pass: narrative chapters now describe methods and "
+                    "verification processes without pointing at individual repository "
+                    "files; file-level references are confined to the appendices, the "
+                    "research archive, and the verification manifest, with one "
+                    "canonical GitHub repository pointer added to the appendix intro"
                 ),
             },
         ],

@@ -51,3 +51,14 @@ python3 kryptos/build_manuscript_pdf.py      # KDP 6x9 PDF proof (kryptos/KRYPTO
 python3 scripts/publication_pipeline.py      # EPUB edition + preflight manifest
 python3 scripts/build_manuscript_pdf.py      # letter-size PDF of THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md (transfer/)
 ```
+
+## Editorial reference policy (revision 1.3, 2026-10-05)
+
+The narrative chapters describe methods and verification processes in prose — what was done, what it proved — without pointing at individual repository files, which are meaningless to a general reader. File-level references (scripts, machine-readable records, archived report filenames) appear only in:
+
+- the appendices (Part VII) and the appendix intro's single canonical pointer to the public GitHub repository,
+- the explicitly labelled ARCHIVED REPORT / OPEN-WORK ARCHIVE / TECHNICAL REFERENCE / SUPPLEMENT sections, which are verbatim provenance material,
+- the embedded manuscript's verification-manifest chapters (Chapter 6, Chapter 7, and the epilogue),
+- Part XXI's reference notes (cipher table, how-it-works, language model, installer, CLI, examples), which are software documentation by design.
+
+External source citations (news articles, Paradigm's puzzle pages, the public TTFH/KRYPTOS solver commit) are bibliographic references and remain in the narrative.

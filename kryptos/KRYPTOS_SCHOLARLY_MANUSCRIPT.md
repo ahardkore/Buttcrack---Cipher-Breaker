@@ -49,7 +49,7 @@ person or organization discussed herein. Trademarks, sculpture names, and
 quoted ciphertext are used for scholarly, historical, and critical commentary.
 
 **Cover and image rights.** Cover and interior image provenance and licensing
-status are tracked in `image-rights.json` and must be cleared before final
+status are tracked in the repository's image-rights ledger and must be cleared before final
 commercial publication; see the KDP production notes in the back matter.
 
 ---
@@ -142,9 +142,9 @@ work it represents.
 
 **Reference matter:** glossary, bibliography, index, figure list, table list, source ledger, and image-rights ledger.
 
-The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control.
+The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control. In the narrative chapters, a method is described by what it does and what it proved; references to individual scripts and records appear only in the appendices, the research archive, and the verification manifest, and everything cited there is part of the project's public repository.
 
-> **Status notice (updated 2026-10-05).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL / UNVERIFIED RECONSTRUCTION**. Rigorous cryptanalytic sweeps have proven that K4 cannot be deterministically decrypted from the 97 ciphertext letters alone without the physical keying template, and its authentic resolution remains inextricably linked to the eventual public release of the companion cipher **K5** (or verification against Paradigm's hash oracle and the sealed Smithsonian archive). In contrast, PK1–PK10 are independently solved and round-trip verified; PK9 is reproduced by `verify_pk9_solution.py` using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain superseded hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for public-solve provenance and rejected candidates.
+> **Status notice (updated 2026-10-05).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL / UNVERIFIED RECONSTRUCTION**. Rigorous cryptanalytic sweeps have proven that K4 cannot be deterministically decrypted from the 97 ciphertext letters alone without the physical keying template, and its authentic resolution remains inextricably linked to the eventual public release of the companion cipher **K5** (or verification against Paradigm's hash oracle and the sealed Smithsonian archive). In contrast, PK1–PK10 are independently solved and round-trip verified; PK9 is reproduced by an independent round-trip verifier using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain superseded hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. The research archive records the public-solve provenance and the rejected candidates.
 
 ---
 
@@ -537,15 +537,15 @@ PK8 is presented as a verified example of multiple periodic keyed shifts. The ch
 
 ## 20. PK9 verified construction and PK10 verified case study
 
-PK9 is independently verified in both directions by `kryptos/verify_pk9_solution.py`.
+PK9 is independently verified in both directions by a dedicated round-trip verifier.
 Its recovered construction is `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)` over
 `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The 144-character plaintext is recorded in the
 canonical manifest with SHA-256
 `c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8`. The
-public-solve evidence and the earlier rejected local candidates remain in
-`PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` as provenance.
+public-solve evidence and the earlier rejected local candidates are retained in
+the research archive as provenance.
 
-PK10's complete 504-letter construction is independently verified in both directions by `kryptos/verify_pk10_solution.py`: the recovered plaintext encodes to the canonical ciphertext exactly, and decoding the canonical ciphertext recovers the same plaintext. The verified construction is the cumulative pipeline `Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO) → T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS) → Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK) → Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST) → Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY) → Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, over `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The normalized plaintext is 504 characters, begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
+PK10's complete 504-letter construction is independently verified in both directions: the recovered plaintext encodes to the canonical ciphertext exactly, and decoding the canonical ciphertext recovers the same plaintext. The verified construction is the cumulative pipeline `Q3(PROVENANCE) → T(MARGINS) → Q3(ORDINATE) → Q3(PENTIMENTO) → T(UNDERLAY) → Q3(OCHRE) → Q3(VERDIGRIS) → T(TWOYEARS) → Q3(PK4 normalized plaintext) → T(HANDIWORK) → T(SMITHWORK) → Q3(PORTAL) → Q3(ANNEAL) → H3(ALCHEMIST) → Q3(METE) → Q3(METER) → Q3(METIER) → Q3(MASTERY) → Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`, over `KRYPTOSABCDEFGHIJLMNQUVWXZ`. The normalized plaintext is 504 characters, begins `IHAVENOTREADTHESTRAND`, ends `ANDILEAVETHEKNOTTOYOU`, and has SHA-256 `a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9`.
 
 The long pre-break PK10 dossier is still useful as a record of rejected models, but it is included only under an explicit **OPEN-WORK ARCHIVE** label below. It is not a current solution claim.
 
@@ -587,6 +587,8 @@ The campaign runner now resolves its repository root dynamically, rebuilds stale
 | PK9-A05 | wheel-word campaign | staged exhaustive products | running until completion | pending | do not interpret early |
 
 # Part VII — Appendices
+
+The file-level apparatus of this book — verification scripts, machine-readable solution and submission records, and the long archived research reports — is collected in these appendices and in the research archive that follows the narrative. Everything cited there can be inspected and re-run from the project's public repository, [Buttcrack—Cipher Breaker on GitHub](https://github.com/ahardkore/Buttcrack---Cipher-Breaker).
 
 ## Appendix A. Notation and alphabets
 
@@ -2089,7 +2091,7 @@ Some failures are strong: an exact algebraic consistency condition fails at many
 
 PK9 has a public solve event and is retained here as a record of attempted methods, bounded negative tests, and the evidence still needed for local acceptance. No PK9 plaintext, key, padding scheme, or transposition order is accepted without a full re-encryption check against the 144-letter source ciphertext.
 
-PK10 has a different status. The canonical construction is independently verified by `kryptos/verify_pk10_solution.py` with exact 504/504 encode and decode checks. The pre-break PK10 experiments below are preserved only as clearly labelled archival evidence of rejected models; they must not be read as the current PK10 status.
+PK10 has a different status. The canonical construction is independently verified by an exact round-trip check, with 504/504 encode and decode agreement. The pre-break PK10 experiments below are preserved only as clearly labelled archival evidence of rejected models; they must not be read as the current PK10 status.
 
 The retained PK9 work includes tests of multi-clock additive schedules, vocabulary-based wheel searches, columnar and double-columnar arrangements, route and grid transformations, crib searches, classical families, and optimization-based defect minimization. Every such entry is framed as “this tested model did not produce a validated answer,” not “the challenge cannot use this model.”
 
@@ -6730,8 +6732,7 @@ confidence thresholds in `buttcrack/lang.py`.
 
 **Author**: Arena.ai Cryptanalytic Agent  
 **Date of Record**: 3 October 2026
-**Repository**: `/home/user`  
-**Master Reproducibility Suite**: `test_full_suite_reproducibility.py` (11 / 11 tests passing, 100% success rate in 4.65 seconds)
+**Reproducibility**: repository verification suite — 11 / 11 tests passing (100%)
 
 ---
 
@@ -6820,8 +6821,7 @@ It has length 153 and SHA-256 `4c144cd2bd54b4cfac0c493d21a3a52d635844017070e1966
 
 ## CHAPTER 3: PK9 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 144$)
 
-PK9 is independently verified by `kryptos/verify_pk9_solution.py` under the
-complete construction:
+PK9 is independently verified, in both directions, under the complete construction:
 
 ```text
 Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)
@@ -6878,7 +6878,7 @@ Q3(PROVENANCE)
 → T(BEAMWORK)
 ```
 
-The PK4 normalized plaintext is the 224-character running key used by the ninth layer. It is not a guessed narrative key: its exact value and provenance are defined in `kryptos/verify_pk10_solution.py`.
+The PK4 normalized plaintext is the 224-character running key used by the ninth layer. It is not a guessed narrative key: its exact value and provenance are fixed by the verified construction record.
 
 ### 4.2 Plaintext boundary and digest
 
@@ -6894,13 +6894,7 @@ Its SHA-256 is:
 a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9
 ```
 
-The authoritative verifier is:
-
-```bash
-python3 kryptos/verify_pk10_solution.py
-```
-
-It reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42, and modular-triptych candidates are superseded research artifacts; they are retained only where explicitly labelled archival.
+The authoritative check is the repository's round-trip verifier, which reports exact 504/504 encode and decode matches. Earlier three-clock, 12×42, and modular-triptych candidates are superseded research artifacts; they are retained only where explicitly labelled archival.
 
 ## CHAPTER 5: VERIFICATION BOUNDARIES AND RESEARCH INTEGRITY
 
