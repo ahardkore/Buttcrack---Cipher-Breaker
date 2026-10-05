@@ -120,15 +120,20 @@ the designed puzzle must be solvable from public material. The evidence already
 converges on a navigational reading that needs no decryption: compass rose + lodestone
 + "T IS YOUR POSITION" (Morse panels) → the EAST NORTHEAST anchors → the three Berlin
 Wall slabs on CIA grounds ([Dunin via Wired](https://www.wired.com/2014/11/second-kryptos-clue/))
-→ BERLIN CLOCK = Weltzeituhr, which stands on a compass-rose mosaic mirroring
-Kryptos's own, ~44.4° (≈ NE) from Langley → K2 coordinates, the vanished survey disk,
+→ BERLIN CLOCK, pointing at *a* Berlin clock whose identity Sanborn has never
+unambiguously confirmed (see status note above; this repository works with the
+Weltzeituhr as a hypothesis, while acknowledging the Mengenlehreuhr is at least as
+well supported by Sanborn's own 2014 remarks) — either candidate sits in central
+Berlin on essentially the same ~44.4° (≈ NE) bearing from Langley, so the bearing
+itself does not distinguish between them → K2 coordinates, the vanished survey disk,
 "buried out there," LAYER TWO = Carter's "second layer." Sanborn himself calls K4's
 text "a riddle" leading to K5 — i.e. even the plaintext is a pointer, and the final
 answer (a bearing, a place, a next layer) lives in the world, not in the ciphertext.
 
 **The German words & Berlin hypothesis** (`kryptos_german_sweep.py`): since K4 points
-explicitly to BERLIN and the Alexanderplatz Weltzeituhr, a complete battery of 936,854
-German words (`german_words.txt`) and Berlin Cold War sources was tested:
+explicitly to BERLIN (confirmed) and, on this repository's working hypothesis, the
+Alexanderplatz Weltzeituhr (unconfirmed — see status note above), a complete battery
+of 936,854 German words (`german_words.txt`) and Berlin Cold War sources was tested:
 1. *Full German dictionary repeating-key scan (936,854 words):* periods 1–26 are
    mathematically impossible under all 6 polyalphabetic modes (Std/Kry Vigenère, Beaufort,
    Variant Beaufort) due to internal anchor contradictions. For periods 27–97, every
@@ -159,9 +164,11 @@ German words (`german_words.txt`) and Berlin Cold War sources was tested:
      has an IoC of 0.0762 (with ~17.4% letter E). In K4, letter E appears only 2 times (2.1%).
    - **Plaintext language:** confirmed anchors are EAST, NORTHEAST, CLOCK (and BERLIN).
      In German, these are OST, NORDOST, and UHR. The plaintext itself is English.
-   - **The Berlin role:** Berlin and the Weltzeituhr are physical and navigational pointers
-     (24 sides / 24 time zones on a compass-rose mosaic; 44.4° bearing from CIA Langley;
-     three Berlin Wall slabs at CIA HQ), not a linguistic cipher key.
+   - **The Berlin role:** Berlin, and (on this repository's unconfirmed working
+     hypothesis — see status note above) specifically the Weltzeituhr, function as
+     physical and navigational pointers (24 sides / 24 time zones on a compass-rose
+     mosaic; ~44.4° bearing from CIA Langley; three Berlin Wall slabs at CIA HQ), not
+     a linguistic cipher key.
 
 **The exhaustive attack ledger** (`kryptos_exhaustive.py` and companions) — every
 mechanism class tested against the 24 artist-confirmed letters, all failing:
@@ -218,9 +225,28 @@ KLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR
 | BERLIN | 64–69 | NYPVTT | Nov 2010 (NYT) |
 | CLOCK | 70–74 | MZFPK | Nov 2014 (NYT) |
 
-In Nov 2025 Sanborn confirmed *CLOCK* refers to the **Weltzeituhr (World Clock) at
-Alexanderplatz** — which stands on a compass-rose mosaic — not the Mengenlehreuhr the
-community had assumed for a decade.
+> **WHICH BERLIN CLOCK? — DISPUTED, NOT CONFIRMED.** Sanborn has publicly confirmed
+> only that positions 64–74 of K4 decrypt to the words BERLIN and CLOCK (NYT, 2010 and
+> 2014) — not which physical clock "CLOCK" refers to. When a Wired reporter asked in
+> 2014 whether the clue meant the Mengenlehreuhr (the "Berlin Uhr" / Set Theory Clock),
+> Sanborn did not confirm or deny it, but in the same interview he specifically
+> discussed its designer by name — "Most people have no idea who Dieter is... There's
+> a very interesting back story to [the Berlin Clock]" — referring to Dieter Binninger,
+> the Mengenlehreuhr's designer ([Wired, Nov. 20, 2014](https://www.wired.com/2014/11/second-kryptos-clue/)).
+> He did not similarly single out Erich John, designer of the Alexanderplatz
+> Weltzeituhr. This repository's own prior drafts, and the fan site solvekryptos.com,
+> have claimed Sanborn "confirmed" in November 2025 that the referent is the
+> Weltzeituhr and explicitly ruled out the Mengenlehreuhr. We could not find that
+> claim corroborated by any primary reporting of Sanborn's November 12, 2025
+> International Spy Museum appearance (Scientific American, AP, Newsday, NYT, Wired,
+> NPR) — none of the contemporaneous press coverage we reviewed mentions a Weltzeituhr
+> clarification, and Kryptos researchers reviewing that same press event concluded the
+> opposite, that Sanborn's own wording still points toward the Mengenlehreuhr. Treat
+> "the Berlin Clock is the Weltzeituhr" as an unconfirmed, single-source claim, not an
+> artist-confirmed fact. This repository uses the Weltzeituhr for the geometric
+> exercises below only as a working hypothesis, flagged wherever it appears; readers
+> should weigh the Mengenlehreuhr as at least equally, if not better, supported by the
+> public record.
 
 ### My cryptanalysis (all results reproducible in `kryptos_solve.py`)
 
@@ -322,18 +348,28 @@ synthesized the first complete, unified mechanical framework for K4:
      configuration, where chance alone predicts $\approx 7.4$. The substitution cards
      that would close the gap are back-solved *from* the plaintext, so they fit 97/97
      by construction rather than by derivation.
-   - **Navigational validation:** from the Kryptos compass rose at CIA Langley to the
-     Weltzeituhr at Alexanderplatz, the great-circle geodesic bearing is **44.4°**
-     (due Northeast), perfectly validating both `EAST NORTHEAST` and `NORTHEAST OF HERE`.
+   - **Navigational "validation" (weaker than it looks):** from the Kryptos compass
+     rose at CIA Langley to the Weltzeituhr at Alexanderplatz, the great-circle geodesic
+     bearing is **44.4°** (due Northeast), consistent with `EAST NORTHEAST` and
+     `NORTHEAST OF HERE`. This does not uniquely validate the Weltzeituhr identification,
+     however: the Mengenlehreuhr (Berlin's other, arguably better-attested "Berlin Clock"
+     candidate — see status note above) sits only ~6 km away in the same part of central
+     Berlin and returns essentially the same bearing, **44.5°**, from Langley. A
+     direction this coarse is satisfied by almost any landmark in central Berlin, so it
+     cannot by itself tell the two candidate clocks apart or confirm either one.
 
 ### The master riddle & the K5 continuation (`kryptos_master_synthesis.py`)
 
 In November 2025, speaking at the International Spy Museum in Washington, D.C., Jim Sanborn
-revealed the architecture of the overarching riddle and formally confirmed the parameters of **K5**:
+spoke about K4 and formally confirmed the parameters of **K5** (see item 2 below, which is
+sourced to that press conference and contemporaneous reporting). The "Four Acts" framing that
+follows is this repository's own narrative synthesis, stringing the four already-public K1–K4
+plaintexts into a single reading — Sanborn has not confirmed this specific four-act structure,
+and it should be read as literary interpretation, not an artist statement:
 
-1. **The Four Acts of the Master Riddle:**
-   Once all four cryptographic passages are decrypted, they do not state the solution;
-   they form a single physical field exercise:
+1. **The Four Acts of the Master Riddle (this repository's synthesis, not an artist-confirmed structure):**
+   Once all four cryptographic passages are decrypted, this repository reads them as forming
+   a single physical field exercise:
    - **Act I (K1 — The Premise):** *"Between subtle shading and the absence of light lies the nuance of illusion."*
      The moving sun casts moving shadows through the cutout letters onto the courtyard granite.
    - **Act II (K2 — The Site & Secret):** *"It was totally invisible. How's that possible? They used the Earth's magnetic field...
@@ -341,10 +377,13 @@ revealed the architecture of the overarching riddle and formally confirmed the p
      Establishes the lodestone (magnetism), the buried benchmark (~174 ft southeast), and Layer Two.
    - **Act III (K3 — The Breach):** Howard Carter excavating Tutankhamun's tomb: *"I made a tiny breach in the upper left hand corner...
      peered in... Can you see anything?"* Carter's famous reply: *"Yes, wonderful things!"*
-   - **Act IV (K4 — The Sighting Vector):** *"The compass rose is here. East Northeast. This is your position.
+   - **Act IV (K4 — The Sighting Vector, using this repository's unverified K4 candidate text):** *"The compass rose is here. East Northeast. This is your position.
      Commission Berlin Clock which is Northeast of here."*
-     Positions the solver at the courtyard compass rose, sighting along the 44.4° azimuth
-     past the three Berlin Wall slabs toward the Alexanderplatz Weltzeituhr.
+     Reads the solver as positioned at the courtyard compass rose, sighting along the
+     44.4° azimuth past the three Berlin Wall slabs toward Berlin — specifically the
+     Alexanderplatz Weltzeituhr on this repository's working (unconfirmed) hypothesis
+     about which "Berlin Clock" Sanborn meant; see the status note earlier in this
+     section for why that identification is disputed, not settled.
 
 2. **The K5 specifications actually confirmed by Sanborn (International Spy Museum press conference, November 12, 2025):**
    - **Length:** 97 characters, matching K4 ([solvekryptos.com](https://solvekryptos.com/about); AP/Newsday, Nov. 21, 2025).
@@ -558,7 +597,7 @@ OBKRUOXOGHULBSOLIFBBWFLRVVQSRNGKSSOTWTQSJQSSEKZZWATJKRZJXMVYJUCGNRRPXOGFZEWGZZWP
 
 ### The Berlin superimposition: a speculative geometric exercise (`kryptos_berlin_superimpose.py`)
 
-> **STATUS — INTERPRETIVE EXERCISE.** The coordinates and bearings below are real, checkable geometry (the Kryptos courtyard and the Alexanderplatz Weltzeituhr do sit roughly on a 44° bearing from each other — any reader can verify this with a map). Transplanting the K2-to-benchmark offset vector onto Berlin and reading significance into which building it lands near is this repository's own invented game, not a confirmed clue, an artist statement, or a cryptographic result. Treat it as recreational geometry, not evidence.
+> **STATUS — INTERPRETIVE EXERCISE, ON A DISPUTED PREMISE.** The coordinates and bearings below are real, checkable geometry (the Kryptos courtyard and the Alexanderplatz Weltzeituhr do sit roughly on a 44° bearing from each other — any reader can verify this with a map). Transplanting the K2-to-benchmark offset vector onto Berlin and reading significance into which building it lands near is this repository's own invented game, not a confirmed clue, an artist statement, or a cryptographic result. It also inherits an unresolved premise: that the Weltzeituhr, rather than the Mengenlehreuhr, is the "Berlin Clock" K4 points to — a claim this repository could not independently confirm (see the status note earlier in this section). Treat all of it as recreational geometry built on a contested starting point, not evidence.
 
 If the local coordinate offset at Langley is superimposed onto the **Urania-Weltzeituhr** at
 Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mosaic as the origin):
@@ -593,7 +632,7 @@ Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mo
 
 ## The "WW" clue: documented facts and this repository's speculative synthesis
 
-> **STATUS — MIXED.** The sub-sections below mix well-documented facts (Webster's biography and death date; the two drill-hole dots on *Antipodes*, first reported by researcher Elonka Dunin; Walter Womacka's documented role overseeing the Alexanderplatz redesign under which Erich John built the Weltzeituhr) with this repository's own unconfirmed interpretive synthesis (that these facts form a deliberate "Cold War mirror" authored by Sanborn). The facts are cited individually below; the synthesis connecting them into a single designed "hinge" is this repository's reading, not an artist-confirmed claim, and is labeled as such.
+> **STATUS — MIXED, AND BUILT ON A DISPUTED PREMISE.** The sub-sections below mix well-documented facts (Webster's biography and death date; the two drill-hole dots on *Antipodes*, first reported by researcher Elonka Dunin; Walter Womacka's documented role overseeing the Alexanderplatz redesign under which Erich John built the Weltzeituhr) with this repository's own unconfirmed interpretive synthesis (that these facts form a deliberate "Cold War mirror" authored by Sanborn). That synthesis also assumes the Weltzeituhr, specifically, is the "Berlin Clock" K4 points to — an identification this repository could not confirm from primary sources and that Sanborn's own 2014 remarks arguably favor the Mengenlehreuhr instead (see the status note earlier in this chapter). If the Mengenlehreuhr is the correct referent, the Womacka/Alexanderplatz pairing below loses its connection to K4 entirely. The facts are cited individually below; the synthesis connecting them into a single designed "hinge" is this repository's reading, not an artist-confirmed claim, and is labeled as such.
 
 Throughout the 36-year history of *Kryptos*, the two letters **"WW"** in K2 have generated significant public speculation. This section separates the documented record from this repository's own interpretive synthesis, organized across four threads:
 
