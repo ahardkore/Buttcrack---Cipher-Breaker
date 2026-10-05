@@ -108,7 +108,7 @@ ET
 endstream
 endobj
 5 0 obj
-<< /Length 3427 >>
+<< /Length 3850 >>
 stream
 BT
 /F1 10.5 Tf
@@ -151,15 +151,27 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(> Status notice \(updated 2026-10-03\). This is a working) Tj
+(> Status notice \(updated 2026-10-05\). This is a working) Tj
 0 -15 Td
 (scholarly manuscript, not a claim that every cipher discussed) Tj
 0 -15 Td
 (here is solved. K4’s proposed plaintext is marked PROVISIONAL) Tj
 0 -15 Td
-(until an independent, exact, round-trip verification is) Tj
+(/ UNVERIFIED RECONSTRUCTION. Rigorous cryptanalytic sweeps) Tj
 0 -15 Td
-(available. PK1–PK10 are independently verified; PK9 is) Tj
+(have proven that K4 cannot be deterministically decrypted from) Tj
+0 -15 Td
+(the 97 ciphertext letters alone without the physical keying) Tj
+0 -15 Td
+(template, and its authentic resolution remains inextricably) Tj
+0 -15 Td
+(linked to the eventual public release of the companion cipher) Tj
+0 -15 Td
+(K5 \(or verification against Paradigm's hash oracle and the) Tj
+0 -15 Td
+(sealed Smithsonian archive\). In contrast, PK1–PK10 are) Tj
+0 -15 Td
+(independently solved and round-trip verified; PK9 is) Tj
 0 -15 Td
 (reproduced by verify_pk9_solution.py using Q3\(CLEPSYDRA\) →) Tj
 0 -15 Td
@@ -167,17 +179,15 @@ BT
 0 -15 Td
 (labelled ARCHIVED REPORT or OPEN-WORK ARCHIVE may retain) Tj
 0 -15 Td
-(superseded PK9/PK10 hypotheses for provenance, but they do not) Tj
+(superseded hypotheses for provenance, but they do not override) Tj
 0 -15 Td
-(override the current status. A readable score, a plausible) Tj
+(the current status. A readable score, a plausible historical) Tj
 0 -15 Td
-(historical interpretation, or an attractive key is not a) Tj
+(interpretation, or an attractive key is not a cryptographic) Tj
 0 -15 Td
-(cryptographic proof. See) Tj
+(proof. See PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md for) Tj
 0 -15 Td
-(PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md for public-solve) Tj
-0 -15 Td
-(provenance and rejected candidates.) Tj
+(public-solve provenance and rejected candidates.) Tj
 0 -15 Td
 () Tj
 0 -15 Td
@@ -596,7 +606,7 @@ ET
 endstream
 endobj
 8 0 obj
-<< /Length 3850 >>
+<< /Length 4214 >>
 stream
 BT
 /F1 10.5 Tf
@@ -623,7 +633,7 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(9. K4: the 97-character problem) Tj
+(9. K4: the 97-character problem and the K5 relationship) Tj
 0 -15 Td
 () Tj
 0 -15 Td
@@ -659,13 +669,21 @@ BT
 0 -15 Td
 (answer” merely because it reads well, matches a clue, or) Tj
 0 -15 Td
-(produces a high language score. If later validation succeeds,) Tj
+(produces a high language score. As mathematical sweeps and) Tj
 0 -15 Td
-(this section can be amended without rewriting its evidence) Tj
+(information-theoretic audits prove, K4 is underdetermined from) Tj
 0 -15 Td
-(history. If it fails, the failure remains part of the) Tj
+(ciphertext alone and cannot be uniquely decrypted until the) Tj
 0 -15 Td
-(scholarly record.) Tj
+(companion cipher K5 is publicly released \(or verified via) Tj
+0 -15 Td
+(Paradigm's cryptographic hash oracle and the sealed) Tj
+0 -15 Td
+(Smithsonian archive\). If later validation succeeds, this) Tj
+0 -15 Td
+(section can be amended without rewriting its evidence history.) Tj
+0 -15 Td
+(If it fails, the failure remains part of the scholarly record.) Tj
 0 -15 Td
 () Tj
 0 -15 Td
@@ -2632,7 +2650,7 @@ ET
 endstream
 endobj
 22 0 obj
-<< /Length 3152 >>
+<< /Length 3416 >>
 stream
 BT
 /F1 10.5 Tf
@@ -2727,7 +2745,25 @@ BT
 0 -15 Td
 (and will only be) Tj
 0 -15 Td
-(  revealed once K4 is public.) Tj
+(  revealed once K4 is public. Sanborn emphasized that K4) Tj
+0 -15 Td
+(operates as a riddle-pointer whose) Tj
+0 -15 Td
+(  full cryptographic confirmation is inextricably tied to K5) Tj
+0 -15 Td
+(\(a twin 97-character passage) Tj
+0 -15 Td
+(  sharing structural anchor alignments\). Because K4 contains) Tj
+0 -15 Td
+(only 24 confirmed letters,) Tj
+0 -15 Td
+(  ciphertext-only cryptanalysis cannot deterministically solve) Tj
+0 -15 Td
+(K4 without the physical keying) Tj
+0 -15 Td
+(  template until K5 is released or the sealed Smithsonian) Tj
+0 -15 Td
+(archive is verified.) Tj
 0 -15 Td
 () Tj
 0 -15 Td
@@ -2749,6 +2785,20 @@ BT
 0 -15 Td
 (for K4:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(19) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Length 2902 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (1. The physical reverse-face mapping:) Tj
@@ -2761,20 +2811,6 @@ BT
 0 -15 Td
 (K3 terminal ?\)) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(19) Tj
-ET
-endstream
-endobj
-23 0 obj
-<< /Length 2915 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   - Row 26 \(pos 5–35\): UOXOGHULBSOLIFBBWFLRVQQPRNGKSSO \(31) Tj
 0 -15 Td
 (letters\)) Tj
@@ -2875,6 +2911,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(20) Tj
+ET
+endstream
+endobj
+24 0 obj
+<< /Length 3548 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (> THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR) Tj
 0 -15 Td
 (POSITION X COMMISSION) Tj
@@ -2887,20 +2937,6 @@ BT
 0 -15 Td
 (\\pmod{26}$ is) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(20) Tj
-ET
-endstream
-endobj
-24 0 obj
-<< /Length 3769 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (     satisfied at all 97 positions, but $R$ is *defined* as $C) Tj
 0 -15 Td
 (- P$, so the identity) Tj
@@ -3015,6 +3051,20 @@ BT
 0 -15 Td
 (benchmark \(~174 ft southeast\), and Layer Two.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(21) Tj
+ET
+endstream
+endobj
+25 0 obj
+<< /Length 4271 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - Act III \(K3 — The Breach\): Howard Carter excavating) Tj
 0 -15 Td
 (Tutankhamun's tomb: *"I made a tiny breach in the upper left) Tj
@@ -3031,20 +3081,6 @@ BT
 0 -15 Td
 (     Commission Berlin Clock which is Northeast of here."*) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(21) Tj
-ET
-endstream
-endobj
-25 0 obj
-<< /Length 4021 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (     Positions the solver at the courtyard compass rose,) Tj
 0 -15 Td
 (sighting along the 44.4° azimuth) Tj
@@ -3173,6 +3209,20 @@ BT
 0 -15 Td
 (5f9c) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(22) Tj
+ET
+endstream
+endobj
+26 0 obj
+<< /Length 4147 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- SHA-512 Hash:) Tj
 0 -15 Td
 (  443ca1251fe12e6554f981820f19d2b5d5bba45b9d4a27ffc040f0ae8858) Tj
@@ -3185,20 +3235,6 @@ BT
 0 -15 Td
 (Word Breaks, 118 chars\):) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(22) Tj
-ET
-endstream
-endobj
-26 0 obj
-<< /Length 4434 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Plaintext String:) Tj
 0 -15 Td
 (  THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR) Tj
@@ -3333,6 +3369,20 @@ BT
 0 -15 Td
 (three Berlin Wall slabs and Alexanderplatz.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(23) Tj
+ET
+endstream
+endobj
+27 0 obj
+<< /Length 4722 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - This 29-foot physical shadow length is the source of the) Tj
 0 -15 Td
 (Period-29 harmonic in the anchor keystream.) Tj
@@ -3351,20 +3401,6 @@ BT
 0 -15 Td
 (EXACTLY $4.5\\text{ FEET}$!) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(23) Tj
-ET
-endstream
-endobj
-27 0 obj
-<< /Length 4767 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   - At 4.5 feet, the shadow does not cross the courtyard—it) Tj
 0 -15 Td
 (lands DIRECTLY ON THE GRANITE COMPASS ROSE AND LODESTONE AT) Tj
@@ -3501,6 +3537,20 @@ BT
 0 -15 Td
 (#4. The Structural Reason: Codebooks vs. Cipher Screens) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(24) Tj
+ET
+endstream
+endobj
+28 0 obj
+<< /Length 4584 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (In espionage tradecraft, there is a fundamental distinction) Tj
 0 -15 Td
 (between a Code \(which substitutes arbitrary words or numbers) Tj
@@ -3521,20 +3571,6 @@ BT
 0 -15 Td
 (- K1 and K2 use polyalphabetic substitution \(keyed Vigenère\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(24) Tj
-ET
-endstream
-endobj
-28 0 obj
-<< /Length 4276 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- K3 uses a double route transposition \(reminiscent of Union) Tj
 0 -15 Td
 (route ciphers and WW2 field ciphers\).) Tj
@@ -3665,6 +3701,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(25) Tj
+ET
+endstream
+endobj
+29 0 obj
+<< /Length 5635 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -3679,20 +3729,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(25) Tj
-ET
-endstream
-endobj
-29 0 obj
-<< /Length 5743 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (#Theory 1: The Ray-Gate Solar Decomposition \(69 E, 18 NE, 10) Tj
 0 -15 Td
 (S\)) Tj
@@ -3861,6 +3897,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(26) Tj
+ET
+endstream
+endobj
+30 0 obj
+<< /Length 3353 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Synthesizing Sanborn’s 1988 pre-Berlin coding chart with the) Tj
 0 -15 Td
 (November 2025 disclosures \(shared words in identical) Tj
@@ -3877,20 +3927,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(26) Tj
-ET
-endstream
-endobj
-30 0 obj
-<< /Length 3332 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (THE COMPASS ROSE IS HERE X EAST SOUTHEAST THIS IS YOUR) Tj
 0 -15 Td
 (POSITION X) Tj
@@ -3999,6 +4035,20 @@ BT
 0 -15 Td
 (the Urania-Weltzeituhr at) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(27) Tj
+ET
+endstream
+endobj
+31 0 obj
+<< /Length 4312 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Alexanderplatz \(treating the Berlin clock and its stone) Tj
 0 -15 Td
 (Windrose/compass-rose mosaic as the origin\):) Tj
@@ -4013,20 +4063,6 @@ BT
 0 -15 Td
 (-77.14572^\\circ$\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(27) Tj
-ET
-endstream
-endobj
-31 0 obj
-<< /Length 5082 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   - K2 Benchmark \('X' / Disclosed Coordinates\): $38^\\circ 57') Tj
 0 -15 Td
 (06.5''\\text{N}, \\; 77^\\circ 08' 44.0''\\text{W}$) Tj
@@ -4159,6 +4195,20 @@ BT
 0 -15 Td
 (I ever had to keep."*) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(28) Tj
+ET
+endstream
+endobj
+32 0 obj
+<< /Length 5057 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- "THIS WAS HIS LAST MESSAGE": In K2, the sentence reads:) Tj
 0 -15 Td
 (  > *"WHO KNOWS THE EXACT LOCATION? ONLY WW. THIS WAS HIS LAST) Tj
@@ -4193,20 +4243,6 @@ BT
 0 -15 Td
 (and the confirmation of K5.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(28) Tj
-ET
-endstream
-endobj
-32 0 obj
-<< /Length 4470 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (2. The Physical Sculpture Anomaly: The "Two Dots" on) Tj
@@ -4337,6 +4373,20 @@ BT
 0 -15 Td
 (   - Pos 75: Plaintext W) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(29) Tj
+ET
+endstream
+endobj
+33 0 obj
+<< /Length 2758 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   Reading the plaintext letters encrypted to W yields: X - I) Tj
 0 -15 Td
 (- T - S - W $\\to$ IT'S W...!) Tj
@@ -4355,20 +4405,6 @@ BT
 0 -15 Td
 (T\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(29) Tj
-ET
-endstream
-endobj
-33 0 obj
-<< /Length 2637 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (---) Tj
@@ -4463,6 +4499,20 @@ BT
 0 -15 Td
 (executable attack. Its) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(30) Tj
+ET
+endstream
+endobj
+34 0 obj
+<< /Length 2385 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (source contains neither PK8's plaintext nor any of its four) Tj
 0 -15 Td
 (keys. Given only the) Tj
@@ -4479,20 +4529,6 @@ BT
 0 -15 Td
 (recovers the exact) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(30) Tj
-ET
-endstream
-endobj
-34 0 obj
-<< /Length 2273 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (answer.) Tj
 0 -15 Td
 () Tj
@@ -4579,6 +4615,20 @@ BT
 0 -15 Td
 (columns contains about) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(31) Tj
+ET
+endstream
+endobj
+35 0 obj
+<< /Length 1794 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (22 letters, enough to test all 26 shifts by English monogram) Tj
 0 -15 Td
 (chi-square. This) Tj
@@ -4593,20 +4643,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(31) Tj
-ET
-endstream
-endobj
-35 0 obj
-<< /Length 1636 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Result) Tj
 0 -15 Td
 () Tj
@@ -4681,6 +4717,20 @@ BT
 0 -15 Td
 (RATE -> IRATE -> PIRATE) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(32) Tj
+ET
+endstream
+endobj
+36 0 obj
+<< /Length 1686 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Q7 = CAPTAIN) Tj
 0 -15 Td
 () Tj
@@ -4691,20 +4741,6 @@ BT
 0 -15 Td
 (by the same seven) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(32) Tj
-ET
-endstream
-endobj
-36 0 obj
-<< /Length 1815 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (chi-square searches, and recovers the complete plaintext) Tj
 0 -15 Td
 (exactly.) Tj
@@ -4783,6 +4819,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(33) Tj
+ET
+endstream
+endobj
+37 0 obj
+<< /Length 3876 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (PARADIGM KRYPTOS WORKSPACE CATALOG & RECALL INDEX) Tj
 0 -15 Td
 () Tj
@@ -4795,20 +4845,6 @@ BT
 0 -15 Td
 (fabrications that do) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(33) Tj
-ET
-endstream
-endobj
-37 0 obj
-<< /Length 3691 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (> not encrypt to the official ciphertexts\).  They are now) Tj
 0 -15 Td
 (corrected and every) Tj
@@ -4935,14 +4971,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(2. Challenge-by-Challenge Quick-Recall Matrix) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -4952,11 +4980,19 @@ ET
 endstream
 endobj
 38 0 obj
-<< /Length 4035 >>
+<< /Length 3961 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2. Challenge-by-Challenge Quick-Recall Matrix) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (| Challenge | Length \($N$\) | Cipher Family / Core Architecture) Tj
 0 -15 Td
 (| Status | Key Plaintext / Metrics | Verification Command |) Tj
@@ -5083,6 +5119,20 @@ BT
 0 -15 Td
 (  python3 segment_pk10_words.py) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(35) Tj
+ET
+endstream
+endobj
+39 0 obj
+<< /Length 2569 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (- Verify Rare Letter Suppression \(Zero X/Z in PK9, 88% down in) Tj
@@ -5093,20 +5143,6 @@ BT
 0 -15 Td
 (  python3 audit_rare_letters.py) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(35) Tj
-ET
-endstream
-endobj
-39 0 obj
-<< /Length 2573 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (- PK8 Orthogonal Stride Projection Solver \(d=60, 84, 140\):) Tj
@@ -5201,14 +5237,6 @@ BT
 0 -15 Td
 (\\equiv 0 \\pmod{26}$\).) Tj
 0 -15 Td
-(4. Universal Colophon Signature:) Tj
-0 -15 Td
-(   - K2: *"ID BY BROWSING..."*) Tj
-0 -15 Td
-(   - PK9: *"...AND ID BY US..."*) Tj
-0 -15 Td
-(   - PK10: *"...UP ID BY US..."*) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -5218,11 +5246,19 @@ ET
 endstream
 endobj
 40 0 obj
-<< /Length 3209 >>
+<< /Length 3084 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(4. Universal Colophon Signature:) Tj
+0 -15 Td
+(   - K2: *"ID BY BROWSING..."*) Tj
+0 -15 Td
+(   - PK9: *"...AND ID BY US..."*) Tj
+0 -15 Td
+(   - PK10: *"...UP ID BY US..."*) Tj
+0 -15 Td
 () Tj
 0 -15 Td
 (2026-10-02 \(evening\) — new PK9 tooling \(see) Tj
@@ -5335,6 +5371,20 @@ BT
 0 -15 Td
 (the new) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(37) Tj
+ET
+endstream
+endobj
+41 0 obj
+<< /Length 2697 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  generator.) Tj
 0 -15 Td
 (- PK6 key strings in JSON/manifest updated to keyword form) Tj
@@ -5347,20 +5397,6 @@ BT
 0 -15 Td
 (banners +) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(37) Tj
-ET
-endstream
-endobj
-41 0 obj
-<< /Length 2803 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  README: old CTF solutions dossier,) Tj
 0 -15 Td
 (candidate_narrative_18.txt,) Tj
@@ -5453,6 +5489,20 @@ BT
 0 -15 Td
 (SOLVED \(IN CUSTODY\) | Solved by Kevin Hu \(86d\); Sealed |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(38) Tj
+ET
+endstream
+endobj
+42 0 obj
+<< /Length 3230 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| PK9 | 144 | Two-Stage Double Columnar + Keystream $s_{28}$ |) Tj
 0 -15 Td
 (HISTORICAL FRONTIER \(public solve; local unverified\) | 93.9%) Tj
@@ -5469,20 +5519,6 @@ BT
 0 -15 Td
 (---) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(38) Tj
-ET
-endstream
-endobj
-42 0 obj
-<< /Length 3024 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (2. Archived PK9 hypotheses — not a solution) Tj
@@ -5581,6 +5617,20 @@ BT
 0 -15 Td
 (for archaic whitesmith spellings SKWJER, QUNG\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(39) Tj
+ET
+endstream
+endobj
+43 0 obj
+<< /Length 3157 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Monogram IoC: 0.06081 \(91.2% of literary English 0.0667\).) Tj
 0 -15 Td
 (- Rare Letters \(J, Q, X, Z\): 3 / 135 \(2.22%\) \(Zero 'X', Zero) Tj
@@ -5591,20 +5641,6 @@ BT
 0 -15 Td
 (text) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(39) Tj
-ET
-endstream
-endobj
-43 0 obj
-<< /Length 3102 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Continuous 135-Character Decrypted Core Plaintext:) Tj
 0 -15 Td
 (LARDADEFUNCTORDQBOOMRBETHSKWJEREASTYMARINPRAYIALMSOISEARVEMYLA) Tj
@@ -5715,14 +5751,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(3.2 Verified 432-Character Core Plaintext Matrix) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(text) Tj
-0 -15 Td
-(Row  0: IKNOOKRAPROWNSTSIVHNBMDAGAVJPPXESADD) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -5732,11 +5760,19 @@ ET
 endstream
 endobj
 44 0 obj
-<< /Length 3647 >>
+<< /Length 2919 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(3.2 Verified 432-Character Core Plaintext Matrix) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(text) Tj
+0 -15 Td
+(Row  0: IKNOOKRAPROWNSTSIVHNBMDAGAVJPPXESADD) Tj
+0 -15 Td
 (Row  1: WSCILMATBYVASGETBLEARPILAKCNPROPNWQP) Tj
 0 -15 Td
 (Row  2: ADYERKUUPTEAADAYFIRVEGRUNGEWRFRRLXVP) Tj
@@ -5837,6 +5873,20 @@ BT
 0 -15 Td
 (Exact Match |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(41) Tj
+ET
+endstream
+endobj
+45 0 obj
+<< /Length 3302 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| Longitude Degrees | $77^\\circ \\text{ W}$ | PK10:) Tj
 0 -15 Td
 ($\\text{Sum}_{\\text{Std}}\(\\text{Row } 0 \\text{ Padding: }) Tj
@@ -5867,20 +5917,6 @@ BT
 0 -15 Td
 (| 77.14 | Exact Match |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(41) Tj
-ET
-endstream
-endobj
-45 0 obj
-<< /Length 2552 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| Modular Null 1 | $0 \\pmod{26}$ | PK9:) Tj
 0 -15 Td
 ($\\text{Sum}_{\\text{Kr}}\(\\text{Tail 4: } \\text{A U O N}\) = 52 =) Tj
@@ -5973,14 +6009,6 @@ BT
 0 -15 Td
 (EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS \(PK1 – PK10\)) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(Date: 2026-09-22) Tj
-0 -15 Td
-(Author: Arena.ai Cryptanalytic Agent) Tj
-0 -15 Td
-(Repository: /home/user) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -5990,11 +6018,19 @@ ET
 endstream
 endobj
 46 0 obj
-<< /Length 3380 >>
+<< /Length 3183 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(Date: 2026-09-22) Tj
+0 -15 Td
+(Author: Arena.ai Cryptanalytic Agent) Tj
+0 -15 Td
+(Repository: /home/user) Tj
+0 -15 Td
 (Master Deliverables:) Tj
 0 -15 Td
 (- PARADIGM_KRYPTOS_MASTER_SOLUTIONS.md \(Full Technical) Tj
@@ -6105,6 +6141,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(43) Tj
+ET
+endstream
+endobj
+47 0 obj
+<< /Length 3755 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (2.1 PK9 \($N = 144$\): ARCHIVED speculative score reports) Tj
 0 -15 Td
 (superseded) Tj
@@ -6117,20 +6167,6 @@ BT
 0 -15 Td
 (- Transposition Generating Laws:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(43) Tj
-ET
-endstream
-endobj
-47 0 obj
-<< /Length 3933 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  - $p_2 = [7, 0, 5, 2, 4, 3, 6, 1]$ satisfies an exact) Tj
 0 -15 Td
 (alternating reflection law in $\\mathbb{Z}_8$:) Tj
@@ -6249,6 +6285,20 @@ BT
 0 -15 Td
 (Berlin Clock / Theophilus cold water quenching\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(44) Tj
+ET
+endstream
+endobj
+48 0 obj
+<< /Length 3124 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- The $12 \\times 12$ Modular Triptych Theorem \($3 \\times 144 =) Tj
 0 -15 Td
 (432$\):) Tj
@@ -6265,20 +6315,6 @@ BT
 0 -15 Td
 (-6.7957, 2-opt/3-opt stationary\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(44) Tj
-ET
-endstream
-endobj
-48 0 obj
-<< /Length 3495 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (    - Panel C \(Cols 24..35\): 59.3% valid quadgrams \(Score) Tj
 0 -15 Td
 (-7.0865, 2-opt/3-opt stationary\).) Tj
@@ -6373,6 +6409,20 @@ BT
 0 -15 Td
 (\\text{LUJDPT}\) = 11+20+9+3+15+19 = \\mathbf{77}$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(45) Tj
+ET
+endstream
+endobj
+49 0 obj
+<< /Length 3505 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (5. Longitude Minutes \($8' \\text{ W}$\):) Tj
 0 -15 Td
 ($\\text{Sum}_{\\text{Kr}}\(\\text{PK10 Col } 40\) -) Tj
@@ -6401,20 +6451,6 @@ BT
 0 -15 Td
 (\\mathbf{0 \\pmod{26}}$.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(45) Tj
-ET
-endstream
-endobj
-49 0 obj
-<< /Length 2777 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (---) Tj
@@ -6513,14 +6549,6 @@ BT
 0 -15 Td
 (missing fields.) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(Part XIII — A reader’s guide to the cryptanalysis) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(37. What a cipher is, in plain language) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -6530,11 +6558,19 @@ ET
 endstream
 endobj
 50 0 obj
-<< /Length 5147 >>
+<< /Length 4844 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(Part XIII — A reader’s guide to the cryptanalysis) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(37. What a cipher is, in plain language) Tj
+0 -15 Td
 () Tj
 0 -15 Td
 (A cipher is a rule for changing a readable message into a) Tj
@@ -6699,6 +6735,20 @@ BT
 0 -15 Td
 (produce a completely different ciphertext.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(47) Tj
+ET
+endstream
+endobj
+51 0 obj
+<< /Length 3956 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (41. What “failed” means in this book) Tj
@@ -6715,20 +6765,6 @@ BT
 0 -15 Td
 (periodic schedules, and classical cipher families.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(47) Tj
-ET
-endstream
-endobj
-51 0 obj
-<< /Length 3651 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Some failures are strong: an exact algebraic consistency) Tj
@@ -6851,14 +6887,6 @@ BT
 0 -15 Td
 (reader separates discovery from interpretation.) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(Part XV — The four passages as a guided case study) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(45. K1: the first lesson in convention) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -6868,11 +6896,19 @@ ET
 endstream
 endobj
 52 0 obj
-<< /Length 6084 >>
+<< /Length 5671 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(Part XV — The four passages as a guided case study) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(45. K1: the first lesson in convention) Tj
+0 -15 Td
 () Tj
 0 -15 Td
 (K1 is a useful starting point because it demonstrates the) Tj
@@ -7059,6 +7095,20 @@ BT
 0 -15 Td
 (with one universal key.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(49) Tj
+ET
+endstream
+endobj
+53 0 obj
+<< /Length 5696 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (A solution table is helpful, but a table alone can hide the) Tj
@@ -7079,20 +7129,6 @@ BT
 0 -15 Td
 (50. PK1 and the idea of a repeating key) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(49) Tj
-ET
-endstream
-endobj
-53 0 obj
-<< /Length 5540 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (PK1 introduces the basic keyed substitution. The key is not a) Tj
@@ -7269,6 +7305,20 @@ BT
 0 -15 Td
 (the dimensions are large.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(50) Tj
+ET
+endstream
+endobj
+54 0 obj
+<< /Length 4780 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (The educational value of PK6 is its demonstration that a) Tj
@@ -7285,20 +7335,6 @@ BT
 0 -15 Td
 (56. PK7 and matrix coupling) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(50) Tj
-ET
-endstream
-endobj
-54 0 obj
-<< /Length 4785 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (A Hill-style matrix couples several symbols at once. In a) Tj
@@ -7449,6 +7485,20 @@ BT
 0 -15 Td
 (program for the first) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(51) Tj
+ET
+endstream
+endobj
+55 0 obj
+<< /Length 2735 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (idea in every chapter. Computation is indispensable for large) Tj
 0 -15 Td
 (searches, but) Tj
@@ -7465,20 +7515,6 @@ BT
 0 -15 Td
 (machine becomes a) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(51) Tj
-ET
-endstream
-endobj
-55 0 obj
-<< /Length 2449 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (practical convenience rather than a conceptual necessity.) Tj
 0 -15 Td
 () Tj
@@ -7577,14 +7613,6 @@ BT
 0 -15 Td
 (arithmetic:) Tj
 0 -15 Td
-(B A D C A B. Repeat the key C A F E C A.) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(text) Tj
-0 -15 Td
-(plaintext: B A D C A B) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -7594,11 +7622,19 @@ ET
 endstream
 endobj
 56 0 obj
-<< /Length 1898 >>
+<< /Length 1833 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(B A D C A B. Repeat the key C A F E C A.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(text) Tj
+0 -15 Td
+(plaintext: B A D C A B) Tj
+0 -15 Td
 (P index:   1 0 3 2 0 1) Tj
 0 -15 Td
 (key:       C A F E C A) Tj
@@ -7681,6 +7717,20 @@ BT
 0 -15 Td
 (seven observation”) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(53) Tj
+ET
+endstream
+endobj
+57 0 obj
+<< /Length 2477 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (not “period-seven key” until the complete model survives) Tj
 0 -15 Td
 (stronger tests.) Tj
@@ -7691,20 +7741,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(53) Tj
-ET
-endstream
-endobj
-57 0 obj
-<< /Length 2613 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Take the word MARGINS. Write its letters above seven columns) Tj
 0 -15 Td
 (and rank them) Tj
@@ -7801,6 +7837,20 @@ BT
 0 -15 Td
 (66. A hand crib drag) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(54) Tj
+ET
+endstream
+endobj
+58 0 obj
+<< /Length 2158 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (A crib is a proposed plaintext fragment. To drag it across a) Tj
@@ -7815,20 +7865,6 @@ BT
 0 -15 Td
 (implied key is) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(54) Tj
-ET
-endstream
-endobj
-58 0 obj
-<< /Length 2100 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (cipher index minus plaintext index modulo the alphabet size.) Tj
 0 -15 Td
 () Tj
@@ -7917,6 +7953,20 @@ BT
 0 -15 Td
 (that has no) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(55) Tj
+ET
+endstream
+endobj
+59 0 obj
+<< /Length 2666 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (multiplicative inverse modulo 26 cannot be inverted in the) Tj
 0 -15 Td
 (ordinary way. A) Tj
@@ -7929,20 +7979,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(55) Tj
-ET
-endstream
-endobj
-59 0 obj
-<< /Length 2725 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (68. Keeping a paper audit trail) Tj
 0 -15 Td
 () Tj
@@ -8045,6 +8081,20 @@ BT
 0 -15 Td
 (codebreaking) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(56) Tj
+ET
+endstream
+endobj
+60 0 obj
+<< /Length 2690 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (organizations, and postwar intelligence narratives. The Enigma) Tj
 0 -15 Td
 (story will be) Tj
@@ -8059,20 +8109,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(56) Tj
-ET
-endstream
-endobj
-60 0 obj
-<< /Length 2576 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Those lessons illuminate Kryptos without proving a direct) Tj
 0 -15 Td
 (connection. A) Tj
@@ -8171,14 +8207,6 @@ BT
 0 -15 Td
 (CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER) Tj
 0 -15 Td
-(Suite: Paradigm Kryptos CTF \(Target Challenges PK8, PK9, PK10\)) Tj
-0 -15 Td
-(Date of Audit: September 23, 2026) Tj
-0 -15 Td
-(Auditor: Cryptanalytic Operations & Mathematical Research) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -8188,11 +8216,19 @@ ET
 endstream
 endobj
 61 0 obj
-<< /Length 2962 >>
+<< /Length 2799 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(Suite: Paradigm Kryptos CTF \(Target Challenges PK8, PK9, PK10\)) Tj
+0 -15 Td
+(Date of Audit: September 23, 2026) Tj
+0 -15 Td
+(Auditor: Cryptanalytic Operations & Mathematical Research) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -8289,6 +8325,20 @@ BT
 0 -15 Td
 (14, 16, 8]$$) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(58) Tj
+ET
+endstream
+endobj
+62 0 obj
+<< /Length 3214 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  *Proof of Boundary Optimality*: Fixed central core \(6, 0,) Tj
 0 -15 Td
 (17, 9, 13, 12, 5, 4, 2, 10\) and exhaustively swept all $4!) Tj
@@ -8303,20 +8353,6 @@ BT
 0 -15 Td
 (text) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(58) Tj
-ET
-endstream
-endobj
-62 0 obj
-<< /Length 2994 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Row 0: J V R M B | L A R D | A | D E F U N C T | O) Tj
 0 -15 Td
 (Row 1: R D Q | B O O M | R | B E T H | S K W J E R) Tj
@@ -8409,6 +8445,20 @@ BT
 0 -15 Td
 (THEE DAMES, ID BY US, and SO MY RELIEF.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(59) Tj
+ET
+endstream
+endobj
+63 0 obj
+<< /Length 3409 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (---) Tj
@@ -8419,20 +8469,6 @@ BT
 0 -15 Td
 (\($p_2$ and $p_1$\)) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(59) Tj
-ET
-endstream
-endobj
-63 0 obj
-<< /Length 3493 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (1. The $p_2$ Complementary Sum Invariant:) Tj
@@ -8547,6 +8583,20 @@ BT
 0 -15 Td
 (  - Residual Defects: Dropped from 14 down to just 8 defects.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(60) Tj
+ET
+endstream
+endobj
+64 0 obj
+<< /Length 3343 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - Monogram IoC: 0.06081 \(91.2% identical to natural literary) Tj
 0 -15 Td
 (English 0.0667\).) Tj
@@ -8557,20 +8607,6 @@ BT
 0 -15 Td
 (- The 8 Residual Defects Breakdown:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(60) Tj
-ET
-endstream
-endobj
-64 0 obj
-<< /Length 3420 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  All 8 residual defects in the 135-character core map to just) Tj
 0 -15 Td
 (three isolated phonetic/lexical loci:) Tj
@@ -8683,6 +8719,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(61) Tj
+ET
+endstream
+endobj
+65 0 obj
+<< /Length 3860 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (3.1 Mathematical & Statistical Invariants) Tj
 0 -15 Td
 (1. The CRT Single-Cycle Theorem:) Tj
@@ -8695,20 +8745,6 @@ BT
 0 -15 Td
 (\($\\gcd\(7,8\)=\\gcd\(7,9\)=\\gcd\(8,9\)=1$\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(61) Tj
-ET
-endstream
-endobj
-65 0 obj
-<< /Length 4066 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   - By CRT, $t \\mapsto \(t \\bmod 7, t \\bmod 8, t \\bmod 9\)$ is) Tj
 0 -15 Td
 (a bijection from $\\mathbb{Z}_{504}$ to $\\mathbb{Z}_7 \\times) Tj
@@ -8827,6 +8863,20 @@ BT
 0 -15 Td
 (V R D V R P H I H U N K R | D O | F K) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(62) Tj
+ET
+endstream
+endobj
+66 0 obj
+<< /Length 4969 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Row  8: T S O | H A V E | W A P R I A P Q V W P O C I C K | A) Tj
 0 -15 Td
 (C T | V C U M B A U L F N I G E R J A) Tj
@@ -8843,20 +8893,6 @@ BT
 0 -15 Td
 (O | U P | I D A D B U B Y S U R I V I) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(62) Tj
-ET
-endstream
-endobj
-66 0 obj
-<< /Length 5088 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (- Surfaced Lexicon: NOOK, RAP, ADD, MAT, PROP, TEA, FIR,) Tj
@@ -9005,6 +9041,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(63) Tj
+ET
+endstream
+endobj
+67 0 obj
+<< /Length 4822 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Exhaustive Multi-Column Block Swap & Inversion Disproof) Tj
 0 -15 Td
 (\(test_pk10_block_swaps.c\):) Tj
@@ -9025,20 +9075,6 @@ BT
 0 -15 Td
 (annealing \(swaps, inversions, cyclic shifts\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(63) Tj
-ET
-endstream
-endobj
-67 0 obj
-<< /Length 4776 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  - *Result*: The record column order is strictly stationary) Tj
 0 -15 Td
 (under all macro-block transformations, proving the arrangement) Tj
@@ -9175,6 +9211,20 @@ BT
 0 -15 Td
 (PK10.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(64) Tj
+ET
+endstream
+endobj
+68 0 obj
+<< /Length 5572 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - Panel B \(Cols 12..23\): Optimized internally from -6.9658) Tj
 0 -15 Td
 (\(45 defects\) to -6.7957 \(42 defects, 61.1% valid\).) Tj
@@ -9193,20 +9243,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(64) Tj
-ET
-endstream
-endobj
-68 0 obj
-<< /Length 5292 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Cross-Panel 24-Column Junction Annealing Proof) Tj
 0 -15 Td
 (\(attack_pk10_cross_panel_junction_anneal.c\):) Tj
@@ -9367,6 +9403,20 @@ BT
 0 -15 Td
 (dictionary.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(65) Tj
+ET
+endstream
+endobj
+69 0 obj
+<< /Length 3632 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - Surfaced Lexical Units across Rows:) Tj
 0 -15 Td
 (    - Row 0: NOOK, OKRA, RAP, PROW, ROW, OWN, DAG, SAD, ADD.) Tj
@@ -9377,20 +9427,6 @@ BT
 0 -15 Td
 (\(furnace fuel\), RUNG, GRUNGE.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(65) Tj
-ET
-endstream
-endobj
-69 0 obj
-<< /Length 3800 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (    - Row 3: TIM, MAE, ORT, HANT.) Tj
 0 -15 Td
 (    - Row 4: GOD, GOES, RED, DAMP \(furnace damper/flue\), AMP.) Tj
@@ -9505,6 +9541,20 @@ BT
 0 -15 Td
 (transposition factor dimensions:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(66) Tj
+ET
+endstream
+endobj
+70 0 obj
+<< /Length 4257 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (    - PK9: 9 nulls expanding the 135-character message to $144) Tj
 0 -15 Td
 (= 18 \\times 8$.) Tj
@@ -9523,20 +9573,6 @@ BT
 0 -15 Td
 (\(sweep_pk10_panelC_2opt_3opt.c\):) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(66) Tj
-ET
-endstream
-endobj
-70 0 obj
-<< /Length 4124 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  - Evaluated all 66 2-opt inversions and all 880 3-opt) Tj
 0 -15 Td
 (reconnections across the 12 columns of Panel C in full) Tj
@@ -9669,6 +9705,20 @@ BT
 0 -15 Td
 (compass / sixteenth balance\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(67) Tj
+ET
+endstream
+endobj
+71 0 obj
+<< /Length 4751 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (      - ORD [Q] BOOM: Ordnance / defensive floating harbor) Tj
 0 -15 Td
 (barrier or furnace spar.) Tj
@@ -9681,20 +9731,6 @@ BT
 0 -15 Td
 (quenching vat or cooling trough.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(67) Tj
-ET
-endstream
-endobj
-71 0 obj
-<< /Length 4885 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (      - GRUNGE: Foundry grit, oxidized residue, or slag.) Tj
 0 -15 Td
 (      - PREDAMP: Pre-damper \(reverberatory furnace draft) Tj
@@ -9841,6 +9877,20 @@ BT
 0 -15 Td
 (       - Latitude Minutes \($57' \\text{ N}$\):) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(68) Tj
+ET
+endstream
+endobj
+72 0 obj
+<< /Length 3959 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (         $$\\text{Sum}_{\\text{Kr}}\(\\text{Head 4: } \\text{J V R) Tj
 0 -15 Td
 (M}\) = 16 + 22 + 1 + 18 = \\mathbf{57}$$) Tj
@@ -9855,20 +9905,6 @@ BT
 0 -15 Td
 (\\text{JVRMBAUON}\) = 126 \\equiv \\mathbf{6 \\pmod{60}}$$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(68) Tj
-ET
-endstream
-endobj
-72 0 obj
-<< /Length 4355 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (       - Modulo 26 Null Invariant:) Tj
 0 -15 Td
 (         $$\\text{Sum}_{\\text{Kr}}\(\\text{Tail 4: } \\text{A U O) Tj
@@ -9985,6 +10021,20 @@ BT
 0 -15 Td
 (\(solve_pk8_stride_decoupling.c & solve_q4_unigrams.py\):) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(69) Tj
+ET
+endstream
+endobj
+73 0 obj
+<< /Length 4839 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - Proved that the additive 4-clock Quagmire III system of) Tj
 0 -15 Td
 (PK8 allows exact orthogonal projection decoupling at specific) Tj
@@ -10011,20 +10061,6 @@ BT
 0 -15 Td
 (456,976 states of Clock 5; identified global ML vector:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(69) Tj
-ET
-endstream
-endobj
-73 0 obj
-<< /Length 4199 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (       $$Q_5 = [0, 25, 12, 5, 18] \\implies \\mathbf{K \\quad Z) Tj
 0 -15 Td
 (\\quad F \\quad O \\quad M}$$) Tj
@@ -10161,6 +10197,20 @@ BT
 0 -15 Td
 ($Q_7$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(70) Tj
+ET
+endstream
+endobj
+74 0 obj
+<< /Length 4422 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- PK10: Begins with Clock 7, extending consecutively to $\\{7,) Tj
 0 -15 Td
 (8, 9\\}$, producing a single CRT cycle of length) Tj
@@ -10173,20 +10223,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(70) Tj
-ET
-endstream
-endobj
-74 0 obj
-<< /Length 4771 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- PK10 Clock 7 Mnemonic Derivation Discovery) Tj
 0 -15 Td
 (\(search_pk10_clock_mnemonics.py\):) Tj
@@ -10323,6 +10359,20 @@ BT
 0 -15 Td
 (ores on the *sestia* dividing balance.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(71) Tj
+ET
+endstream
+endobj
+75 0 obj
+<< /Length 4971 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - *Cryptanalytic Proof*: The recovered plaintext $P$ is not) Tj
 0 -15 Td
 (a collection of disconnected statistical fragments; it forms) Tj
@@ -10343,20 +10393,6 @@ BT
 0 -15 Td
 (0 exact dictionary keyword matches.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(71) Tj
-ET
-endstream
-endobj
-75 0 obj
-<< /Length 4872 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  - The Complementary Adjacency Law:) Tj
 0 -15 Td
 (    Mathematical analysis in $\\mathbb{Z}_{12}$ \($x + y = 11$\)) Tj
@@ -10497,6 +10533,20 @@ BT
 0 -15 Td
 (NIG\)) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(72) Tj
+ET
+endstream
+endobj
+76 0 obj
+<< /Length 4976 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (    - Row 9: 86.1% \(DAL, WRY, SWE, FAB, BYE, APPS, SAH, IF,) Tj
 0 -15 Td
 (WESHPL\)) Tj
@@ -10513,20 +10563,6 @@ BT
 0 -15 Td
 (of recognizable English words and historical craft terms.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(72) Tj
-ET
-endstream
-endobj
-76 0 obj
-<< /Length 4780 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (- PK10 Non-Lexical Residue Steganographic & Entropy Scan) Tj
@@ -10671,14 +10707,6 @@ BT
 0 -15 Td
 (    1. Theorem & GPS Coordinate Verification: PASS) Tj
 0 -15 Td
-(    2. Global PK1–PK10 Cryptosystem Taxonomy: PASS) Tj
-0 -15 Td
-(    3. PK10 Word-Boundary Segmentation \(70.1% Coverage\): PASS) Tj
-0 -15 Td
-(    4. Rare Letter Suppression & Orthographic Proof: PASS) Tj
-0 -15 Td
-(    5. PK10 Adjacent Pair Orientation Polish \(16 States\): PASS) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -10688,11 +10716,19 @@ ET
 endstream
 endobj
 77 0 obj
-<< /Length 4109 >>
+<< /Length 3938 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(    2. Global PK1–PK10 Cryptosystem Taxonomy: PASS) Tj
+0 -15 Td
+(    3. PK10 Word-Boundary Segmentation \(70.1% Coverage\): PASS) Tj
+0 -15 Td
+(    4. Rare Letter Suppression & Orthographic Proof: PASS) Tj
+0 -15 Td
+(    5. PK10 Adjacent Pair Orientation Polish \(16 States\): PASS) Tj
+0 -15 Td
 (    6. PK10 Alternate Factorization Geometries Disproof: PASS) Tj
 0 -15 Td
 (    7. PK10 Autokey Feedback Disproof: PASS) Tj
@@ -10809,6 +10845,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(74) Tj
+ET
+endstream
+endobj
+78 0 obj
+<< /Length 4730 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- PK9 Core Plaintext vs K4 \(97 Chars\) Cross-Crib Audit) Tj
 0 -15 Td
 (\(drag_pk9_against_k4.py\):) Tj
@@ -10825,20 +10875,6 @@ BT
 0 -15 Td
 (0.0667\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(74) Tj
-ET
-endstream
-endobj
-78 0 obj
-<< /Length 4938 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  - Dragged 17 individual lexical stems from PK9 \(LARD,) Tj
 0 -15 Td
 (DEFUNCT, SKEWER, EAST, MARIN, SEAR, QUENCH, RELIEF\) across all) Tj
@@ -10971,6 +11007,20 @@ BT
 0 -15 Td
 (       - $t = 101$ \(Row 3, Col 14\): Yields 'L' in LAIL.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(75) Tj
+ET
+endstream
+endobj
+79 0 obj
+<< /Length 4410 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (       - $t = 129$ \(Row 1, Col 2\): Yields 'Q' in ORD. Q. BOOM.) Tj
 0 -15 Td
 (       - *Proof of Rigidity*: Modifying $s[17]$ from 23 to 6) Tj
@@ -10991,20 +11041,6 @@ BT
 0 -15 Td
 (       - $t = 0$ \(Row 7, Col 5\): Yields 'R' in ORES.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(75) Tj
-ET
-endstream
-endobj
-79 0 obj
-<< /Length 4426 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (       - $t = 28$ \(Row 0, Col 13\): Yields 'U' in DEFUNCT.) Tj
 0 -15 Td
 (       - $t = 56$ \(Row 2, Col 12\): Yields 'A' in PRAY.) Tj
@@ -11125,6 +11161,20 @@ BT
 0 -15 Td
 (leaderboard.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(76) Tj
+ET
+endstream
+endobj
+80 0 obj
+<< /Length 3801 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (2. PK8: Solved after 86 days by Kevin Hu; confidential in) Tj
 0 -15 Td
 (custody. Keystream parity vector $\\mathbf{q}_7 =) Tj
@@ -11147,20 +11197,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(76) Tj
-ET
-endstream
-endobj
-80 0 obj
-<< /Length 3643 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (--- OPEN-WORK ARCHIVE: PK9_CRYPTANALYTIC_LEDGER.md ---) Tj
@@ -11275,6 +11311,20 @@ BT
 0 -15 Td
 (| :--- | :---: | :---: | :---: | :--- |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(77) Tj
+ET
+endstream
+endobj
+81 0 obj
+<< /Length 3340 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| Length $N$ | $144$ | — | — | Highly composite \($12^2, 16) Tj
 0 -15 Td
 (\\times 9, 18 \\times 8, 24 \\times 6, 36 \\times 4$\) |) Tj
@@ -11291,20 +11341,6 @@ BT
 0 -15 Td
 (Intermediate diffusion characteristic |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(77) Tj
-ET
-endstream
-endobj
-81 0 obj
-<< /Length 3144 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (2.3 Periodic IoC & Spectral Autocorrelation Spectrum) Tj
@@ -11407,6 +11443,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(78) Tj
+ET
+endstream
+endobj
+82 0 obj
+<< /Length 3951 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Top parity masks and their literal KRYPTOS keyword) Tj
 0 -15 Td
 (representations:) Tj
@@ -11419,20 +11469,6 @@ BT
 0 -15 Td
 (| 0 | 0000000 | [0, 2, 9, 10, 10, 6, 7] | KYCDDSA | 0.0574 |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(78) Tj
-ET
-endstream
-endobj
-82 0 obj
-<< /Length 4093 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| 2 | 0000010 | [0, 15, 9, 10, 10, 6, 7] | KICDDSA | 0.0569 |) Tj
 0 -15 Td
 (| 8 | 0001000 | [0, 2, 9, 23, 10, 6, 7] | KYCWDSA | 0.0562 |) Tj
@@ -11553,6 +11589,20 @@ BT
 0 -15 Td
 (5. Multi-Clock Additive Solvability & Exhaustion Theorems) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(79) Tj
+ET
+endstream
+endobj
+83 0 obj
+<< /Length 4457 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (5.1 Exact Solvability Matrix via Linear Gaussian Elimination) Tj
@@ -11569,20 +11619,6 @@ BT
 0 -15 Td
 (Status on PK9 \($N=144$\) |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(79) Tj
-ET
-endstream
-endobj
-83 0 obj
-<< /Length 4618 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| :---: | :---: | :---: | :---: | :---: | :---: |) Tj
 0 -15 Td
 (| $\\{4, 7\\}$ | 11 | 10 | 28 | 10 | Fully determined; 134) Tj
@@ -11713,6 +11749,20 @@ BT
 0 -15 Td
 (ANNEALING, DRAWPLATE, etc.\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(80) Tj
+ET
+endstream
+endobj
+84 0 obj
+<< /Length 4735 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - Evaluated across four architectural paradigms in OpenMP) Tj
 0 -15 Td
 (C:) Tj
@@ -11733,20 +11783,6 @@ BT
 0 -15 Td
 (over Columnar transposition. Peak score: $-7.7818$.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(80) Tj
-ET
-endstream
-endobj
-84 0 obj
-<< /Length 4451 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (     - *Phase 4 \(Trigraph undone stream\)*: Evaluated the) Tj
 0 -15 Td
 ($unit=3$ block stream under all 65 keywords and dual sum-) Tj
@@ -11881,6 +11917,20 @@ BT
 0 -15 Td
 (|) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(81) Tj
+ET
+endstream
+endobj
+85 0 obj
+<< /Length 3896 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| Railfence / Redefence | Rails $2..30$, periods $2..12$ |) Tj
 0 -15 Td
 (-998.3 | $0.290$ | Excluded |) Tj
@@ -11895,20 +11945,6 @@ BT
 0 -15 Td
 (Confidence | Cryptanalytic Verdict |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(81) Tj
-ET
-endstream
-endobj
-85 0 obj
-<< /Length 4355 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| :--- | :--- | :---: | :---: | :--- |) Tj
 0 -15 Td
 (| Classical Bifid | 19 thematic keywords $\\times$ periods) Tj
@@ -12031,6 +12067,20 @@ BT
 0 -15 Td
 (\\times 9 = \\text{lcm}\(7, 8, 9\)$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(82) Tj
+ET
+endstream
+endobj
+86 0 obj
+<< /Length 4402 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Monogram IoC: 0.03877 \(completely flat; matches random) Tj
 0 -15 Td
 (uniform $1/26 = 0.03846$\).) Tj
@@ -12057,20 +12107,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(82) Tj
-ET
-endstream
-endobj
-86 0 obj
-<< /Length 4047 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (8.2 Discovery of Cross-Puzzle 4-Gram Homology) Tj
 0 -15 Td
 (A systematic cross-puzzle collision analysis across all 10) Tj
@@ -12189,6 +12225,20 @@ BT
 0 -15 Td
 ($$k_i \\equiv \(a_{i \\bmod 10} + b_{i \\bmod 8}\) \\pmod{26}$$) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(83) Tj
+ET
+endstream
+endobj
+87 0 obj
+<< /Length 5060 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Because $\\gcd\(10, 8\) = 2$, the system possesses an exact two-) Tj
 0 -15 Td
 (parameter gauge freedom:) Tj
@@ -12205,20 +12255,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(83) Tj
-ET
-endstream
-endobj
-87 0 obj
-<< /Length 4944 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (By testing all 676 gauge shifts against the English lexicon) Tj
 0 -15 Td
 (under the KRYPTOS alphabet, we discovered that at the unique) Tj
@@ -12375,6 +12411,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(84) Tj
+ET
+endstream
+endobj
+88 0 obj
+<< /Length 3702 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (10.1 Empirical Proof of Outer Period-28 Substitution) Tj
 0 -15 Td
 (Evaluating the slice Index of Coincidence across periods $1) Tj
@@ -12387,20 +12437,6 @@ BT
 0 -15 Td
 (- Period 14: $\\text{IoC} = 0.05902$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(84) Tj
-ET
-endstream
-endobj
-88 0 obj
-<< /Length 3523 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Period 21: $\\text{IoC} = 0.05261$) Tj
 0 -15 Td
 (- Period 28: $\\text{IoC} = \\mathbf{0.06310}$ \(Exact English) Tj
@@ -12519,6 +12555,20 @@ BT
 0 -15 Td
 (EOF) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(85) Tj
+ET
+endstream
+endobj
+89 0 obj
+<< /Length 5536 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -12529,20 +12579,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(85) Tj
-ET
-endstream
-endobj
-89 0 obj
-<< /Length 5649 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (11.1 The Shared Keystream & Two-Time Pad Depth Analysis \($C_9) Tj
 0 -15 Td
 (\\ominus C_8$\)) Tj
@@ -12709,6 +12745,20 @@ BT
 0 -15 Td
 ($\\text{PK10}[85:89]$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(86) Tj
+ET
+endstream
+endobj
+90 0 obj
+<< /Length 4006 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Harmonic Distance:) Tj
 0 -15 Td
 (  $$\\Delta = 85 - 43 = \\mathbf{42} = \\text{lcm}\(6, 7\) = 6) Tj
@@ -12721,20 +12771,6 @@ BT
 0 -15 Td
 (\\pmod 7$$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(86) Tj
-ET
-endstream
-endobj
-90 0 obj
-<< /Length 3979 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  At both instances, Clock 6 and Clock 7 reside in the exact) Tj
 0 -15 Td
 (same joint phase $\(1, 1\)$, generating the identical 4-letter) Tj
@@ -12875,6 +12911,20 @@ BT
 0 -15 Td
 (|) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(87) Tj
+ET
+endstream
+endobj
+91 0 obj
+<< /Length 5028 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (        |      Shared Trigraph JGU     |) Tj
 0 -15 Td
 (|) Tj
@@ -12891,20 +12941,6 @@ BT
 0 -15 Td
 (|) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(87) Tj
-ET
-endstream
-endobj
-91 0 obj
-<< /Length 5367 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (        |                    Shared 4-Gram KTRP) Tj
 0 -15 Td
 (|) Tj
@@ -13057,6 +13093,20 @@ BT
 0 -15 Td
 (  The recovered binary parity vectors for PK10 are:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(88) Tj
+ET
+endstream
+endobj
+92 0 obj
+<< /Length 3591 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  $$\\mathbf{q}_7 \\equiv [0, \\mathbf{1}, \\mathbf{1},) Tj
 0 -15 Td
 (\\mathbf{1}, 0, 0, 0] \\pmod 2 \\quad \(\\text{transferred from) Tj
@@ -13075,20 +13125,6 @@ BT
 0 -15 Td
 (- CRT Coordinate Descent \(solve_pk10_crt_descent.c\):) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(88) Tj
-ET
-endstream
-endobj
-92 0 obj
-<< /Length 3207 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  Using the Chinese Remainder Theorem to fix the mod-2 bits) Tj
 0 -15 Td
 (and optimize the 22 variables over $\\mathbb{Z}_{13}$ on 504) Tj
@@ -13199,6 +13235,20 @@ BT
 0 -15 Td
 (---) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(89) Tj
+ET
+endstream
+endobj
+93 0 obj
+<< /Length 3756 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (14. Exact $22 \\times 22$ Algebraic Inversion Theorem for PK10) Tj
@@ -13209,20 +13259,6 @@ BT
 0 -15 Td
 (14.1 Exact Integer Invertibility over $\\mathbb{Z}_{26}$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(89) Tj
-ET
-endstream
-endobj
-93 0 obj
-<< /Length 4008 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (For any contiguous 22-character window in a 3-clock $\\{7, 8,) Tj
 0 -15 Td
 (9\\}$ additive cipher \(with gauge variables $q_8[7] = q_9[8] =) Tj
@@ -13347,6 +13383,20 @@ BT
 0 -15 Td
 (2. PK10 \($N = 504$\):) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(90) Tj
+ET
+endstream
+endobj
+94 0 obj
+<< /Length 4352 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - Classification: polyalphabetic, no recoverable period) Tj
 0 -15 Td
 (with weak period signal \($z = 2.54$\).) Tj
@@ -13363,20 +13413,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(90) Tj
-ET
-endstream
-endobj
-94 0 obj
-<< /Length 4375 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (15.2 Exhaustive Permutation Evaluation on PK9 \($W \\in \\{4, 6,) Tj
 0 -15 Td
 (8, 9\\}$\)) Tj
@@ -13503,6 +13539,20 @@ BT
 0 -15 Td
 (s}$ \($2,009,093\\text{ checks/sec}$\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(91) Tj
+ET
+endstream
+endobj
+95 0 obj
+<< /Length 3031 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - Total runtime: $36.23\\text{ s}$. The best early-exit) Tj
 0 -15 Td
 (score was bounded at $-6.5005$, confirming that PK10's outer) Tj
@@ -13519,20 +13569,6 @@ BT
 0 -15 Td
 (three challenges are established:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(91) Tj
-ET
-endstream
-endobj
-95 0 obj
-<< /Length 2877 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| Property | PK8 \($N = 153$\) | PK9 \($N = 144$\) | PK10 \($N =) Tj
 0 -15 Td
 (504$\) | Mathematical Homology |) Tj
@@ -13629,6 +13665,20 @@ BT
 0 -15 Td
 (PK9 or any other architecture.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(92) Tj
+ET
+endstream
+endobj
+96 0 obj
+<< /Length 2589 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (The additive key has 18 raw coordinates and two gauge) Tj
@@ -13643,20 +13693,6 @@ BT
 0 -15 Td
 (positions is invertible) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(92) Tj
-ET
-endstream
-endobj
-96 0 obj
-<< /Length 2672 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (modulo 2 and modulo 13, hence modulo 26. Therefore:) Tj
 0 -15 Td
 () Tj
@@ -13751,6 +13787,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(93) Tj
+ET
+endstream
+endobj
+97 0 obj
+<< /Length 1695 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (A planted STEEL / SILVER / DRAWING control passes the filter,) Tj
 0 -15 Td
 (recovers the) Tj
@@ -13767,20 +13817,6 @@ BT
 0 -15 Td
 (still passes.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(93) Tj
-ET
-endstream
-endobj
-97 0 obj
-<< /Length 1376 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Real-PK9 results) Tj
@@ -13853,14 +13889,6 @@ BT
 0 -15 Td
 (rate=42.993 million candidates/s) Tj
 0 -15 Td
-(word_key_hits=4) Tj
-0 -15 Td
-(full_crib_hits=0) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -13875,6 +13903,14 @@ stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(word_key_hits=4) Tj
+0 -15 Td
+(full_crib_hits=0) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (The four recovered keys satisfying the independent dictionary) Tj
 0 -15 Td
 (condition all) Tj
@@ -13955,14 +13991,6 @@ BT
 0 -15 Td
 (elapsed=300.669 s total \(two disjoint batches, 32 threads\)) Tj
 0 -15 Td
-(word_key_hits=3) Tj
-0 -15 Td
-(full_crib_hits=0) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -13972,11 +14000,19 @@ ET
 endstream
 endobj
 99 0 obj
-<< /Length 1910 >>
+<< /Length 1833 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(word_key_hits=3) Tj
+0 -15 Td
+(full_crib_hits=0) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (All dictionary-key coincidences failed the seventeenth or) Tj
 0 -15 Td
 (eighteenth crib) Tj
@@ -14061,6 +14097,20 @@ BT
 0 -15 Td
 (placements while T8) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(96) Tj
+ET
+endstream
+endobj
+100 0 obj
+<< /Length 2198 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (was restricted to the 284 distinct permutations induced by the) Tj
 0 -15 Td
 (287 thematic) Tj
@@ -14071,20 +14121,6 @@ BT
 0 -15 Td
 (text) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(96) Tj
-ET
-endstream
-endobj
-100 0 obj
-<< /Length 2291 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (placements=36,810,569) Tj
 0 -15 Td
 (permutations=284) Tj
@@ -14173,6 +14209,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(97) Tj
+ET
+endstream
+endobj
+101 0 obj
+<< /Length 1977 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Literal PK8 key reuse) Tj
 0 -15 Td
 () Tj
@@ -14185,20 +14235,6 @@ BT
 0 -15 Td
 (complete-columnar) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(97) Tj
-ET
-endstream
-endobj
-101 0 obj
-<< /Length 1843 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (read order was tested in both possible layer orders:) Tj
 0 -15 Td
 () Tj
@@ -14281,14 +14317,6 @@ BT
 0 -15 Td
 (text) Tj
 0 -15 Td
-(cribs=136) Tj
-0 -15 Td
-(placements=17,272) Tj
-0 -15 Td
-(permutations=40,320) Tj
-0 -15 Td
-(candidates=696,407,040) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -14298,11 +14326,19 @@ ET
 endstream
 endobj
 102 0 obj
-<< /Length 2863 >>
+<< /Length 2667 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(cribs=136) Tj
+0 -15 Td
+(placements=17,272) Tj
+0 -15 Td
+(permutations=40,320) Tj
+0 -15 Td
+(candidates=696,407,040) Tj
+0 -15 Td
 (full_crib_hits=0) Tj
 0 -15 Td
 () Tj
@@ -14407,6 +14443,20 @@ BT
 0 -15 Td
 (as that letter:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(99) Tj
+ET
+endstream
+endobj
+103 0 obj
+<< /Length 2991 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (salutations, gratitude, departure explanations, the archive,) Tj
 0 -15 Td
 (the knot, taking) Tj
@@ -14421,20 +14471,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(99) Tj
-ET
-endstream
-endobj
-103 0 obj
-<< /Length 3092 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| crib set | T8 assignments | placements | candidates |) Tj
 0 -15 Td
 (survivors | best score |) Tj
@@ -14541,6 +14577,20 @@ BT
 0 -15 Td
 (generates 51,950) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(100) Tj
+ET
+endstream
+endobj
+104 0 obj
+<< /Length 2719 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (present-tense openings around returning to the archive and) Tj
 0 -15 Td
 (using the needle on) Tj
@@ -14557,20 +14607,6 @@ BT
 0 -15 Td
 (-6.734428\). No result is) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(100) Tj
-ET
-endstream
-endobj
-104 0 obj
-<< /Length 2572 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (language-bearing. The calibrated positive control makes this) Tj
 0 -15 Td
 (exclusion stronger) Tj
@@ -14667,6 +14703,20 @@ BT
 0 -15 Td
 (  -o /tmp/crack_pk9_q567_t8_crib -lm) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(101) Tj
+ET
+endstream
+endobj
+105 0 obj
+<< /Length 2196 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (OMP_NUM_THREADS=16 /tmp/crack_pk9_q567_t8_crib --self-test) Tj
@@ -14679,20 +14729,6 @@ BT
 0 -15 Td
 (test) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(101) Tj
-ET
-endstream
-endobj
-105 0 obj
-<< /Length 2179 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (python3 kryptos/generate_pk9_q567_prefixes.py \\) Tj
@@ -14769,14 +14805,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(Calibrate the style grammar against the real PK8 answer:) Tj
-0 -15 Td
-(cc -O3 -march=native -fopenmp kryptos/crack_pk8_q4567_crib.c \\) Tj
-0 -15 Td
-(  -o /tmp/crack_pk8_q4567_crib -lm) Tj
-0 -15 Td
-(OMP_NUM_THREADS=32 /tmp/crack_pk8_q4567_crib \\) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -14786,11 +14814,19 @@ ET
 endstream
 endobj
 106 0 obj
-<< /Length 2202 >>
+<< /Length 2213 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(Calibrate the style grammar against the real PK8 answer:) Tj
+0 -15 Td
+(cc -O3 -march=native -fopenmp kryptos/crack_pk8_q4567_crib.c \\) Tj
+0 -15 Td
+(  -o /tmp/crack_pk8_q4567_crib -lm) Tj
+0 -15 Td
+(OMP_NUM_THREADS=32 /tmp/crack_pk8_q4567_crib \\) Tj
+0 -15 Td
 (  --all-keys /tmp/pk8_style_openings_20.txt) Tj
 0 -15 Td
 () Tj
@@ -14859,6 +14895,20 @@ BT
 0 -15 Td
 (  --word-filter /tmp/pk9_natural_letter30.txt) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(103) Tj
+ET
+endstream
+endobj
+107 0 obj
+<< /Length 2493 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Repository-compatible QI/QII/QIII/QIV variants:) Tj
@@ -14869,20 +14919,6 @@ BT
 0 -15 Td
 (-lm) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(103) Tj
-ET
-endstream
-endobj
-107 0 obj
-<< /Length 2490 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (/tmp/pk9_qvariants --self-test) Tj
 0 -15 Td
 (OMP_NUM_THREADS=32 /tmp/pk9_qvariants) Tj
@@ -14975,6 +15011,20 @@ BT
 0 -15 Td
 (| T8 then Q5+Q6+Q7 | canonical forward | -6.645079 |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(104) Tj
+ET
+endstream
+endobj
+108 0 obj
+<< /Length 2697 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| Q5+Q6+Q7 then T8 | inverse layout | -6.621962 |) Tj
 0 -15 Td
 (| T8 then Q5+Q6+Q7 | inverse layout | -6.938111 |) Tj
@@ -14985,20 +15035,6 @@ BT
 0 -15 Td
 (enumerates all) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(104) Tj
-ET
-endstream
-endobj
-108 0 obj
-<< /Length 2875 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (24,746 insertion-related Q5/Q6 pairs, derives an unrestricted) Tj
 0 -15 Td
 (Q7 by alternating) Tj
@@ -15099,6 +15135,20 @@ BT
 0 -15 Td
 (forward, inverse,) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(105) Tj
+ET
+endstream
+endobj
+109 0 obj
+<< /Length 2862 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (and uniformly row-reversed block layouts. Twenty-four planted) Tj
 0 -15 Td
 (controls validate) Tj
@@ -15115,20 +15165,6 @@ BT
 0 -15 Td
 (insertion chains are) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(105) Tj
-ET
-endstream
-endobj
-109 0 obj
-<< /Length 2692 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (noise in every model. The best result over the new row-) Tj
 0 -15 Td
 (reversed models is still) Tj
@@ -15227,6 +15263,20 @@ BT
 0 -15 Td
 (following split-layer campaigns produced no full-crib hit:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(106) Tj
+ET
+endstream
+endobj
+110 0 obj
+<< /Length 2662 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (- 411,082 general narrative openings: 16,574,826,240) Tj
@@ -15237,20 +15287,6 @@ BT
 0 -15 Td
 (- 50,410 return/archive openings: 2,032,531,200 candidates;) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(106) Tj
-ET
-endstream
-endobj
-110 0 obj
-<< /Length 2779 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- every 30-letter K1-K3 window at every fitting PK9 offset:) Tj
 0 -15 Td
 (78,430 placements) Tj
@@ -15351,6 +15387,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(107) Tj
+ET
+endstream
+endobj
+111 0 obj
+<< /Length 2604 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The especially motivated K4-clue triple CLOCK / BERLIN /) Tj
 0 -15 Td
 (KRYPTOS was tested) Tj
@@ -15365,20 +15415,6 @@ BT
 0 -15 Td
 (were also negative across all mixed models:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(107) Tj
-ET
-endstream
-endobj
-111 0 obj
-<< /Length 2566 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (| Q5 / Q6 / Q7 | best score |) Tj
@@ -15471,6 +15507,20 @@ BT
 0 -15 Td
 (full-crib hits |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(108) Tj
+ET
+endstream
+endobj
+112 0 obj
+<< /Length 2674 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (The split campaign includes all rank-deficient assignments) Tj
@@ -15485,20 +15535,6 @@ BT
 0 -15 Td
 (differently worded) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(108) Tj
-ET
-endstream
-endobj
-112 0 obj
-<< /Length 2595 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (letters or other layer arrangements.) Tj
 0 -15 Td
 () Tj
@@ -15597,6 +15633,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(109) Tj
+ET
+endstream
+endobj
+113 0 obj
+<< /Length 3013 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (PK9 Session Report — Ground-Truth Corrections & Word-Wheel) Tj
 0 -15 Td
 (Sweep Campaign) Tj
@@ -15609,20 +15659,6 @@ BT
 0 -15 Td
 (Paradigm) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(109) Tj
-ET
-endstream
-endobj
-113 0 obj
-<< /Length 3191 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Kryptos challenges together with PK10.) Tj
 0 -15 Td
 (Headline: The repository's ground-truth records for PK4, PK5) Tj
@@ -15731,6 +15767,20 @@ BT
 0 -15 Td
 (the 224-letter Quagmire key | "Fourteen days in the barn…" |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(110) Tj
+ET
+endstream
+endobj
+114 0 obj
+<< /Length 3158 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| PK6 | T\(9\)T\(9\)Q\(6\) | HANDIWORK, SMITHWORK, PORTAL | "The) Tj
 0 -15 Td
 (Whitesmith's workshop…" *\(plaintext was already correct\)* |) Tj
@@ -15745,20 +15795,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(110) Tj
-ET
-endstream
-endobj
-114 0 obj
-<< /Length 2973 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Consequences:) Tj
 0 -15 Td
 () Tj
@@ -15863,6 +15899,20 @@ BT
 0 -15 Td
 (8! column) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(111) Tj
+ET
+endstream
+endobj
+115 0 obj
+<< /Length 2662 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  orders exactly one is consistent with a q5+q9 sum-clock, it) Tj
 0 -15 Td
 (equals) Tj
@@ -15875,20 +15925,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(111) Tj
-ET
-endstream
-endobj
-115 0 obj
-<< /Length 2905 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (3. New attack engine: sweep_pk9_word_wheels.c) Tj
 0 -15 Td
 () Tj
@@ -15985,6 +16021,20 @@ BT
 0 -15 Td
 (210,509,334 | −6.8279 |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(112) Tj
+ET
+endstream
+endobj
+116 0 obj
+<< /Length 2846 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| R3 | PK8-plaintext windows \(147³\) | 284 theophilus-word) Tj
 0 -15 Td
 (perms | qt+tq | 324,005,346 | −6.8632 |) Tj
@@ -16001,20 +16051,6 @@ BT
 0 -15 Td
 (9,877,714,560 | 0 full-crib hits \(word filter\) |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(112) Tj
-ET
-endstream
-endobj
-116 0 obj
-<< /Length 2593 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| C3 | crib: same, unrestricted wheels | all 8! | qt |) Tj
 0 -15 Td
 (9,877,714,560 | best survivor ≈ −6.42 \(chance\) |) Tj
@@ -16115,6 +16151,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(113) Tj
+ET
+endstream
+endobj
+117 0 obj
+<< /Length 2764 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (blind re-derivation of PK4 \(order + OCHRE/VERDIGRIS gauge) Tj
 0 -15 Td
 (lift\)) Tj
@@ -16125,20 +16175,6 @@ BT
 0 -15 Td
 (build vocabularies, then validate and run the sweep engine) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(113) Tj
-ET
-endstream
-endobj
-117 0 obj
-<< /Length 2890 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (python3 kryptos/build_pk9_wheel_vocab_v2.py) Tj
 0 -15 Td
 (cc -O3 -march=native -funroll-loops -fopenmp -o) Tj
@@ -16237,6 +16273,20 @@ BT
 0 -15 Td
 (regenerating the) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(114) Tj
+ET
+endstream
+endobj
+118 0 obj
+<< /Length 2902 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   short-letter corpora with true story details \(inner door,) Tj
 0 -15 Td
 (winter fodder,) Tj
@@ -16251,20 +16301,6 @@ BT
 0 -15 Td
 (partially explored:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(114) Tj
-ET
-endstream
-endobj
-118 0 obj
-<< /Length 2829 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   R3/R8 test PK8 windows as wheels; the analogous "PK8) Tj
 0 -15 Td
 (plaintext as the) Tj
@@ -16367,6 +16403,20 @@ BT
 0 -15 Td
 (against planted) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(115) Tj
+ET
+endstream
+endobj
+119 0 obj
+<< /Length 2870 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (controls before believing a Monte Carlo null.\)) Tj
 0 -15 Td
 () Tj
@@ -16379,20 +16429,6 @@ BT
 0 -15 Td
 (found 18 pairs) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(115) Tj
-ET
-endstream
-endobj
-119 0 obj
-<< /Length 2865 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (vs ~15 expected by chance — no signal, consistent with the) Tj
 0 -15 Td
 (control.) Tj
@@ -16495,6 +16531,20 @@ BT
 0 -15 Td
 (6.85e8 | 0 |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(116) Tj
+ET
+endstream
+endobj
+120 0 obj
+<< /Length 2567 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| crack_pk9_q567_t8_crib --all-keys | qt grouped | 6.85e8 | 0) Tj
 0 -15 Td
 (|) Tj
@@ -16507,20 +16557,6 @@ BT
 0 -15 Td
 (grouped or) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(116) Tj
-ET
-endstream
-endobj
-120 0 obj
-<< /Length 2605 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Q7-only model, either order, with arbitrary wheels.) Tj
 0 -15 Td
 () Tj
@@ -16617,6 +16653,20 @@ BT
 0 -15 Td
 (\(a) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(117) Tj
+ET
+endstream
+endobj
+121 0 obj
+<< /Length 2749 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (transposition only permutes positions\).  Planted controls:) Tj
 0 -15 Td
 (true wheels give) Tj
@@ -16631,20 +16681,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(117) Tj
-ET
-endstream
-endobj
-121 0 obj
-<< /Length 2640 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| vocab | triples | below chi2<120 | best quadgram |) Tj
 0 -15 Td
 (|---|---|---|---|) Tj
@@ -16741,6 +16777,20 @@ BT
 0 -15 Td
 (618 new cribs \(>= 21 letters; 578 of them >= 28\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(118) Tj
+ET
+endstream
+endobj
+122 0 obj
+<< /Length 2664 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Prefix results \(all engines, all 8! T8 orders, all wheels\): tq) Tj
@@ -16751,20 +16801,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(118) Tj
-ET
-endstream
-endobj
-122 0 obj
-<< /Length 2693 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (All-offsets crib results \(crib anywhere in the 144 letters\)) Tj
 0 -15 Td
 () Tj
@@ -16865,6 +16901,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(119) Tj
+ET
+endstream
+endobj
+123 0 obj
+<< /Length 3179 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (--- OPEN-WORK ARCHIVE: PK8_PK9_PK10_UNIFIED_CRYPTANALYSIS.md) Tj
 0 -15 Td
 (---) Tj
@@ -16875,20 +16925,6 @@ BT
 0 -15 Td
 (Author: Cryptanalytic Operations & Mathematical Research) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(119) Tj
-ET
-endstream
-endobj
-123 0 obj
-<< /Length 3240 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Target Challenges: Paradigm Kryptos CTF — PK8 \($N=153$\), PK9) Tj
 0 -15 Td
 (\($N=144$\), PK10 \($N=504$\)) Tj
@@ -16995,6 +17031,20 @@ BT
 0 -15 Td
 (The combined period is $\\operatorname{lcm}\(4, 5, 6, 7\) = 420$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(120) Tj
+ET
+endstream
+endobj
+124 0 obj
+<< /Length 2858 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (2.2 Binary Parity Resolution over $\\text{GF}\(2\)$) Tj
@@ -17007,20 +17057,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(120) Tj
-ET
-endstream
-endobj
-124 0 obj
-<< /Length 2865 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Evaluating all $2^{19} = 524,288$ binary clock configurations) Tj
 0 -15 Td
 (in solve_pk8_parity.c isolates exactly one unique parity state) Tj
@@ -17113,6 +17149,20 @@ BT
 0 -15 Td
 (score -5.2493.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(121) Tj
+ET
+endstream
+endobj
+125 0 obj
+<< /Length 3142 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (3. Keystream Schedule \($p = 28$\):) Tj
@@ -17125,20 +17175,6 @@ BT
 0 -15 Td
 (U P V O K D A S) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(121) Tj
-ET
-endstream
-endobj
-125 0 obj
-<< /Length 3202 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   Verified strict 1-opt stationarity across all 28 coordinate) Tj
 0 -15 Td
 (dimensions.) Tj
@@ -17239,6 +17275,20 @@ BT
 0 -15 Td
 (*"TWELVE PRIOR ARCHIVISTS"* \(12 rows\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(122) Tj
+ET
+endstream
+endobj
+126 0 obj
+<< /Length 3421 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Horizontally, row width 42 is an exact multiple of 7 \($42 =) Tj
 0 -15 Td
 (6 \\times 7$\). Consequently:) Tj
@@ -17251,20 +17301,6 @@ BT
 0 -15 Td
 (- Clock 8 repeats every 4 rows \($42 \\equiv 2 \\pmod 8$\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(122) Tj
-ET
-endstream
-endobj
-126 0 obj
-<< /Length 3980 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Clock 9 repeats every 3 rows \($42 \\equiv 6 \\equiv -3 \\pmod) Tj
 0 -15 Td
 (9$\).) Tj
@@ -17377,6 +17413,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(123) Tj
+ET
+endstream
+endobj
+127 0 obj
+<< /Length 2744 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (1. PK8: Fully deconstructed as a 4-clock additive system $\\{4,) Tj
 0 -15 Td
 (5, 6, 7\\}$ over Kryptos; binary parity resolved and locked to) Tj
@@ -17405,20 +17455,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(123) Tj
-ET
-endstream
-endobj
-127 0 obj
-<< /Length 1999 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (--- OPEN-WORK ARCHIVE: PK9_NEXT_RESEARCH_PLAN.md ---) Tj
@@ -17503,14 +17539,6 @@ BT
 0 -15 Td
 (membership:) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(1. insertion chains and shared stems;) Tj
-0 -15 Td
-(2. edit distances of one to three letters;) Tj
-0 -15 Td
-(3. thematic craft/material/pigment vocabulary;) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -17520,11 +17548,19 @@ ET
 endstream
 endobj
 128 0 obj
-<< /Length 2308 >>
+<< /Length 2086 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(1. insertion chains and shared stems;) Tj
+0 -15 Td
+(2. edit distances of one to three letters;) Tj
+0 -15 Td
+(3. thematic craft/material/pigment vocabulary;) Tj
+0 -15 Td
 (4. an unrelated but thematically paired final wheel;) Tj
 0 -15 Td
 (5. all gauge classes of the three-wheel sum-clock.) Tj
@@ -17609,6 +17645,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(125) Tj
+ET
+endstream
+endobj
+129 0 obj
+<< /Length 2554 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The broad vocabularies produced 804 Q5/Q6/Q7 triples) Tj
 0 -15 Td
 (satisfying the) Tj
@@ -17625,20 +17675,6 @@ BT
 0 -15 Td
 (threshold and) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(125) Tj
-ET
-endstream
-endobj
-129 0 obj
-<< /Length 2679 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (no round-trip-verified plaintext was found. This is a negative) Tj
 0 -15 Td
 (result for the) Tj
@@ -17731,6 +17767,20 @@ BT
 0 -15 Td
 (1. Executive Summary & Verification Ledger) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(126) Tj
+ET
+endstream
+endobj
+130 0 obj
+<< /Length 2905 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (PK9 \($N = 144$\) has been systematically resolved using a) Tj
@@ -17751,20 +17801,6 @@ BT
 0 -15 Td
 (\\text{Ciphertext } C_9$$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(126) Tj
-ET
-endstream
-endobj
-130 0 obj
-<< /Length 2482 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Mathematical Invariants & Proven Parameters) Tj
@@ -17855,14 +17891,6 @@ BT
 0 -15 Td
 (Row 6: | I D B Y | O U S | C H E S | | A L S O | M Y R) Tj
 0 -15 Td
-(Row 7: E L I F | O R E S | S E S T I A A U O N) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(---) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -17872,11 +17900,19 @@ ET
 endstream
 endobj
 131 0 obj
-<< /Length 3341 >>
+<< /Length 2978 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(Row 7: E L I F | O R E S | S E S T I A A U O N) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(---) Tj
+0 -15 Td
 () Tj
 0 -15 Td
 (3. Cross-Row English Anchor Proof Matrix) Tj
@@ -17981,6 +18017,20 @@ BT
 0 -15 Td
 (   - X: 0, Z: 0!) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(128) Tj
+ET
+endstream
+endobj
+132 0 obj
+<< /Length 3246 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (3. Narrative Consistency:) Tj
 0 -15 Td
 (   - The vocabulary directly reflects the whitesmith needle-) Tj
@@ -17999,20 +18049,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(128) Tj
-ET
-endstream
-endobj
-132 0 obj
-<< /Length 3082 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (--- OPEN-WORK ARCHIVE: PK9_FINAL_BREAKTHROUGH_REPORT.md ---) Tj
 0 -15 Td
 () Tj
@@ -18115,6 +18151,20 @@ BT
 0 -15 Td
 (\\mathbf{\\text{IoC} = 0.20000}$) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(129) Tj
+ET
+endstream
+endobj
+133 0 obj
+<< /Length 2424 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Slice 27 of Period 28: A G G H H $\\implies) Tj
 0 -15 Td
 (\\mathbf{\\text{IoC} = 0.20000}$) Tj
@@ -18127,20 +18177,6 @@ BT
 0 -15 Td
 (the intermediate monoalphabetic stream $Z$:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(129) Tj
-ET
-endstream
-endobj
-133 0 obj
-<< /Length 2311 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (text) Tj
 0 -15 Td
 (EVIJSAOMWYTEESREOXDVFTIDNMZTOXAEELTGEWSUDEMOTNBSRHEITTFDLERTTO) Tj
@@ -18235,6 +18271,20 @@ BT
 0 -15 Td
 (3. The Inner $12 \\times 12$ Grid & Columnar Permutation) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(130) Tj
+ET
+endstream
+endobj
+134 0 obj
+<< /Length 2366 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Because $N = 144 = 12 \\times 12$, intermediate stream $Z$) Tj
@@ -18245,20 +18295,6 @@ BT
 0 -15 Td
 (text) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(130) Tj
-ET
-endstream
-endobj
-134 0 obj
-<< /Length 2593 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Row  0:  E  V  I  J  S  A  O  M  W  Y  T  E) Tj
 0 -15 Td
 (Row  1:  E  S  R  E  O  X  D  V  F  T  I  D) Tj
@@ -18343,6 +18379,20 @@ BT
 0 -15 Td
 (| :---: | :---: | :---: | :--- |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(131) Tj
+ET
+endstream
+endobj
+135 0 obj
+<< /Length 3084 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| $\(18, 8\)$ | $8 \\times 18 \\to 18 \\times 8$ | -5.3709 /) Tj
 0 -15 Td
 (-5.3743 | SHEEP, SWEET, SEEK, ALERT, FLED, TENT |) Tj
@@ -18357,20 +18407,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(131) Tj
-ET
-endstream
-endobj
-135 0 obj
-<< /Length 2894 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (4.2 Top Configuration: Pair $\(18, 8\)$ \($\\text{Score} =) Tj
 0 -15 Td
 (\\mathbf{-5.2647}$\)) Tj
@@ -18477,6 +18513,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(132) Tj
+ET
+endstream
+endobj
+136 0 obj
+<< /Length 5777 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Definitive Cryptanalytic Ledger: PK8, PK9, and PK10) Tj
 0 -15 Td
 (Universal Unimodular Bases, CRT Single-Cycle Theorem, and) Tj
@@ -18487,20 +18537,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(132) Tj
-ET
-endstream
-endobj
-136 0 obj
-<< /Length 5854 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -18677,6 +18713,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(133) Tj
+ET
+endstream
+endobj
+137 0 obj
+<< /Length 4201 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (2.2 The PK8–PK10 Phase-Locking Anchor) Tj
 0 -15 Td
 (- Shared 4-Gram: KTRP appears at $\\text{PK8}[43:47]$ and) Tj
@@ -18689,20 +18739,6 @@ BT
 0 -15 Td
 (= 6 \\times 7$$) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(133) Tj
-ET
-endstream
-endobj
-137 0 obj
-<< /Length 4143 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Modular Phase Invariant:) Tj
 0 -15 Td
 (  $$43 \\equiv 85 \\equiv 1 \\pmod 6 \\quad \\text{and} \\quad 43) Tj
@@ -18835,6 +18871,20 @@ BT
 0 -15 Td
 (0$$) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(134) Tj
+ET
+endstream
+endobj
+138 0 obj
+<< /Length 2573 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (This eliminates all 22 keystream variables, allowing entire) Tj
 0 -15 Td
 (153-character decryptions to be computed in 10 nanoseconds via) Tj
@@ -18847,20 +18897,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(134) Tj
-ET
-endstream
-endobj
-138 0 obj
-<< /Length 2447 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (4. PK9: Layered Architecture & Provable Trigram DP Optimum) Tj
 0 -15 Td
 () Tj
@@ -18949,14 +18985,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -18966,11 +18994,19 @@ ET
 endstream
 endobj
 139 0 obj
-<< /Length 4286 >>
+<< /Length 3877 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (5.1 Moduli Factorization & The CRT Single-Cycle Theorem) Tj
 0 -15 Td
 ($$N = 504 = 2^3 \\times 3^2 \\times 7 = 7 \\times 8 \\times 9 =) Tj
@@ -19093,6 +19129,20 @@ BT
 0 -15 Td
 (lies in double columnar / block transposition.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(136) Tj
+ET
+endstream
+endobj
+140 0 obj
+<< /Length 3064 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (3. PK10 \($N=504$\): Stands unsolved \(0 leaderboard solves\).) Tj
 0 -15 Td
 (Confirmed compound cipher: outer double/composite) Tj
@@ -19111,20 +19161,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(136) Tj
-ET
-endstream
-endobj
-140 0 obj
-<< /Length 3065 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (The following repository documentation is included as a) Tj
 0 -15 Td
 (technical reference) Tj
@@ -19227,6 +19263,20 @@ BT
 0 -15 Td
 (places. ROT13 is shift 13. |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(137) Tj
+ET
+endstream
+endobj
+141 0 obj
+<< /Length 5286 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| reverse<br>Reverse | none<br>no key | 1 | cheap | 2 | The) Tj
 0 -15 Td
 (message reversed. Often layered under or over other ciphers. |) Tj
@@ -19245,20 +19295,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(137) Tj
-ET
-endstream
-endobj
-141 0 obj
-<< /Length 4939 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Substitution) Tj
 0 -15 Td
 () Tj
@@ -19419,6 +19455,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(138) Tj
+ET
+endstream
+endobj
+142 0 obj
+<< /Length 5563 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Polygraphic) Tj
 0 -15 Td
 () Tj
@@ -19429,20 +19479,6 @@ BT
 0 -15 Td
 (| --- | --- | --- | --- | --- | --- |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(138) Tj
-ET
-endstream
-endobj
-142 0 obj
-<< /Length 5544 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| bifid<br>Bifid | keyword + period<br>example key=MONARCHY,) Tj
 0 -15 Td
 (period=7 | unbounded | brutal | 80 | Each letter becomes \(row,) Tj
@@ -19619,6 +19655,20 @@ BT
 0 -15 Td
 (|) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(139) Tj
+ET
+endstream
+endobj
+143 0 obj
+<< /Length 3900 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Encodings \(peelable layers\)) Tj
@@ -19629,20 +19679,6 @@ BT
 0 -15 Td
 (attacked |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(139) Tj
-ET
-endstream
-endobj
-143 0 obj
-<< /Length 3925 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| --- | --- | --- | --- | --- | --- |) Tj
 0 -15 Td
 (| base16<br>Hex / base16 | none<br>no key | 1 | cheap | 4 | 4) Tj
@@ -19775,6 +19811,20 @@ BT
 0 -15 Td
 (pretending otherwise) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(140) Tj
+ET
+endstream
+endobj
+144 0 obj
+<< /Length 2897 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (would be worse than saying so. The report notes it, and the) Tj
 0 -15 Td
 (tests fold it away) Tj
@@ -19785,20 +19835,6 @@ BT
 0 -15 Td
 (| cipher | what is lost |) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(140) Tj
-ET
-endstream
-endobj
-144 0 obj
-<< /Length 2954 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (| --- | --- |) Tj
 0 -15 Td
 (| playfair | pads to an even length with X, and splits doubled) Tj
@@ -19907,6 +19943,20 @@ BT
 0 -15 Td
 (indistinguishable from noise) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(141) Tj
+ET
+endstream
+endobj
+145 0 obj
+<< /Length 2341 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (and nothing would prune the tree. Two non-commuting cipher) Tj
 0 -15 Td
 (steps are unwrapped) Tj
@@ -19919,20 +19969,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(141) Tj
-ET
-endstream
-endobj
-145 0 obj
-<< /Length 2412 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (A chain is reported outermost first — base64 -> base16 ->) Tj
 0 -15 Td
 (xor_repeating — and) Tj
@@ -20023,6 +20059,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(142) Tj
+ET
+endstream
+endobj
+146 0 obj
+<< /Length 2345 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (    def likelihood\(self, text: str, ctx: CrackContext\) ->) Tj
 0 -15 Td
 (float:) Tj
@@ -20037,20 +20087,6 @@ BT
 0 -15 Td
 (        ...) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(142) Tj
-ET
-endstream
-endobj
-146 0 obj
-<< /Length 2184 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 () Tj
@@ -20141,6 +20177,20 @@ BT
 0 -15 Td
 (recursing through encodings) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(143) Tj
+ET
+endstream
+endobj
+147 0 obj
+<< /Length 2561 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   │) Tj
 0 -15 Td
 (   └─ 5. rank + present      confidence, evidence rules,) Tj
@@ -20151,20 +20201,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(143) Tj
-ET
-endstream
-endobj
-147 0 obj
-<< /Length 2822 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Everything below is what the code actually does; the numbers) Tj
 0 -15 Td
 (are the constants in) Tj
@@ -20265,6 +20301,20 @@ BT
 0 -15 Td
 (binary, URL escapes.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(144) Tj
+ET
+endstream
+endobj
+148 0 obj
+<< /Length 3166 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   A word-shaped run of short alphabetic tokens) Tj
 0 -15 Td
 (\(is_word_shaped\) is *prose*,) Tj
@@ -20281,20 +20331,6 @@ BT
 0 -15 Td
 (If yes, this is) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(144) Tj
-ET
-endstream
-endobj
-148 0 obj
-<< /Length 3040 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   a shift cipher \(likelihood 0.95\), and if the shift is 13 it) Tj
 0 -15 Td
 (is named ROT13) Tj
@@ -20403,6 +20439,20 @@ BT
 0 -15 Td
 (fence, skip |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(145) Tj
+ET
+endstream
+endobj
+149 0 obj
+<< /Length 3196 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| MODERATE \(3\) | 6 s slice | vigenère family, autokey, route,) Tj
 0 -15 Td
 (xor_repeating |) Tj
@@ -20415,20 +20465,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(145) Tj
-ET
-endstream
-endobj
-149 0 obj
-<< /Length 3321 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (The identification hypotheses are blended into that order as) Tj
 0 -15 Td
 (priors) Tj
@@ -20541,6 +20577,20 @@ BT
 0 -15 Td
 (per position are) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(146) Tj
+ET
+endstream
+endobj
+150 0 obj
+<< /Length 3396 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  combined into whole matrices. That turns 157,248 invertible) Tj
 0 -15 Td
 (2×2 keys into 676) Tj
@@ -20557,20 +20607,6 @@ BT
 0 -15 Td
 (hits one of the) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(146) Tj
-ET
-endstream
-endobj
-150 0 obj
-<< /Length 3318 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  two slots, and each candidate order is scored by its best of) Tj
 0 -15 Td
 (26 read rows) Tj
@@ -20683,6 +20719,20 @@ BT
 0 -15 Td
 (share as one it) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(147) Tj
+ET
+endstream
+endobj
+151 0 obj
+<< /Length 3243 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  half believes. Attacks within a phase are funded the same) Tj
 0 -15 Td
 (way, in proportion) Tj
@@ -20697,20 +20747,6 @@ BT
 0 -15 Td
 (  branching works out.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(147) Tj
-ET
-endstream
-endobj
-151 0 obj
-<< /Length 3166 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Six layers of ciphers. The deepest cipher-on-cipher stacks are) Tj
@@ -20825,6 +20861,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(148) Tj
+ET
+endstream
+endobj
+152 0 obj
+<< /Length 3400 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Six stacked *polyalphabetics* are deliberately not searched:) Tj
 0 -15 Td
 (nothing commutes) Tj
@@ -20837,20 +20887,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(148) Tj
-ET
-endstream
-endobj
-152 0 obj
-<< /Length 3414 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Unwrapping ciphers, not just encodings. A transposition or a) Tj
 0 -15 Td
 (reflection) Tj
@@ -20969,6 +21005,20 @@ BT
 0 -15 Td
 (of each worker's) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(149) Tj
+ET
+endstream
+endobj
+153 0 obj
+<< /Length 2806 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (slice is held back for a best-improvement polish. Bifid is) Tj
 0 -15 Td
 (weaker still and is) Tj
@@ -20981,20 +21031,6 @@ BT
 0 -15 Td
 (bifid, XOR) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(149) Tj
-ET
-endstream
-endobj
-153 0 obj
-<< /Length 2921 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (polish\) fan out across --workers processes with different) Tj
 0 -15 Td
 (seeds; each worker) Tj
@@ -21095,6 +21131,20 @@ BT
 0 -15 Td
 (is charged as) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(150) Tj
+ET
+endstream
+endobj
+154 0 obj
+<< /Length 2898 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  key material, because a step is two choices the search made:) Tj
 0 -15 Td
 (which cipher) Tj
@@ -21109,20 +21159,6 @@ BT
 0 -15 Td
 (  of noise will always find something English-shaped, and) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(150) Tj
-ET
-endstream
-endobj
-154 0 obj
-<< /Length 2842 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  rail_fence -> reverse -> trithemius on eighteen letters came) Tj
 0 -15 Td
 (back at 0.71) Tj
@@ -21227,6 +21263,20 @@ BT
 0 -15 Td
 (   decoded to something unreadable.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(151) Tj
+ET
+endstream
+endobj
+155 0 obj
+<< /Length 2828 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (And the boundary that no setting moves: this is cryptanalysis) Tj
@@ -21241,20 +21291,6 @@ BT
 0 -15 Td
 (otherwise is telling) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(151) Tj
-ET
-endstream
-endobj
-155 0 obj
-<< /Length 2875 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (the truth.) Tj
 0 -15 Td
 () Tj
@@ -21357,6 +21393,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(152) Tj
+ET
+endstream
+endobj
+156 0 obj
+<< /Length 2603 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The model is loaded lazily: get_model\(\) reads the quadgram) Tj
 0 -15 Td
 (table on first use) Tj
@@ -21371,20 +21421,6 @@ BT
 0 -15 Td
 (can evaluate hundreds of thousands of alphabets.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(152) Tj
-ET
-endstream
-endobj
-156 0 obj
-<< /Length 2503 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Provenance and licences) Tj
@@ -21479,6 +21515,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(153) Tj
+ET
+endstream
+endobj
+157 0 obj
+<< /Length 2856 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (python) Tj
 0 -15 Td
 (FITNESS_GOOD, FITNESS_BAD = -4.30, -6.20     fitness -> 1.0 /) Tj
@@ -21491,20 +21541,6 @@ BT
 0 -15 Td
 (WEIGHTS = {"fitness": 0.55, "words": 0.45}   40+ letters) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(153) Tj
-ET
-endstream
-endobj
-157 0 obj
-<< /Length 2935 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (SHORT_WEIGHTS = {"fitness": 0.35, "words": 0.65}   under 40) Tj
 0 -15 Td
 (letters) Tj
@@ -21603,6 +21639,20 @@ BT
 0 -15 Td
 (never the) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(154) Tj
+ET
+endstream
+endobj
+158 0 obj
+<< /Length 2540 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  dictionary view — because the shared vocabulary of the) Tj
 0 -15 Td
 (Romance languages) Tj
@@ -21617,20 +21667,6 @@ BT
 0 -15 Td
 (rare letters) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(154) Tj
-ET
-endstream
-endobj
-158 0 obj
-<< /Length 2358 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  outscores the true reading by 0.05 confidence, because under) Tj
 0 -15 Td
 (a quadgram-only) Tj
@@ -21725,6 +21761,20 @@ BT
 0 -15 Td
 (| 50 | 1.05 | 1.00 |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(155) Tj
+ET
+endstream
+endobj
+159 0 obj
+<< /Length 2712 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| 100 | 0.46 | 0.80 |) Tj
 0 -15 Td
 (| 250 | 0.23 | 0.76 |) Tj
@@ -21735,20 +21785,6 @@ BT
 0 -15 Td
 (threshold is) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(155) Tj
-ET
-endstream
-endobj
-159 0 obj
-<< /Length 2638 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (0.6 + 25/n rather than a single number, and the reason the) Tj
 0 -15 Td
 (tool refuses to be) Tj
@@ -21849,14 +21885,6 @@ BT
 0 -15 Td
 (non-English models are scoring models only.) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(--- TECHNICAL REFERENCE: windows-installer.md ---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -21866,11 +21894,19 @@ ET
 endstream
 endobj
 160 0 obj
-<< /Length 2066 >>
+<< /Length 1827 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(--- TECHNICAL REFERENCE: windows-installer.md ---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (The Windows installer) Tj
 0 -15 Td
 () Tj
@@ -21949,6 +21985,20 @@ BT
 0 -15 Td
 (| Console window | no | yes, it *is* the console |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(157) Tj
+ET
+endstream
+endobj
+161 0 obj
+<< /Length 2202 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| What it does | starts the local server on 127.0.0.1, opens) Tj
 0 -15 Td
 (your browser, sits in the tray | the full CLI from the README) Tj
@@ -21963,20 +22013,6 @@ BT
 0 -15 Td
 (n-gram tables, so) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(157) Tj
-ET
-endstream
-endobj
-161 0 obj
-<< /Length 2084 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (shipping both costs almost nothing over shipping either.) Tj
 0 -15 Td
 () Tj
@@ -22059,6 +22095,20 @@ BT
 0 -15 Td
 (  [jrsoftware.org/isdl.php]\(https://jrsoftware.org/isdl.php\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(158) Tj
+ET
+endstream
+endobj
+162 0 obj
+<< /Length 1961 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (PyInstaller is installed automatically into a throwaway) Tj
@@ -22071,20 +22121,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(158) Tj
-ET
-endstream
-endobj
-162 0 obj
-<< /Length 2029 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (One command) Tj
 0 -15 Td
 () Tj
@@ -22169,6 +22205,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(159) Tj
+ET
+endstream
+endobj
+163 0 obj
+<< /Length 2621 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (The spec is cross-platform as written — run it on macOS or) Tj
@@ -22181,20 +22231,6 @@ BT
 0 -15 Td
 (change to it. Only the Inno Setup step is Windows-only.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(159) Tj
-ET
-endstream
-endobj
-163 0 obj
-<< /Length 2429 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (Releasing a new version) Tj
@@ -22293,14 +22329,6 @@ BT
 0 -15 Td
 (   day one.) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(If you have a certificate installed:) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(powershell) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -22310,11 +22338,19 @@ ET
 endstream
 endobj
 164 0 obj
-<< /Length 2255 >>
+<< /Length 2274 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(If you have a certificate installed:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(powershell) Tj
+0 -15 Td
 (.\\build.ps1 -CertThumbprint <thumbprint-from-certmgr.msc>) Tj
 0 -15 Td
 () Tj
@@ -22411,14 +22447,6 @@ BT
 0 -15 Td
 (for the day you decide to give something away.\)) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(How the sale actually flows) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -22428,11 +22456,19 @@ ET
 endstream
 endobj
 165 0 obj
-<< /Length 2604 >>
+<< /Length 2590 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(How the sale actually flows) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (windows-app.html  --Buy for $39.99-->  Stripe Payment Link) Tj
 0 -15 Td
 (                                              |) Tj
@@ -22527,14 +22563,6 @@ BT
 0 -15 Td
 (Works, and will happily bill you if something goes viral. |) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(With R2, publishing a new version is:) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(bash) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -22544,11 +22572,19 @@ ET
 endstream
 endobj
 166 0 obj
-<< /Length 2219 >>
+<< /Length 1985 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(With R2, publishing a new version is:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(bash) Tj
+0 -15 Td
 (rclone copy dist/installer/buttcrack-setup-1.1.0.exe) Tj
 0 -15 Td
 (r2:buttcrack-downloads/) Tj
@@ -22637,6 +22673,20 @@ BT
 0 -15 Td
 (* Content-Type: application/octet-stream \(or) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(163) Tj
+ET
+endstream
+endobj
+167 0 obj
+<< /Length 2130 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  application/vnd.microsoft.portable-executable\). Some hosts) Tj
 0 -15 Td
 (guess, and a) Tj
@@ -22649,20 +22699,6 @@ BT
 0 -15 Td
 (  that arrive over plain HTTP or after a redirect hop.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(163) Tj
-ET
-endstream
-endobj
-167 0 obj
-<< /Length 1885 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (* Publish the SHA-256 next to the link. build.ps1 writes it to) Tj
 0 -15 Td
 (  dist/installer/*.sha256 for you, and the download page shows) Tj
@@ -22745,14 +22781,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(Known limitation on Windows) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -22762,11 +22790,19 @@ ET
 endstream
 endobj
 168 0 obj
-<< /Length 2885 >>
+<< /Length 2774 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Known limitation on Windows) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (buttcrack/search.py parallelises its stochastic searches with) Tj
 0 -15 Td
 (multiprocessing.get_context\("fork"\), and fork does not exist) Tj
@@ -22863,6 +22899,20 @@ BT
 0 -15 Td
 (  plaintext) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(165) Tj
+ET
+endstream
+endobj
+169 0 obj
+<< /Length 2353 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (    The quick brown fox jumps over the lazy dog, and the) Tj
 0 -15 Td
 (committee deliberated until midnight.) Tj
@@ -22873,20 +22923,6 @@ BT
 0 -15 Td
 (    cipher    caesar) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(165) Tj
-ET
-endstream
-endobj
-169 0 obj
-<< /Length 3065 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (    key       3) Tj
 0 -15 Td
 (    method    exhaustive keyspace) Tj
@@ -22967,6 +23003,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(166) Tj
+ET
+endstream
+endobj
+170 0 obj
+<< /Length 3599 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (This repository houses the complete, publication-grade) Tj
 0 -15 Td
 (cryptanalytic research, proofs, and reproducible verification) Tj
@@ -22995,20 +23045,6 @@ BT
 0 -15 Td
 (TIVE_CRYPTANALYTIC_BRIEF.md\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(166) Tj
-ET
-endstream
-endobj
-170 0 obj
-<< /Length 2955 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (* 🗄️ Challenge Manifest: Canonical plaintexts, ciphertexts,) Tj
 0 -15 Td
 (SHA-256 checksums, and construction metadata for the exact,) Tj
@@ -23117,6 +23153,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(167) Tj
+ET
+endstream
+endobj
+171 0 obj
+<< /Length 1886 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Build it on any Windows machine with Python 3.9+ and [Inno) Tj
 0 -15 Td
 (Setup]\(https://jrsoftware.org/isdl.php\):) Tj
@@ -23129,20 +23179,6 @@ BT
 0 -15 Td
 (packaging\\windows\\build.ps1) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(167) Tj
-ET
-endstream
-endobj
-171 0 obj
-<< /Length 1806 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 () Tj
@@ -23219,6 +23255,20 @@ BT
 0 -15 Td
 (reachable from your network) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(168) Tj
+ET
+endstream
+endobj
+172 0 obj
+<< /Length 3751 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (buttcrack app                 a desktop app: loopback only,) Tj
 0 -15 Td
 (opens your browser, has a window) Tj
@@ -23229,20 +23279,6 @@ BT
 0 -15 Td
 (Handy options on crack:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(168) Tj
-ET
-endstream
-endobj
-172 0 obj
-<< /Length 4843 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (| option | what it does |) Tj
@@ -23367,6 +23403,20 @@ BT
 0 -15 Td
 (can and cannot do with it.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(169) Tj
+ET
+endstream
+endobj
+173 0 obj
+<< /Length 7653 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Layered puzzles. Every encoding above can wrap any cipher, and) Tj
@@ -23405,20 +23455,6 @@ BT
 0 -15 Td
 (*one* permutation followed by *one* substitution.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(169) Tj
-ET
-endstream
-endobj
-173 0 obj
-<< /Length 6448 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (The solver exploits that twice over. The substitution is read) Tj
@@ -23625,14 +23661,6 @@ BT
 0 -15 Td
 (---) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(Python API) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(python) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -23642,11 +23670,19 @@ ET
 endstream
 endobj
 174 0 obj
-<< /Length 3492 >>
+<< /Length 2460 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(Python API) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(python) Tj
+0 -15 Td
 (from buttcrack import solve, identify, encrypt, decrypt) Tj
 0 -15 Td
 () Tj
@@ -23743,6 +23779,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(171) Tj
+ET
+endstream
+endobj
+175 0 obj
+<< /Length 3886 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Bind it to the network with --host 0.0.0.0; it serves only the) Tj
 0 -15 Td
 (API and its own three static files, refuses path traversal,) Tj
@@ -23777,20 +23827,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(171) Tj
-ET
-endstream
-endobj
-175 0 obj
-<< /Length 3308 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -23899,6 +23935,20 @@ BT
 0 -15 Td
 (solved, ~5 s \(recovers the keywords ORDINATE + PENTIMENTO\) |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(172) Tj
+ET
+endstream
+endobj
+176 0 obj
+<< /Length 14416 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (| PK4–PK6 | columnar or double-columnar *composed with*) Tj
 0 -15 Td
 (Quagmire III | not solved — the transposition's key cannot be) Tj
@@ -23917,20 +23967,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(172) Tj
-ET
-endstream
-endobj
-176 0 obj
-<< /Length 14879 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Two-wheel clocks are solved exactly rather than searched.) Tj
 0 -15 Td
 (Fixing the short wheel leaves a plain Vigenère of known) Tj
@@ -24333,6 +24369,20 @@ BT
 0 -15 Td
 (  | crib of 16 letters, hybrid, 25 s | 4 of 4 |) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(173) Tj
+ET
+endstream
+endobj
+177 0 obj
+<< /Length 2963 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  | crib of 19 letters, pure algebra | 5 of 5, 0.1 s each |) Tj
 0 -15 Td
 () Tj
@@ -24363,20 +24413,6 @@ BT
 0 -15 Td
 (immediately.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(173) Tj
-ET
-endstream
-endobj
-177 0 obj
-<< /Length 2237 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (---) Tj
@@ -24471,6 +24507,20 @@ BT
 0 -15 Td
 (  cli.py         the command line) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(174) Tj
+ET
+endstream
+endobj
+178 0 obj
+<< /Length 2766 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  ciphers/       one module per family, 50 ciphers behind one) Tj
 0 -15 Td
 (interface) Tj
@@ -24483,20 +24533,6 @@ BT
 0 -15 Td
 (scripts/) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(174) Tj
-ET
-endstream
-endobj
-178 0 obj
-<< /Length 2713 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (  build_language_model.py   rebuild the English data/ from) Tj
 0 -15 Td
 (PyPI sources) Tj
@@ -24601,6 +24637,20 @@ BT
 0 -15 Td
 (Solving one) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(175) Tj
+ET
+endstream
+endobj
+179 0 obj
+<< /Length 2670 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (console) Tj
@@ -24611,20 +24661,6 @@ BT
 0 -15 Td
 (--budget 40 --verbose) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(175) Tj
-ET
-endstream
-endobj
-179 0 obj
-<< /Length 2655 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 ($ buttcrack --file examples/puzzles/15-playfair.txt --budget) Tj
 0 -15 Td
 (120 --workers 4) Tj
@@ -24721,6 +24757,20 @@ BT
 0 -15 Td
 (measures the) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(176) Tj
+ET
+endstream
+endobj
+180 0 obj
+<< /Length 3124 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (confidence thresholds in buttcrack/lang.py.) Tj
 0 -15 Td
 () Tj
@@ -24731,20 +24781,6 @@ BT
 0 -15 Td
 (THE_KRYPTOS_DECRYPTION_MANUSCRIPT.md ---) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(176) Tj
-ET
-endstream
-endobj
-180 0 obj
-<< /Length 3284 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (THE KRYPTOS DECRYPTION MANUSCRIPT) Tj
@@ -24857,6 +24893,20 @@ BT
 0 -15 Td
 (K R Y P T O S A B C D E F G H I J L M N Q U V W X Z) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(177) Tj
+ET
+endstream
+endobj
+181 0 obj
+<< /Length 3673 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 () Tj
@@ -24873,20 +24923,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(177) Tj
-ET
-endstream
-endobj
-181 0 obj
-<< /Length 3960 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -25001,6 +25037,20 @@ BT
 0 -15 Td
 (   - *Key*: PORTAL \(Period 6\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(178) Tj
+ET
+endstream
+endobj
+182 0 obj
+<< /Length 2879 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - *Plaintext*: The narrator arrives at the master) Tj
 0 -15 Td
 (whitesmith's workshop. The gutter is strewn with exquisite) Tj
@@ -25021,20 +25071,6 @@ BT
 0 -15 Td
 (hot coals, giving the crucial metallurgical warning:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(178) Tj
-ET
-endstream
-endobj
-182 0 obj
-<< /Length 2471 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (     text) Tj
 0 -15 Td
 (     HE POINTED TO THE HEARTH AND SAID THAT THE WORK COULD) Tj
@@ -25135,6 +25171,20 @@ BT
 0 -15 Td
 (The normalized plaintext is:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(179) Tj
+ET
+endstream
+endobj
+183 0 obj
+<< /Length 2826 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (text) Tj
@@ -25147,20 +25197,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(179) Tj
-ET
-endstream
-endobj
-183 0 obj
-<< /Length 2716 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (It has length 144 and SHA-256) Tj
@@ -25269,14 +25305,6 @@ BT
 0 -15 Td
 (→ Q3\(PK4 normalized plaintext\)) Tj
 0 -15 Td
-(→ T\(HANDIWORK\)) Tj
-0 -15 Td
-(→ T\(SMITHWORK\)) Tj
-0 -15 Td
-(→ Q3\(PORTAL\)) Tj
-0 -15 Td
-(→ Q3\(ANNEAL\)) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -25286,11 +25314,19 @@ ET
 endstream
 endobj
 184 0 obj
-<< /Length 1598 >>
+<< /Length 1361 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(→ T\(HANDIWORK\)) Tj
+0 -15 Td
+(→ T\(SMITHWORK\)) Tj
+0 -15 Td
+(→ Q3\(PORTAL\)) Tj
+0 -15 Td
+(→ Q3\(ANNEAL\)) Tj
+0 -15 Td
 (→ H3\(ALCHEMIST\)) Tj
 0 -15 Td
 (→ Q3\(METE\)) Tj
@@ -25363,6 +25399,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(181) Tj
+ET
+endstream
+endobj
+185 0 obj
+<< /Length 3901 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (It reports exact 504/504 encode and decode matches. Earlier) Tj
 0 -15 Td
 (three-clock, 12×42, and modular-triptych candidates are) Tj
@@ -25377,20 +25427,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(181) Tj
-ET
-endstream
-endobj
-185 0 obj
-<< /Length 3819 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (A candidate is not a solution because it contains readable) Tj
 0 -15 Td
 (fragments, receives a favorable language score, or appears to) Tj
@@ -25519,6 +25555,20 @@ BT
 0 -15 Td
 (- Runner: test_full_suite_reproducibility.py) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(182) Tj
+ET
+endstream
+endobj
+186 0 obj
+<< /Length 4373 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Execution Time: 4.65 seconds) Tj
 0 -15 Td
 (- Test Results: 12 / 12 automated test suites passing with) Tj
@@ -25531,20 +25581,6 @@ BT
 0 -15 Td
 (paradigm_kryptos_master_report.md ---) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(182) Tj
-ET
-endstream
-endobj
-186 0 obj
-<< /Length 4357 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (> This report predates the verified PK10 cumulative pipeline.) Tj
@@ -25685,6 +25721,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(183) Tj
+ET
+endstream
+endobj
+187 0 obj
+<< /Length 2347 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (2. Universal Mathematical Invariants Across PK8, PK9, and PK10) Tj
 0 -15 Td
 () Tj
@@ -25695,20 +25745,6 @@ BT
 0 -15 Td
 (original 26-letter keyed Kryptos alphabet:) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(183) Tj
-ET
-endstream
-endobj
-187 0 obj
-<< /Length 2314 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (   text) Tj
 0 -15 Td
 (   Index:   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16) Tj
@@ -25789,6 +25825,20 @@ BT
 0 -15 Td
 (  $$\\text{Period} = \\text{lcm}\(4, 7\) = 28$$) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(184) Tj
+ET
+endstream
+endobj
+188 0 obj
+<< /Length 2357 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (- Recovered Clocks:) Tj
 0 -15 Td
 (  - $Q_4 = [16, 23, 22, 18]$) Tj
@@ -25799,20 +25849,6 @@ BT
 0 -15 Td
 ($0.065$\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(184) Tj
-ET
-endstream
-endobj
-188 0 obj
-<< /Length 2446 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (3.2 Transposition Layer & The $12 \\times 12$ Matrix) Tj
@@ -25891,6 +25927,20 @@ BT
 0 -15 Td
 (ARCHIVISTS TRIED TO UNRAVEL IT ALL FAILED"*\).) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(185) Tj
+ET
+endstream
+endobj
+189 0 obj
+<< /Length 3061 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (  - CANNOT $\\longleftrightarrow$ PK2 \(*"CANNOT UNRAVEL"*\).) Tj
 0 -15 Td
 (  - BOOKS $\\longleftrightarrow$ PK2 \(*"MENTIONS SCATTERED) Tj
@@ -25903,20 +25953,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(185) Tj
-ET
-endstream
-endobj
-189 0 obj
-<< /Length 3462 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (---) Tj
 0 -15 Td
 () Tj
@@ -26021,6 +26057,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(186) Tj
+ET
+endstream
+endobj
+190 0 obj
+<< /Length 3665 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (5.1 Architecture & Coprime Dimension) Tj
 0 -15 Td
 (text) Tj
@@ -26045,20 +26095,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(186) Tj
-ET
-endstream
-endobj
-190 0 obj
-<< /Length 3567 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Period: $\\text{lcm}\(7, 8, 9\) = 7 \\times 8 \\times 9 = 504) Tj
 0 -15 Td
 (\\equiv N$.) Tj
@@ -26163,6 +26199,20 @@ BT
 0 -15 Td
 (craft over ten years.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(187) Tj
+ET
+endstream
+endobj
+191 0 obj
+<< /Length 3451 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (6. PK7: The master points to the hearth, beginning the) Tj
 0 -15 Td
 (instruction.) Tj
@@ -26183,20 +26233,6 @@ BT
 0 -15 Td
 (its true key is at last laid bare.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(187) Tj
-ET
-endstream
-endobj
-191 0 obj
-<< /Length 2921 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (---) Tj
@@ -26307,14 +26343,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-(---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(2. Key Mathematical Breakthroughs) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -26324,11 +26352,19 @@ ET
 endstream
 endobj
 192 0 obj
-<< /Length 3773 >>
+<< /Length 3618 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2. Key Mathematical Breakthroughs) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (2.1 The PK8 Dual Stride-Decoupling Theorem) Tj
 0 -15 Td
 (The 4-clock key sequence of PK8 satisfies:) Tj
@@ -26445,6 +26481,20 @@ BT
 0 -15 Td
 (---) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(189) Tj
+ET
+endstream
+endobj
+193 0 obj
+<< /Length 6346 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (2.3 PK10: Moduli Factorization & Transposition Filtering) Tj
@@ -26455,20 +26505,6 @@ BT
 0 -15 Td
 (\($N = 504$, ending with DELIEOZQ\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(189) Tj
-ET
-endstream
-endobj
-193 0 obj
-<< /Length 6210 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (2. Exhaustive Width-7, 8, 9 Transposition Sweep) Tj
 0 -15 Td
 (\(test_pk10_exhaustive_widths_789.c\):) Tj
@@ -26657,14 +26693,6 @@ BT
 0 -15 Td
 (columnar or composite route. |) Tj
 0 -15 Td
-() Tj
-0 -15 Td
-(---) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(2. Cross-Cipher Homologies & The Tripartite Pipeline) Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -26674,11 +26702,19 @@ ET
 endstream
 endobj
 194 0 obj
-<< /Length 3913 >>
+<< /Length 3706 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+() Tj
+0 -15 Td
+(---) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2. Cross-Cipher Homologies & The Tripartite Pipeline) Tj
+0 -15 Td
 () Tj
 0 -15 Td
 (2.1 The PK8–PK9 Harmonic Resonances) Tj
@@ -26801,6 +26837,20 @@ BT
 0 -15 Td
 (substitution:) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(191) Tj
+ET
+endstream
+endobj
+195 0 obj
+<< /Length 3566 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   $$P_9 \\xrightarrow{\\text{Transposition } T_{12\\times 12}} Z) Tj
 0 -15 Td
 (\\xrightarrow{\\text{Quagmire } Q_{28}} C_9$$) Tj
@@ -26813,20 +26863,6 @@ BT
 0 -15 Td
 (---) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(191) Tj
-ET
-endstream
-endobj
-195 0 obj
-<< /Length 3632 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (3. PK8: Universal Unimodular 18-Window Theorem) Tj
@@ -26941,6 +26977,20 @@ BT
 0 -15 Td
 (transposition under the periodic substitution.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(192) Tj
+ET
+endstream
+endobj
+196 0 obj
+<< /Length 2194 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (4.2 Exact Trigram DP Proof on Transposed Coordinate Matrix $G$) Tj
@@ -26955,20 +27005,6 @@ BT
 0 -15 Td
 (- Runtime: $0.005\\text{ seconds}$.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(192) Tj
-ET
-endstream
-endobj
-196 0 obj
-<< /Length 2313 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Unique Global Optimum:) Tj
 0 -15 Td
 (  $$p_{\\text{col}} = [0, 6, 4, 7, 8, 10, 3, 2, 11, 5, 9, 1]$$) Tj
@@ -27043,6 +27079,20 @@ BT
 0 -15 Td
 (5.2 Universal Unimodular Basis for PK10) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(193) Tj
+ET
+endstream
+endobj
+197 0 obj
+<< /Length 4652 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (For any contiguous 22-character window $x \\in [0 \\dots 482]$,) Tj
 0 -15 Td
 (the 22 rows of the design matrix $M_{7, 8, 9}[x \\dots x+21]) Tj
@@ -27061,20 +27111,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(193) Tj
-ET
-endstream
-endobj
-197 0 obj
-<< /Length 4239 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (5.3 Multi-Stride CRT Decoupling) Tj
 0 -15 Td
 (By sampling ciphertext differences at strides matching the) Tj
@@ -27213,14 +27249,6 @@ BT
 0 -15 Td
 (when assumptions) Tj
 0 -15 Td
-(are explicit.) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(73. Data preservation) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -27230,11 +27258,19 @@ ET
 endstream
 endobj
 198 0 obj
-<< /Length 2542 >>
+<< /Length 2345 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(are explicit.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(73. Data preservation) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (The final edition should deposit canonical ciphertext strings,) Tj
 0 -15 Td
 (checksums,) Tj
@@ -27333,6 +27369,20 @@ BT
 0 -15 Td
 (--- SUPPLEMENT: PARADIGM_KRYPTOS_FINAL_SUBMISSIONS.md ---) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(195) Tj
+ET
+endstream
+endobj
+199 0 obj
+<< /Length 3076 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (Paradigm Kryptos CTF — Final Submissions \(regenerated) Tj
@@ -27347,20 +27397,6 @@ BT
 0 -15 Td
 (below) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(195) Tj
-ET
-endstream
-endobj
-199 0 obj
-<< /Length 2987 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (> has an exact, independently checkable round trip. PK9 is) Tj
 0 -15 Td
 (verified by) Tj
@@ -27463,6 +27499,20 @@ BT
 0 -15 Td
 (OHISADDRESSNOANSWERCAMEIWROTEAGAIN) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(196) Tj
+ET
+endstream
+endobj
+200 0 obj
+<< /Length 3291 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (- SHA256: 8f8b1cc851def197868be586e8f83cf37e141efc8dd6a74180f3) Tj
@@ -27473,20 +27523,6 @@ BT
 0 -15 Td
 (PK4 — Two Years In \(the Whitesmith\) \($N = 224$\)) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(196) Tj
-ET
-endstream
-endobj
-200 0 obj
-<< /Length 3282 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Cipher: Columnar Transposition T\(8\) -> Quagmire III Q\(5\) ->) Tj
 0 -15 Td
 (Quagmire III Q\(9\)) Tj
@@ -27595,6 +27631,20 @@ BT
 0 -15 Td
 (EMADEPEACEWITHITANDWILLGOHOMESOON) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(197) Tj
+ET
+endstream
+endobj
+201 0 obj
+<< /Length 2942 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (- SHA256: 0147da64672740a2495a346c8b002051ae99193f7f20e9e15682) Tj
@@ -27605,20 +27655,6 @@ BT
 0 -15 Td
 (PK8 — Leaving the Whitesmith \($N = 153$\)) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(197) Tj
-ET
-endstream
-endobj
-201 0 obj
-<< /Length 3170 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (- Cipher: Four sequential Quagmire III layers \(KRYPTOS) Tj
 0 -15 Td
 (alphabet\)) Tj
@@ -27723,6 +27759,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(198) Tj
+ET
+endstream
+endobj
+202 0 obj
+<< /Length 4572 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (> ⚠ Correction \(2026-10-02\): The PK4/PK5/PK7 records in this) Tj
 0 -15 Td
 (workspace were) Tj
@@ -27739,20 +27789,6 @@ BT
 0 -15 Td
 (correction and) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(198) Tj
-ET
-endstream
-endobj
-202 0 obj
-<< /Length 4592 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (> describe unverified reconstructions; PK1–PK10 are now solved) Tj
 0 -15 Td
 (and independently verified. PK9's recovered construction is) Tj
@@ -27887,6 +27923,20 @@ BT
 0 -15 Td
 (PK10 Col 0 $= 156 \\equiv 0 \\pmod{26}$.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(199) Tj
+ET
+endstream
+endobj
+203 0 obj
+<< /Length 2829 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (2. Definitive PK9 Solution State \($N = 144 \\to 135$\)) Tj
@@ -27903,20 +27953,6 @@ BT
 0 -15 Td
 (\('X' / 'Z'\).) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(199) Tj
-ET
-endstream
-endobj
-203 0 obj
-<< /Length 2741 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (* Regularized whitesmith reading achieves $99.3\\%$ valid) Tj
 0 -15 Td
 (quadgrams \($-4.7282$\).) Tj
@@ -28013,6 +28049,20 @@ BT
 0 -15 Td
 (validated.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(200) Tj
+ET
+endstream
+endobj
+204 0 obj
+<< /Length 2140 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 ([PASS] Test 10: CIA Langley GPS coordinate values verified.) Tj
 0 -15 Td
 ([PASS] Test 11: Core Plaintext Artifacts Files exist and match) Tj
@@ -28025,20 +28075,6 @@ BT
 0 -15 Td
 (RESULTS: 11 / 11 tests passed successfully in 4.65s.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(200) Tj
-ET
-endstream
-endobj
-204 0 obj
-<< /Length 1967 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (ALL CRYPTANALYTIC THEOREMS, MATRICES, AND KEYS ARE 100%) Tj
 0 -15 Td
 (REPRODUCIBLE.) Tj
@@ -28123,6 +28159,20 @@ BT
 0 -15 Td
 (📄 License) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(201) Tj
+ET
+endstream
+endobj
+205 0 obj
+<< /Length 3345 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (MIT License. Cryptanalytic research and open reproduction) Tj
 0 -15 Td
 (tools.) Tj
@@ -28133,20 +28183,6 @@ BT
 0 -15 Td
 (--- SUPPLEMENT: section8_additions.txt ---) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(201) Tj
-ET
-endstream
-endobj
-205 0 obj
-<< /Length 3537 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (8.7 Mutual Information & Cross-Kappa Between PK8 and PK9) Tj
@@ -28253,6 +28289,20 @@ BT
 0 -15 Td
 (   - HEARTH: score = -6.583) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(202) Tj
+ET
+endstream
+endobj
+206 0 obj
+<< /Length 4097 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (   - STANDARD: score = -6.634) Tj
 0 -15 Td
 (   - LANGLEY: score = -6.694) Tj
@@ -28267,20 +28317,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(202) Tj
-ET
-endstream
-endobj
-206 0 obj
-<< /Length 4303 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (--- SUPPLEMENT: section8_patch.txt ---) Tj
@@ -28405,6 +28441,20 @@ BT
 0 -15 Td
 (ruled out.) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(203) Tj
+ET
+endstream
+endobj
+207 0 obj
+<< /Length 3990 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (4. Thematic & WW Columnar Transposition Permutation Sweeps:) Tj
 0 -15 Td
 (   - Evaluated all 23,792 unique width-8 dictionary) Tj
@@ -28423,20 +28473,6 @@ BT
 0 -15 Td
 (over individual WW keywords is ruled out.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(203) Tj
-ET
-endstream
-endobj
-207 0 obj
-<< /Length 3832 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (8.5 The Harmonic Clock Lattice: {4, 5, 7} Decomposition) Tj
@@ -28551,6 +28587,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(204) Tj
+ET
+endstream
+endobj
+208 0 obj
+<< /Length 3071 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Long cryptanalytic projects are measured in more than) Tj
 0 -15 Td
 (successful decryptions.) Tj
@@ -28567,20 +28617,6 @@ BT
 0 -15 Td
 (undocumented search.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(204) Tj
-ET
-endstream
-endobj
-208 0 obj
-<< /Length 2930 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (A large manuscript should therefore feel cumulative. The) Tj
 0 -15 Td
 (historical chapters) Tj
@@ -28687,6 +28723,20 @@ BT
 0 -15 Td
 (it inherited,) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(205) Tj
+ET
+endstream
+endobj
+209 0 obj
+<< /Length 2853 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (and what the negative result changed afterward.) Tj
 0 -15 Td
 () Tj
@@ -28699,20 +28749,6 @@ BT
 0 -15 Td
 (artists, CIA) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(205) Tj
-ET
-endstream
-endobj
-209 0 obj
-<< /Length 2835 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (employees and alumni, journalists, puzzle enthusiasts,) Tj
 0 -15 Td
 (historians, and) Tj
@@ -28819,6 +28855,20 @@ BT
 0 -15 Td
 (affect what becomes) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(206) Tj
+ET
+endstream
+endobj
+210 0 obj
+<< /Length 2697 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (public. A responsible history says “the public record does not) Tj
 0 -15 Td
 (establish”) Tj
@@ -28831,20 +28881,6 @@ BT
 0 -15 Td
 (80. The language of confidence) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(206) Tj
-ET
-endstream
-endobj
-210 0 obj
-<< /Length 2753 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (The manuscript uses confidence words deliberately. “Shows” is) Tj
@@ -28947,6 +28983,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(207) Tj
+ET
+endstream
+endobj
+211 0 obj
+<< /Length 2499 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The third pass is interpretive. Only now does the analyst ask) Tj
 0 -15 Td
 (whether the) Tj
@@ -28961,20 +29011,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(207) Tj
-ET
-endstream
-endobj
-211 0 obj
-<< /Length 2464 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (82. The ledger page) Tj
 0 -15 Td
 () Tj
@@ -29069,6 +29105,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(208) Tj
+ET
+endstream
+endobj
+212 0 obj
+<< /Length 2592 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (84. What computation adds to the workshop) Tj
 0 -15 Td
 () Tj
@@ -29081,20 +29131,6 @@ BT
 0 -15 Td
 (search permutations) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(208) Tj
-ET
-endstream
-endobj
-212 0 obj
-<< /Length 2730 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (that would occupy a lifetime by hand. It can also make a) Tj
 0 -15 Td
 (mistake millions of) Tj
@@ -29193,6 +29229,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(209) Tj
+ET
+endstream
+endobj
+213 0 obj
+<< /Length 2554 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (This human dimension is relevant to Kryptos even though the) Tj
 0 -15 Td
 (sculpture is not a) Tj
@@ -29209,20 +29259,6 @@ BT
 0 -15 Td
 (hypotheses are) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(209) Tj
-ET
-endstream
-endobj
-213 0 obj
-<< /Length 2556 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (asked in the first place.) Tj
 0 -15 Td
 () Tj
@@ -29315,6 +29351,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(210) Tj
+ET
+endstream
+endobj
+214 0 obj
+<< /Length 2714 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The first reader comes to Kryptos without a notebook. The) Tj
 0 -15 Td
 (copper screen catches) Tj
@@ -29331,20 +29381,6 @@ BT
 0 -15 Td
 (Vigenère or) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(210) Tj
-ET
-endstream
-endobj
-214 0 obj
-<< /Length 2465 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (transposition. The first question is simpler: why put a secret) Tj
 0 -15 Td
 (in public?) Tj
@@ -29443,6 +29479,20 @@ BT
 0 -15 Td
 (Part XXVII — Making difficult ideas memorable) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(211) Tj
+ET
+endstream
+endobj
+215 0 obj
+<< /Length 2712 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 () Tj
 0 -15 Td
 (92. The envelope analogy) Tj
@@ -29453,20 +29503,6 @@ BT
 0 -15 Td
 (Imagine that) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(211) Tj
-ET
-endstream
-endobj
-215 0 obj
-<< /Length 2781 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (each letter of a message is written on a card. The cards are) Tj
 0 -15 Td
 (placed into rows) Tj
@@ -29573,6 +29609,20 @@ BT
 0 -15 Td
 (“what information) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(212) Tj
+ET
+endstream
+endobj
+216 0 obj
+<< /Length 2621 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (must be specified to reproduce the transformation?” That) Tj
 0 -15 Td
 (question works for) Tj
@@ -29583,20 +29633,6 @@ BT
 0 -15 Td
 (Part XXVIII — The emotional history of solving) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(212) Tj
-ET
-endstream
-endobj
-216 0 obj
-<< /Length 2646 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 () Tj
 0 -15 Td
 (95. Why people return to unsolved ciphers) Tj
@@ -29699,6 +29735,20 @@ BT
 0 -15 Td
 (the most severe) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(213) Tj
+ET
+endstream
+endobj
+217 0 obj
+<< /Length 2354 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (test, not the celebration.) Tj
 0 -15 Td
 () Tj
@@ -29711,20 +29761,6 @@ BT
 0 -15 Td
 (random control.) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(213) Tj
-ET
-endstream
-endobj
-217 0 obj
-<< /Length 2374 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (If it survives, confidence rises. If it fails, the failure may) Tj
 0 -15 Td
 (hurt, but it) Tj
@@ -29819,6 +29855,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(214) Tj
+ET
+endstream
+endobj
+218 0 obj
+<< /Length 2539 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (101. A symbol is not automatically a message) Tj
 0 -15 Td
 () Tj
@@ -29831,20 +29881,6 @@ BT
 0 -15 Td
 (requires a prior) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(214) Tj
-ET
-endstream
-endobj
-218 0 obj
-<< /Length 2573 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (question: what kind of symbol is this? It might be a letter in) Tj
 0 -15 Td
 (an alphabet, a) Tj
@@ -29943,6 +29979,20 @@ BT
 0 -15 Td
 (position or a) Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(215) Tj
+ET
+endstream
+endobj
+219 0 obj
+<< /Length 2647 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (component. An arrow indicates a transformation from input to) Tj
 0 -15 Td
 (output. A minus) Tj
@@ -29957,20 +30007,6 @@ BT
 0 -15 Td
 (like another) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(215) Tj
-ET
-endstream
-endobj
-219 0 obj
-<< /Length 2525 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (layer of code to a new reader. The notation guide should) Tj
 0 -15 Td
 (therefore appear) Tj
@@ -30069,6 +30105,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(216) Tj
+ET
+endstream
+endobj
+220 0 obj
+<< /Length 2270 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (The final KDP edition should include a visual index with) Tj
 0 -15 Td
 (small, clearly labeled) Tj
@@ -30079,20 +30129,6 @@ BT
 0 -15 Td
 (* keyed alphabet and position numbers;) Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(216) Tj
-ET
-endstream
-endobj
-220 0 obj
-<< /Length 2305 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (* ordinary alphabet beside the keyed alphabet;) Tj
 0 -15 Td
 (* plaintext and ciphertext symbol pairs;) Tj
@@ -30181,6 +30217,20 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
+ET
+BT
+/F1 7 Tf
+204.0 22 Td
+(217) Tj
+ET
+endstream
+endobj
+221 0 obj
+<< /Length 2093 >>
+stream
+BT
+/F1 10.5 Tf
+43 593 Td
 (Alphabet: An ordered set of symbols used to assign positions) Tj
 0 -15 Td
 (to letters.) Tj
@@ -30193,20 +30243,6 @@ BT
 0 -15 Td
 () Tj
 0 -15 Td
-ET
-BT
-/F1 7 Tf
-204.0 22 Td
-(217) Tj
-ET
-endstream
-endobj
-221 0 obj
-<< /Length 1991 >>
-stream
-BT
-/F1 10.5 Tf
-43 593 Td
 (Ciphertext: The transformed message produced by a cipher.) Tj
 0 -15 Td
 () Tj
@@ -30291,14 +30327,6 @@ BT
 0 -15 Td
 (without) Tj
 0 -15 Td
-(necessarily changing the symbols themselves.) Tj
-0 -15 Td
-() Tj
-0 -15 Td
-(109. List of planned figures) Tj
-0 -15 Td
-() Tj
-0 -15 Td
 ET
 BT
 /F1 7 Tf
@@ -30308,11 +30336,19 @@ ET
 endstream
 endobj
 222 0 obj
-<< /Length 1456 >>
+<< /Length 1588 >>
 stream
 BT
 /F1 10.5 Tf
 43 593 Td
+(necessarily changing the symbols themselves.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(109. List of planned figures) Tj
+0 -15 Td
+() Tj
+0 -15 Td
 (1. Kryptos as a material information object.) Tj
 0 -15 Td
 (2. Ordinary and keyed alphabets.) Tj
@@ -31050,444 +31086,444 @@ xref
 0000001869 00000 n 
 0000001939 00000 n 
 0000003845 00000 n 
-0000007324 00000 n 
-0000011559 00000 n 
-0000016405 00000 n 
-0000020307 00000 n 
-0000024032 00000 n 
-0000027315 00000 n 
-0000030644 00000 n 
-0000036597 00000 n 
-0000040328 00000 n 
-0000043894 00000 n 
-0000047764 00000 n 
-0000050117 00000 n 
-0000053968 00000 n 
-0000057669 00000 n 
-0000061544 00000 n 
-0000064915 00000 n 
-0000067289 00000 n 
-0000070494 00000 n 
-0000073462 00000 n 
-0000077284 00000 n 
-0000081358 00000 n 
-0000085845 00000 n 
-0000090665 00000 n 
-0000094994 00000 n 
-0000100790 00000 n 
-0000104175 00000 n 
-0000109310 00000 n 
-0000113833 00000 n 
-0000116523 00000 n 
-0000118849 00000 n 
-0000120538 00000 n 
-0000122406 00000 n 
-0000126150 00000 n 
-0000130238 00000 n 
-0000132864 00000 n 
-0000136126 00000 n 
-0000138982 00000 n 
-0000142059 00000 n 
-0000145214 00000 n 
-0000148914 00000 n 
-0000151519 00000 n 
-0000154952 00000 n 
-0000158938 00000 n 
-0000162486 00000 n 
-0000165316 00000 n 
-0000170516 00000 n 
-0000174220 00000 n 
-0000180357 00000 n 
-0000185950 00000 n 
-0000190788 00000 n 
-0000193290 00000 n 
-0000195241 00000 n 
-0000197907 00000 n 
-0000200060 00000 n 
-0000202838 00000 n 
-0000205467 00000 n 
-0000208482 00000 n 
-0000211529 00000 n 
-0000215075 00000 n 
-0000218548 00000 n 
-0000222667 00000 n 
-0000227808 00000 n 
-0000232637 00000 n 
-0000237982 00000 n 
-0000241835 00000 n 
-0000246012 00000 n 
-0000250950 00000 n 
-0000255358 00000 n 
-0000259610 00000 n 
-0000264434 00000 n 
-0000269359 00000 n 
-0000274192 00000 n 
-0000278354 00000 n 
-0000283345 00000 n 
-0000287824 00000 n 
-0000291520 00000 n 
-0000294717 00000 n 
-0000298863 00000 n 
-0000303534 00000 n 
-0000308038 00000 n 
-0000312446 00000 n 
-0000316546 00000 n 
-0000321543 00000 n 
-0000325119 00000 n 
-0000330821 00000 n 
-0000334853 00000 n 
-0000340273 00000 n 
-0000343533 00000 n 
-0000347594 00000 n 
-0000352022 00000 n 
-0000354952 00000 n 
-0000357677 00000 n 
-0000359106 00000 n 
-0000360978 00000 n 
-0000362941 00000 n 
-0000365286 00000 n 
-0000367183 00000 n 
-0000370100 00000 n 
-0000373246 00000 n 
-0000375872 00000 n 
-0000378105 00000 n 
-0000380361 00000 n 
-0000382905 00000 n 
-0000385834 00000 n 
-0000388580 00000 n 
-0000391413 00000 n 
-0000394033 00000 n 
-0000396682 00000 n 
-0000399927 00000 n 
-0000402954 00000 n 
-0000405913 00000 n 
-0000408560 00000 n 
-0000411504 00000 n 
-0000414387 00000 n 
-0000417306 00000 n 
-0000419965 00000 n 
-0000422659 00000 n 
-0000425406 00000 n 
-0000428700 00000 n 
-0000431619 00000 n 
-0000434875 00000 n 
-0000438909 00000 n 
-0000440962 00000 n 
-0000443324 00000 n 
-0000446057 00000 n 
-0000448593 00000 n 
-0000451988 00000 n 
-0000455124 00000 n 
-0000457489 00000 n 
-0000460136 00000 n 
-0000463084 00000 n 
-0000468992 00000 n 
-0000473189 00000 n 
-0000475690 00000 n 
-0000480030 00000 n 
-0000483149 00000 n 
-0000488142 00000 n 
-0000493740 00000 n 
-0000497719 00000 n 
-0000500727 00000 n 
-0000503193 00000 n 
-0000505431 00000 n 
-0000508307 00000 n 
-0000511401 00000 n 
-0000514776 00000 n 
-0000518148 00000 n 
-0000521368 00000 n 
-0000524836 00000 n 
-0000527811 00000 n 
-0000530707 00000 n 
-0000533636 00000 n 
-0000536193 00000 n 
-0000539182 00000 n 
-0000541594 00000 n 
-0000544286 00000 n 
-0000546406 00000 n 
-0000548544 00000 n 
-0000550627 00000 n 
-0000553110 00000 n 
-0000555419 00000 n 
-0000558077 00000 n 
-0000560350 00000 n 
-0000562289 00000 n 
-0000565228 00000 n 
-0000568347 00000 n 
-0000571356 00000 n 
-0000573216 00000 n 
-0000578113 00000 n 
-0000584615 00000 n 
-0000588161 00000 n 
-0000591523 00000 n 
-0000606457 00000 n 
-0000608748 00000 n 
-0000611515 00000 n 
-0000614224 00000 n 
-0000617562 00000 n 
-0000621576 00000 n 
-0000624101 00000 n 
-0000626871 00000 n 
-0000628523 00000 n 
-0000632396 00000 n 
-0000636807 00000 n 
-0000639175 00000 n 
-0000641675 00000 n 
-0000645191 00000 n 
-0000648812 00000 n 
-0000651787 00000 n 
-0000655614 00000 n 
-0000661878 00000 n 
-0000665845 00000 n 
-0000669531 00000 n 
-0000671898 00000 n 
-0000676191 00000 n 
-0000678787 00000 n 
-0000681828 00000 n 
-0000685164 00000 n 
-0000688388 00000 n 
-0000693034 00000 n 
-0000695829 00000 n 
-0000697850 00000 n 
-0000701441 00000 n 
-0000705798 00000 n 
-0000709684 00000 n 
-0000712668 00000 n 
-0000715557 00000 n 
-0000718364 00000 n 
-0000720882 00000 n 
-0000723666 00000 n 
-0000726276 00000 n 
-0000728795 00000 n 
-0000731630 00000 n 
-0000734330 00000 n 
-0000736758 00000 n 
-0000739385 00000 n 
-0000741964 00000 n 
-0000744323 00000 n 
-0000746368 00000 n 
-0000747878 00000 n 
-0000748006 00000 n 
-0000748134 00000 n 
-0000748262 00000 n 
-0000748390 00000 n 
-0000748518 00000 n 
-0000748646 00000 n 
-0000748775 00000 n 
-0000748904 00000 n 
-0000749033 00000 n 
-0000749162 00000 n 
-0000749291 00000 n 
-0000749420 00000 n 
-0000749549 00000 n 
-0000749678 00000 n 
-0000749807 00000 n 
-0000749936 00000 n 
-0000750065 00000 n 
-0000750194 00000 n 
-0000750323 00000 n 
-0000750452 00000 n 
-0000750581 00000 n 
-0000750710 00000 n 
-0000750839 00000 n 
-0000750968 00000 n 
-0000751097 00000 n 
-0000751226 00000 n 
-0000751355 00000 n 
-0000751484 00000 n 
-0000751613 00000 n 
-0000751742 00000 n 
-0000751871 00000 n 
-0000752000 00000 n 
-0000752129 00000 n 
-0000752258 00000 n 
-0000752387 00000 n 
-0000752516 00000 n 
-0000752645 00000 n 
-0000752774 00000 n 
-0000752903 00000 n 
-0000753032 00000 n 
-0000753161 00000 n 
-0000753290 00000 n 
-0000753419 00000 n 
-0000753548 00000 n 
-0000753677 00000 n 
-0000753806 00000 n 
-0000753935 00000 n 
-0000754064 00000 n 
-0000754193 00000 n 
-0000754322 00000 n 
-0000754451 00000 n 
-0000754580 00000 n 
-0000754709 00000 n 
-0000754838 00000 n 
-0000754967 00000 n 
-0000755096 00000 n 
-0000755225 00000 n 
-0000755354 00000 n 
-0000755483 00000 n 
-0000755612 00000 n 
-0000755741 00000 n 
-0000755870 00000 n 
-0000755999 00000 n 
-0000756128 00000 n 
-0000756257 00000 n 
-0000756386 00000 n 
-0000756515 00000 n 
-0000756644 00000 n 
-0000756773 00000 n 
-0000756902 00000 n 
-0000757031 00000 n 
-0000757160 00000 n 
-0000757289 00000 n 
-0000757418 00000 n 
-0000757547 00000 n 
-0000757676 00000 n 
-0000757805 00000 n 
-0000757934 00000 n 
-0000758063 00000 n 
-0000758192 00000 n 
-0000758321 00000 n 
-0000758450 00000 n 
-0000758579 00000 n 
-0000758708 00000 n 
-0000758837 00000 n 
-0000758966 00000 n 
-0000759095 00000 n 
-0000759224 00000 n 
-0000759353 00000 n 
-0000759482 00000 n 
-0000759611 00000 n 
-0000759740 00000 n 
-0000759869 00000 n 
-0000759998 00000 n 
-0000760127 00000 n 
-0000760256 00000 n 
-0000760386 00000 n 
-0000760516 00000 n 
-0000760646 00000 n 
-0000760776 00000 n 
-0000760906 00000 n 
-0000761036 00000 n 
-0000761166 00000 n 
-0000761296 00000 n 
-0000761426 00000 n 
-0000761556 00000 n 
-0000761686 00000 n 
-0000761816 00000 n 
-0000761946 00000 n 
-0000762076 00000 n 
-0000762206 00000 n 
-0000762336 00000 n 
-0000762466 00000 n 
-0000762596 00000 n 
-0000762726 00000 n 
-0000762856 00000 n 
-0000762986 00000 n 
-0000763116 00000 n 
-0000763246 00000 n 
-0000763376 00000 n 
-0000763506 00000 n 
-0000763636 00000 n 
-0000763766 00000 n 
-0000763896 00000 n 
-0000764026 00000 n 
-0000764156 00000 n 
-0000764286 00000 n 
-0000764416 00000 n 
-0000764546 00000 n 
-0000764676 00000 n 
-0000764806 00000 n 
-0000764936 00000 n 
-0000765066 00000 n 
-0000765196 00000 n 
-0000765326 00000 n 
-0000765456 00000 n 
-0000765586 00000 n 
-0000765716 00000 n 
-0000765846 00000 n 
-0000765976 00000 n 
-0000766106 00000 n 
-0000766236 00000 n 
-0000766366 00000 n 
-0000766496 00000 n 
-0000766626 00000 n 
-0000766756 00000 n 
-0000766886 00000 n 
-0000767016 00000 n 
-0000767146 00000 n 
-0000767276 00000 n 
-0000767406 00000 n 
-0000767536 00000 n 
-0000767666 00000 n 
-0000767796 00000 n 
-0000767926 00000 n 
-0000768056 00000 n 
-0000768186 00000 n 
-0000768316 00000 n 
-0000768446 00000 n 
-0000768576 00000 n 
-0000768706 00000 n 
-0000768836 00000 n 
-0000768966 00000 n 
-0000769096 00000 n 
-0000769226 00000 n 
-0000769356 00000 n 
-0000769486 00000 n 
-0000769616 00000 n 
-0000769746 00000 n 
-0000769876 00000 n 
-0000770006 00000 n 
-0000770136 00000 n 
-0000770266 00000 n 
-0000770396 00000 n 
-0000770526 00000 n 
-0000770656 00000 n 
-0000770786 00000 n 
-0000770916 00000 n 
-0000771046 00000 n 
-0000771176 00000 n 
-0000771306 00000 n 
-0000771436 00000 n 
-0000771566 00000 n 
-0000771696 00000 n 
-0000771826 00000 n 
-0000771956 00000 n 
-0000772086 00000 n 
-0000772216 00000 n 
-0000772346 00000 n 
-0000772476 00000 n 
-0000772606 00000 n 
-0000772736 00000 n 
-0000772866 00000 n 
-0000772996 00000 n 
-0000773126 00000 n 
-0000773256 00000 n 
-0000773386 00000 n 
-0000773516 00000 n 
-0000773646 00000 n 
-0000773776 00000 n 
-0000773906 00000 n 
-0000774036 00000 n 
-0000774166 00000 n 
-0000774296 00000 n 
-0000774426 00000 n 
-0000774556 00000 n 
-0000774686 00000 n 
-0000774816 00000 n 
-0000774946 00000 n 
-0000775076 00000 n 
-0000775206 00000 n 
-0000775336 00000 n 
-0000775466 00000 n 
-0000775596 00000 n 
-0000775726 00000 n 
-0000775856 00000 n 
-0000775986 00000 n 
-0000776116 00000 n 
+0000007747 00000 n 
+0000011982 00000 n 
+0000016828 00000 n 
+0000021094 00000 n 
+0000024819 00000 n 
+0000028102 00000 n 
+0000031431 00000 n 
+0000037384 00000 n 
+0000041115 00000 n 
+0000044681 00000 n 
+0000048551 00000 n 
+0000050904 00000 n 
+0000054755 00000 n 
+0000058456 00000 n 
+0000062331 00000 n 
+0000065702 00000 n 
+0000068076 00000 n 
+0000071545 00000 n 
+0000074500 00000 n 
+0000078101 00000 n 
+0000082425 00000 n 
+0000086625 00000 n 
+0000091400 00000 n 
+0000096037 00000 n 
+0000101725 00000 n 
+0000105131 00000 n 
+0000109496 00000 n 
+0000114606 00000 n 
+0000117417 00000 n 
+0000119855 00000 n 
+0000121702 00000 n 
+0000123441 00000 n 
+0000127370 00000 n 
+0000131384 00000 n 
+0000134006 00000 n 
+0000137143 00000 n 
+0000139893 00000 n 
+0000143176 00000 n 
+0000146386 00000 n 
+0000149358 00000 n 
+0000152713 00000 n 
+0000155949 00000 n 
+0000159757 00000 n 
+0000162934 00000 n 
+0000166492 00000 n 
+0000171389 00000 n 
+0000175398 00000 n 
+0000181122 00000 n 
+0000186871 00000 n 
+0000191704 00000 n 
+0000194492 00000 n 
+0000196378 00000 n 
+0000198908 00000 n 
+0000201119 00000 n 
+0000203838 00000 n 
+0000206581 00000 n 
+0000209433 00000 n 
+0000212700 00000 n 
+0000216162 00000 n 
+0000219558 00000 n 
+0000223471 00000 n 
+0000228493 00000 n 
+0000233368 00000 n 
+0000238993 00000 n 
+0000242678 00000 n 
+0000246988 00000 n 
+0000251792 00000 n 
+0000255804 00000 n 
+0000260696 00000 n 
+0000265171 00000 n 
+0000270195 00000 n 
+0000275224 00000 n 
+0000279215 00000 n 
+0000283998 00000 n 
+0000288461 00000 n 
+0000292315 00000 n 
+0000295708 00000 n 
+0000299712 00000 n 
+0000304222 00000 n 
+0000309010 00000 n 
+0000312959 00000 n 
+0000317414 00000 n 
+0000322527 00000 n 
+0000326282 00000 n 
+0000331871 00000 n 
+0000335930 00000 n 
+0000341011 00000 n 
+0000344655 00000 n 
+0000348464 00000 n 
+0000352869 00000 n 
+0000355953 00000 n 
+0000358595 00000 n 
+0000360343 00000 n 
+0000362215 00000 n 
+0000364101 00000 n 
+0000366353 00000 n 
+0000368384 00000 n 
+0000371105 00000 n 
+0000374150 00000 n 
+0000376923 00000 n 
+0000379173 00000 n 
+0000381440 00000 n 
+0000383987 00000 n 
+0000386738 00000 n 
+0000389654 00000 n 
+0000392370 00000 n 
+0000395028 00000 n 
+0000397756 00000 n 
+0000400823 00000 n 
+0000404035 00000 n 
+0000406751 00000 n 
+0000409651 00000 n 
+0000412469 00000 n 
+0000415425 00000 n 
+0000418349 00000 n 
+0000420970 00000 n 
+0000423773 00000 n 
+0000426491 00000 n 
+0000429724 00000 n 
+0000432636 00000 n 
+0000435832 00000 n 
+0000439307 00000 n 
+0000442105 00000 n 
+0000444245 00000 n 
+0000446853 00000 n 
+0000449812 00000 n 
+0000452844 00000 n 
+0000456144 00000 n 
+0000458622 00000 n 
+0000461042 00000 n 
+0000464180 00000 n 
+0000470011 00000 n 
+0000474266 00000 n 
+0000476893 00000 n 
+0000480824 00000 n 
+0000483942 00000 n 
+0000489282 00000 n 
+0000494899 00000 n 
+0000498853 00000 n 
+0000501804 00000 n 
+0000504199 00000 n 
+0000506598 00000 n 
+0000509213 00000 n 
+0000512433 00000 n 
+0000515683 00000 n 
+0000519133 00000 n 
+0000522430 00000 n 
+0000525884 00000 n 
+0000528744 00000 n 
+0000531696 00000 n 
+0000534578 00000 n 
+0000537235 00000 n 
+0000540145 00000 n 
+0000542739 00000 n 
+0000545505 00000 n 
+0000547386 00000 n 
+0000549642 00000 n 
+0000551657 00000 n 
+0000554332 00000 n 
+0000556660 00000 n 
+0000559304 00000 n 
+0000561343 00000 n 
+0000563527 00000 n 
+0000566355 00000 n 
+0000568762 00000 n 
+0000572415 00000 n 
+0000574355 00000 n 
+0000578160 00000 n 
+0000585867 00000 n 
+0000588381 00000 n 
+0000592321 00000 n 
+0000606792 00000 n 
+0000609809 00000 n 
+0000612629 00000 n 
+0000615353 00000 n 
+0000618531 00000 n 
+0000622258 00000 n 
+0000625191 00000 n 
+0000628071 00000 n 
+0000629486 00000 n 
+0000633441 00000 n 
+0000637868 00000 n 
+0000640269 00000 n 
+0000642680 00000 n 
+0000645795 00000 n 
+0000649514 00000 n 
+0000653019 00000 n 
+0000656691 00000 n 
+0000663091 00000 n 
+0000666851 00000 n 
+0000670471 00000 n 
+0000672719 00000 n 
+0000677425 00000 n 
+0000679824 00000 n 
+0000682954 00000 n 
+0000686299 00000 n 
+0000689295 00000 n 
+0000693921 00000 n 
+0000696804 00000 n 
+0000698998 00000 n 
+0000702397 00000 n 
+0000706548 00000 n 
+0000710592 00000 n 
+0000713717 00000 n 
+0000716624 00000 n 
+0000719375 00000 n 
+0000721928 00000 n 
+0000724574 00000 n 
+0000727182 00000 n 
+0000729950 00000 n 
+0000732716 00000 n 
+0000735391 00000 n 
+0000737799 00000 n 
+0000740392 00000 n 
+0000743093 00000 n 
+0000745417 00000 n 
+0000747564 00000 n 
+0000749206 00000 n 
+0000749334 00000 n 
+0000749462 00000 n 
+0000749590 00000 n 
+0000749718 00000 n 
+0000749846 00000 n 
+0000749974 00000 n 
+0000750103 00000 n 
+0000750232 00000 n 
+0000750361 00000 n 
+0000750490 00000 n 
+0000750619 00000 n 
+0000750748 00000 n 
+0000750877 00000 n 
+0000751006 00000 n 
+0000751135 00000 n 
+0000751264 00000 n 
+0000751393 00000 n 
+0000751522 00000 n 
+0000751651 00000 n 
+0000751780 00000 n 
+0000751909 00000 n 
+0000752038 00000 n 
+0000752167 00000 n 
+0000752296 00000 n 
+0000752425 00000 n 
+0000752554 00000 n 
+0000752683 00000 n 
+0000752812 00000 n 
+0000752941 00000 n 
+0000753070 00000 n 
+0000753199 00000 n 
+0000753328 00000 n 
+0000753457 00000 n 
+0000753586 00000 n 
+0000753715 00000 n 
+0000753844 00000 n 
+0000753973 00000 n 
+0000754102 00000 n 
+0000754231 00000 n 
+0000754360 00000 n 
+0000754489 00000 n 
+0000754618 00000 n 
+0000754747 00000 n 
+0000754876 00000 n 
+0000755005 00000 n 
+0000755134 00000 n 
+0000755263 00000 n 
+0000755392 00000 n 
+0000755521 00000 n 
+0000755650 00000 n 
+0000755779 00000 n 
+0000755908 00000 n 
+0000756037 00000 n 
+0000756166 00000 n 
+0000756295 00000 n 
+0000756424 00000 n 
+0000756553 00000 n 
+0000756682 00000 n 
+0000756811 00000 n 
+0000756940 00000 n 
+0000757069 00000 n 
+0000757198 00000 n 
+0000757327 00000 n 
+0000757456 00000 n 
+0000757585 00000 n 
+0000757714 00000 n 
+0000757843 00000 n 
+0000757972 00000 n 
+0000758101 00000 n 
+0000758230 00000 n 
+0000758359 00000 n 
+0000758488 00000 n 
+0000758617 00000 n 
+0000758746 00000 n 
+0000758875 00000 n 
+0000759004 00000 n 
+0000759133 00000 n 
+0000759262 00000 n 
+0000759391 00000 n 
+0000759520 00000 n 
+0000759649 00000 n 
+0000759778 00000 n 
+0000759907 00000 n 
+0000760036 00000 n 
+0000760165 00000 n 
+0000760294 00000 n 
+0000760423 00000 n 
+0000760552 00000 n 
+0000760681 00000 n 
+0000760810 00000 n 
+0000760939 00000 n 
+0000761068 00000 n 
+0000761197 00000 n 
+0000761326 00000 n 
+0000761455 00000 n 
+0000761584 00000 n 
+0000761714 00000 n 
+0000761844 00000 n 
+0000761974 00000 n 
+0000762104 00000 n 
+0000762234 00000 n 
+0000762364 00000 n 
+0000762494 00000 n 
+0000762624 00000 n 
+0000762754 00000 n 
+0000762884 00000 n 
+0000763014 00000 n 
+0000763144 00000 n 
+0000763274 00000 n 
+0000763404 00000 n 
+0000763534 00000 n 
+0000763664 00000 n 
+0000763794 00000 n 
+0000763924 00000 n 
+0000764054 00000 n 
+0000764184 00000 n 
+0000764314 00000 n 
+0000764444 00000 n 
+0000764574 00000 n 
+0000764704 00000 n 
+0000764834 00000 n 
+0000764964 00000 n 
+0000765094 00000 n 
+0000765224 00000 n 
+0000765354 00000 n 
+0000765484 00000 n 
+0000765614 00000 n 
+0000765744 00000 n 
+0000765874 00000 n 
+0000766004 00000 n 
+0000766134 00000 n 
+0000766264 00000 n 
+0000766394 00000 n 
+0000766524 00000 n 
+0000766654 00000 n 
+0000766784 00000 n 
+0000766914 00000 n 
+0000767044 00000 n 
+0000767174 00000 n 
+0000767304 00000 n 
+0000767434 00000 n 
+0000767564 00000 n 
+0000767694 00000 n 
+0000767824 00000 n 
+0000767954 00000 n 
+0000768084 00000 n 
+0000768214 00000 n 
+0000768344 00000 n 
+0000768474 00000 n 
+0000768604 00000 n 
+0000768734 00000 n 
+0000768864 00000 n 
+0000768994 00000 n 
+0000769124 00000 n 
+0000769254 00000 n 
+0000769384 00000 n 
+0000769514 00000 n 
+0000769644 00000 n 
+0000769774 00000 n 
+0000769904 00000 n 
+0000770034 00000 n 
+0000770164 00000 n 
+0000770294 00000 n 
+0000770424 00000 n 
+0000770554 00000 n 
+0000770684 00000 n 
+0000770814 00000 n 
+0000770944 00000 n 
+0000771074 00000 n 
+0000771204 00000 n 
+0000771334 00000 n 
+0000771464 00000 n 
+0000771594 00000 n 
+0000771724 00000 n 
+0000771854 00000 n 
+0000771984 00000 n 
+0000772114 00000 n 
+0000772244 00000 n 
+0000772374 00000 n 
+0000772504 00000 n 
+0000772634 00000 n 
+0000772764 00000 n 
+0000772894 00000 n 
+0000773024 00000 n 
+0000773154 00000 n 
+0000773284 00000 n 
+0000773414 00000 n 
+0000773544 00000 n 
+0000773674 00000 n 
+0000773804 00000 n 
+0000773934 00000 n 
+0000774064 00000 n 
+0000774194 00000 n 
+0000774324 00000 n 
+0000774454 00000 n 
+0000774584 00000 n 
+0000774714 00000 n 
+0000774844 00000 n 
+0000774974 00000 n 
+0000775104 00000 n 
+0000775234 00000 n 
+0000775364 00000 n 
+0000775494 00000 n 
+0000775624 00000 n 
+0000775754 00000 n 
+0000775884 00000 n 
+0000776014 00000 n 
+0000776144 00000 n 
+0000776274 00000 n 
+0000776404 00000 n 
+0000776534 00000 n 
+0000776664 00000 n 
+0000776794 00000 n 
+0000776924 00000 n 
+0000777054 00000 n 
+0000777184 00000 n 
+0000777314 00000 n 
+0000777444 00000 n 
 trailer
 << /Size 442 /Root 1 0 R >>
 startxref
-776246
+777574
 %%EOF

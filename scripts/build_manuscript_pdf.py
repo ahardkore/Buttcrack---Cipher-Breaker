@@ -228,9 +228,9 @@ def main() -> int:
     parser.add_argument("--title", default="The Kryptos Decryption Manuscript")
     args = parser.parse_args()
 
-    text = Path(args.source).read_text()
+    text = Path(args.source).resolve().read_text()
     book = render(text, args.title)
-    out = Path(args.out)
+    out = Path(args.out).resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     book.doc.save(out)
     size = out.stat().st_size
