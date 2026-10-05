@@ -1,0 +1,12 @@
+PLANTED-CIPHER SELF-TEST
+==============================================================================
+  PASS  standard  vigenere  cycle   p=5 step= 3  recovered=True
+         negative control: 25/25 wrong steps rejected
+  PASS  KRYPTOS   beaufort  cycle   p=4 step= 7  recovered=True
+         negative control: 25/25 wrong steps rejected
+  PASS  standard  vigenere  linear  p=6 step=11  recovered=True
+         negative control: 24/25 wrong steps rejected
+  PASS  KRYPTOS   vigenere  linear  p=3 step= 2  recovered=True
+         negative control: 25/25 wrong steps rejected
+
+SELF-TEST PASSED — the sweep can find what it looks for.

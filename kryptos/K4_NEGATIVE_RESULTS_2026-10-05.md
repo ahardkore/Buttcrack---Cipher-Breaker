@@ -124,6 +124,47 @@ Self-tested on planted rail-fence, spiral, and diagonal ciphers in both composit
 
 ---
 
+## 3c. Aperiodic and progressive keystreams — eliminated outright
+
+Harness: [`attack_k4_aperiodic.py`](attack_k4_aperiodic.py). Every periodic model being dead, the classical next move is a key that *advances* rather than repeats. Self-tested on four planted progressive ciphers; negative controls rejected 24–25 of 25 wrong step values each.
+
+### Running key
+
+The cribs hand us the key directly at 24 positions, so the family can be tested without guessing the source text — a running key drawn from prose must *look* like prose.
+
+| Alphabet | Convention | Fragment @22–34 | score | Fragment @64–74 | score |
+|---|---|---|---|---|---|
+| standard | Vigenère | `BLZCDCYYGCKAZ` | −9.24 | `MUYKLGKORNA` | −8.11 |
+| standard | Beaufort | `JLJODEGKUKKKL` | −8.64 | `OCGGBGOKTRU` | −7.52 |
+| KRYPTOS | Vigenère | `RDUMRIYWOYNKY` | −8.35 | `ELYOIECBAQK` | −7.61 |
+| KRYPTOS | Beaufort | `WXAKGZTOAXAFD` | −8.17 | `RGTGNWRJLFK` | −8.83 |
+
+English prose scores about **−2.4**; uniform noise about **−5.2**. Every fragment lands *below the noise floor*. No running key drawn from natural language can produce these shifts.
+
+### Digit-limited keystreams (Gromark, Gronsfeld, Nihilist)
+
+These add decimal digits, so every shift must be 0–9. One crib above 9 kills the family.
+
+| Alphabet | Convention | Max shift | Cribs over 9 |
+|---|---|---|---|
+| standard | Vigenère | 25 | 15/24 |
+| standard | Beaufort | 20 | 14/24 |
+| KRYPTOS | Vigenère | 23 | 11/24 |
+| KRYPTOS | Beaufort | 25 | 14/24 |
+
+Eliminated under every alphabet and convention.
+
+### Progressive and position-linear keys
+
+`K[i] = base[i mod p] + step·(i div p)` and `K[i] = base[i mod p] + step·i`, exhaustive over p = 1..30, step = 0..25, both conventions, both alphabets, both drift modes.
+
+| Sweep | Configurations | Crib-consistent |
+|---|---|---|
+| Identity transposition | 6,240 | **0** |
+| × all 445 geometric transpositions | 2,776,800 | **0** |
+
+**This is a cleaner kill than the periodic sweep.** There, long periods produced crib-copying overfits that had to be dismissed on quadgram grounds. Here the drift term couples all 24 cribs to a single `step`, so nothing survives at all — the family cannot be made to fit even by brute force.
+
 ## 4. What this leaves
 
 Still standing, roughly in order of promise:

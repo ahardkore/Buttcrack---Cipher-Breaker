@@ -1,0 +1,69 @@
+KRYPTOS K4 — APERIODIC AND PROGRESSIVE KEYSTREAMS
+
+==============================================================================
+ 1. RUNNING KEY — is the implied key language at all?
+==============================================================================
+
+  The cribs hand us the key directly at 24 positions. A running key
+  drawn from text must therefore look like text. English quadgram mean
+  for real prose is about -2.4; uniform noise is about -5.2.
+
+  standard  vigenere  frag@22-34 BLZCDCYYGCKAZ   -9.24
+                      frag@64-74 MUYKLGKORNA     -8.11
+  standard  beaufort  frag@22-34 JLJODEGKUKKKL   -8.64
+                      frag@64-74 OCGGBGOKTRU     -7.52
+  KRYPTOS   vigenere  frag@22-34 RDUMRIYWOYNKY   -8.35
+                      frag@64-74 ELYOIECBAQK     -7.61
+  KRYPTOS   beaufort  frag@22-34 WXAKGZTOAXAFD   -8.17
+                      frag@64-74 RGTGNWRJLFK     -8.83
+
+  -> Every fragment scores at the noise floor. No running key drawn from
+     natural language can produce these shifts. Family eliminated.
+
+==============================================================================
+ 2. DIGIT-LIMITED KEYSTREAMS (Gromark / Gronsfeld / Nihilist)
+==============================================================================
+
+  These add decimal digits, so every shift must be 0..9.
+  One crib above 9 kills the family under that alphabet.
+
+  standard  vigenere  max shift 25  15/24 cribs exceed 9  dead
+  standard  beaufort  max shift 20  14/24 cribs exceed 9  dead
+  KRYPTOS   vigenere  max shift 23  11/24 cribs exceed 9  dead
+  KRYPTOS   beaufort  max shift 25  14/24 cribs exceed 9  dead
+
+  -> Eliminated under every alphabet and convention.
+
+==============================================================================
+ 3 & 4. PROGRESSIVE AND POSITION-LINEAR KEYS
+==============================================================================
+
+  K[i] = base[i mod p] + step*(i div p)   and   base[i mod p] + step*i
+  exhaustive over p = 1..30, step = 0..25, both conventions,
+  both alphabets, both drift modes
+
+  tested 6,240 configurations — 0 crib-consistent
+
+  best-scoring plaintexts:
+
+==============================================================================
+ 5. PROGRESSIVE KEY x GEOMETRIC TRANSPOSITION
+==============================================================================
+
+  445 geometric transpositions x progressive keys
+
+  tested 2,776,800 configurations — 0 crib-consistent
+
+  best-scoring plaintexts:
+
+==============================================================================
+ VERDICT: every family here is eliminated outright.
+   - running keys: implied key fragments score below the noise floor
+   - digit-limited keystreams: 11-15 of 24 cribs exceed 9
+   - progressive and position-linear keys: ZERO crib-consistent
+     configurations, with or without a geometric transposition.
+
+ Note this is a cleaner kill than the periodic sweep. There, long
+ periods produced crib-copying overfits. Here the drift term couples
+ all 24 cribs to one `step`, so nothing survives at all -- the family
+ cannot even be made to fit by brute force.
