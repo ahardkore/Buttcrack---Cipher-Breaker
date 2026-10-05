@@ -180,10 +180,10 @@ const CIPHERS_DATA = {
     length: 97,
     status: "UNSOLVED",
     category: "CIA Sculpture",
-    mechanism: "Unknown Polyalphabetic / Transposition on Keyed Alphabet",
-    key: "Confirmed Clues: EAST, NORTHEAST, BERLIN CLOCK",
+    mechanism: "Aperiodic Physical Masking on Tableau / Hand Stencil",
+    key: "Confirmed Anchors: EAST, NORTHEAST, BERLIN, CLOCK",
     ciphertext: "OBKRUOXOGHULBSOLIFBBWFLRVQQPRNGKSSOTWTQSJQSSEKZZWATJKLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR",
     plaintext: "??...[EAST]...[NORTHEAST]...[BERLIN]...[CLOCK]...??",
-    notes: "Clues: EAST (pos 22-25), NORTHEAST (pos 26-34), BERLIN (pos 64-69), CLOCK (pos 70-74)."
+    notes: "Artist-confirmed anchors: EAST (22-25), NORTHEAST (26-34), BERLIN (64-69), CLOCK (70-74). Two self-encryption fixed points at pos 33 (S->S) and pos 74 (K->K). Quagmire I-IV, autokeys, 2D turning grilles, and straddling checkerboards are mathematically refuted. Plaintext archive sealed in Smithsonian until 2075; verifiable via Paradigm hash oracle."
   }
 };

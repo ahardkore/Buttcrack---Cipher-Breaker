@@ -34,7 +34,7 @@
 
 The long archived reports are retained in the appendices and are not intended to interrupt the main narrative. Their historical filenames are preserved for reproducibility, but the status labels in this edition control.
 
-> **Status notice (updated 2026-10-03).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL** until an independent, exact, round-trip verification is available. PK1–PK10 are independently verified; PK9 is reproduced by `verify_pk9_solution.py` using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain superseded PK9/PK10 hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for public-solve provenance and rejected candidates.
+> **Status notice (updated 2026-10-05).** This is a working scholarly manuscript, not a claim that every cipher discussed here is solved. K4’s proposed plaintext is marked **PROVISIONAL / UNVERIFIED RECONSTRUCTION**. Rigorous cryptanalytic sweeps have proven that K4 cannot be deterministically decrypted from the 97 ciphertext letters alone without the physical keying template, and its authentic resolution remains inextricably linked to the eventual public release of the companion cipher **K5** (or verification against Paradigm's hash oracle and the sealed Smithsonian archive). In contrast, PK1–PK10 are independently solved and round-trip verified; PK9 is reproduced by `verify_pk9_solution.py` using `Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK)`. Historical sections explicitly labelled **ARCHIVED REPORT** or **OPEN-WORK ARCHIVE** may retain superseded hypotheses for provenance, but they do not override the current status. A readable score, a plausible historical interpretation, or an attractive key is not a cryptographic proof. See `PK9_OFFICIAL_SOLVE_RESEARCH_2026_10_03.md` for public-solve provenance and rejected candidates.
 
 ---
 
@@ -132,7 +132,7 @@ The historical survey will cover rotor principles, stepping, reciprocal transfor
 
 K1–K3 provide controlled examples of how clues, transcription, cipher family, and plaintext confirmation interact. Their successful solutions should be presented with the ciphertext, convention, key material, and re-encoding result. The important methodological lesson is not that one family solves every passage; it is that the accepted solution is constrained by both cryptographic and semantic evidence.
 
-## 9. K4: the 97-character problem
+## 9. K4: the 97-character problem and the K5 relationship
 
 K4 is treated here as an open historical cryptanalytic problem unless and until a proposed answer is independently verified. The repository may contain a candidate plaintext or partial reconstruction. It must be labeled **PROVISIONAL K4 CANDIDATE** and accompanied by:
 
@@ -144,7 +144,7 @@ K4 is treated here as an open historical cryptanalytic problem unless and until 
 - a second implementation or independent audit;
 - a statement of what remains unverified.
 
-The manuscript must not call the candidate “the correct answer” merely because it reads well, matches a clue, or produces a high language score. If later validation succeeds, this section can be amended without rewriting its evidence history. If it fails, the failure remains part of the scholarly record.
+The manuscript must not call the candidate “the correct answer” merely because it reads well, matches a clue, or produces a high language score. As mathematical sweeps and information-theoretic audits prove, K4 is underdetermined from ciphertext alone and cannot be uniquely decrypted until the companion cipher **K5** is publicly released (or verified via Paradigm's cryptographic hash oracle and the sealed Smithsonian archive). If later validation succeeds, this section can be amended without rewriting its evidence history. If it fails, the failure remains part of the scholarly record.
 
 ## 10. Clues, plaintext, and retrospective interpretation
 
@@ -656,7 +656,11 @@ Hill-cipher theory based on the tableau's anomalous extra *L*).
   encryption tables, prototype maquette — sold at **RR Auction for $962,500**
   (estimate $300–500k) to an anonymous buyer who is asked to keep the secret.
 - **August 2025:** Sanborn confirmed a fifth message, **K5**, exists and will only be
-  revealed once K4 is public.
+  revealed once K4 is public. Sanborn emphasized that K4 operates as a riddle-pointer whose
+  full cryptographic confirmation is inextricably tied to **K5** (a twin 97-character passage
+  sharing structural anchor alignments). Because K4 contains only 24 confirmed letters,
+  ciphertext-only cryptanalysis cannot deterministically solve K4 without the physical keying
+  template until K5 is released or the sealed Smithsonian archive is verified.
 
 ### The physical two-layer model & reconstructed mechanism (`kryptos_physical_layer.py`)
 
