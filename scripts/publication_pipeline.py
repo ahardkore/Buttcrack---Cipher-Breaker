@@ -66,15 +66,24 @@ def main():
             ),
             encoding="utf-8",
         )
+    def inline_md(s):
+        # Minimal, dependency-free Markdown inline styling for the EPUB body.
+        # Must run after escape() (asterisks/backticks aren't touched by it),
+        # and bold before italics so "**x**" isn't read as italic "*" pairs.
+        s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+        s = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<em>\1</em>", s)
+        s = re.sub(r"`([^`]+?)`", r"<code>\1</code>", s)
+        return s
+
     xhtml = []
     foot = []
     for line in lines:
         if line.startswith("# "):
-            xhtml.append("<h1>" + escape(line[2:]) + "</h1>")
+            xhtml.append("<h1>" + inline_md(escape(line[2:])) + "</h1>")
         elif line.startswith("## "):
-            xhtml.append("<h2>" + escape(line[3:]) + "</h2>")
+            xhtml.append("<h2>" + inline_md(escape(line[3:])) + "</h2>")
         elif line.startswith("### "):
-            xhtml.append("<h3>" + escape(line[4:]) + "</h3>")
+            xhtml.append("<h3>" + inline_md(escape(line[4:])) + "</h3>")
         elif line.startswith("[^") and "]:" in line:
             continue
         else:
@@ -83,6 +92,7 @@ def main():
                 lambda m: f'<a epub:type="noteref" href="#fn-{m.group(1)}">[{m.group(1)}]</a>',
                 escape(line),
             )
+            line = inline_md(line)
             xhtml.append("<p>" + line + "</p>")
     for key, val in footnotes.items():
         foot.append(f'<li id="fn-{escape(key)}">{escape(val)} <a href="#fnref-{escape(key)}">return</a></li>')
