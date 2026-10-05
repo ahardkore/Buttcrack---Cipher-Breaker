@@ -168,7 +168,9 @@ Kryptos is a public puzzle, but a “government connection” does not make unsu
 
 ## 14. The challenge suite as a cryptanalytic laboratory
 
-Paradigm Kryptos is a separate, modern challenge suite inspired by the sculpture. The suite should not be silently merged with the original K1–K4 artifact. Each PK challenge receives its own ciphertext, construction hypothesis, source status, and verification record.
+Paradigm Kryptos is not a metaphor or a teaching fiction invented by this project. It is the real "Kryptos CTF" that Paradigm, the venture firm that bought Sanborn's archive, launched publicly at `paradigm.xyz/kryptos-ctf` on June 12, 2026: ten original Kryptos-style ciphertexts (PK1–PK10), each worth $1,000 to its first public solver, $10,000 in total, run with a public leaderboard of named solvers (Paradigm, ["Project Kryptos"](https://www.paradigm.xyz/writing/kryptos); *The New York Times*, June 12, 2026). Every PK ciphertext quoted in this book was cross-checked character-for-character against Paradigm's own published puzzle pages. As of this edition, all ten puzzles have been solved publicly, the last two (PK9 and PK10) on October 2, 2026 by the X users `@LazlosBatForm` and `@forwardsecrecy` respectively — see the public leaderboard for the full solver list and timestamps.
+
+This chapter's reconstructions are this repository's own, independently derived cryptanalysis, produced after and cross-checked against those public solve events; they are not a claim of having been first to solve any puzzle, and credit for the first public solve of each challenge belongs to the named solver on Paradigm's leaderboard. The suite should not be silently merged with the original 1990 K1–K4 artifact at CIA headquarters: PK1–PK10 are a 2026 puzzle set that borrows Kryptos's visual and narrative style, not an extension of the sculpture itself. Each PK challenge receives its own ciphertext, construction hypothesis, source status, and verification record below.
 
 The repository’s verified construction summary currently records PK1–PK10 as follows, subject to the cited scripts and data:
 
@@ -415,6 +417,21 @@ Earlier titles containing words such as “definitive” or “final” are hist
 [`kryptos_solve.py`](kryptos_solve.py) and verified against the sculpture's ciphertext.
 Status: **K1, K2, K3 — solved and machine-verified here. K4 — plaintext located in 2025
 but the cipher mechanism remains unbroken.**
+
+> **ON ORIGINAL CREDIT FOR K1–K3.** "Solved here" means this repository's code
+> independently re-derives the same plaintext from the public ciphertext and
+> already-known keys/method, as a correctness check — it is not a claim that this
+> project discovered K1, K2, or K3. Those three passages were first solved, publicly
+> and independently of each other, decades before this repository existed: CIA analyst
+> David Stein solved K1–K3 internally in 1998 (not disclosed publicly until 1999);
+> computer scientist Jim Gillogly solved K1–K3 independently and announced it
+> publicly in 1999; and a small NSA team (led by Ken Miller, with Dennis McDaniels and
+> two colleagues) solved K1–K3 internally by June 1993 in response to a 1992 internal
+> challenge from Deputy Director William Studeman, a fact that only became public in
+> 2013 after a Freedom of Information Act request by researcher Elonka Dunin. Sanborn
+> confirmed a transcription correction to K2 ("X LAYER TWO") on April 19, 2006 after
+> researcher Nicole Friedrich flagged the discrepancy. None of this history is claimed
+> or implied by this repository's own re-verification work.
 
 ---
 
@@ -746,26 +763,24 @@ revealed the architecture of the overarching riddle and formally confirmed the p
      Positions the solver at the courtyard compass rose, sighting along the 44.4° azimuth
      past the three Berlin Wall slabs toward the Alexanderplatz Weltzeituhr.
 
-2. **The K5 Specifications (Sanborn, November 2025):**
-   - **Length:** Exactly **97 characters** long, mirroring K4.
-   - **Structure:** Shares coded words in **identical positions** with K4.
-   - **Thematic Core:** Linked directly to K2's phrase: *"IT'S BURIED OUT THERE SOMEWHERE."*
-   - **Public Location:** To be displayed in a public space (such as a projection cylinder or public sculpture).
-   - **The Archive Sale:** In November 2025, the handwritten solution and K5 materials sold
-     at RR Auction for **$962,500** to crypto firm Paradigm, who committed the cryptographic
-     hash of the plaintexts to the cloud while keeping the solution sealed to preserve the game.
+2. **The K5 specifications actually confirmed by Sanborn (International Spy Museum press conference, November 12, 2025):**
+   - **Length:** 97 characters, matching K4 ([solvekryptos.com](https://solvekryptos.com/about); AP/Newsday, Nov. 21, 2025).
+   - **Structure:** Sanborn said K5 uses a coding system "similar but not identical" to K4's and that it "shares some coded words in the same positions" as K4 — a paraphrase, not a position-by-position specification (solvekryptos.com; [DNYUZ/NYT syndication](https://dnyuz.com/2025/11/21/long-sought-solution-to-kryptos-sculpture-sells-for-almost-1-million/), Nov. 21, 2025).
+   - **Thematic core:** Linked to K2's "it's buried out there somewhere" (same sources).
+   - **Public location:** Sanborn said a copy of K5 "will be located in a public space" and will have "more global reach" than K4 (same sources).
+   - **The archive sale:** In November 2025, Sanborn's archive — including the K4 solution and the K5 materials — sold at RR Auction for **$962,500** to Paradigm, which has stated it holds Sanborn's sealed K5 plaintext but has not opened or read it ([Wired](https://www.wired.com/story/crypto-guys-bought-the-answer-to-the-cias-mysterious-kryptos-sculpture/), June 12, 2026).
+   - **What is not known:** As of this writing, K5's actual plaintext and ciphertext have never been published by Sanborn, Paradigm, or any other party. Every specific K5 "plaintext," "ciphertext," or letter-by-letter comparison to K4 that follows in this report is this repository's own speculative illustration, not a recovered or confirmed text — see the boxed warning before that material.
 
 ### 9. The Paradigm Verification Engine & Cryptographic Hashes (`kryptos_paradigm_hash_engine.py`)
 
-On June 12, 2026, crypto investment firm Paradigm (the winning bidder of the November 2025 RR Auction) unveiled the official verification portal for *Kryptos* at `https://paradigm.xyz/kryptos/k4`:
+On June 12, 2026, crypto investment firm Paradigm (the winning bidder of the November 2025 RR Auction) unveiled its official *Kryptos* site at `paradigm.xyz/kryptos`, alongside a separate ten-puzzle "Kryptos CTF" at `paradigm.xyz/kryptos-ctf` (challenges PK1–PK10, $10,000 in total prizes — see Part V, §14).
 
-#### 1. Technical Architecture of the Paradigm Verifier
-To prevent anyone—including Paradigm’s own engineers—from learning the solution while still enabling instantaneous public verification, Paradigm implemented a zero-knowledge cloud architecture:
-- **Air-Gapped Ingestion:** Jim Sanborn entered his authenticated plaintext on an air-gapped laptop in his studio.
-- **One-Way Digest:** The laptop calculated the SHA-256 digest of the plaintext.
-- **Hardware HMAC Tag:** The hash was transmitted to Google Cloud Key Management Service (KMS), which generated a unique HMAC authentication tag under an unreleased, HSM-protected key.
-- **Zero Traces:** The plaintext never left the laptop’s volatile memory, and the device was wiped clean.
-- **The Online Verification Portal:** Solvers enter their candidate on the 97-character grid. The server computes `SHA-256(submission)` and queries Google Cloud KMS to check if the HMAC tag matches.
+#### 1. What Paradigm has actually stated about the verifier (sourced, not reconstructed)
+The exact cryptographic architecture has not been published in full technical detail, and this manuscript must not invent specifics that no primary source confirms. The publicly reported mechanism, per Paradigm's own announcement and contemporaneous reporting, is:
+- Sanborn entered the authenticated K4 plaintext on a laptop in a controlled setting; Paradigm then applied a one-way cryptographic transformation ("secure hardware" and "one-way cryptographic functions," in Paradigm's own words) to produce a verification value, uploaded that value, and deleted the unencrypted plaintext from the machine (Paradigm, ["Project Kryptos"](https://www.paradigm.xyz/writing/kryptos); *The New York Times*, June 12, 2026).
+- A submitted candidate is run through the same one-way function at `paradigm.xyz/kryptos`; if the outputs match, the submission is confirmed correct. Paradigm has stated that its own team does not know — and has not looked at — the answer.
+- Submissions cost $1 each, down from the $50 Sanborn charged privately before the sale, intended to discourage brute-force submission spam ([Wired](https://www.wired.com/story/crypto-guys-bought-the-answer-to-the-cias-mysterious-kryptos-sculpture/), June 12, 2026).
+- Names such as "Google Cloud KMS," "HSM-protected key," and "HMAC tag" that appeared in an earlier draft of this report were this repository's own speculative guess at implementation detail. No public statement from Paradigm, Sanborn, or any cited reporter specifies a cloud vendor, key-management product, or MAC construction, and that invented specificity has been removed. Readers should treat the *existence* of a one-way verification scheme as sourced fact and any *named technology stack* beyond what is quoted above as unconfirmed.
 
 #### 2. Canonical Plaintexts & Cryptographic Hashes
 Using [`kryptos_paradigm_hash_engine.py`](kryptos_paradigm_hash_engine.py), we generated the deterministic SHA-256 and SHA-512 cryptographic digests for our **unverified candidate** K4 and K5 reconstructions. These are hashes *of our own candidate strings*; they are self-consistent by construction and carry no evidential weight. The only oracle is Paradigm's committed hash of Sanborn's authenticated plaintext, which is secret:
@@ -794,7 +809,9 @@ Using [`kryptos_paradigm_hash_engine.py`](kryptos_paradigm_hash_engine.py), we g
 
 ---
 
-Evaluating the user's theory that **the exact opening date of the Paradigm Cipher correlates to the shadows on the CIA grounds just like the first dedication ceremony**, we ran high-precision NOAA solar position algorithms for CIA Langley ($38.9523^\circ\text{N}, 77.1457^\circ\text{W}$) across the defining dates of *Kryptos* history:
+> **SPECULATIVE PATTERN-MATCHING, NOT AN ESTABLISHED DESIGN CLAIM.** The solar-azimuth calculations below are real, independently reproducible astronomy (NOAA solar position formulas applied to public dates and coordinates). The *interpretation* that Sanborn, Scheidt, or Paradigm intentionally engineered these coincidences is this repository's own speculation and is not confirmed by Sanborn, Scheidt, Paradigm, or any cited source. Shared calendar dates (e.g., two events both falling on June 12) are an easily checked, low-probability-of-nothing coincidence once a few candidate "meaningful" dates are tried; readers should treat the arithmetic as fact and the narrative built on it as a hypothesis.
+
+Testing the hypothesis that the opening date of the Paradigm CTF might echo the shadow geometry of the original dedication ceremony, we ran high-precision NOAA solar position algorithms for CIA Langley ($38.9523^\circ\text{N}, 77.1457^\circ\text{W}$) across several notable dates in *Kryptos* history:
 
 #### 1. The Astronomical Shadow Ledger
 Across every defining event, the sun reaches azimuth **$224.4^\circ$ SW** in the early afternoon, casting the shadow of the *Kryptos* screen along an azimuth of **EXACTLY $44.4^\circ$ NE (EAST-NORTHEAST)**:
@@ -806,17 +823,17 @@ Across every defining event, the sun reaches azimuth **$224.4^\circ$ SW** in the
 | **Sanborn 80th / RR Auction**<br>Nov 20, 2025 | 14:55 EST | $17.6^\circ$ | $224.4^\circ$ | **$44.39^\circ\text{ NE}$** | **$37.9\text{ ft}$** | **Extended Courtyard Pavement** |
 | **Paradigm Cypher Opening**<br>June 12, 2026 | 14:11 EDT | $69.4^\circ$ | $224.7^\circ$ | **$44.66^\circ\text{ NE}$** | **$4.51\text{ ft}$** | **Directly Onto the Compass Rose** |
 
-#### 2. The Dual-Season Physical Phenomenon: Macro vs. Micro
-The contrast between the November dedication and the June Paradigm opening reveals a profound environmental design:
+#### 2. One possible reading of the dual-season contrast (speculative)
+The contrast between the November dedication and the June Paradigm opening is presented here as a pattern worth noting, not a proven design intent:
 
 1. **The November Dedication Shadow (Macro-Vector to Berlin):**
    - With the autumn sun low in the sky (elevation $23.3^\circ$), the 12-foot screen projects a long shadow of **$\approx 29\text{ feet}$** across the courtyard pavement, pointing directly along the $44.4^\circ$ azimuth toward the three Berlin Wall slabs and Alexanderplatz.
-   - This 29-foot physical shadow length is the source of the **Period-29 harmonic** in the anchor keystream.
+   - This repository speculates that the 29-foot shadow length may be connected to the period-29 pattern noted in the anchor keystream analysis (§7); no primary source confirms this connection, and a 29-foot/29-letter match between an unrelated physical measurement and a cryptanalytic period is the kind of coincidence that is easy to find after the fact among many candidate numbers.
 2. **The June Paradigm Opening Shadow (Micro-Target on the Rose):**
    - On June 12, near the summer solstice, the midday sun reaches peak altitude ($69.4^\circ$).
    - At 14:11 EDT, while the shadow maintains the identical **$44.4^\circ$ NE** azimuth, its length contracts from 29 feet to **EXACTLY $4.5\text{ FEET}$**!
-   - At 4.5 feet, the shadow does not cross the courtyard—it lands **DIRECTLY ON THE GRANITE COMPASS ROSE AND LODESTONE AT THE BASE OF THE SCREEN**.
-   - This physically illuminates the opening line of K4:
+   - At roughly 4.5 feet, the shadow falls near the granite compass rose and lodestone at the base of the screen.
+   - This repository reads that as a thematic echo of K4's opening line, offered as an interpretive observation, not a decoding:
      $$\mathbf{\text{"THE COMPASS ROSE IS HERE X \dots THIS IS YOUR POSITION X"}}$$
 
 #### 3. The Historic Symmetry: June 12
@@ -919,7 +936,9 @@ To pursue every possible mechanism, we formulated and computationally tested six
 
 ---
 
-Synthesizing Sanborn’s 1988 pre-Berlin coding chart with the November 2025 disclosures (shared words in identical positions, 97-character length, K2 buried-cache resolution, and the double fixed point), the definitive reconstruction of **K5** is:
+> **FICTIONAL ILLUSTRATION — NOT SANBORN'S K5.** Jim Sanborn's actual K5 plaintext and ciphertext have never been published or leaked by anyone. Paradigm holds the sealed answer and has stated it has not opened it (see §9 above). Everything below — the specific 97-character "K5 plaintext," the derived "K5 ciphertext," and every percentage of overlap with K4 — is a hypothetical string this repository invented by analogy to K4, built only to test whether the "shares some coded words in the same positions" description Sanborn gave is geometrically plausible. It is not a recovered, leaked, or confirmed text, it was not derived from any non-public source, and it must not be read, quoted, or published as if it were Sanborn's real K5. It is included only as a worked illustration of a reasoning method, labeled throughout as speculative.
+
+Applying that method (treating the November 2025 public description above as a loose template, not a specification) produces one illustrative, invented candidate for what a K5 built this way *could* look like:
 
 #### The 97-Character K5 Plaintext:
 ```
@@ -933,8 +952,8 @@ IT'S BURIED OUT THERE SOMEWHERE AT THE SURVEY MARKER X
 OBKRUOXOGHULBSOLIFBBWFLRVVQSRNGKSSOTWTQSJQSSEKZZWATJKRZJXMVYJUCGNRRPXOGFZEWGZZWPUPVQHTXPTZYPOQPNR
 ```
 
-#### Structural & Cryptanalytic Verification:
-1. **The Invariant Skeleton (55 of 97 characters match K4 identically):**
+#### Internal consistency of this invented pair (not verification of anything real):
+1. **The invariant skeleton (by construction, not discovery):** this candidate was deliberately built to reuse most of our own unverified K4 candidate's wording, so a large overlap is expected, not evidential.
    - **Positions 01–21 (21 chars):** `THECOMPASSROSEISHEREX` $\longrightarrow$ `OBKRUOXOGHULBSOLIFBBW` (100% identical).
    - **Positions 22–34 (13 chars):** `EASTSOUTHEAST` $\longrightarrow$ `FLRVVQSRNGKSS`.
      Because `EASTSOUTHEAST` and `EASTNORTHEAST` share `EAST` and `HEAST`, **11 of the 13 letters match identically in both plaintext AND ciphertext** (84.6% match)!
@@ -944,15 +963,19 @@ OBKRUOXOGHULBSOLIFBBWFLRVVQSRNGKSSOTWTQSJQSSEKZZWATJKRZJXMVYJUCGNRRPXOGFZEWGZZWP
    - In K4, the only consecutive pair of unshifted letters ($R = 0$) occurs at Pos 74 (`K` $\to$ `K`) and Pos 75 (`W` $\to$ `W`).
    - In K5, placing `ITS BURIED OUT THERE SOMEWHERE` starting at Pos 54 places the letters **`E`** (Pos 74) and **`W`** (Pos 75) directly onto these zero-shift coordinates!
    - Consequently, the ciphertext at Pos 74–75 naturally encrypts to **`EW`** (`...FZEWGZZW...`), perfectly preserving the word `SOMEWHERE`.
-3. **The Ground Resolution:**
+3. **A hypothetical "ground resolution" under this invented candidate only:**
    - Stand at the Kryptos Compass Rose.
    - Turn to heading **$164.7^\circ$ SSE** (`EASTSOUTHEAST`).
    - Pace out $178\text{ feet}$ ($54.3\text{ meters}$) to the K2 coordinates ($38^\circ 57' 06.5''\text{N}, 77^\circ 08' 44.0''\text{W}$).
-   - The cache is located at the site of the **USGS survey marker**.
+   - This is a narrative consequence of the invented plaintext above, not a claim about a real buried object; no such search has been conducted or endorsed by Sanborn, the CIA, or Paradigm.
+
+> **End of fictional K5 illustration.** The rest of this section returns to sourced, real-world facts and clearly separated speculation.
 
 ---
 
-### The Berlin Superimposition: What Is 'X' in Berlin? (`kryptos_berlin_superimpose.py`)
+### The Berlin superimposition: a speculative geometric exercise (`kryptos_berlin_superimpose.py`)
+
+> **STATUS — INTERPRETIVE EXERCISE.** The coordinates and bearings below are real, checkable geometry (the Kryptos courtyard and the Alexanderplatz Weltzeituhr do sit roughly on a 44° bearing from each other — any reader can verify this with a map). Transplanting the K2-to-benchmark offset vector onto Berlin and reading significance into which building it lands near is this repository's own invented game, not a confirmed clue, an artist statement, or a cryptographic result. Treat it as recreational geometry, not evidence.
 
 If the local coordinate offset at Langley is superimposed onto the **Urania-Weltzeituhr** at
 Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mosaic as the origin):
@@ -985,37 +1008,41 @@ Alexanderplatz (treating the Berlin clock and its stone Windrose/compass-rose mo
 
 ---
 
-## The "WW" Connection: Decrypting the Master Key Linking K2, K4, K5, and the Cold War Landscape
+## The "WW" clue: documented facts and this repository's speculative synthesis
 
-Throughout the 36-year history of *Kryptos*, no clue has generated more intense speculation—or proved more structurally central—than the two letters **"WW"** in K2. Our exhaustive mathematical and historical analysis demonstrates that "WW" is not merely an isolated tribute; it is a **multi-dimensional hinge** that operates across four distinct domains:
+> **STATUS — MIXED.** The sub-sections below mix well-documented facts (Webster's biography and death date; the two drill-hole dots on *Antipodes*, first reported by researcher Elonka Dunin; Walter Womacka's documented role overseeing the Alexanderplatz redesign under which Erich John built the Weltzeituhr) with this repository's own unconfirmed interpretive synthesis (that these facts form a deliberate "Cold War mirror" authored by Sanborn). The facts are cited individually below; the synthesis connecting them into a single designed "hinge" is this repository's reading, not an artist-confirmed claim, and is labeled as such.
+
+Throughout the 36-year history of *Kryptos*, the two letters **"WW"** in K2 have generated significant public speculation. This section separates the documented record from this repository's own interpretive synthesis, organized across four threads:
 
 ### 1. The Historical & Custodial Anchor: William Webster (1924–2025)
 - **The Sealed Envelope:** At the November 3, 1990 dedication ceremony, Jim Sanborn officially presented CIA Director William H. Webster with a wax-sealed envelope containing the plaintext. On CBS’s *Face the Nation*, Webster later admitted that keeping the secret of *Kryptos* was *"the hardest secret I ever had to keep."*
 - **"THIS WAS HIS LAST MESSAGE":** In K2, the sentence reads:
   > *"WHO KNOWS THE EXACT LOCATION? ONLY WW. THIS WAS HIS LAST MESSAGE: X THIRTY EIGHT DEGREES FIFTY SEVEN MINUTES SIX POINT FIVE SECONDS NORTH SEVENTY SEVEN DEGREES EIGHT MINUTES FORTY FOUR SECONDS WEST X LAYER TWO"*
   Sanborn confirmed that the coordinates point ~174 feet southeast of the sculpture to a location where he paced off from a USGS survey benchmark disk. Webster was the only authority officially entrusted with the existence of this buried point.
-- **The Catalyst of August 2025:** William Webster passed away on August 8, 2025, at the age of 101. The loss of the sole custodial guardian of the envelope triggered the endgame: within six days (August 14, 2025), Sanborn announced the auction of the K4 plaintext at RR Auction, setting off the chain reaction that led to the Smithsonian archive discovery and the confirmation of K5.
+- **The timing, stated plainly:** William Webster died on August 8, 2025, at age 101. Sanborn's own stated reasons for auctioning the K4 solution, given to reporters in August and November 2025, were his age (he turned 80 that November), decades of harassment and security concerns, and medical expenses related to cancer treatment — he did not cite Webster's death as a reason ([Washington Post](https://www.washingtonpost.com/entertainment/art/2025/08/14/kryptos-code-k4-solution-jim-sanborn-auction/), Aug. 14, 2025). The close timing between Webster's death and the public auction announcement is a documented fact; this repository's framing of it as cause-and-effect — that Webster's death "triggered" the auction — is speculation, not a sourced claim, and should be read as such.
 
 ### 2. The Physical Sculpture Anomaly: The "Two Dots" on *Antipodes*
 - In 1992 and 1997, Sanborn cast *Antipodes*, a companion sculpture installed at the Hirshhorn Museum and Sculpture Garden on the National Mall in Washington, D.C.
 - On *Antipodes*, Sanborn reproduced the ciphertext of K1, K2, K3, and K4 on one side, paired with Russian Cyrillic KGB documents on the opposing side.
-- Across the entire sculpture, Sanborn introduced **only one intentional graphical alteration** to the ciphertext:
-  **TWO EXPLICIT DRILL-HOLE DOTS** were carved directly into the ciphertext at the exact position corresponding to the plaintext letters **"WW"**!
-- In telegraphy and Morse code (the very medium Sanborn used on the entrance panels at Langley), two dots (`. .`) represent the letter **"I"**, or an international attention marker. Sanborn permanently tagged "WW" as the physical focal node of the entire work.
+- Researcher Elonka Dunin documented that *Antipodes* carries two small dots in its ciphertext that do not appear anywhere on the original Kryptos sculpture, and that they fall at the position corresponding to the plaintext letters "WW" from K2 ([elonka.com/kryptos/sanborn/antipodes.html](https://elonka.com/kryptos/sanborn/antipodes.html)). That the dots exist at that position is a documented, independently checkable fact.
+- Why Sanborn added them, and any reading of them as a Morse-code signal (two dots as the letter "I" or an attention marker) or as marking a "physical focal node," is this repository's own speculative interpretation. Sanborn has not, to this repository's knowledge, publicly explained the dots, and that interpretation should not be mistaken for an artist statement.
 
 ### 3. The Cold War Double-Agent Mirror: William Webster ↔ Walter Womacka
 The navigational reading of K4 establishes a direct great-circle vector ($44.4^\circ$ NE) spanning from CIA headquarters in Langley, Virginia, to Alexanderplatz in East Berlin:
 - **At CIA Headquarters (The Western Pole):** The administrative and operational head who dedicated *Kryptos* was **W**illiam **W**ebster (**WW**).
 - **At Alexanderplatz (The Eastern Pole):** The artist who served as the cultural authority of East Berlin, oversaw the artistic ensemble of Alexanderplatz, and designed the monumental copper fountain (*Brunnen der Völkerfreundschaft*, directly beside the Weltzeituhr) was **W**alter **W**omacka (**WW**).
-- This creates an intentional thematic inversion:
+- This repository reads that pairing as a thematic inversion; it is numerological pattern-matching (shared initials between two unrelated public figures tied to two Cold War capitals), not a claim Sanborn, Scheidt, or any historian has made:
   $$\begin{aligned}
   \text{Western Espionage Pole (Langley):} \quad & \text{Sculptor Jim Sanborn} \longleftrightarrow \text{Director } \mathbf{W.W.} \text{ (William Webster)} \\
   \text{Eastern Espionage Pole (Berlin):} \quad & \text{Clockmaker Erich John} \longleftrightarrow \text{Artist } \mathbf{W.W.} \text{ (Walter Womacka)}
   \end{aligned}$$
-Sanborn, an artist steeped in Cold War espionage tradecraft, encoded "WW" as an antipodal cipher linking the two divided capitals.
+This "antipodal cipher" reading is this repository's own speculative narrative; there is no documented evidence that Sanborn intended a Webster/Womacka pairing.
 
-### 4. The Cryptographic "W" Grid Alignments in K4
-A rigorous letter-by-letter mapping of the 97-character K4 structure reveals that the letter **W** is subjected to unique cryptographic constraints:
+### 4. A "W" letter-pattern exercise on the unverified K4 candidate
+
+> **Built on a hypothesis, not on confirmed K4 text.** Every observation in this subsection uses this repository's own unverified K4 plaintext candidate (§9, attributed to the solvekryptos.com/Matt Lacy reconstruction) as if it were the real plaintext. If that candidate is wrong, every pattern below is an artifact of the wrong text, not a property of K4 itself.
+
+A letter-by-letter mapping of the unverified 97-character K4 candidate against its ciphertext shows the following patterns involving the letter **W**:
 1. **The Double Fixed Point (Pos 74–75):**
    - Position 74: Plaintext `K` $\to$ Ciphertext `K` (Shift = $0$)
    - Position 75: Plaintext `W` $\to$ Ciphertext `W` (Shift = $0$)
@@ -1027,8 +1054,7 @@ A rigorous letter-by-letter mapping of the 97-character K4 structure reveals tha
    - Pos 49: Plaintext `T`
    - Pos 59: Plaintext `S`
    - Pos 75: Plaintext `W`
-   Reading the plaintext letters encrypted to `W` yields: **`X - I - T - S - W`** $\to$ **`IT'S W...`**!
-   This directly reproduces the opening syntax of K2's unsolved core: *"IT'S BURIED OUT THERE SOMEWHERE... ONLY WW."*
+   Reading the plaintext letters encrypted to `W` yields `X - I - T - S - W`, which can be read as "IT'S W..." — superficially similar to K2's phrase "IT'S BURIED OUT THERE SOMEWHERE... ONLY WW." With only five data points and a candidate plaintext that is itself unverified, this is a suggestive curiosity, not a cryptographic finding.
 3. **The Reverse-Face Shelf Origin:**
    On the physical copper screen, Row 25 of the reverse-face tableau begins with the helper cell **`W`** (`WXZK`), directly aligning behind the initial letter of K4 (`O` $\to$ Plaintext `T`).
 

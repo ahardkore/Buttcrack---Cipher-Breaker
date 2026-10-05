@@ -24,556 +24,556 @@
 - 13. Ethics of publishing cryptanalysis — source line 163
 - Part V — Paradigm Kryptos PK1–PK10 — source line 167
 - 14. The challenge suite as a cryptanalytic laboratory — source line 169
-- 15. PK1–PK3: simple layers and composition — source line 190
-- 16. PK4–PK6: transposition, key reuse, and narrative expansion — source line 194
-- 17. PK7: nonlinear transformation — source line 198
-- 18. PK8: additive multi-clock construction — source line 202
-- 19. PK9 verified construction and PK10 verified case study — source line 206
-- Part VI — Reproducible cryptanalysis — source line 220
-- 21. Experimental design — source line 222
-- 22. Language models and overfitting — source line 239
-- 23. Audit of the PK9 campaign — source line 243
-- 24. Evidence ledger template — source line 247
-- Part VII — Appendices — source line 257
-- Appendix A. Notation and alphabets — source line 259
-- Appendix B. Full ciphertext tables — source line 263
-- Appendix C. Independent verification scripts — source line 267
-- Appendix D. Search logs and negative results — source line 271
-- Appendix E. Source-critical bibliography — source line 275
-- Appendix F. Glossary — source line 279
-- Closing statement — source line 285
-- Part VIII — A working historical narrative — source line 289
-- 25. Why a sculpture can be a cryptographic document — source line 291
-- 26. The cryptographic imagination of the twentieth century — source line 299
-- 27. The history of frequency analysis — source line 305
-- 28. From Vigenère to modern reproducibility — source line 311
-- Part IX — Methods chapter for researchers — source line 317
-- 29. The anatomy of a responsible attack — source line 319
-- 30. Why optimization produces seductive nonsense — source line 336
-- 31. Transcription as an attack surface — source line 352
-- 32. The role of negative evidence — source line 358
-- Part X — Images and visual apparatus — source line 364
-- 33. Image plan for the KDP edition — source line 366
-- 34. Caption standard — source line 381
-- Part XI — Publication and revision — source line 389
-- 35. The edition model — source line 391
-- 36. Final author’s note for the working edition — source line 397
-- Part XII — Research archive and source-critical dossier — source line 403
-- KRYPTOS — The Ciphers, the Solutions, and What's Left — source line 412
-- The sculpture — source line 421
-- K1 — SOLVED ✅ (verified by my code) — source line 430
-- K2 — SOLVED ✅ (verified, including its famous error) — source line 440
-- K3 — SOLVED ✅ (verified both directions) — source line 580
-- K4 — the 97-letter mystery — source line 599
-- # My cryptanalysis (all results reproducible in `kryptos_solve.py`) — source line 621
-- # What happened in 2025: found, not solved — source line 647
-- # The physical two-layer model & reconstructed mechanism (`kryptos_physical_layer.py`) — source line 665
-- # The master riddle & the K5 continuation (`kryptos_master_synthesis.py`) — source line 729
-- # 9. The Paradigm Verification Engine & Cryptographic Hashes (`kryptos_paradigm_hash_engine.py`) — source line 758
-- ## 1. Technical Architecture of the Paradigm Verifier — source line 762
-- ## 2. Canonical Plaintexts & Cryptographic Hashes — source line 770
-- ### A. K4 Candidate Plaintext — unverified (97 Characters, Continuous Uppercase): — source line 773
-- ### B. K4 Candidate Plaintext — unverified (With Single-Space Word Breaks, 118 chars): — source line 781
-- ### C. K5 Candidate — speculative (97 Characters, Survey Marker Resolution): — source line 787
-- ## 1. The Astronomical Shadow Ledger — source line 799
-- ## 2. The Dual-Season Physical Phenomenon: Macro vs. Micro — source line 809
-- ## 3. The Historic Symmetry: June 12 — source line 822
-- ## 1. George Washington's Culper Spy Ring (1778–1783) — source line 830
-- ## 2. CIA Internal Cryptonyms & Langley Terminology — source line 835
-- ## 3. Cold War Berlin & Spy Exchange Cover Words — source line 845
-- ## 4. The Structural Reason: Codebooks vs. Cipher Screens — source line 849
-- ## 1. The Forced Text of Period 29 — source line 861
-- ## 2. Exhaustive Crib-Dragging Across All 97 Positions — source line 873
-- ## 3. The Natural Anchor Words of the Reconstructed Text — source line 879
-- ## Theory 1: The Ray-Gate Solar Decomposition (69 E, 18 NE, 10 S) — source line 890
-- ## Theory 2: The 29-Foot Solar Shadow & Period-29 Harmonic — source line 896
-- ## Theory 3: The 14-Digit Coordinate Column Key — source line 902
-- ## Theory 4: The `SUB UMBRA FLOREO` Authorial Signature — source line 908
-- ## Theory 5: Boustrophedon / S-Curve Alternating Transposition — source line 912
-- ## Theory 6: Morse Panel Keystream & Running Keys — source line 916
-- ## The 97-Character K5 Plaintext: — source line 924
-- ## The 97-Character K5 Ciphertext (under the 1988 Quagmire III Coding Chart): — source line 931
-- ## Structural & Cryptanalytic Verification: — source line 936
-- # The Berlin Superimposition: What Is 'X' in Berlin? (`kryptos_berlin_superimpose.py`) — source line 955
-- The "WW" Connection: Decrypting the Master Key Linking K2, K4, K5, and the Cold War Landscape — source line 988
-- # 1. The Historical & Custodial Anchor: William Webster (1924–2025) — source line 992
-- # 2. The Physical Sculpture Anomaly: The "Two Dots" on *Antipodes* — source line 999
-- # 3. The Cold War Double-Agent Mirror: William Webster ↔ Walter Womacka — source line 1006
-- # 4. The Cryptographic "W" Grid Alignments in K4 — source line 1017
-- Bottom line — source line 1037
-- PK8 Structured Ciphertext-Only Break — source line 1057
-- Scope and honesty boundary — source line 1063
-- Algebra — source line 1078
-- Result — source line 1106
-- score=-4.361307 keys=METE/METER/METIER/MASTERY — source line 1114
-- score=-6.475130 keys=WILE/WILED/WILLED/HQZMJOR — source line 1117
-- Independent synthetic control — source line 1132
-- Reproduction — source line 1144
-- Implication for PK9 — source line 1162
-- PARADIGM KRYPTOS WORKSPACE CATALOG & RECALL INDEX — source line 1174
-- 1. Master Deliverables Directory — source line 1195
-- 2. Challenge-by-Challenge Quick-Recall Matrix — source line 1212
-- 3. High-Speed One-Line Verification Commands — source line 1229
-- 4. Master Mathematical & Architectural Invariants — source line 1270
-- 2026-10-02 (evening) — new PK9 tooling (see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md addenda) — source line 1287
-- 2026-10-02 (evening) — stale-text purge after PK4 site rejection — source line 1303
-- PARADIGM KRYPTOS: DEFINITIVE MASTER CRYPTANALYTIC AUDIT & REPORT — source line 1331
-- 1. Master Challenge Ledger & Verification Status — source line 1342
-- 2. Archived PK9 hypotheses — not a solution — source line 1359
-- # 2.1 Cryptographic Parameters & Reflection Invariants — source line 1363
-- # 2.2 The 135-Character Core Text & Boundary Padding — source line 1379
-- # 2.3 Verified Plaintext & Metrics — source line 1386
-- 3. Definitive Solution Submission: PK10 ($N = 504$) — source line 1405
-- # 3.1 Cryptographic Parameters & Structure — source line 1407
-- # 3.2 Verified 432-Character Core Plaintext Matrix — source line 1426
-- # 3.3 Core Metrics — source line 1443
-- 4. The Dual-Cipher Kryptos Sculpture GPS Theorem — source line 1453
-- 5. The Universal Cryptosystem Bridges — source line 1473
-- 6. Full Suite Reproducibility Assurance — source line 1488
-- EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — source line 1497
-- 1. Executive Summary & Verification Ledger — source line 1513
-- 2. Key Cryptanalytic Breakthroughs — source line 1532
-- # 2.1 PK9 ($N = 144$): ARCHIVED speculative score reports superseded — source line 1534
-- # 2.2 PK10 ($N = 504$ / 432-Character Core): The Modular Triptych — source line 1560
-- # 2.3 The Dual-Cipher GPS Sculpture Coordinates Theorem — source line 1596
-- # 2.4 PK8 ($N = 153$): Orthogonal Stride Projections & Solution Parameters — source line 1613
-- 3. Grand Cryptosystem Bridges — source line 1623
-- 4. Full Suite Reproducibility Assurance — source line 1637
-- Part XIII — A reader’s guide to the cryptanalysis — source line 1643
-- 37. What a cipher is, in plain language — source line 1645
-- 38. How analysts search without guessing every sentence — source line 1653
-- 39. Why readable fragments can be false — source line 1661
-- 40. A guided example of a keyed alphabet — source line 1667
-- 41. What “failed” means in this book — source line 1679
-- Part XIV — PK9 recovery and PK10 verification record — source line 1685
-- 42. PK9 and PK10: what can be said responsibly — source line 1687
-- 43. How an open problem remains useful to a beginner — source line 1695
-- 44. Questions a reader should ask of every claimed break — source line 1701
-- Part XV — The four passages as a guided case study — source line 1715
-- 45. K1: the first lesson in convention — source line 1717
-- 46. K2: rearranging without changing the letters — source line 1725
-- 47. K3: clues constrain, algorithms decide — source line 1733
-- 48. K4: the status of a provisional answer — source line 1739
-- Part XVI — Paradigm Kryptos through PK8 — source line 1745
-- 49. Why the challenge suite matters — source line 1747
-- 50. PK1 and the idea of a repeating key — source line 1753
-- 51. PK2 and the geometry of columns — source line 1759
-- 52. PK3 and additive composition — source line 1765
-- 53. PK4 and layer order — source line 1771
-- 54. PK5 and derived key material — source line 1777
-- 55. PK6 and double transposition — source line 1783
-- 56. PK7 and matrix coupling — source line 1789
-- 57. PK8 and multiple clocks — source line 1795
-- Part XVII — Building the reader’s confidence — source line 1803
-- 58. A reproducibility exercise — source line 1805
-- 59. What this book does not ask the reader to believe — source line 1811
-- Part XVIII — The pencil-and-paper laboratory — source line 1817
-- 60. The hand-work standard — source line 1819
-- 61. Numbering a keyed alphabet by hand — source line 1833
-- 62. A complete small Quagmire example — source line 1854
-- 63. Hand-testing a period — source line 1883
-- 64. Drawing a columnar transposition grid — source line 1896
-- 65. Reversing a transposition by hand — source line 1916
-- 66. A hand crib drag — source line 1929
-- 67. Manual matrix arithmetic — source line 1947
-- 68. Keeping a paper audit trail — source line 1970
-- Part XIX — Historical expansion plan — source line 1982
-- 69. The long history before Kryptos — source line 1984
-- 70. Germany, intelligence, and the limits of analogy — source line 1998
-- 71. CIA context as source criticism — source line 2012
-- Part XX — Open-work archive: PK9 and PK10 — source line 2026
-- CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER — source line 2037
-- 1. Executive Summary & Verification Matrix — source line 2044
-- 2. In-Depth Audit of PK9 ($N = 144$) — source line 2055
-- # 2.1 Mathematical & Statistical Invariants — source line 2057
-- # 2.2 Transposition Decomposition — source line 2067
-- # 2.3 Plaintext Matrix & Cross-Row Narrative Proof — source line 2076
-- # 2.4 Residual Defect Root-Cause Audit & Coordinate Lock Proofs — source line 2094
-- # 2.5 Mathematical Structure of the Transposition Permutations ($p_2$ and $p_1$) — source line 2113
-- # 2.6 The 135-Character Core Text & 9-Character Boundary Padding Theorem — source line 2134
-- # 2.7 Linguistic Audit of the Three Residual Loci & 99.3% Regularized Proof — source line 2160
-- 3. In-Depth Audit of PK10 ($N = 504$) — source line 2180
-- # 3.1 Mathematical & Statistical Invariants — source line 2182
-- # 3.2 Monogram IoC Ceiling Audit — source line 2203
-- # 3.3 Zero-Defect TSP Plaintext Matrix ($12 \times 42$, Score `-6.9436`) — source line 2208
-- # 3.4 Two-Stage Transposition Disproof & Grid Uniqueness — source line 2242
-- 4. In-Depth Cryptanalytic Audit of PK8 ($N = 153$) — source line 2444
-- 5. Cross-Cipher Unified Cryptanalytic Architecture (PK8 $\leftrightarrow$ PK9 $\leftrightarrow$ PK10) — source line 2495
-- # 4.1 The Clock 7 Universal Pivot — source line 2503
-- 6. Global Paradigm Kryptos Cryptosystem Taxonomy (PK1–PK10) — source line 2700
-- 7. Definitive Master Status & Custody Ledger — source line 2719
-- PK9 Cryptanalytic Ledger & Definitive Proof Compendium — source line 2729
-- 1. Executive Summary & Master Cryptanalytic Breakthroughs — source line 2738
-- 2. Ciphertext Data & Harmonic Autocorrelation Profile — source line 2748
-- # 2.1 Ciphertext Stream ($N = 144 = 12 \times 12$) — source line 2750
-- # 2.2 Global Statistical Indicators — source line 2755
-- # 2.3 Periodic IoC & Spectral Autocorrelation Spectrum — source line 2763
-- 3. Mathematical Proof: The Mod-13 Halfabet & The 128 Parity Lifts — source line 2773
-- # 3.1 The Unique Period-7 Base Schedule — source line 2783
-- # 3.2 The 128 Parity Lift Candidates — source line 2790
-- 4. Deconstruction of the PK8 Connection & Structured Entropy — source line 2806
-- # 4.1 PK8 Architecture ($Q_4 Q_5 Q_6 Q_7$) — source line 2808
-- # 4.2 Cross-Cryptanalysis Between PK8 and PK9 (`butt compare`) — source line 2818
-- 5. Multi-Clock Additive Solvability & Exhaustion Theorems — source line 2829
-- # 5.1 Exact Solvability Matrix via Linear Gaussian Elimination — source line 2831
-- # 5.2 Mathematical Verification & False-Alarm Probabilities — source line 2844
-- # 5.3 Complete Combinatorial Exhaustion on Raw PK9 — source line 2849
-- 6. Comprehensive Classical Mechanism Audit & Ruled-Out Families — source line 2886
-- # 6.1 Transposition Ciphers on Candidate $Z$ Streams — source line 2890
-- # 6.2 Fractionation, Polygraphic, Keystream, and Substitution Mechanisms — source line 2904
-- 7. Conclusions & Cryptanalytic Boundary for PK9 — source line 2921
-- 8. PK10 Cryptanalytic Evaluation & Cross-Puzzle Homology with PK9/PK8 — source line 2931
-- # 8.1 PK10 Structural & Statistical Profile — source line 2936
-- # 8.2 Discovery of Cross-Puzzle 4-Gram Homology — source line 2942
-- # 8.3 Exhaustive Empirical Attacks on PK10 — source line 2950
-- # 8.4 Strategic Synthesis: How PK10 Informs PK9 — source line 2962
-- 9. Theophilus Presbyter English Source Analysis & Exact Factorization of PK3 — source line 2969
-- # 9.1 Discovery: PK3's Sum-Clock Keys Are Real Kryptos-Thematic Words — source line 2971
-- # 9.2 Theophilus Presbyter English Source Alignment (Hendrie & Hawthorne-Smith) — source line 2989
-- # 9.3 Linear Parity Constraints on 4-Clock $\{4, 5, 6, 7\}$ Systems — source line 3001
-- 10. The Mathematical Resolution Architecture of PK9 ($N = 144$) — source line 3008
-- # 10.1 Empirical Proof of Outer Period-28 Substitution — source line 3010
-- # 10.2 De-Substituted Intermediate $Z$ Stream Recovery — source line 3019
-- # 10.3 Inner Transposition Layer on $12 \times 12$ Matrix — source line 3034
-- 11. The Grand Tripartite Homology: Unified Mathematical Framework for PK8, PK9, and PK10 — source line 3048
-- # 11.1 The Shared Keystream & Two-Time Pad Depth Analysis ($C_9 \ominus C_8$) — source line 3050
-- # 11.2 Exhaustive $A_{\text{inv}}$ Sliding-Window Crib-Dragging Across PK8 and PK9 — source line 3066
-- # 11.3 Meet-in-the-Middle Factorization over $(W_4 \times W_5)$ and $(W_6 \times W_7)$ — source line 3071
-- # 11.4 PK10 as the Phase-Locking Anchor: The $KTRP$ $\Delta = 42 = \text{lcm}(6, 7)$ Invariant — source line 3079
-- # 11.5 Deconstruction of Dan Robinson's Clue & Cipher Hierarchy — source line 3088
-- 12. Tripartite Experimental Execution & Exact Decoupling Ledger — source line 3129
-- # 12.1 Dual-Stream Depth Relaxation on $(C_9 \ominus C_8)$ — source line 3131
-- # 12.2 Transposition Inversion on De-Substituted Stream $Z$ — source line 3137
-- # 12.3 PK10 Full-Cycle Invariant & Binary Parity Solution ($+4.37\sigma$) — source line 3143
-- 13. Discovery of the $q_{12} + q_7$ Compound Stream ($9.1051$ Monogram Dot Product) — source line 3163
-- # 13.1 Exact Optimization of Period 12 and Period 7 on PK9 — source line 3165
-- # 13.2 Geometric Inversion on the $9.1051$ Stream — source line 3181
-- 14. Exact $22 \times 22$ Algebraic Inversion Theorem for PK10 ($N = 504$) — source line 3191
-- # 14.1 Exact Integer Invertibility over $\mathbb{Z}_{26}$ — source line 3193
-- # 14.2 50-Nanosecond Inversion Engine — source line 3200
-- # 14.3 Multi-Mode Fleissner Turning Grille Refinement on PK9 — source line 3205
-- 15. Integration of the `buttcrack` Engine & Full Layered Transposition Sweeps — source line 3216
-- # 15.1 Structural Triage via `butt diagnose` — source line 3218
-- # 15.2 Exhaustive Permutation Evaluation on PK9 ($W \in \{4, 6, 8, 9\}$) — source line 3230
-- # 15.3 Dictionary-Directed $12 \times 12$ Keyword Transposition on PK9 — source line 3241
-- # 15.4 Universal Invertibility & 72.3-Million-Check Transposition Scan on PK10 — source line 3253
-- # 15.5 Grand Tripartite Homology Matrix — source line 3264
-- PK9 `Q(5)+Q(6)+Q(7) -> complete T(8)` Exact-Crib Report — source line 3279
-- Scope and assumptions — source line 3285
-- Dictionary-key filter — source line 3315
-- Real-PK9 results — source line 3339
-- # Curated craft phrases, all valid offsets — source line 3341
-- # Expanded grammar phrases, all valid offsets — source line 3359
-- # Broad generated narrative phrases — source line 3380
-- # Published PK1-PK7 plaintext windows, all offsets — source line 3414
-- # Theophilus Book III source windows — source line 3427
-- Verified PK8 bridge experiments — source line 3458
-- # Exact PK8 solution and positive control — source line 3460
-- # Literal PK8 key reuse — source line 3478
-- # Literal PK8 windows in PK9 — source line 3507
-- # Focused continuations from PK8's ending — source line 3524
-- # The short-letter hypothesis — source line 3546
-- # PK8-calibrated narrative style — source line 3566
-- Reproduction — source line 3607
-- Test every placement at which the full crib fits: — source line 3637
-- Also require T8 to be induced by a word from the supplied 8-letter list: — source line 3641
-- Reproduce the PK8-continuation corpus, then remove the Q-word assumption: — source line 3645
-- Calibrate the style grammar against the real PK8 answer: — source line 3658
-- Reproduce the 30-letter natural-letter corpus and its grouped exact test: — source line 3683
-- The analogous split exact test: — source line 3689
-- Repository-compatible QI/QII/QIII/QIV variants: — source line 3695
-- Post-PK8 structural searches — source line 3703
-- Split-layer and alternate-route searches — source line 3762
-- Nonuniform Quagmire variants — source line 3820
-- Additional natural-letter exact cribs — source line 3857
-- Interpretation and next useful work — source line 3880
-- PK9 Session Report — Ground-Truth Corrections & Word-Wheel Sweep Campaign — source line 3910
-- 1. Ground-truth corrections (PK4, PK5, PK7) — source line 3923
-- 2. Verified cipher conventions (all independently reproduced) — source line 3962
-- 3. New attack engine: `sweep_pk9_word_wheels.c` — source line 3986
-- 4. Results so far — source line 4009
-- 5. Interpretation — source line 4034
-- 6. Reproduction — source line 4048
-- verify all eight constructions against the official ciphertexts — source line 4051
-- blind re-derivation of PK4 (order + OCHRE/VERDIGRIS gauge lift) — source line 4054
-- build vocabularies, then validate and run the sweep engine — source line 4057
-- corrected-story crib campaign (existing engine) — source line 4065
-- the staged background campaign — source line 4073
-- 7. Next steps if the campaign ends negative — source line 4077
-- Session addendum (2026-10-02, later): statistical investigation, order tests, tq engine — source line 4099
-- # Raw-ciphertext statistics and what they actually prove — source line 4101
-- # New engines (all with planted self-tests) — source line 4132
-- # New negative results (letter corpus = 16,985 corrected-story 30-letter — source line 4153
-- # Campaign / resource notes — source line 4168
-- # Standing conclusions — source line 4177
-- Session addendum 2 (2026-10-02 evening): chi-square wheel filter, corpus v2, pipeline — source line 4192
-- # Sigma-free chi-square wheel filter (TQ order) — new tool `chisweep_pk9_tq.c` — source line 4194
-- # Letter corpus v2 (`generate_pk9_letter_v2.py`) — source line 4226
-- # All-offsets crib results (crib anywhere in the 144 letters) — source line 4238
-- # Overnight pipeline (running, `kryptos/pk9_overnight_pipeline.log`) — source line 4249
-- # Updated standing conclusions — source line 4256
-- UNIFIED CRYPTANALYTIC DOSSIER: PK8, PK9, AND PK10 — source line 4272
-- 1. Executive Summary & Structural Architecture — source line 4280
-- 2. Deconstruction of the PK8 Connection ($Q_4, Q_5, Q_6, Q_7$) — source line 4300
-- # 2.1 Classical Multi-Clock Engine — source line 4302
-- # 2.2 Binary Parity Resolution over $\text{GF}(2)$ — source line 4307
-- # 2.3 The PK8–PK10 Phase-Locking Anchor: The `KTRP` Invariant — source line 4316
-- 3. PK9 ($N = 144$): Mathematical Audit & Factor Sweep — source line 4329
-- # 3.1 Proven Two-Stage Transposition & Outer Keystream — source line 4331
-- # 3.2 Evaluation of $12 \times 12$ Factor Geometry — source line 4360
-- 4. PK10 ($N = 504$): The Rosetta Stone Architecture — source line 4367
-- # 4.1 Factorization & CRT Single-Cycle Theorem — source line 4369
-- # 4.2 The $12 \times 42$ Harmonic Torus — source line 4375
-- # 4.3 Parity Solution Transfer ($+4.37\sigma$) — source line 4385
-- # 4.4 Forensic Falsification of Synthetic Quadgram Clocks — source line 4391
-- # 4.5 Transposition-Invariant Direct Search — source line 4396
-- 5. Narrative Anchor & Crib Dragging Analysis — source line 4404
-- 6. Definitive Cryptanalytic Conclusions — source line 4412
-- PK9 Next Research Plan: the PK8 Connection — source line 4421
-- Correct interpretation of Dan's hint — source line 4426
-- First work package: structure-first wheel search — source line 4446
-- Search ordering — source line 4461
-- Acceptance criteria — source line 4473
-- First structured-triple result — source line 4484
-- Repository corrections — source line 4502
-- PK9 DEFINITIVE DECRYPTION & MATHEMATICAL AUDIT REPORT — source line 4513
-- 1. Executive Summary & Verification Ledger — source line 4521
-- # Mathematical Invariants & Proven Parameters — source line 4527
-- 2. Decrypted Plaintext — source line 4542
-- # Continuous 144-Character Stream: — source line 4544
-- # Formatted Matrix ($8 \text{ Rows} \times 18 \text{ Columns}$): — source line 4549
-- 3. Cross-Row English Anchor Proof Matrix — source line 4563
-- # Mathematical Intersections: — source line 4578
-- 4. Linguistic & Forensic Evaluation — source line 4588
-- PK9 Corrected Architecture & Cryptanalytic Audit — source line 4600
-- 1. Executive Summary: The Structural Correction — source line 4608
-- # The Invariance Theorem & Corrected Model — source line 4616
-- 2. Quantitative Verification of the Corrected Architecture — source line 4621
-- # 2.1 Raw Ciphertext Periodic Signature — source line 4623
-- # 2.2 Extraction of Intermediate Text $Z$ — source line 4632
-- # 2.3 Statistical Properties of $Z$ vs. Flawed Candidate — source line 4638
-- 3. The Inner $12 \times 12$ Grid & Columnar Permutation — source line 4665
-- # 3.1 Held-Karp Column Permutation Optimization — source line 4684
-- 4. Double Columnar Transposition on Intermediate Stream $Z$ — source line 4695
-- # 4.1 Width Grid Comparisons — source line 4699
-- # 4.2 Top Configuration: Pair $(18, 8)$ ($\text{Score} = \mathbf{-5.2647}$) — source line 4706
-- 5. Synthesis & Exact Mathematical Model of PK9 — source line 4726
-- Definitive Cryptanalytic Ledger: PK8, PK9, and PK10 — source line 4738
-- 1. Executive Cryptanalytic Status & Mathematical Matrix — source line 4744
-- 2. Cross-Cipher Homologies & The Tripartite Pipeline — source line 4754
-- # 2.1 The PK8–PK9 Harmonic Resonances — source line 4756
-- # 2.2 The PK8–PK10 Phase-Locking Anchor — source line 4774
-- # 2.3 Deconstruction of Dan Robinson's Clue — source line 4782
-- 3. PK8: Universal Unimodular 18-Window Theorem — source line 4792
-- # 3.1 The Universal Unimodular Basis Theorem — source line 4798
-- # 3.2 Direct Plaintext Matrix Equation — source line 4805
-- 4. PK9: Layered Architecture & Provable Trigram DP Optimum — source line 4814
-- # 4.1 Structural Triage & Ruled-Out Families — source line 4816
-- # 4.2 Exact Trigram DP Proof on Transposed Coordinate Matrix $G$ — source line 4824
-- 5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis — source line 4848
-- # 5.1 Moduli Factorization & The CRT Single-Cycle Theorem — source line 4850
-- # 5.2 Universal Unimodular Basis for PK10 — source line 4858
-- # 5.3 Multi-Stride CRT Decoupling — source line 4863
-- # 5.4 Outer Transposition Architecture — source line 4871
-- 6. Definitive Cryptanalytic Conclusions — source line 4878
-- Part XXI — General cryptanalytic reference notes — source line 4884
-- The cipher table — source line 4894
-- # Shift and reciprocal alphabets — source line 4911
-- # Substitution — source line 4922
-- # Polyalphabetic — source line 4929
-- # Transposition — source line 4943
-- # Polygraphic — source line 4954
-- # Wheel — source line 4964
-- # XOR (byte level) — source line 4970
-- # Codes — source line 4977
-- # Encodings (peelable layers) — source line 4991
-- Equivalences: two names, one plaintext — source line 5008
-- Lossy by design — source line 5023
-- Peelable layers and chains — source line 5037
-- Adding a cipher — source line 5072
-- How buttcrack works — source line 5118
-- 1. Characterise — source line 5144
-- 2. Identify — source line 5162
-- 3. Schedule — source line 5199
-- 4. Attack and peel — source line 5217
-- 5. Rank and present — source line 5359
-- When it does not solve — source line 5406
-- The language model — source line 5431
-- What is in `data/` — source line 5440
-- Provenance and licences — source line 5463
-- How a candidate is scored — source line 5478
-- Calibration: measured, not guessed — source line 5551
-- Rebuilding and extending — source line 5578
-- The Windows installer — source line 5606
-- What gets built — source line 5619
-- # What the user sees — source line 5644
-- Building it — source line 5663
-- # Prerequisites — source line 5665
-- # One command — source line 5678
-- # Building the pieces separately — source line 5704
-- # Releasing a new version — source line 5715
-- Code signing, and what happens if you skip it — source line 5725
-- # Antivirus false positives — source line 5756
-- Hosting it — source line 5768
-- # How the sale actually flows — source line 5783
-- # Object storage with a custom domain — source line 5807
-- # Selling it somewhere that enforces entitlements — source line 5839
-- # Serving it correctly — source line 5849
-- # Package managers, if you want them later — source line 5866
-- Other platforms — source line 5882
-- Known limitation on Windows — source line 5892
-- buttcrack — source line 5910
-- 🏛️ Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 5960
-- Install — source line 5976
-- # Windows, without installing Python — source line 5992
-- Quick start — source line 6012
-- break something (crack is the default command) — source line 6015
-- what am I looking at, without breaking it? — source line 6020
-- use it as a cipher, not a cracker — source line 6023
-- what does it know? — source line 6027
-- web interface — source line 6032
-- What it breaks — source line 6053
-- How it works — source line 6081
-- Reading the output — source line 6095
-- Python API — source line 6107
-- [('caesar', 0.95), ('affine', 0.45)] — source line 6124
-- Web interface — source line 6134
-- Beyond English — source line 6148
-- The Paradigm Kryptos CTF — source line 6163
-- Limits — read this before you trust an answer — source line 6194
-- Development — source line 6221
-- Licence — source line 6266
-- Examples — source line 6275
-- Solving one — source line 6285
-- The set — source line 6300
-- THE KRYPTOS DECRYPTION MANUSCRIPT — source line 6327
-- A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite — source line 6328
-- TABLE OF CONTENTS — source line 6337
-- PROLOGUE: THE CIA SCULPTURE & THE 36-YEAR MYSTERY — source line 6350
-- CHAPTER 1: THE NARRATIVE ARC OF PARADIGM KRYPTOS (PK1 – PK7) — source line 6364
-- # 1.1 Summary of Solved Foundations (PK1 – PK7) — source line 6368
-- CHAPTER 2: PK8 — VERIFIED SOLUTION AND REPRODUCIBLE METHOD ($N = 153$) — source line 6404
-- CHAPTER 3: PK9 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 144$) — source line 6420
-- CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$) — source line 6446
-- # 4.1 Exact cumulative pipeline — source line 6450
-- # 4.2 Plaintext boundary and digest — source line 6482
-- CHAPTER 5: VERIFICATION BOUNDARIES AND RESEARCH INTEGRITY — source line 6504
-- CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY — source line 6513
-- CHAPTER 7: MASTER SOLUTIONS DATABASE & VERIFICATION MANIFEST — source line 6519
-- EPILOGUE: COMPLETE SUITE REPRODUCIBILITY ASSURANCE — source line 6534
-- PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT — source line 6545
-- 1. Executive Summary & Master Ledger — source line 6551
-- # The Master Puzzle Ledger (PK1 – PK10) — source line 6557
-- 2. Universal Mathematical Invariants Across PK8, PK9, and PK10 — source line 6574
-- 3. PK9 ($N = 144$): Architecture, Solution, and Thematic Nexus — source line 6600
-- # 3.1 Ciphertext & Structural Properties — source line 6602
-- # 3.2 Transposition Layer & The $12 \times 12$ Matrix — source line 6615
-- # 3.3 Thematic Interpretation & Kryptos K2 Nexus — source line 6639
-- 4. PK8 ($N = 153$): Deconstruction of the PK9 $\to$ PK8 Bridge — source line 6652
-- # 4.1 Dan Robinson's Clue Decoded — source line 6654
-- # 4.2 Plaintext Reconstruction — source line 6670
-- 5. PK10 ($N = 504$): The Grand Finale — source line 6680
-- # 5.1 Architecture & Coprime Dimension — source line 6682
-- # 5.2 The `STILL VEILED` Anchor — source line 6691
-- 6. Synthesis: The Complete Narrative Arc of Paradigm Kryptos — source line 6709
-- 7. Deliverable Artifacts in Workspace — source line 6725
-- Paradigm Kryptos Cryptanalytic Ledger: PK8, PK9 & PK10 — source line 6740
-- 1. Executive Status Matrix — source line 6746
-- 2. Key Mathematical Breakthroughs — source line 6756
-- # 2.1 The PK8 Dual Stride-Decoupling Theorem — source line 6758
-- # 2.2 PK9: Double Columnar Architecture & Quadgram Progression — source line 6776
-- # 2.3 PK10: Moduli Factorization & Transposition Filtering — source line 6791
-- Definitive Cryptanalytic Ledger: PK8, PK9, and PK10 — source line 6813
-- 1. Executive Cryptanalytic Status & Mathematical Matrix — source line 6819
-- 2. Cross-Cipher Homologies & The Tripartite Pipeline — source line 6829
-- # 2.1 The PK8–PK9 Harmonic Resonances — source line 6831
-- # 2.2 The PK8–PK10 Phase-Locking Anchor — source line 6849
-- # 2.3 Deconstruction of Dan Robinson's Clue — source line 6857
-- 3. PK8: Universal Unimodular 18-Window Theorem — source line 6867
-- # 3.1 The Universal Unimodular Basis Theorem — source line 6873
-- # 3.2 Direct Plaintext Matrix Equation — source line 6880
-- 4. PK9: Layered Architecture & Provable Trigram DP Optimum — source line 6889
-- # 4.1 Structural Triage & Ruled-Out Families — source line 6891
-- # 4.2 Exact Trigram DP Proof on Transposed Coordinate Matrix $G$ — source line 6899
-- 5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis — source line 6923
-- # 5.1 Moduli Factorization & The CRT Single-Cycle Theorem — source line 6925
-- # 5.2 Universal Unimodular Basis for PK10 — source line 6933
-- # 5.3 Multi-Stride CRT Decoupling — source line 6938
-- # 5.4 Outer Transposition Architecture — source line 6946
-- 6. Definitive Cryptanalytic Conclusions — source line 6953
-- Part XXII — Editorial apparatus and future research protocol — source line 6959
-- 72. How to use this volume in a classroom — source line 6961
-- 73. Data preservation — source line 6972
-- 74. The standard for amendment — source line 6986
-- 75. Closing methodological maxim — source line 6997
-- Paradigm Kryptos CTF — Final Submissions (regenerated 2026-10-02) — source line 7007
-- # PK1 — The Accession Log ($N = 192$) — source line 7018
-- # PK2 — Pellegrin's Treatise ($N = 350$) — source line 7027
-- # PK3 — The Viennese Anatomist ($N = 280$) — source line 7036
-- # PK4 — Two Years In (the Whitesmith) ($N = 224$) — source line 7045
-- # PK5 — Fourteen Days in the Barn ($N = 272$) — source line 7054
-- # PK6 — The Whitesmith's Workshop ($N = 315$) — source line 7063
-- # PK7 — Three Weeks In (the Craft) ($N = 279$) — source line 7072
-- # PK8 — Leaving the Whitesmith ($N = 153$) — source line 7081
-- # PK9 — The Sealed Testament ($N = 144$) — source line 7090
-- # PK10 — SOLVED — source line 7099
-- Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 7105
-- 🏛️ Executive Cryptanalytic Deliverables — source line 7122
-- 🔬 Core Discoveries & Mathematical Invariants — source line 7137
-- # 1. The Dual-Cipher GPS Sculpture Theorem — source line 7139
-- # 2. Definitive PK9 Solution State ($N = 144 \to 135$) — source line 7151
-- # 3. Definitive PK10 Modular Triptych ($N = 504 \to 432$) — source line 7156
-- ⚡ 1-Second Suite Verification — source line 7164
-- 🌐 Interactive Web Application — source line 7196
-- 🚀 GitHub Pages Deployment — source line 7212
-- 📄 License — source line 7221
-- # 8.7 Mutual Information & Cross-Kappa Between PK8 and PK9 — source line 7227
-- # 8.8 Multi-Language Scoring & Keyed Alphabet Sweeps — source line 7242
-- # 8.3 Dan Robinson's Author Clues & The PK8-PK9 Connection — source line 7265
-- # 8.4 Exhaustive Cryptanalytic Elimination Ledger (100% Ruled Out) — source line 7274
-- # 8.5 The Harmonic Clock Lattice: {4, 5, 7} Decomposition — source line 7299
-- # 8.6 The Lag-7 Repeat Anchor & Plaintext Constraints — source line 7313
-- 76. A note on patience — source line 7328
-- Part XXIII — Writing cryptographic history from evidence — source line 7357
-- 77. The difference between a report and a history — source line 7359
-- 78. How to write a source note — source line 7377
-- 79. Reading silence in the archive — source line 7393
-- 80. The language of confidence — source line 7405
-- Part XXIV — The workshop, reconstructed — source line 7417
-- 81. A day with the ciphertext — source line 7419
-- 82. The ledger page — source line 7442
-- 83. The danger of the beautiful sentence — source line 7460
-- 84. What computation adds to the workshop — source line 7474
-- Part XXV — A more complete history of cryptographic practice — source line 7488
-- 85. Ciphers and codes are not the same thing — source line 7490
-- 86. Why operators matter — source line 7503
-- 87. The industrialization of secrecy — source line 7516
-- 88. From secrecy to public cryptography — source line 7529
-- Part XXVI — Three readers, one object — source line 7542
-- 89. The visitor — source line 7544
-- 90. The historian — source line 7557
-- 91. The cryptanalyst — source line 7570
-- Part XXVII — Making difficult ideas memorable — source line 7581
-- 92. The envelope analogy — source line 7583
-- 93. The clock analogy — source line 7595
-- 94. The lock analogy—and its limit — source line 7608
-- Part XXVIII — The emotional history of solving — source line 7621
-- 95. Why people return to unsolved ciphers — source line 7623
-- 96. The ethics of a public mystery — source line 7636
-- 97. The moment before certainty — source line 7649
-- Part XXIX — A reader’s field manual — source line 7661
-- 98. The first evening — source line 7663
-- 99. The first weekend — source line 7670
-- 100. The first month — source line 7677
-- Part XXX — Reading symbols before decoding them — source line 7688
-- 101. A symbol is not automatically a message — source line 7690
-- 102. The symbol inventory — source line 7705
-- 103. Cryptographic symbols and ordinary notation — source line 7721
-- 104. Decoding a symbol system by hand — source line 7734
-- 105. Visual symbols as historical evidence — source line 7748
-- 106. A proposed visual index — source line 7760
-- 107. The evidence icon system — source line 7781
-- Part XXXI — Reader’s reference pages — source line 7794
-- 108. Glossary — source line 7796
-- 109. List of planned figures — source line 7836
-- 110. List of tables — source line 7857
+- 15. PK1–PK3: simple layers and composition — source line 192
+- 16. PK4–PK6: transposition, key reuse, and narrative expansion — source line 196
+- 17. PK7: nonlinear transformation — source line 200
+- 18. PK8: additive multi-clock construction — source line 204
+- 19. PK9 verified construction and PK10 verified case study — source line 208
+- Part VI — Reproducible cryptanalysis — source line 222
+- 21. Experimental design — source line 224
+- 22. Language models and overfitting — source line 241
+- 23. Audit of the PK9 campaign — source line 245
+- 24. Evidence ledger template — source line 249
+- Part VII — Appendices — source line 259
+- Appendix A. Notation and alphabets — source line 261
+- Appendix B. Full ciphertext tables — source line 265
+- Appendix C. Independent verification scripts — source line 269
+- Appendix D. Search logs and negative results — source line 273
+- Appendix E. Source-critical bibliography — source line 277
+- Appendix F. Glossary — source line 281
+- Closing statement — source line 287
+- Part VIII — A working historical narrative — source line 291
+- 25. Why a sculpture can be a cryptographic document — source line 293
+- 26. The cryptographic imagination of the twentieth century — source line 301
+- 27. The history of frequency analysis — source line 307
+- 28. From Vigenère to modern reproducibility — source line 313
+- Part IX — Methods chapter for researchers — source line 319
+- 29. The anatomy of a responsible attack — source line 321
+- 30. Why optimization produces seductive nonsense — source line 338
+- 31. Transcription as an attack surface — source line 354
+- 32. The role of negative evidence — source line 360
+- Part X — Images and visual apparatus — source line 366
+- 33. Image plan for the KDP edition — source line 368
+- 34. Caption standard — source line 383
+- Part XI — Publication and revision — source line 391
+- 35. The edition model — source line 393
+- 36. Final author’s note for the working edition — source line 399
+- Part XII — Research archive and source-critical dossier — source line 405
+- KRYPTOS — The Ciphers, the Solutions, and What's Left — source line 414
+- The sculpture — source line 438
+- K1 — SOLVED ✅ (verified by my code) — source line 447
+- K2 — SOLVED ✅ (verified, including its famous error) — source line 457
+- K3 — SOLVED ✅ (verified both directions) — source line 597
+- K4 — the 97-letter mystery — source line 616
+- # My cryptanalysis (all results reproducible in `kryptos_solve.py`) — source line 638
+- # What happened in 2025: found, not solved — source line 664
+- # The physical two-layer model & reconstructed mechanism (`kryptos_physical_layer.py`) — source line 682
+- # The master riddle & the K5 continuation (`kryptos_master_synthesis.py`) — source line 746
+- # 9. The Paradigm Verification Engine & Cryptographic Hashes (`kryptos_paradigm_hash_engine.py`) — source line 774
+- ## 1. What Paradigm has actually stated about the verifier (sourced, not reconstructed) — source line 778
+- ## 2. Canonical Plaintexts & Cryptographic Hashes — source line 785
+- ### A. K4 Candidate Plaintext — unverified (97 Characters, Continuous Uppercase): — source line 788
+- ### B. K4 Candidate Plaintext — unverified (With Single-Space Word Breaks, 118 chars): — source line 796
+- ### C. K5 Candidate — speculative (97 Characters, Survey Marker Resolution): — source line 802
+- ## 1. The Astronomical Shadow Ledger — source line 816
+- ## 2. One possible reading of the dual-season contrast (speculative) — source line 826
+- ## 3. The Historic Symmetry: June 12 — source line 839
+- ## 1. George Washington's Culper Spy Ring (1778–1783) — source line 847
+- ## 2. CIA Internal Cryptonyms & Langley Terminology — source line 852
+- ## 3. Cold War Berlin & Spy Exchange Cover Words — source line 862
+- ## 4. The Structural Reason: Codebooks vs. Cipher Screens — source line 866
+- ## 1. The Forced Text of Period 29 — source line 878
+- ## 2. Exhaustive Crib-Dragging Across All 97 Positions — source line 890
+- ## 3. The Natural Anchor Words of the Reconstructed Text — source line 896
+- ## Theory 1: The Ray-Gate Solar Decomposition (69 E, 18 NE, 10 S) — source line 907
+- ## Theory 2: The 29-Foot Solar Shadow & Period-29 Harmonic — source line 913
+- ## Theory 3: The 14-Digit Coordinate Column Key — source line 919
+- ## Theory 4: The `SUB UMBRA FLOREO` Authorial Signature — source line 925
+- ## Theory 5: Boustrophedon / S-Curve Alternating Transposition — source line 929
+- ## Theory 6: Morse Panel Keystream & Running Keys — source line 933
+- ## The 97-Character K5 Plaintext: — source line 943
+- ## The 97-Character K5 Ciphertext (under the 1988 Quagmire III Coding Chart): — source line 950
+- ## Internal consistency of this invented pair (not verification of anything real): — source line 955
+- # The Berlin superimposition: a speculative geometric exercise (`kryptos_berlin_superimpose.py`) — source line 976
+- The "WW" clue: documented facts and this repository's speculative synthesis — source line 1011
+- # 1. The Historical & Custodial Anchor: William Webster (1924–2025) — source line 1017
+- # 2. The Physical Sculpture Anomaly: The "Two Dots" on *Antipodes* — source line 1024
+- # 3. The Cold War Double-Agent Mirror: William Webster ↔ Walter Womacka — source line 1030
+- # 4. A "W" letter-pattern exercise on the unverified K4 candidate — source line 1041
+- Bottom line — source line 1063
+- PK8 Structured Ciphertext-Only Break — source line 1083
+- Scope and honesty boundary — source line 1089
+- Algebra — source line 1104
+- Result — source line 1132
+- score=-4.361307 keys=METE/METER/METIER/MASTERY — source line 1140
+- score=-6.475130 keys=WILE/WILED/WILLED/HQZMJOR — source line 1143
+- Independent synthetic control — source line 1158
+- Reproduction — source line 1170
+- Implication for PK9 — source line 1188
+- PARADIGM KRYPTOS WORKSPACE CATALOG & RECALL INDEX — source line 1200
+- 1. Master Deliverables Directory — source line 1221
+- 2. Challenge-by-Challenge Quick-Recall Matrix — source line 1238
+- 3. High-Speed One-Line Verification Commands — source line 1255
+- 4. Master Mathematical & Architectural Invariants — source line 1296
+- 2026-10-02 (evening) — new PK9 tooling (see PK9_SESSION_2026_10_02_GROUND_TRUTH_AND_SWEEPS.md addenda) — source line 1313
+- 2026-10-02 (evening) — stale-text purge after PK4 site rejection — source line 1329
+- PARADIGM KRYPTOS: DEFINITIVE MASTER CRYPTANALYTIC AUDIT & REPORT — source line 1357
+- 1. Master Challenge Ledger & Verification Status — source line 1368
+- 2. Archived PK9 hypotheses — not a solution — source line 1385
+- # 2.1 Cryptographic Parameters & Reflection Invariants — source line 1389
+- # 2.2 The 135-Character Core Text & Boundary Padding — source line 1405
+- # 2.3 Verified Plaintext & Metrics — source line 1412
+- 3. Definitive Solution Submission: PK10 ($N = 504$) — source line 1431
+- # 3.1 Cryptographic Parameters & Structure — source line 1433
+- # 3.2 Verified 432-Character Core Plaintext Matrix — source line 1452
+- # 3.3 Core Metrics — source line 1469
+- 4. The Dual-Cipher Kryptos Sculpture GPS Theorem — source line 1479
+- 5. The Universal Cryptosystem Bridges — source line 1499
+- 6. Full Suite Reproducibility Assurance — source line 1514
+- EXECUTIVE CRYPTANALYTIC BRIEF: PARADIGM KRYPTOS (PK1 – PK10) — source line 1523
+- 1. Executive Summary & Verification Ledger — source line 1539
+- 2. Key Cryptanalytic Breakthroughs — source line 1558
+- # 2.1 PK9 ($N = 144$): ARCHIVED speculative score reports superseded — source line 1560
+- # 2.2 PK10 ($N = 504$ / 432-Character Core): The Modular Triptych — source line 1586
+- # 2.3 The Dual-Cipher GPS Sculpture Coordinates Theorem — source line 1622
+- # 2.4 PK8 ($N = 153$): Orthogonal Stride Projections & Solution Parameters — source line 1639
+- 3. Grand Cryptosystem Bridges — source line 1649
+- 4. Full Suite Reproducibility Assurance — source line 1663
+- Part XIII — A reader’s guide to the cryptanalysis — source line 1669
+- 37. What a cipher is, in plain language — source line 1671
+- 38. How analysts search without guessing every sentence — source line 1679
+- 39. Why readable fragments can be false — source line 1687
+- 40. A guided example of a keyed alphabet — source line 1693
+- 41. What “failed” means in this book — source line 1705
+- Part XIV — PK9 recovery and PK10 verification record — source line 1711
+- 42. PK9 and PK10: what can be said responsibly — source line 1713
+- 43. How an open problem remains useful to a beginner — source line 1721
+- 44. Questions a reader should ask of every claimed break — source line 1727
+- Part XV — The four passages as a guided case study — source line 1741
+- 45. K1: the first lesson in convention — source line 1743
+- 46. K2: rearranging without changing the letters — source line 1751
+- 47. K3: clues constrain, algorithms decide — source line 1759
+- 48. K4: the status of a provisional answer — source line 1765
+- Part XVI — Paradigm Kryptos through PK8 — source line 1771
+- 49. Why the challenge suite matters — source line 1773
+- 50. PK1 and the idea of a repeating key — source line 1779
+- 51. PK2 and the geometry of columns — source line 1785
+- 52. PK3 and additive composition — source line 1791
+- 53. PK4 and layer order — source line 1797
+- 54. PK5 and derived key material — source line 1803
+- 55. PK6 and double transposition — source line 1809
+- 56. PK7 and matrix coupling — source line 1815
+- 57. PK8 and multiple clocks — source line 1821
+- Part XVII — Building the reader’s confidence — source line 1829
+- 58. A reproducibility exercise — source line 1831
+- 59. What this book does not ask the reader to believe — source line 1837
+- Part XVIII — The pencil-and-paper laboratory — source line 1843
+- 60. The hand-work standard — source line 1845
+- 61. Numbering a keyed alphabet by hand — source line 1859
+- 62. A complete small Quagmire example — source line 1880
+- 63. Hand-testing a period — source line 1909
+- 64. Drawing a columnar transposition grid — source line 1922
+- 65. Reversing a transposition by hand — source line 1942
+- 66. A hand crib drag — source line 1955
+- 67. Manual matrix arithmetic — source line 1973
+- 68. Keeping a paper audit trail — source line 1996
+- Part XIX — Historical expansion plan — source line 2008
+- 69. The long history before Kryptos — source line 2010
+- 70. Germany, intelligence, and the limits of analogy — source line 2024
+- 71. CIA context as source criticism — source line 2038
+- Part XX — Open-work archive: PK9 and PK10 — source line 2052
+- CRYPTANALYTIC AUDIT & DEFECT VERIFICATION DOSSIER — source line 2063
+- 1. Executive Summary & Verification Matrix — source line 2070
+- 2. In-Depth Audit of PK9 ($N = 144$) — source line 2081
+- # 2.1 Mathematical & Statistical Invariants — source line 2083
+- # 2.2 Transposition Decomposition — source line 2093
+- # 2.3 Plaintext Matrix & Cross-Row Narrative Proof — source line 2102
+- # 2.4 Residual Defect Root-Cause Audit & Coordinate Lock Proofs — source line 2120
+- # 2.5 Mathematical Structure of the Transposition Permutations ($p_2$ and $p_1$) — source line 2139
+- # 2.6 The 135-Character Core Text & 9-Character Boundary Padding Theorem — source line 2160
+- # 2.7 Linguistic Audit of the Three Residual Loci & 99.3% Regularized Proof — source line 2186
+- 3. In-Depth Audit of PK10 ($N = 504$) — source line 2206
+- # 3.1 Mathematical & Statistical Invariants — source line 2208
+- # 3.2 Monogram IoC Ceiling Audit — source line 2229
+- # 3.3 Zero-Defect TSP Plaintext Matrix ($12 \times 42$, Score `-6.9436`) — source line 2234
+- # 3.4 Two-Stage Transposition Disproof & Grid Uniqueness — source line 2268
+- 4. In-Depth Cryptanalytic Audit of PK8 ($N = 153$) — source line 2470
+- 5. Cross-Cipher Unified Cryptanalytic Architecture (PK8 $\leftrightarrow$ PK9 $\leftrightarrow$ PK10) — source line 2521
+- # 4.1 The Clock 7 Universal Pivot — source line 2529
+- 6. Global Paradigm Kryptos Cryptosystem Taxonomy (PK1–PK10) — source line 2726
+- 7. Definitive Master Status & Custody Ledger — source line 2745
+- PK9 Cryptanalytic Ledger & Definitive Proof Compendium — source line 2755
+- 1. Executive Summary & Master Cryptanalytic Breakthroughs — source line 2764
+- 2. Ciphertext Data & Harmonic Autocorrelation Profile — source line 2774
+- # 2.1 Ciphertext Stream ($N = 144 = 12 \times 12$) — source line 2776
+- # 2.2 Global Statistical Indicators — source line 2781
+- # 2.3 Periodic IoC & Spectral Autocorrelation Spectrum — source line 2789
+- 3. Mathematical Proof: The Mod-13 Halfabet & The 128 Parity Lifts — source line 2799
+- # 3.1 The Unique Period-7 Base Schedule — source line 2809
+- # 3.2 The 128 Parity Lift Candidates — source line 2816
+- 4. Deconstruction of the PK8 Connection & Structured Entropy — source line 2832
+- # 4.1 PK8 Architecture ($Q_4 Q_5 Q_6 Q_7$) — source line 2834
+- # 4.2 Cross-Cryptanalysis Between PK8 and PK9 (`butt compare`) — source line 2844
+- 5. Multi-Clock Additive Solvability & Exhaustion Theorems — source line 2855
+- # 5.1 Exact Solvability Matrix via Linear Gaussian Elimination — source line 2857
+- # 5.2 Mathematical Verification & False-Alarm Probabilities — source line 2870
+- # 5.3 Complete Combinatorial Exhaustion on Raw PK9 — source line 2875
+- 6. Comprehensive Classical Mechanism Audit & Ruled-Out Families — source line 2912
+- # 6.1 Transposition Ciphers on Candidate $Z$ Streams — source line 2916
+- # 6.2 Fractionation, Polygraphic, Keystream, and Substitution Mechanisms — source line 2930
+- 7. Conclusions & Cryptanalytic Boundary for PK9 — source line 2947
+- 8. PK10 Cryptanalytic Evaluation & Cross-Puzzle Homology with PK9/PK8 — source line 2957
+- # 8.1 PK10 Structural & Statistical Profile — source line 2962
+- # 8.2 Discovery of Cross-Puzzle 4-Gram Homology — source line 2968
+- # 8.3 Exhaustive Empirical Attacks on PK10 — source line 2976
+- # 8.4 Strategic Synthesis: How PK10 Informs PK9 — source line 2988
+- 9. Theophilus Presbyter English Source Analysis & Exact Factorization of PK3 — source line 2995
+- # 9.1 Discovery: PK3's Sum-Clock Keys Are Real Kryptos-Thematic Words — source line 2997
+- # 9.2 Theophilus Presbyter English Source Alignment (Hendrie & Hawthorne-Smith) — source line 3015
+- # 9.3 Linear Parity Constraints on 4-Clock $\{4, 5, 6, 7\}$ Systems — source line 3027
+- 10. The Mathematical Resolution Architecture of PK9 ($N = 144$) — source line 3034
+- # 10.1 Empirical Proof of Outer Period-28 Substitution — source line 3036
+- # 10.2 De-Substituted Intermediate $Z$ Stream Recovery — source line 3045
+- # 10.3 Inner Transposition Layer on $12 \times 12$ Matrix — source line 3060
+- 11. The Grand Tripartite Homology: Unified Mathematical Framework for PK8, PK9, and PK10 — source line 3074
+- # 11.1 The Shared Keystream & Two-Time Pad Depth Analysis ($C_9 \ominus C_8$) — source line 3076
+- # 11.2 Exhaustive $A_{\text{inv}}$ Sliding-Window Crib-Dragging Across PK8 and PK9 — source line 3092
+- # 11.3 Meet-in-the-Middle Factorization over $(W_4 \times W_5)$ and $(W_6 \times W_7)$ — source line 3097
+- # 11.4 PK10 as the Phase-Locking Anchor: The $KTRP$ $\Delta = 42 = \text{lcm}(6, 7)$ Invariant — source line 3105
+- # 11.5 Deconstruction of Dan Robinson's Clue & Cipher Hierarchy — source line 3114
+- 12. Tripartite Experimental Execution & Exact Decoupling Ledger — source line 3155
+- # 12.1 Dual-Stream Depth Relaxation on $(C_9 \ominus C_8)$ — source line 3157
+- # 12.2 Transposition Inversion on De-Substituted Stream $Z$ — source line 3163
+- # 12.3 PK10 Full-Cycle Invariant & Binary Parity Solution ($+4.37\sigma$) — source line 3169
+- 13. Discovery of the $q_{12} + q_7$ Compound Stream ($9.1051$ Monogram Dot Product) — source line 3189
+- # 13.1 Exact Optimization of Period 12 and Period 7 on PK9 — source line 3191
+- # 13.2 Geometric Inversion on the $9.1051$ Stream — source line 3207
+- 14. Exact $22 \times 22$ Algebraic Inversion Theorem for PK10 ($N = 504$) — source line 3217
+- # 14.1 Exact Integer Invertibility over $\mathbb{Z}_{26}$ — source line 3219
+- # 14.2 50-Nanosecond Inversion Engine — source line 3226
+- # 14.3 Multi-Mode Fleissner Turning Grille Refinement on PK9 — source line 3231
+- 15. Integration of the `buttcrack` Engine & Full Layered Transposition Sweeps — source line 3242
+- # 15.1 Structural Triage via `butt diagnose` — source line 3244
+- # 15.2 Exhaustive Permutation Evaluation on PK9 ($W \in \{4, 6, 8, 9\}$) — source line 3256
+- # 15.3 Dictionary-Directed $12 \times 12$ Keyword Transposition on PK9 — source line 3267
+- # 15.4 Universal Invertibility & 72.3-Million-Check Transposition Scan on PK10 — source line 3279
+- # 15.5 Grand Tripartite Homology Matrix — source line 3290
+- PK9 `Q(5)+Q(6)+Q(7) -> complete T(8)` Exact-Crib Report — source line 3305
+- Scope and assumptions — source line 3311
+- Dictionary-key filter — source line 3341
+- Real-PK9 results — source line 3365
+- # Curated craft phrases, all valid offsets — source line 3367
+- # Expanded grammar phrases, all valid offsets — source line 3385
+- # Broad generated narrative phrases — source line 3406
+- # Published PK1-PK7 plaintext windows, all offsets — source line 3440
+- # Theophilus Book III source windows — source line 3453
+- Verified PK8 bridge experiments — source line 3484
+- # Exact PK8 solution and positive control — source line 3486
+- # Literal PK8 key reuse — source line 3504
+- # Literal PK8 windows in PK9 — source line 3533
+- # Focused continuations from PK8's ending — source line 3550
+- # The short-letter hypothesis — source line 3572
+- # PK8-calibrated narrative style — source line 3592
+- Reproduction — source line 3633
+- Test every placement at which the full crib fits: — source line 3663
+- Also require T8 to be induced by a word from the supplied 8-letter list: — source line 3667
+- Reproduce the PK8-continuation corpus, then remove the Q-word assumption: — source line 3671
+- Calibrate the style grammar against the real PK8 answer: — source line 3684
+- Reproduce the 30-letter natural-letter corpus and its grouped exact test: — source line 3709
+- The analogous split exact test: — source line 3715
+- Repository-compatible QI/QII/QIII/QIV variants: — source line 3721
+- Post-PK8 structural searches — source line 3729
+- Split-layer and alternate-route searches — source line 3788
+- Nonuniform Quagmire variants — source line 3846
+- Additional natural-letter exact cribs — source line 3883
+- Interpretation and next useful work — source line 3906
+- PK9 Session Report — Ground-Truth Corrections & Word-Wheel Sweep Campaign — source line 3936
+- 1. Ground-truth corrections (PK4, PK5, PK7) — source line 3949
+- 2. Verified cipher conventions (all independently reproduced) — source line 3988
+- 3. New attack engine: `sweep_pk9_word_wheels.c` — source line 4012
+- 4. Results so far — source line 4035
+- 5. Interpretation — source line 4060
+- 6. Reproduction — source line 4074
+- verify all eight constructions against the official ciphertexts — source line 4077
+- blind re-derivation of PK4 (order + OCHRE/VERDIGRIS gauge lift) — source line 4080
+- build vocabularies, then validate and run the sweep engine — source line 4083
+- corrected-story crib campaign (existing engine) — source line 4091
+- the staged background campaign — source line 4099
+- 7. Next steps if the campaign ends negative — source line 4103
+- Session addendum (2026-10-02, later): statistical investigation, order tests, tq engine — source line 4125
+- # Raw-ciphertext statistics and what they actually prove — source line 4127
+- # New engines (all with planted self-tests) — source line 4158
+- # New negative results (letter corpus = 16,985 corrected-story 30-letter — source line 4179
+- # Campaign / resource notes — source line 4194
+- # Standing conclusions — source line 4203
+- Session addendum 2 (2026-10-02 evening): chi-square wheel filter, corpus v2, pipeline — source line 4218
+- # Sigma-free chi-square wheel filter (TQ order) — new tool `chisweep_pk9_tq.c` — source line 4220
+- # Letter corpus v2 (`generate_pk9_letter_v2.py`) — source line 4252
+- # All-offsets crib results (crib anywhere in the 144 letters) — source line 4264
+- # Overnight pipeline (running, `kryptos/pk9_overnight_pipeline.log`) — source line 4275
+- # Updated standing conclusions — source line 4282
+- UNIFIED CRYPTANALYTIC DOSSIER: PK8, PK9, AND PK10 — source line 4298
+- 1. Executive Summary & Structural Architecture — source line 4306
+- 2. Deconstruction of the PK8 Connection ($Q_4, Q_5, Q_6, Q_7$) — source line 4326
+- # 2.1 Classical Multi-Clock Engine — source line 4328
+- # 2.2 Binary Parity Resolution over $\text{GF}(2)$ — source line 4333
+- # 2.3 The PK8–PK10 Phase-Locking Anchor: The `KTRP` Invariant — source line 4342
+- 3. PK9 ($N = 144$): Mathematical Audit & Factor Sweep — source line 4355
+- # 3.1 Proven Two-Stage Transposition & Outer Keystream — source line 4357
+- # 3.2 Evaluation of $12 \times 12$ Factor Geometry — source line 4386
+- 4. PK10 ($N = 504$): The Rosetta Stone Architecture — source line 4393
+- # 4.1 Factorization & CRT Single-Cycle Theorem — source line 4395
+- # 4.2 The $12 \times 42$ Harmonic Torus — source line 4401
+- # 4.3 Parity Solution Transfer ($+4.37\sigma$) — source line 4411
+- # 4.4 Forensic Falsification of Synthetic Quadgram Clocks — source line 4417
+- # 4.5 Transposition-Invariant Direct Search — source line 4422
+- 5. Narrative Anchor & Crib Dragging Analysis — source line 4430
+- 6. Definitive Cryptanalytic Conclusions — source line 4438
+- PK9 Next Research Plan: the PK8 Connection — source line 4447
+- Correct interpretation of Dan's hint — source line 4452
+- First work package: structure-first wheel search — source line 4472
+- Search ordering — source line 4487
+- Acceptance criteria — source line 4499
+- First structured-triple result — source line 4510
+- Repository corrections — source line 4528
+- PK9 DEFINITIVE DECRYPTION & MATHEMATICAL AUDIT REPORT — source line 4539
+- 1. Executive Summary & Verification Ledger — source line 4547
+- # Mathematical Invariants & Proven Parameters — source line 4553
+- 2. Decrypted Plaintext — source line 4568
+- # Continuous 144-Character Stream: — source line 4570
+- # Formatted Matrix ($8 \text{ Rows} \times 18 \text{ Columns}$): — source line 4575
+- 3. Cross-Row English Anchor Proof Matrix — source line 4589
+- # Mathematical Intersections: — source line 4604
+- 4. Linguistic & Forensic Evaluation — source line 4614
+- PK9 Corrected Architecture & Cryptanalytic Audit — source line 4626
+- 1. Executive Summary: The Structural Correction — source line 4634
+- # The Invariance Theorem & Corrected Model — source line 4642
+- 2. Quantitative Verification of the Corrected Architecture — source line 4647
+- # 2.1 Raw Ciphertext Periodic Signature — source line 4649
+- # 2.2 Extraction of Intermediate Text $Z$ — source line 4658
+- # 2.3 Statistical Properties of $Z$ vs. Flawed Candidate — source line 4664
+- 3. The Inner $12 \times 12$ Grid & Columnar Permutation — source line 4691
+- # 3.1 Held-Karp Column Permutation Optimization — source line 4710
+- 4. Double Columnar Transposition on Intermediate Stream $Z$ — source line 4721
+- # 4.1 Width Grid Comparisons — source line 4725
+- # 4.2 Top Configuration: Pair $(18, 8)$ ($\text{Score} = \mathbf{-5.2647}$) — source line 4732
+- 5. Synthesis & Exact Mathematical Model of PK9 — source line 4752
+- Definitive Cryptanalytic Ledger: PK8, PK9, and PK10 — source line 4764
+- 1. Executive Cryptanalytic Status & Mathematical Matrix — source line 4770
+- 2. Cross-Cipher Homologies & The Tripartite Pipeline — source line 4780
+- # 2.1 The PK8–PK9 Harmonic Resonances — source line 4782
+- # 2.2 The PK8–PK10 Phase-Locking Anchor — source line 4800
+- # 2.3 Deconstruction of Dan Robinson's Clue — source line 4808
+- 3. PK8: Universal Unimodular 18-Window Theorem — source line 4818
+- # 3.1 The Universal Unimodular Basis Theorem — source line 4824
+- # 3.2 Direct Plaintext Matrix Equation — source line 4831
+- 4. PK9: Layered Architecture & Provable Trigram DP Optimum — source line 4840
+- # 4.1 Structural Triage & Ruled-Out Families — source line 4842
+- # 4.2 Exact Trigram DP Proof on Transposed Coordinate Matrix $G$ — source line 4850
+- 5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis — source line 4874
+- # 5.1 Moduli Factorization & The CRT Single-Cycle Theorem — source line 4876
+- # 5.2 Universal Unimodular Basis for PK10 — source line 4884
+- # 5.3 Multi-Stride CRT Decoupling — source line 4889
+- # 5.4 Outer Transposition Architecture — source line 4897
+- 6. Definitive Cryptanalytic Conclusions — source line 4904
+- Part XXI — General cryptanalytic reference notes — source line 4910
+- The cipher table — source line 4920
+- # Shift and reciprocal alphabets — source line 4937
+- # Substitution — source line 4948
+- # Polyalphabetic — source line 4955
+- # Transposition — source line 4969
+- # Polygraphic — source line 4980
+- # Wheel — source line 4990
+- # XOR (byte level) — source line 4996
+- # Codes — source line 5003
+- # Encodings (peelable layers) — source line 5017
+- Equivalences: two names, one plaintext — source line 5034
+- Lossy by design — source line 5049
+- Peelable layers and chains — source line 5063
+- Adding a cipher — source line 5098
+- How buttcrack works — source line 5144
+- 1. Characterise — source line 5170
+- 2. Identify — source line 5188
+- 3. Schedule — source line 5225
+- 4. Attack and peel — source line 5243
+- 5. Rank and present — source line 5385
+- When it does not solve — source line 5432
+- The language model — source line 5457
+- What is in `data/` — source line 5466
+- Provenance and licences — source line 5489
+- How a candidate is scored — source line 5504
+- Calibration: measured, not guessed — source line 5577
+- Rebuilding and extending — source line 5604
+- The Windows installer — source line 5632
+- What gets built — source line 5645
+- # What the user sees — source line 5670
+- Building it — source line 5689
+- # Prerequisites — source line 5691
+- # One command — source line 5704
+- # Building the pieces separately — source line 5730
+- # Releasing a new version — source line 5741
+- Code signing, and what happens if you skip it — source line 5751
+- # Antivirus false positives — source line 5782
+- Hosting it — source line 5794
+- # How the sale actually flows — source line 5809
+- # Object storage with a custom domain — source line 5833
+- # Selling it somewhere that enforces entitlements — source line 5865
+- # Serving it correctly — source line 5875
+- # Package managers, if you want them later — source line 5892
+- Other platforms — source line 5908
+- Known limitation on Windows — source line 5918
+- buttcrack — source line 5936
+- 🏛️ Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 5986
+- Install — source line 6002
+- # Windows, without installing Python — source line 6018
+- Quick start — source line 6038
+- break something (crack is the default command) — source line 6041
+- what am I looking at, without breaking it? — source line 6046
+- use it as a cipher, not a cracker — source line 6049
+- what does it know? — source line 6053
+- web interface — source line 6058
+- What it breaks — source line 6079
+- How it works — source line 6107
+- Reading the output — source line 6121
+- Python API — source line 6133
+- [('caesar', 0.95), ('affine', 0.45)] — source line 6150
+- Web interface — source line 6160
+- Beyond English — source line 6174
+- The Paradigm Kryptos CTF — source line 6189
+- Limits — read this before you trust an answer — source line 6220
+- Development — source line 6247
+- Licence — source line 6292
+- Examples — source line 6301
+- Solving one — source line 6311
+- The set — source line 6326
+- THE KRYPTOS DECRYPTION MANUSCRIPT — source line 6353
+- A Complete Mathematical, Cryptanalytic, and Historical Exposition of Jim Sanborn's Sculpture and Dan Robinson's Paradigm Kryptos Suite — source line 6354
+- TABLE OF CONTENTS — source line 6363
+- PROLOGUE: THE CIA SCULPTURE & THE 36-YEAR MYSTERY — source line 6376
+- CHAPTER 1: THE NARRATIVE ARC OF PARADIGM KRYPTOS (PK1 – PK7) — source line 6390
+- # 1.1 Summary of Solved Foundations (PK1 – PK7) — source line 6394
+- CHAPTER 2: PK8 — VERIFIED SOLUTION AND REPRODUCIBLE METHOD ($N = 153$) — source line 6430
+- CHAPTER 3: PK9 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 144$) — source line 6446
+- CHAPTER 4: PK10 — INDEPENDENTLY VERIFIED CONSTRUCTION ($N = 504$) — source line 6472
+- # 4.1 Exact cumulative pipeline — source line 6476
+- # 4.2 Plaintext boundary and digest — source line 6508
+- CHAPTER 5: VERIFICATION BOUNDARIES AND RESEARCH INTEGRITY — source line 6530
+- CHAPTER 6: CURRENT STATUS AND REPRODUCIBILITY — source line 6539
+- CHAPTER 7: MASTER SOLUTIONS DATABASE & VERIFICATION MANIFEST — source line 6545
+- EPILOGUE: COMPLETE SUITE REPRODUCIBILITY ASSURANCE — source line 6560
+- PARADIGM KRYPTOS (PK1 – PK10): COMPLETE UNIFIED CRYPTANALYTIC REPORT — source line 6571
+- 1. Executive Summary & Master Ledger — source line 6577
+- # The Master Puzzle Ledger (PK1 – PK10) — source line 6583
+- 2. Universal Mathematical Invariants Across PK8, PK9, and PK10 — source line 6600
+- 3. PK9 ($N = 144$): Architecture, Solution, and Thematic Nexus — source line 6626
+- # 3.1 Ciphertext & Structural Properties — source line 6628
+- # 3.2 Transposition Layer & The $12 \times 12$ Matrix — source line 6641
+- # 3.3 Thematic Interpretation & Kryptos K2 Nexus — source line 6665
+- 4. PK8 ($N = 153$): Deconstruction of the PK9 $\to$ PK8 Bridge — source line 6678
+- # 4.1 Dan Robinson's Clue Decoded — source line 6680
+- # 4.2 Plaintext Reconstruction — source line 6696
+- 5. PK10 ($N = 504$): The Grand Finale — source line 6706
+- # 5.1 Architecture & Coprime Dimension — source line 6708
+- # 5.2 The `STILL VEILED` Anchor — source line 6717
+- 6. Synthesis: The Complete Narrative Arc of Paradigm Kryptos — source line 6735
+- 7. Deliverable Artifacts in Workspace — source line 6751
+- Paradigm Kryptos Cryptanalytic Ledger: PK8, PK9 & PK10 — source line 6766
+- 1. Executive Status Matrix — source line 6772
+- 2. Key Mathematical Breakthroughs — source line 6782
+- # 2.1 The PK8 Dual Stride-Decoupling Theorem — source line 6784
+- # 2.2 PK9: Double Columnar Architecture & Quadgram Progression — source line 6802
+- # 2.3 PK10: Moduli Factorization & Transposition Filtering — source line 6817
+- Definitive Cryptanalytic Ledger: PK8, PK9, and PK10 — source line 6839
+- 1. Executive Cryptanalytic Status & Mathematical Matrix — source line 6845
+- 2. Cross-Cipher Homologies & The Tripartite Pipeline — source line 6855
+- # 2.1 The PK8–PK9 Harmonic Resonances — source line 6857
+- # 2.2 The PK8–PK10 Phase-Locking Anchor — source line 6875
+- # 2.3 Deconstruction of Dan Robinson's Clue — source line 6883
+- 3. PK8: Universal Unimodular 18-Window Theorem — source line 6893
+- # 3.1 The Universal Unimodular Basis Theorem — source line 6899
+- # 3.2 Direct Plaintext Matrix Equation — source line 6906
+- 4. PK9: Layered Architecture & Provable Trigram DP Optimum — source line 6915
+- # 4.1 Structural Triage & Ruled-Out Families — source line 6917
+- # 4.2 Exact Trigram DP Proof on Transposed Coordinate Matrix $G$ — source line 6925
+- 5. PK10: CRT Single-Cycle Theorem & Universal Unimodular Basis — source line 6949
+- # 5.1 Moduli Factorization & The CRT Single-Cycle Theorem — source line 6951
+- # 5.2 Universal Unimodular Basis for PK10 — source line 6959
+- # 5.3 Multi-Stride CRT Decoupling — source line 6964
+- # 5.4 Outer Transposition Architecture — source line 6972
+- 6. Definitive Cryptanalytic Conclusions — source line 6979
+- Part XXII — Editorial apparatus and future research protocol — source line 6985
+- 72. How to use this volume in a classroom — source line 6987
+- 73. Data preservation — source line 6998
+- 74. The standard for amendment — source line 7012
+- 75. Closing methodological maxim — source line 7023
+- Paradigm Kryptos CTF — Final Submissions (regenerated 2026-10-02) — source line 7033
+- # PK1 — The Accession Log ($N = 192$) — source line 7044
+- # PK2 — Pellegrin's Treatise ($N = 350$) — source line 7053
+- # PK3 — The Viennese Anatomist ($N = 280$) — source line 7062
+- # PK4 — Two Years In (the Whitesmith) ($N = 224$) — source line 7071
+- # PK5 — Fourteen Days in the Barn ($N = 272$) — source line 7080
+- # PK6 — The Whitesmith's Workshop ($N = 315$) — source line 7089
+- # PK7 — Three Weeks In (the Craft) ($N = 279$) — source line 7098
+- # PK8 — Leaving the Whitesmith ($N = 153$) — source line 7107
+- # PK9 — The Sealed Testament ($N = 144$) — source line 7116
+- # PK10 — SOLVED — source line 7125
+- Kryptos & Paradigm Kryptos Master Cryptanalytic Suite — source line 7131
+- 🏛️ Executive Cryptanalytic Deliverables — source line 7148
+- 🔬 Core Discoveries & Mathematical Invariants — source line 7163
+- # 1. The Dual-Cipher GPS Sculpture Theorem — source line 7165
+- # 2. Definitive PK9 Solution State ($N = 144 \to 135$) — source line 7177
+- # 3. Definitive PK10 Modular Triptych ($N = 504 \to 432$) — source line 7182
+- ⚡ 1-Second Suite Verification — source line 7190
+- 🌐 Interactive Web Application — source line 7222
+- 🚀 GitHub Pages Deployment — source line 7238
+- 📄 License — source line 7247
+- # 8.7 Mutual Information & Cross-Kappa Between PK8 and PK9 — source line 7253
+- # 8.8 Multi-Language Scoring & Keyed Alphabet Sweeps — source line 7268
+- # 8.3 Dan Robinson's Author Clues & The PK8-PK9 Connection — source line 7291
+- # 8.4 Exhaustive Cryptanalytic Elimination Ledger (100% Ruled Out) — source line 7300
+- # 8.5 The Harmonic Clock Lattice: {4, 5, 7} Decomposition — source line 7325
+- # 8.6 The Lag-7 Repeat Anchor & Plaintext Constraints — source line 7339
+- 76. A note on patience — source line 7354
+- Part XXIII — Writing cryptographic history from evidence — source line 7383
+- 77. The difference between a report and a history — source line 7385
+- 78. How to write a source note — source line 7403
+- 79. Reading silence in the archive — source line 7419
+- 80. The language of confidence — source line 7431
+- Part XXIV — The workshop, reconstructed — source line 7443
+- 81. A day with the ciphertext — source line 7445
+- 82. The ledger page — source line 7468
+- 83. The danger of the beautiful sentence — source line 7486
+- 84. What computation adds to the workshop — source line 7500
+- Part XXV — A more complete history of cryptographic practice — source line 7514
+- 85. Ciphers and codes are not the same thing — source line 7516
+- 86. Why operators matter — source line 7529
+- 87. The industrialization of secrecy — source line 7542
+- 88. From secrecy to public cryptography — source line 7555
+- Part XXVI — Three readers, one object — source line 7568
+- 89. The visitor — source line 7570
+- 90. The historian — source line 7583
+- 91. The cryptanalyst — source line 7596
+- Part XXVII — Making difficult ideas memorable — source line 7607
+- 92. The envelope analogy — source line 7609
+- 93. The clock analogy — source line 7621
+- 94. The lock analogy—and its limit — source line 7634
+- Part XXVIII — The emotional history of solving — source line 7647
+- 95. Why people return to unsolved ciphers — source line 7649
+- 96. The ethics of a public mystery — source line 7662
+- 97. The moment before certainty — source line 7675
+- Part XXIX — A reader’s field manual — source line 7687
+- 98. The first evening — source line 7689
+- 99. The first weekend — source line 7696
+- 100. The first month — source line 7703
+- Part XXX — Reading symbols before decoding them — source line 7714
+- 101. A symbol is not automatically a message — source line 7716
+- 102. The symbol inventory — source line 7731
+- 103. Cryptographic symbols and ordinary notation — source line 7747
+- 104. Decoding a symbol system by hand — source line 7760
+- 105. Visual symbols as historical evidence — source line 7774
+- 106. A proposed visual index — source line 7786
+- 107. The evidence icon system — source line 7807
+- Part XXXI — Reader’s reference pages — source line 7820
+- 108. Glossary — source line 7822
+- 109. List of planned figures — source line 7862
+- 110. List of tables — source line 7883
