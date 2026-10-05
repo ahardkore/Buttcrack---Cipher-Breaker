@@ -12,32 +12,61 @@ W, H = 432, 648
 margin, leading = 43, 15
 usable = H - 2 * margin - 18
 per_page = int(usable // leading)
-# Front matter makes the proof recognizable as a book and leaves room for a
-# later ISBN/copyright page without changing the source structure.
-front = [
-    "KRYPTOS",
-    "History, Method, and the Limits of a Break",
-    "A scholarly cryptanalytic study of Jim Sanborn's Kryptos,",
-    "the CIA context, and the Paradigm Kryptos challenges",
-    "",
-    "Working manuscript — KDP paperback proof",
-    "October 2026",
-    "",
-    "Copyright and rights notice",
-    "This working edition contains original analysis and clearly marked",
-    "provisional claims. Historical images require source and license review.",
-    "K4 is not labeled solved without independent exact verification.",
-    "",
-    "[Reserved for ISBN, edition, and publisher imprint]",
-    "",
-]
-lines = front + raw
+# The canonical Markdown source now carries its own title page, copyright
+# page, and foreword as real front matter (see the top of
+# KRYPTOS_SCHOLARLY_MANUSCRIPT.md), so this generator no longer prepends a
+# second, separate mini title block ahead of it — that previously produced
+# two different-looking title pages in a row with inconsistent subtitles.
+lines = raw
 pages = [lines[i:i + per_page] for i in range(0, len(lines), per_page)]
+
+# The base-14 Helvetica font used below is only declared with the PDF
+# viewer's default (Standard) text encoding, and the content streams are
+# written as raw encoded bytes — not through any font-specific glyph
+# mapping. Writing multi-byte UTF-8 sequences straight into those strings
+# (the previous behavior here) produces visibly garbled punctuation in
+# real PDF viewers (em dashes, curly quotes, the (c) symbol, etc. render
+# as mojibake, not as the intended character) even though the canonical
+# Markdown source is correctly encoded. Rather than embed a Unicode font
+# (which would break this generator's dependency-free, deterministic
+# design), this proof build transliterates to the closest plain-ASCII
+# equivalent for the PDF text stream only; the Markdown source and the
+# EPUB (built separately, over UTF-8 XHTML) keep the real Unicode text.
+_ASCII_MAP = {
+    "\u2014": "--", "\u2013": "-", "\u2212": "-",
+    "\u201c": '"', "\u201d": '"', "\u2018": "'", "\u2019": "'",
+    "\u2026": "...", "\u00b7": " - ",
+    "\u00b0": "deg", "\u2032": "'", "\u2033": '"',
+    "\u00d7": "x", "\u2248": "~", "\u2265": ">=", "\u2264": "<=",
+    "\u2192": "->", "\u2190": "<-", "\u2194": "<->", "\u2218": " o ",
+    "\u00a7": "Sec. ", "\u00a9": "(c)",
+    "\u00b2": "^2", "\u00b3": "^3", "\u2074": "^4", "\u2075": "^5",
+    "\u2500": "-", "\u2502": "|", "\u251c": "+", "\u2514": "+",
+    "\u00e8": "e", "\u00e9": "e", "\u00f6": "oe", "\u00df": "ss",
+    "\u2705": "[OK]", "\u26a0": "[!]",
+}
+
+
+def ascii_safe(s):
+    out = []
+    for ch in s:
+        if ord(ch) < 128:
+            out.append(ch)
+        elif ch in _ASCII_MAP:
+            out.append(_ASCII_MAP[ch])
+        else:
+            # Unmapped (rare emoji, foreign scripts, etc.): drop rather than
+            # let it fall through as raw bytes a Standard-encoded Type1
+            # font cannot represent.
+            out.append("")
+    return "".join(out)
+
 
 def esc(s):
     return s.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 def clean(line):
+    line = ascii_safe(line)
     return line.replace("**", "").replace("`", "").replace("### ", "").replace("## ", "").replace("# ", "")
 
 streams = []

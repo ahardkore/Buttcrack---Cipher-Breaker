@@ -129,8 +129,8 @@ text "a riddle" leading to K5 — i.e. even the plaintext is a pointer, and the 
 answer (a bearing, a place, a next layer) lives in the world, not in the ciphertext.
 
 **The German words & Berlin hypothesis** (`kryptos_german_sweep.py`): since K4 points
-explicitly to BERLIN (confirmed) and, on this repository's working hypothesis, the
-Alexanderplatz Weltzeituhr (unconfirmed — see status note above), a complete battery
+explicitly to BERLIN (confirmed) and, per Sanborn's own November 2025 confirmation, the
+Alexanderplatz Weltzeituhr (see status note above), a complete battery
 of 936,854 German words (`german_words.txt`) and Berlin Cold War sources was tested:
 1. *Full German dictionary repeating-key scan (936,854 words):* periods 1–26 are
    mathematically impossible under all 6 polyalphabetic modes (Std/Kry Vigenère, Beaufort,

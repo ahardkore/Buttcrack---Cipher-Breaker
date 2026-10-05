@@ -1,12 +1,122 @@
 # KRYPTOS: THE COPPER CIPHER
+
 ## History, hand methods, and the search for meaning in codes
 
-**Author:** Aaron Hard  
-**Copyright:** © 2026 Aaron Hard. All rights reserved.  
-**Working manuscript — editorially honest edition**  
-**Date:** 3 October 2026  
-**Prepared from:** the Buttcrack—Cipher Breaker research repository  
-**Planned typeset length:** approximately 350–400 pages, including notes, source-critical appendices, code listings, ciphertext tables, and reproducibility records
+
+### A scholarly, editorially honest study of Jim Sanborn's *Kryptos* sculpture, the people who built and broke it, and what cryptanalysis still means for the United States today
+
+
+**Aaron Hard**
+
+---
+
+## Copyright page
+
+**KRYPTOS: THE COPPER CIPHER**
+*History, hand methods, and the search for meaning in codes*
+
+Copyright © 2026 Aaron Hard. All rights reserved.
+
+No part of this publication may be reproduced, distributed, or transmitted in any
+form or by any means — including photocopying, recording, or other electronic or
+mechanical methods — without the prior written permission of the author, except in
+the case of brief quotations embodied in critical reviews and certain other
+noncommercial uses permitted by copyright law. For permission requests, contact the
+author through the publisher of record for this edition.
+
+**Edition:** Working manuscript — editorially honest edition, prepared for
+publication review. **Date:** 3 October 2026. **Printing/edition history:**
+first working edition; see the Revision History table in the back matter for
+section-by-section change tracking.
+
+**ISBN:** [Reserved — to be assigned prior to final KDP/print publication]
+**Library of Congress Control Number:** [Reserved — not yet applied for]
+**Published by:** Independent publication, prepared from the Buttcrack—Cipher
+Breaker research repository; KDP paperback and EPUB editions.
+
+**A note on claims and sources.** This book draws a deliberate line between
+established historical fact, published and independently reproducible
+cryptanalytic results, this project's own repository-generated computations, and
+labeled hypothesis or speculation (see *Editorial principles*, below). K4, the
+fourth passage of *Kryptos*, is treated throughout as **unsolved** absent an
+independently verifiable, exact, reproducible decryption; the recovery of a
+plaintext by third parties in 2025 is documented as a plaintext recovery, not a
+cryptographic solution, consistent with the discoverers' and the artist's own
+public statements. Nothing in this book should be read as an official statement
+by, or on behalf of, the Central Intelligence Agency, the National Security
+Agency, the General Services Administration, Jim Sanborn, Paradigm, or any other
+person or organization discussed herein. Trademarks, sculpture names, and
+quoted ciphertext are used for scholarly, historical, and critical commentary.
+
+**Cover and image rights.** Cover and interior image provenance and licensing
+status are tracked in `image-rights.json` and must be cleared before final
+commercial publication; see the KDP production notes in the back matter.
+
+---
+
+## Foreword
+
+I did not set out to write a book about national security. I set out to write
+about a sculpture — a curved sheet of copper in a courtyard in Langley,
+Virginia, pierced with letters that have resisted explanation for most of my
+lifetime. But the deeper I went into *Kryptos*, the more it became impossible
+to separate the puzzle from the people who built it and the people who spent
+years, sometimes decades, quietly taking it apart: a CIA cryptographer who
+taught a sculptor his craft in secret; an agency analyst who solved a
+97-character problem with nothing but pencil, paper, and his lunch breaks; a
+team of NSA cryptanalysts who cracked it almost by accident, on a dare, and
+told almost no one; a computer scientist who beat them all into print using a
+machine he had sitting at home. None of these people set out to make history.
+They were simply good at something rare, and they kept at it.
+
+That is, I think, the real subject of this book, and it is why I want to use
+this foreword to say something plainly rather than bury it in a footnote:
+the United States still needs these people, badly, and we are not training
+enough of them.
+
+Cryptanalysis is not a Cold War relic. Every signal our adversaries try to
+hide, every encrypted channel used to move stolen money, coordinate an attack,
+or conceal an intelligence operation, is a problem of the same fundamental
+shape as the one Jim Sanborn carved into a courtyard wall: a system designed
+by one mind to be unreadable by everyone except the person holding the key.
+The agencies responsible for our national defense — the NSA, the CIA, and the
+broader intelligence and defense community — depend on a continuous supply of
+people who can think the way the solvers in this book thought: patiently,
+skeptically, and with an unusual comfort living inside somebody else's logic
+until it gives way. That pipeline does not fill itself. It has to be built,
+funded, and renewed, one new cryptanalyst, mathematician, and software
+engineer at a time, in every generation.
+
+This is also why I think the story in this book cannot be separated from a
+broader argument about education and technology. David Stein cracked K2 with
+pencil and paper, but Jim Gillogly cracked the same passages with code he
+wrote himself on a home computer — and by the time K4's plaintext finally
+resurfaced in 2025, it was a software company, not a government agency, that
+built the cryptographic verification system now used to check anyone's
+proposed solution. Modern cryptanalysis runs on programming literacy as much
+as it runs on classical cipher theory. If the United States wants the next
+generation capable of finding the next Jim Gillogly, the next David Stein, or
+the next team quietly solving a problem nobody has announced yet, it has to
+keep investing — in computer science and mathematics education, in
+university and agency outreach to students long before they ever apply for a
+clearance, and in public, low-stakes venues like puzzle challenges and
+capture-the-flag competitions that let a curious teenager discover that this
+is a thing a person can be good at.
+
+None of that is really about any one sculpture. It is about the quiet,
+unglamorous work of national defense: the belief that safety, freedom, and
+liberty in an information age are protected not only by force, but by people
+capable of reading what an adversary would prefer to keep hidden — and by a
+country willing to keep training them. *Kryptos* has outlasted three
+presidential administrations, a dozen amateur and professional solving
+campaigns, and the retirement of nearly everyone directly involved in building
+it. Its unsolved fourth passage is, in that sense, a kind of standing
+invitation. I hope this book sends a few more people toward it, and toward the
+work it represents.
+
+— Aaron Hard
+
+---
 
 ## Reading order
 
@@ -762,8 +872,8 @@ text "a riddle" leading to K5 — i.e. even the plaintext is a pointer, and the 
 answer (a bearing, a place, a next layer) lives in the world, not in the ciphertext.
 
 **The German words & Berlin hypothesis** (`kryptos_german_sweep.py`): since K4 points
-explicitly to BERLIN (confirmed) and, on this repository's working hypothesis, the
-Alexanderplatz Weltzeituhr (unconfirmed — see status note above), a complete battery
+explicitly to BERLIN (confirmed) and, per Sanborn's own November 2025 confirmation, the
+Alexanderplatz Weltzeituhr (see status note above), a complete battery
 of 936,854 German words (`german_words.txt`) and Berlin Cold War sources was tested:
 1. *Full German dictionary repeating-key scan (936,854 words):* periods 1–26 are
    mathematically impossible under all 6 polyalphabetic modes (Std/Kry Vigenère, Beaufort,
