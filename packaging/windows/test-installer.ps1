@@ -56,20 +56,55 @@ $ErrorActionPreference = 'Stop'
 
 $Script:Log = $null
 $Script:InstallDir = $null
+$Script:Progress = New-Object System.Collections.Generic.List[string]
 
-function Write-Step { param([string]$Text) Write-Host "`n==> $Text" -ForegroundColor Cyan }
+function Write-Step { param([string]$Text) Write-Host "`n==> $Text" -ForegroundColor Cyan; Record-Progress "STEP $Text" }
 function Write-Note { param([string]$Text) Write-Host "    $Text" -ForegroundColor DarkGray }
-function Write-Pass { param([string]$Text) Write-Host "    OK   $Text" -ForegroundColor Green }
+function Write-Pass { param([string]$Text) Write-Host "    OK   $Text" -ForegroundColor Green; Record-Progress "ok   $Text" }
+
+function Record-Progress {
+    param([string]$Text)
+    $Script:Progress.Add($Text)
+    if ($Script:Progress.Count -gt 40) { $Script:Progress.RemoveAt(0) }
+}
+
+function Show-Diagnosis {
+    <#
+        Write a compact account of how far the run got to a file in %TEMP%, and
+        print it.
+
+        The CI job turns this file into a check-run annotation, because the job
+        log archive lives on a host that is not always reachable from a sandbox
+        or a phone.  It is just as useful on a developer's own machine, where it
+        saves scrolling back through a quarter of an hour of installer output.
+    #>
+    param([string]$Text)
+    $report = @("FAILED: $Text", '--- where it got to ---') + $Script:Progress
+    if ($Script:InstallDir) { $report += "install dir: $Script:InstallDir" }
+    if ($Script:Log -and (Test-Path -LiteralPath $Script:Log)) {
+        $report += '--- last lines of the installer''s own log ---'
+        $report += @(Get-Content -LiteralPath $Script:Log -Tail 25 -ErrorAction SilentlyContinue)
+    }
+    Write-Host ($report -join "`n") -ForegroundColor Yellow
+    try {
+        Set-Content -Path (Join-Path $env:TEMP 'buttcrack-installer-failure.txt') `
+            -Value ($report -join "`n") -Encoding utf8
+    }
+    catch {
+        Write-Host "   (could not write the failure summary: $_)" -ForegroundColor DarkGray
+    }
+}
 
 function Fail {
     param([string]$Text)
     # Failing early and loudly beats listing every downstream symptom: the first
     # failure in an installer test is almost always the cause of the rest.
     Write-Host "`nX  $Text`n" -ForegroundColor Red
+    Show-Diagnosis $Text
     if ($Script:InstallDir -and (Test-Path -LiteralPath (Join-Path $Script:InstallDir 'unins000.exe'))) {
         Write-Host "   The product is still installed at $Script:InstallDir" -ForegroundColor Yellow
         Write-Host "   Remove it with: & '$Script:InstallDir\unins000.exe' /VERYSILENT" -ForegroundColor Yellow
-        Write-Host '' 
+        Write-Host ''
     }
     exit 1
 }
@@ -78,6 +113,20 @@ function Assert-True {
     param([bool]$Condition, [string]$Text, [string]$Detail = '')
     if ($Condition) { Write-Pass $Text; return }
     Fail ($(if ($Detail) { "$Text -- $Detail" } else { $Text }))
+}
+
+function Get-InstalledLocation {
+    <#
+        Where the product says it installed itself.
+
+        Inno Setup records this under the AppId from buttcrack.iss, so it is the
+        authoritative answer and a far better diagnostic than "the directory I
+        asked for does not exist" -- the two disagreeing means /DIR was ignored.
+    #>
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{4D7F05D7-7C77-50B8-B538-219DED0C01B5}_is1'
+    $entry = Get-ItemProperty -Path $key -ErrorAction SilentlyContinue
+    if ($entry -and $entry.InstallLocation) { return $entry.InstallLocation }
+    return $null
 }
 
 function Get-UserPath {
@@ -186,7 +235,17 @@ catch {
 }
 
 Assert-True ($setup.ExitCode -eq 0) 'the installer exited 0' "exit code $($setup.ExitCode)"
-Assert-True (Test-Path -LiteralPath $InstallDir) 'the install directory exists' $InstallDir
+
+if (-not (Test-Path -LiteralPath $InstallDir)) {
+    $registered = Get-InstalledLocation
+    if ($registered) {
+        Fail ("The installer ignored /DIR. It registered itself as installed to " +
+              "'$registered' rather than '$InstallDir'.")
+    }
+    Fail ("The install directory was not created and the installer registered " +
+          "nothing, so it did not complete: $InstallDir")
+}
+Write-Pass 'the install directory exists'
 
 # --------------------------------------------------------------------------- #
 # 2. what landed on disk
@@ -197,6 +256,7 @@ Write-Step 'Checking the installed file tree'
 # Every one of these is something a user would notice the absence of: the two
 # entry points, the language model (nothing solves without it), the web UI the
 # shortcut opens, the prompt helper, and the uninstaller.
+$missing = @()
 $required = @(
     'Buttcrack.exe',
     'buttcrack.exe',
@@ -209,7 +269,20 @@ $required = @(
     '_internal\buttcrack\static\style.css'
 )
 foreach ($relative in $required) {
-    Assert-True (Test-Path -LiteralPath (Join-Path $InstallDir $relative)) "installed $relative"
+    if (Test-Path -LiteralPath (Join-Path $InstallDir $relative)) {
+        Write-Pass "installed $relative"
+    }
+    else {
+        $missing += $relative
+    }
+}
+if ($missing) {
+    # "Expected X, found Y" is answerable; "X is missing" is not.
+    Write-Host '    the install directory actually contains:' -ForegroundColor DarkGray
+    Get-ChildItem -LiteralPath $InstallDir -Recurse -Depth 2 -ErrorAction SilentlyContinue |
+        Select-Object -First 40 |
+        ForEach-Object { Write-Host "      $($_.FullName.Substring($InstallDir.Length))" -ForegroundColor DarkGray }
+    Fail "missing from the install: $($missing -join ', ')"
 }
 
 $installedBytes = (Get-ChildItem $InstallDir -Recurse -File | Measure-Object -Property Length -Sum).Sum
@@ -357,6 +430,7 @@ else {
 }
 
 Assert-True (-not (Test-PathEntry $InstallDir)) 'the install directory was removed from PATH'
+Assert-True (-not (Get-InstalledLocation)) 'the uninstall registration is gone' (Get-InstalledLocation)
 
 Assert-True (-not (Test-Path -LiteralPath $groupDir)) 'the Start-menu group was removed'
 Assert-True (@($desktopCandidates | Where-Object { Test-Path -LiteralPath $_ }).Count -eq 0) `
