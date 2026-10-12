@@ -7,9 +7,11 @@ restarts.  This module holds the machinery those three share:
 * :func:`restart_search` -- run N independent climbs, keep the global best, stop
   early as soon as a climb produces plaintext the language model is *certain*
   about, and never overrun the deadline;
-* :func:`parallel_restarts` -- spread restarts across processes with ``fork`` so
-  the already-loaded language model is inherited copy-on-write instead of being
-  re-read from disk in every worker.
+* :func:`parallel_restarts` -- spread restarts across processes, choosing
+  whichever start method the platform actually has: ``fork`` where it exists,
+  where the already-loaded language model is inherited copy-on-write instead of
+  being re-read in every worker, and ``spawn`` everywhere else -- Windows
+  included -- so that the expensive attacks use every core there too.
 """
 
 from __future__ import annotations
@@ -48,6 +50,61 @@ def _default_workers(requested: int | None) -> int:
     return max(1, min(cpus, 4))
 
 
+def start_method() -> str | None:
+    """The cheapest way this platform can start a worker process.
+
+    ``fork`` gets first refusal everywhere it exists, because a forked worker
+    inherits the parent's loaded language model copy-on-write and starting one
+    therefore costs nothing measurable.  Windows has no ``fork``, and neither do
+    some containers and embedded interpreters; there ``spawn`` is the difference
+    between using every core and using one.
+
+    Spawn is not free -- each worker re-imports the package and re-reads the
+    n-gram tables, about 0.25 s -- but that is paid once per worker, in
+    parallel, against a budget that defaults to 30 s.  A four-core machine
+    finishes a substitution climb roughly four times sooner.
+
+    ``forkserver`` is skipped on purpose.  It exists to make ``fork`` safe in
+    the presence of threads, and its workers fork from a clean server, so it
+    would pay spawn's reload cost without spawn's portability.
+
+    Returns ``None`` when this interpreter offers neither, which tells
+    :func:`parallel_restarts` to stay in-process.
+    """
+    try:
+        methods = multiprocessing.get_all_start_methods()
+    except Exception:  # pragma: no cover - trimmed-down multiprocessing
+        return None
+    for name in ("fork", "spawn"):
+        if name in methods:
+            return name
+    return None
+
+
+def _serial(worker: Callable[[tuple], tuple], payloads: Sequence[tuple], deadline: float | None) -> list[tuple]:
+    """Run every payload in this process, stopping at the deadline."""
+    results: list[tuple] = []
+    for payload in payloads:
+        if deadline is not None and time.time() >= deadline:
+            break
+        result = worker(payload)
+        if result:
+            results.append(result)
+    return results
+
+
+#: What a spawned pool charges before any of its workers can compute.
+#:
+#: Measured rather than guessed, on the batch that exposed this: the same
+#: two-payload substitution climb returned 0.30 s after submission through
+#: ``fork`` and 1.06-1.14 s through ``spawn``.  The difference is a fresh
+#: interpreter importing the package and re-reading the n-gram tables in every
+#: worker, and it is a cost the *engine* chose to take on -- so the engine
+#: absorbs it rather than charging it to the caller's search budget.  See
+#: :func:`parallel_restarts`.
+SPAWN_STARTUP = 1.0
+
+
 def parallel_restarts(
     worker: Callable[[tuple], tuple],
     payloads: Sequence[tuple],
@@ -60,43 +117,77 @@ def parallel_restarts(
     climbs that *did* finish instead of discarding the batch -- and instead of
     starting again serially, which cannot beat the clock and doubles the work.
 
-    Falls back to a serial loop when no pool can be created at all: a solver that
-    cannot fork (restricted containers, spawn-only platforms, a web request
-    thread) must still produce an answer.
+    The deadline stops new work from being *started*; it does not cancel work
+    already running.  A batch submitted inside the budget therefore keeps
+    listening for :data:`SPAWN_STARTUP` seconds past it, because the alternative
+    is worse than a fraction of a second: a batch issued just before the bell
+    was the whole point of spending that part of the budget, and dropping it
+    discards the only result available.  Windows is where this bites -- every
+    spawned worker boots an interpreter and re-reads the n-gram tables before it
+    can compute at all, so its batch returns just after the bell while the
+    identical batch under ``fork`` returns just before it.
+
+    A pool started *after* the deadline gets no such latitude: that budget is
+    spent, and the caller's cap is what keeps a search responsive.  Because the
+    clock is re-read on every call, at most one batch per search gets the extra
+    window -- a cascade whose stages keep issuing pools will find the deadline
+    already behind it and be cut off immediately, as it should be.
+
+    Falls back to a serial loop when no pool can be created at all: a solver
+    with no usable start method (a restricted container, a web request thread)
+    must still produce an answer.
     """
     if workers <= 1 or len(payloads) <= 1:
-        results = []
-        for payload in payloads:
-            if deadline is not None and time.time() >= deadline:
-                break
-            result = worker(payload)
-            if result:
-                results.append(result)
-        return results
+        return _serial(worker, payloads, deadline)
+
+    submitted = time.time()
+    method = start_method()
+    if deadline is not None and method == "spawn" and deadline - submitted <= SPAWN_STARTUP:
+        # A spawned pool cannot compute inside a slice this short: booting the
+        # interpreters alone costs more than the slice has left, so the workers
+        # would finish after the bell and -- before this -- their answers were
+        # thrown away, turning a solvable puzzle into an unsolved one.  Doing
+        # the work here is not merely cheaper than starting a pool that cannot
+        # pay for itself; it is faster than a pool that *can*, because there is
+        # no boot to pay for.  Measured, on the batch that exposed this: two
+        # substitution climbs cost 0.21 s each in this process and 1.06-1.14 s
+        # through ``spawn``.
+        return _serial(worker, payloads, deadline)
+
+    #: ``None`` means "no deadline"; a time in the past means "no waiting".
+    collect_until = deadline
+    if deadline is not None and submitted < deadline and method == "spawn":
+        collect_until = deadline + SPAWN_STARTUP
     results: list[tuple] = []
-    try:
-        ctx = multiprocessing.get_context("fork")
-        with ctx.Pool(processes=min(workers, len(payloads))) as pool:
-            pending = [pool.apply_async(worker, (payload,)) for payload in payloads]
-            while pending:
-                if deadline is not None and time.time() >= deadline:
-                    break
-                running = []
-                for handle in pending:
-                    if not handle.ready():
-                        running.append(handle)
-                        continue
-                    try:
-                        result = handle.get()
-                    except Exception:  # a worker died; keep what the others found
-                        continue
-                    if result:
-                        results.append(result)
-                pending = running
-                if pending:
+    if method is not None:
+        try:
+            ctx = multiprocessing.get_context(method)
+            with ctx.Pool(processes=min(workers, len(payloads))) as pool:
+                pending = [pool.apply_async(worker, (payload,)) for payload in payloads]
+                while pending:
+                    # Drain first, then decide whether to keep waiting: checking
+                    # the clock before looking at the handles threw away climbs
+                    # that had already finished, which is the bug this exists to
+                    # prevent.
+                    running = []
+                    for handle in pending:
+                        if not handle.ready():
+                            running.append(handle)
+                            continue
+                        try:
+                            result = handle.get()
+                        except Exception:  # a worker died; keep what the others found
+                            continue
+                        if result:
+                            results.append(result)
+                    pending = running
+                    if not pending:
+                        break
+                    if collect_until is not None and time.time() >= collect_until:
+                        break
                     time.sleep(0.005)
-    except Exception:
-        results = []
+        except Exception:
+            results = []
     if results:
         return results
     # A process pool can fail before producing a result, in which case serial is
@@ -105,13 +196,7 @@ def parallel_restarts(
     # and guarantees that the answer arrives too late to use.
     if deadline is not None and time.time() >= deadline:
         return results
-    for payload in payloads:
-        if deadline is not None and time.time() >= deadline:
-            break
-        result = worker(payload)
-        if result:
-            results.append(result)
-    return results
+    return _serial(worker, payloads, deadline)
 
 
 def frequency_seed(ciphertext: str) -> list[str]:

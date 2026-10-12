@@ -24,7 +24,7 @@
     "price": "$39.99",
     "payment_link": "https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05",
     "delivery_url": "",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "size": "",
     "sha256": ""
   },

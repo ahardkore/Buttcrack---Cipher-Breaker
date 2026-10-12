@@ -7,7 +7,7 @@
 ; Build it with packaging\windows\build.ps1, or on its own:
 ;
 ;     iscc packaging\windows\buttcrack.iss
-;     iscc /DAppVersion=1.1.0 packaging\windows\buttcrack.iss   ; if ISPP cannot read the exe
+;     iscc /DAppVersion=1.2.0 packaging\windows\buttcrack.iss   ; if ISPP cannot read the exe
 ;
 ; Design notes that are easy to get wrong and annoying to discover later:
 ;
@@ -21,7 +21,13 @@
 
 #define AppName       "Buttcrack"
 #define AppPublisher  "ahardkore"
-#define AppExeName    "Buttcrack.exe"
+; The windowed desktop app.  Deliberately NOT "Buttcrack.exe": Windows and macOS
+; filesystems are case-insensitive, so a build containing both Buttcrack.exe and
+; buttcrack.exe keeps only one of them -- and the shortcut below would then launch
+; the command line instead of the app.  The console program keeps the plain
+; `buttcrack` name, because that is what PATH, the README and the command-prompt
+; shortcut all promise.
+#define AppExeName    "Buttcrack Desktop.exe"
 #define CliExeName    "buttcrack.exe"
 #define AppUrl        "https://ahardkore.github.io/Buttcrack---Cipher-Breaker/"
 #define SourceDir     "..\..\dist\Buttcrack"
@@ -100,13 +106,18 @@ Source: "{#SourceDir}\_internal\*"; DestDir: "{app}\_internal"; \
 Source: "buttcrack-prompt.cmd"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"; \
+; WorkingDir is set explicitly rather than left to the default.  The default is
+; sensible today, but the program's behaviour must not depend on guessing which
+; directory a shortcut will hand it -- a relative path resolved against an
+; unexpected working directory is exactly the bug that made the campaign panel
+; fail in the installed build.
+Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"; WorkingDir: "{app}"; \
     Comment: "Break ciphers on this machine -- nothing is uploaded"
 Name: "{group}\{#AppName} command line"; Filename: "{app}\buttcrack-prompt.cmd"; \
-    IconFilename: "{app}\{#CliExeName}"; \
+    WorkingDir: "{app}"; IconFilename: "{app}\{#CliExeName}"; \
     Comment: "A command prompt with buttcrack on PATH"
 Name: "{group}\Uninstall {#AppName}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Registry]
 ; Per-user PATH.  {olddata} keeps whatever was already there; the Check stops

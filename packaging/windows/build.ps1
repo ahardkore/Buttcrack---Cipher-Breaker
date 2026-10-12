@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Build Buttcrack.exe, buttcrack.exe and buttcrack-setup-<version>.exe.
+    Build Buttcrack Desktop.exe, buttcrack.exe and buttcrack-setup-<version>.exe.
 
 .DESCRIPTION
     One command, from a clean checkout, on a Windows machine:
@@ -46,6 +46,16 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# PowerShell 7.3 and newer turn a non-zero exit code from a native program into
+# a terminating error when $ErrorActionPreference is 'Stop'.  This script checks
+# $LASTEXITCODE itself everywhere and reports what went wrong in its own words --
+# most importantly for the tkinter probe, whose whole point is to say "re-run the
+# python.org installer and tick tcl/tk" instead of dumping a Python traceback.
+# Opt out where the variable exists; Windows PowerShell 5.1 does not have it.
+if (Get-Variable -Name 'PSNativeCommandUseErrorActionPreference' -ErrorAction SilentlyContinue) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
 $Here = $PSScriptRoot
 $Root = Split-Path (Split-Path $Here -Parent) -Parent
 $VenvDir = Join-Path $Root '.venv-build'
@@ -66,6 +76,44 @@ function Find-SignTool {
         Sort-Object FullName -Descending |
         Select-Object -First 1
     if ($kit) { return $kit.FullName }
+    return $null
+}
+
+function Find-InnoCompiler {
+    <#
+        ISCC.exe, from PATH, from the uninstall registration the Inno Setup
+        installer writes, or from the folders it usually installs into.
+
+        The registry entry and the wildcard search both matter: the directory is
+        called "Inno Setup 6" today and something else tomorrow, a non-default
+        install location is not recorded anywhere else, and a CI runner that
+        installed the package through a system package manager may have put it
+        somewhere this script would never have guessed.
+    #>
+    $found = Get-Command 'iscc.exe' -ErrorAction SilentlyContinue
+    if ($found) { return $found.Source }
+
+    $uninstallKeys = @(
+        'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Inno Setup 6_is1',
+        'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Inno Setup 6_is1',
+        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Inno Setup 6_is1'
+    )
+    foreach ($key in $uninstallKeys) {
+        $entry = Get-ItemProperty -Path $key -ErrorAction SilentlyContinue
+        if ($entry -and $entry.InstallLocation) {
+            $candidate = Join-Path $entry.InstallLocation 'ISCC.exe'
+            if (Test-Path $candidate) { return $candidate }
+        }
+    }
+
+    $roots = @('C:\Program Files (x86)', 'C:\Program Files')
+    if ($env:LOCALAPPDATA) { $roots += (Join-Path $env:LOCALAPPDATA 'Programs') }
+    foreach ($root in $roots) {
+        if (-not (Test-Path $root)) { continue }
+        $hit = Get-ChildItem -Path (Join-Path $root 'Inno Setup*') -Recurse -Filter 'ISCC.exe' `
+            -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($hit) { return $hit.FullName }
+    }
     return $null
 }
 
@@ -149,10 +197,22 @@ try {
     & $VenvPython -m PyInstaller --clean --noconfirm (Join-Path $Here 'buttcrack.spec')
     if ($LASTEXITCODE -ne 0) { Fail 'PyInstaller failed.' }
 
-    $GuiExe = Join-Path $AppDir 'Buttcrack.exe'
+    $GuiExe = Join-Path $AppDir 'Buttcrack Desktop.exe'
     $CliExe = Join-Path $AppDir 'buttcrack.exe'
     foreach ($exe in @($GuiExe, $CliExe)) {
         if (-not (Test-Path $exe)) { Fail "Expected $exe, which PyInstaller did not produce." }
+    }
+
+    # Two names is not the same as two programs.  On a case-insensitive
+    # filesystem a spec that names them Buttcrack.exe and buttcrack.exe produces
+    # ONE file, both checks above still pass, and the Start-menu shortcut ends up
+    # launching the command line.  That is exactly what shipped the first time
+    # this was built on Windows, so compare the two files rather than their names.
+    $guiSize = (Get-Item $GuiExe).Length
+    $cliSize = (Get-Item $CliExe).Length
+    if ($guiSize -eq $cliSize) {
+        Fail ("$([System.IO.Path]::GetFileName($GuiExe)) and $([System.IO.Path]::GetFileName($CliExe)) are identical in size, " +
+              "which almost certainly means they are the same file. The names in buttcrack.spec must differ by more than letter case.")
     }
     $appSize = [math]::Round((Get-ChildItem $AppDir -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB, 1)
     Write-Note "dist\Buttcrack\  ($appSize MB)"
@@ -203,17 +263,7 @@ try {
     }
 
     Write-Step 'Building the installer (Inno Setup)'
-    $iscc = $null
-    $isccCmd = Get-Command 'iscc.exe' -ErrorAction SilentlyContinue
-    if ($isccCmd) {
-        $iscc = $isccCmd.Source
-    }
-    else {
-        foreach ($candidate in @('C:\Program Files (x86)\Inno Setup 6\ISCC.exe',
-                                 'C:\Program Files\Inno Setup 6\ISCC.exe')) {
-            if (Test-Path $candidate) { $iscc = $candidate; break }
-        }
-    }
+    $iscc = Find-InnoCompiler
     if (-not $iscc) {
         Fail 'Inno Setup 6.3 or newer not found. Install it with:  winget install --id JRSoftware.InnoSetup  (or from https://jrsoftware.org/isdl.php), then re-run. Pass -SkipInstaller to stop after the executables instead.'
     }

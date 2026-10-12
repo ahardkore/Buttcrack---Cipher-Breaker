@@ -15,18 +15,18 @@ This page covers how to build it and where to put it.
 
 ```
 dist/
-  Buttcrack/                     the application directory
-    Buttcrack.exe                windowed  -- the desktop app
-    buttcrack.exe                console   -- the CLI
-    _internal/                   Python runtime, the six language models, the web UI
+  Buttcrack/                       the application directory
+    Buttcrack Desktop.exe          windowed  -- the desktop app
+    buttcrack.exe                  console   -- the CLI
+    _internal/                     Python runtime, the six language models, the web UI
   installer/
-    buttcrack-setup-1.1.0.exe    ← this is the thing you publish
-    buttcrack-setup-1.1.0.exe.sha256
+    buttcrack-setup-1.2.0.exe      ← this is the thing you publish
+    buttcrack-setup-1.2.0.exe.sha256
 ```
 
 Two executables, one shared runtime:
 
-| | `Buttcrack.exe` | `buttcrack.exe` |
+| | `Buttcrack Desktop.exe` | `buttcrack.exe` |
 | --- | --- | --- |
 | Start menu / desktop shortcut | yes | no |
 | Console window | no | yes, it *is* the console |
@@ -36,9 +36,22 @@ Two executables, one shared runtime:
 They share one copy of Python and one copy of the 1.8 MB of n-gram tables, so
 shipping both costs almost nothing over shipping either.
 
+The desktop app is **not** called `Buttcrack.exe`, and that is not a style
+choice. Windows and macOS filesystems are case-insensitive by default, so a build
+directory containing both `Buttcrack.exe` and `buttcrack.exe` is a directory
+containing one file: `COLLECT` writes the second over the first, the bundle holds
+a single program, and the Start menu quietly launches whichever survived. The
+first Windows build of this installer did exactly that, and shipped a "desktop
+app" whose shortcut opened the command line.
+
+Three things now refuse to let it happen again: `buttcrack.spec` exits if the two
+names collide when lowercased, `build.ps1` compares the two files rather than
+their names, and `test-installer.ps1` checks the installed programs have
+different contents and that the shortcut's target is the one it claims to be.
+
 ### What the user sees
 
-1. Downloads `buttcrack-setup-1.1.0.exe`.
+1. Downloads `buttcrack-setup-1.2.0.exe`.
 2. Runs it. **No UAC prompt** — it installs per-user into
    `%LOCALAPPDATA%\Programs\Buttcrack`. (The first page offers a machine-wide
    install for anyone who wants one.)
@@ -214,17 +227,17 @@ This is where the file should go — pick one, upload, paste the URL into
 With R2, publishing a new version is:
 
 ```bash
-rclone copy dist/installer/buttcrack-setup-1.1.0.exe r2:buttcrack-downloads/
+rclone copy dist/installer/buttcrack-setup-1.2.0.exe r2:buttcrack-downloads/
 ```
 
 Give the object a name nobody would guess — the unguessable URL *is* the
 paywall:
 
 ```
-buttcrack-setup-1.1.0-7f3a9c2e51b04d88.exe
+buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
 ```
 
-then paste `https://downloads.yourdomain/buttcrack-setup-1.1.0-7f3a9c2e51b04d88.exe`
+then paste `https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe`
 into `site.json`. Only the post-payment page ever shows it.
 
 If your bucket supports it, turn off directory listing and set a long
@@ -255,7 +268,7 @@ Whatever you use, check these three:
   one-liner to check it:
 
   ```powershell
-  Get-FileHash .\buttcrack-setup-1.1.0.exe -Algorithm SHA256
+  Get-FileHash .\buttcrack-setup-1.2.0.exe -Algorithm SHA256
   ```
 
 ### Package managers, if you want them later
@@ -284,17 +297,85 @@ Neither is wired up here because neither was asked for.
 
 ---
 
-## Known limitation on Windows
+---
 
-`buttcrack/search.py` parallelises its stochastic searches with
-`multiprocessing.get_context("fork")`, and `fork` does not exist on Windows, so
-the call raises and the solver falls back to a serial loop. In practice: the
-hill-climbing attacks (simple substitution, Playfair, bifid, the M-94 wheel)
-run on one core on Windows and benefit from a larger `--budget`. Exhaustive and
-analytic attacks — Caesar, affine, Vigenère, XOR, every encoding — are
-unaffected.
+## Verifying the installer
 
-This is not something the installer introduced; running from a source checkout
-on Windows behaves the same way. Fixing it means making the worker callables
-picklable and using the `spawn` context, which is a change to the search
-engine, not to the packaging.
+`build.ps1` proves the *executables* work. `test-installer.ps1` proves the
+*installer* does, which is a different program with a different failure mode: a
+wizard can install perfectly and still leave a dead directory on the user's
+`PATH` after an uninstall, or put a shortcut somewhere the script never checked.
+
+```powershell
+.\test-installer.ps1 -Installer ..\..\dist\installer\buttcrack-setup-1.2.0.exe
+```
+
+It installs silently into a temporary directory, then checks:
+
+* every file the installer is meant to lay down, including both language model
+  tables and all three web UI files;
+* the Start-menu group, the desktop shortcut, and the per-user `PATH` entry;
+* that the *installed* `buttcrack.exe` breaks a Caesar sample and returns the
+  exact plaintext — the only way to catch a data file that did not travel;
+* that the SQLite-backed `results` command runs, because the build used to
+  exclude `sqlite3` from the bundle and both that command and the campaign panel
+  in the window died on it;
+* the full 142-check self-test, unless you pass `-SkipSelftest`;
+* that a silent uninstall removes every file, both shortcuts and the `PATH`
+  entry, and leaves no non-empty directory behind.
+
+It touches two things outside a temp directory — the per-user `PATH` value and
+the Start-menu and desktop shortcuts — because those are precisely what it is
+testing. Both are undone by the uninstall it performs, and neither needs
+administrator rights. Pass `-NoPathTask` to leave `PATH` alone.
+
+The `installer` job in `.github/workflows/release.yml` runs this on
+`windows-latest` for every push and pull request, so the wizard is exercised on
+every change instead of on the day someone downloads it.
+
+---
+
+## Parallel solving on Windows
+
+`buttcrack/search.py` spreads the stochastic searches — simple substitution,
+Playfair, Bifid, Trifid and the M-94 wheel — across worker processes. It now
+picks the cheapest start method the platform actually offers: `fork` where it
+exists, where a worker inherits the loaded language model copy-on-write and costs
+nothing measurable to start, and `spawn` everywhere else, Windows included.
+
+Spawn is not free. Each worker re-imports the package and re-reads the n-gram
+tables, roughly 0.25 s, paid once in parallel against a budget that defaults to
+30 s. That is the difference between those attacks using one core on Windows and
+using four, which is what they used to do: the pool was created with
+`multiprocessing.get_context("fork")` unconditionally, that call raises on
+Windows, and the solver quietly fell back to a serial loop.
+
+Every worker callable is a top-level function and every payload is plain data —
+text, integers, a seed, a language name — which is what makes them picklable and
+therefore spawn-safe. `tests/test_search.py` forces the spawn context on Linux
+and runs the real substitution worker through it, so the Windows path is covered
+by the ordinary test suite rather than by a customer.
+
+---
+
+## Where the installed app keeps its data
+
+The desktop window owns two files: the PK9 campaign ledger and the saved
+assistant transcripts. Both live in `%LOCALAPPDATA%\Buttcrack` (on macOS,
+`~/Library/Application Support/Buttcrack`; on Linux, `$XDG_DATA_HOME/buttcrack`).
+
+They used to be relative paths — `kryptos\pk9-results.sqlite3` and
+`%USERPROFILE%\buttcrack-assistant.jsonl`. From a checkout the first is
+perfectly reasonable. Installed, it resolves against whatever directory the
+shortcut launched the process in, which is not a directory anyone chose and
+usually does not have a `kryptos` subdirectory; SQLite will not create a missing
+parent, so the campaign panel showed "Campaign ledger unavailable" to everyone
+who installed the program and to nobody who ran it from source.
+`buttcrack/userdata.py` resolves both locations properly, and
+`tests/test_userdata.py` reproduces the installed situation to keep it that way.
+
+You can move either with `BUTTCRACK_DATA_DIR`, or point the campaign panel at one
+particular ledger with `BUTTCRACK_PK9_LEDGER`.
+
+An uninstall leaves that directory alone on purpose: it is the user's data, not
+the program's, and deleting it would take their campaign results with it.
