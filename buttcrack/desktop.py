@@ -32,6 +32,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import __version__
+from .userdata import assistant_log, pk9_ledger
 
 #: A desktop app listens to itself and nothing else.
 LOCAL_HOST = "127.0.0.1"
@@ -368,7 +369,12 @@ def run_window(app: LocalApp) -> bool:
         view.pack(fill="both", expand=True)
 
         def data():
-            db = ResultDB("kryptos/pk9-results.sqlite3")
+            # Not a path relative to the current directory: in an installed copy
+            # there is no checkout, the shortcut's working directory is not
+            # ours, and the parent directory would not exist, so SQLite would
+            # refuse to open the file and this panel would show "ledger
+            # unavailable" for everyone.  See buttcrack/userdata.py.
+            db = ResultDB(pk9_ledger())
             rows = db.recent(10000)
             meta = active_project[0].campaign
             total = int(meta.get("total_chunks", len(rows)))
@@ -927,7 +933,7 @@ def run_window(app: LocalApp) -> bool:
             active_project[0].notes.append(result)
             AssistantRecord.create(
                 "explainable-planner", "built-in", input_box.get("1.0", "end"), result, input_box.get("1.0", "end")
-            ).save_jsonl(Path.home() / "buttcrack-assistant.jsonl")
+            ).save_jsonl(assistant_log())
 
         def open_session() -> None:
             from tkinter import filedialog

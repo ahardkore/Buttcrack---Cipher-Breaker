@@ -81,8 +81,17 @@ HIDDEN = [
 
 # The package has zero dependencies, so the only weight to trim is the standard
 # library's own baggage.  Everything here is both large and unreachable from
-# the solver.  Note what is *not* excluded: ssl stays, because too much of the
-# standard library imports it opportunistically for it to be worth 5 MB.
+# the solver.  Note what is *not* excluded:
+#
+# * ssl     -- too much of the standard library imports it opportunistically
+#              for it to be worth 5 MB;
+# * sqlite3 -- buttcrack/results_db.py imports it at the top of the module and
+#              the PK9 Campaign panel in the desktop window is built on it.  It
+#              used to be listed here, which meant the frozen app started,
+#              solved ciphers, and then died with ModuleNotFoundError the first
+#              time someone opened that panel.  tests/test_windows_bundle.py
+#              now fails the build if anything listed below is reachable from
+#              the package at all.
 EXCLUDES = [
     "pydoc_data",
     "lib2to3",
@@ -91,7 +100,6 @@ EXCLUDES = [
     "pip",
     "test",
     "idlelib",
-    "sqlite3",
     "asyncio",
     "xmlrpc",
     "turtle",

@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+import multiprocessing
+import os
+import pickle
 import random
 import time
 import unittest
+from unittest import mock
 
 from buttcrack.ciphers import get
+from buttcrack.ciphers.substitution import _climb_worker
 from buttcrack.lang import get_model
 from buttcrack.search import (
     climb,
@@ -14,6 +19,7 @@ from buttcrack.search import (
     parallel_restarts,
     restart_search,
     restarts_for,
+    start_method,
     swap,
 )
 from buttcrack.text import A26, keyed_alphabet, letters_only
@@ -34,6 +40,15 @@ def _worker(payload):
     value, delay = payload
     time.sleep(delay)
     return (value, value * 2)
+
+
+def _pid_worker(payload):
+    """Top-level, and answers with the process that ran it.
+
+    Used to prove the work crossed a process boundary: a pool that quietly
+    failed to start would otherwise be masked by the serial fallback.
+    """
+    return (payload[0], os.getpid())
 
 
 class TestHelpers(unittest.TestCase):
@@ -169,6 +184,126 @@ class TestParallelRestarts(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             parallel_restarts(exploding, [(1, 0.0)], 1)
+
+
+class TestStartMethod(unittest.TestCase):
+    """Which way this platform starts a worker, and why it matters."""
+
+    def test_the_method_is_one_this_interpreter_actually_has(self):
+        method = start_method()
+        self.assertIn(method, set(multiprocessing.get_all_start_methods()))
+
+    def test_fork_is_preferred_where_it_exists(self):
+        # Fork inherits the loaded language model copy-on-write, so a restart
+        # costs nothing to start.  Windows is the only reason spawn is here.
+        if "fork" not in multiprocessing.get_all_start_methods():
+            self.skipTest("this platform has no fork")
+        self.assertEqual(start_method(), "fork")
+
+    def test_a_platform_with_no_pool_at_all_stays_in_process(self):
+        with mock.patch("buttcrack.search.start_method", return_value=None):
+            self.assertEqual(
+                sorted(parallel_restarts(_worker, [(i, 0.0) for i in range(3)], 4)),
+                [(0, 0), (1, 2), (2, 4)],
+            )
+
+
+class TestSpawnWorkers(unittest.TestCase):
+    """The Windows path: no fork, so workers are started by re-running Python.
+
+    Windows cannot be asked to check itself from here, so these force the spawn
+    context on a platform that has one and thereby run what Windows runs -- the
+    start-method choice, and the picklability of every worker and payload the
+    solver actually uses.  A worker that cannot be pickled raises under spawn
+    and only under spawn, which is exactly the class of bug that would otherwise
+    be discovered by a user.
+    """
+
+    def test_the_test_worker_survives_spawn(self):
+        with mock.patch("buttcrack.search.start_method", return_value="spawn"):
+            results = parallel_restarts(_worker, [(i, 0.0) for i in range(3)], 3)
+        self.assertEqual(sorted(results), [(0, 0), (1, 2), (2, 4)])
+
+    def test_the_pool_really_hands_the_work_to_other_processes(self):
+        # Without this, a pool that failed to start would be swallowed by the
+        # serial fallback and the spawn tests above would pass while proving
+        # nothing at all about Windows.
+        with mock.patch("buttcrack.search.start_method", return_value="spawn"):
+            results = parallel_restarts(_pid_worker, [(i,) for i in range(3)], 3)
+        pids = {pid for _index, pid in results}
+        self.assertEqual(len(results), 3)
+        self.assertNotIn(os.getpid(), pids, "the work ran in the parent process; no pool was used")
+
+    def test_the_context_is_asked_for_the_method_that_was_chosen(self):
+        real = multiprocessing.get_context
+        asked: list[str | None] = []
+
+        def recording(method=None):
+            asked.append(method)
+            return real(method)
+
+        with (
+            mock.patch("buttcrack.search.start_method", return_value="spawn"),
+            mock.patch.object(multiprocessing, "get_context", recording),
+        ):
+            parallel_restarts(_worker, [(i, 0.0) for i in range(2)], 2)
+        self.assertEqual(asked, ["spawn"])
+
+    def test_every_real_cipher_worker_can_be_pickled(self):
+        # pickle resolves these by module and qualified name, so this fails if a
+        # worker is ever moved inside a function or rebuilt as a closure.
+        from buttcrack.ciphers.polygraphic import (
+            _bifid_worker,
+            _playfair_anneal_worker,
+            _playfair_ensemble_worker,
+            _playfair_worker,
+            _trifid_worker,
+        )
+        from buttcrack.ciphers.substitution import _climb_worker
+        from buttcrack.ciphers.wheel import _m94_worker
+
+        for worker in (
+            _climb_worker,
+            _playfair_ensemble_worker,
+            _playfair_anneal_worker,
+            _playfair_worker,
+            _bifid_worker,
+            _trifid_worker,
+            _m94_worker,
+        ):
+            with self.subTest(worker=worker.__name__):
+                self.assertIs(pickle.loads(pickle.dumps(worker)), worker)
+
+    def test_the_real_substitution_worker_runs_under_spawn(self):
+        # The production payload tuple, through the production worker, on the
+        # start method Windows uses.  Everything the parent would need to pass
+        # is plain data -- text, ints, a seed and a language name -- which is
+        # what makes the same code work on both platforms.
+        ciphertext = letters_only(
+            "The archive contains the original manuscripts three of which were lost during the fire of eighteen "
+            "ninety two and the catalogue that described them was destroyed as well so the scholars have had to "
+            "reconstruct the order of the collection from the letters of the librarians who worked there"
+        )
+        encrypted = SUBSTITUTION.encrypt(ciphertext, ALPHABET)
+        payloads = [(encrypted, 4, 1234 + i, 4000, i == 0, "english") for i in range(2)]
+
+        real = multiprocessing.get_context
+        asked: list[str | None] = []
+
+        def recording(method=None):
+            asked.append(method)
+            return real(method)
+
+        with (
+            mock.patch("buttcrack.search.start_method", return_value="spawn"),
+            mock.patch.object(multiprocessing, "get_context", recording),
+        ):
+            results = parallel_restarts(_climb_worker, payloads, 2)
+
+        self.assertEqual(asked, ["spawn"], "no pool was created, so this proved nothing about Windows")
+        self.assertTrue(results, "spawned workers produced no climbs at all")
+        best = max(results, key=lambda row: row[3])
+        self.assertEqual(letters_only(best[1]), ciphertext)
 
 
 if __name__ == "__main__":

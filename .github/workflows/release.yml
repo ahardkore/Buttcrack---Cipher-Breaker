@@ -59,6 +59,88 @@ jobs:
           name: buttcrack-${{ matrix.os }}
           path: dist
 
+  installer:
+    name: installer (build, install, uninstall)
+    runs-on: windows-latest
+    needs: checks
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The wizard is the deliverable, and it is the one artefact that cannot be
+      # checked on Linux: silent install, the shortcuts, the per-user PATH entry,
+      # and an uninstall that leaves nothing behind are all Windows behaviour.
+      # Without this job the installer is written once, reviewed by eye, and
+      # shipped -- and the first person to find out whether it works is a
+      # customer.
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          $iscc = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          if (-not $iscc) { throw 'Inno Setup did not install where it was expected' }
+          Write-Host "ISCC: $($iscc.FullName)"
+
+      # build.ps1 does the freeze, the Caesar smoke test and the installer in
+      # one go, so CI runs the same command a maintainer runs by hand.
+      - name: Build executables and installer
+        shell: pwsh
+        run: ./packaging/windows/build.ps1
+
+      - name: Note the version
+        id: version
+        shell: pwsh
+        run: |
+          $version = python -c "import buttcrack; print(buttcrack.__version__)"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "buttcrack $version"
+
+      # The real test. Installs silently into a temp directory, checks every
+      # file, shortcut and registry value the installer claims to create, breaks
+      # a cipher with the *installed* executable, runs the 142-check self-test,
+      # then uninstalls and checks the machine is as it was.
+      - name: Install, exercise and remove the product
+        shell: pwsh
+        run: |
+          ./packaging/windows/test-installer.ps1 `
+            -Installer "dist/installer/buttcrack-setup-${{ steps.version.outputs.version }}.exe"
+
+      - name: Show the installer log on failure
+        if: failure()
+        shell: pwsh
+        run: |
+          Get-ChildItem "$env:TEMP\buttcrack-install-test-*" -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "--- $($_.FullName) ---"
+            Get-ChildItem $_.FullName -Filter '*.log' -Recurse | ForEach-Object {
+              Write-Host "=== $($_.Name) ==="
+              Get-Content $_.FullName -Tail 200
+            }
+          }
+
+      - name: SHA-256 the installer
+        shell: bash
+        run: |
+          cd dist/installer
+          python ../../scripts/ci_release.py sha256 . > INSTALLER-SHA256.json
+          cat INSTALLER-SHA256.json
+
+      # Kept as a workflow artefact rather than attached to a release or
+      # committed: this is the paid download, and both of those places are
+      # public.  See docs/windows-installer.md.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: buttcrack-installer-${{ steps.version.outputs.version }}
+          path: |
+            dist/installer/*.exe
+            dist/installer/*.sha256
+            dist/installer/INSTALLER-SHA256.json
+          retention-days: 30
+
   clean-install:
     name: clean install
     runs-on: ubuntu-latest

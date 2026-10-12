@@ -99,6 +99,18 @@ host it on any web server and the people who download it never touch GitHub,
 `git` or `pip`. See [docs/windows-installer.md](docs/windows-installer.md) for
 the build, code signing, and hosting options.
 
+To check the installer rather than the executables — silent install, the
+shortcuts, the `PATH` entry, a cipher broken by the installed program, then a
+silent uninstall and a check that nothing was left behind:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File packaging\windows\test-installer.ps1 `
+    -Installer dist\installer\buttcrack-setup-<version>.exe
+```
+
+Both commands run on `windows-latest` for every push, so the wizard is exercised
+on every change instead of on the day someone downloads it.
+
 ---
 
 ## Quick start
