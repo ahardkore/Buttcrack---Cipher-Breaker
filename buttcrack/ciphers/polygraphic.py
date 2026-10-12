@@ -464,6 +464,12 @@ def _playfair_worker(payload: tuple) -> tuple:
         return "", 0.0, -99.0, 0
     population.sort(key=lambda entry: -entry[0])
     best_fit = population[0][0]
+    #: The best grid the run has *ever* held, which is not the same as the best
+    #: grid still in the population: a stagnation reseed replaces the tail with
+    #: fresh random climbs, and switching the scoring window re-ranks everything,
+    #: so the champion can be gone by the time the deadline arrives.  See the
+    #: final pass below for what that used to cost.
+    best_ever: list[str] = population[0][1]
     full_window = False
     generations = 0
     stagnant = 0
@@ -486,14 +492,28 @@ def _playfair_worker(payload: tuple) -> tuple:
             population[-1] = [child_fit, child]
             population.sort(key=lambda entry: -entry[0])
         if child_fit > best_fit + 1e-9:
-            best_fit, stagnant = child_fit, 0
+            # ``best_fit`` is the run's *record*, not the population's best:
+            # it may only ever go up (bar the one scale change below), so that
+            # "this child is an improvement" always means "better than anything
+            # found so far".  ``list(child)`` because the population and the
+            # climb both mutate grids in place, and the record must not be
+            # editable by the search that produced it.
+            best_fit, stagnant, best_ever = child_fit, 0, list(child)
             if not full_window and best_fit > PLAYFAIR_POLISH_FITNESS and n > PLAYFAIR_SEED_WINDOW:
                 # Close enough that the tail of the text is evidence, not noise.
+                # Scores from here on are on the whole text, so they cannot be
+                # compared with the window-based ones that came before: the
+                # champion is re-scored on the new scale and kept only if it is
+                # still the better grid there.
                 full_window = True
                 evaluate = evaluator(n)
                 population = [[evaluate("".join(entry[1])), entry[1]] for entry in population]
                 population.sort(key=lambda entry: -entry[0])
-                best_fit = population[0][0]
+                champion = ("".join(best_ever), evaluate("".join(best_ever)))
+                if champion[1] >= population[0][0]:
+                    best_fit, best_ever = champion[1], list(best_ever)
+                else:
+                    best_fit, best_ever = population[0][0], list(population[0][1])
         else:
             stagnant += 1
             if stagnant >= PLAYFAIR_STAGNATION:
@@ -504,19 +524,36 @@ def _playfair_worker(payload: tuple) -> tuple:
                     grid, fit = climb(list(rng.sample(A25, 25)), evaluate)
                     population[i] = [fit, grid]
                 population.sort(key=lambda entry: -entry[0])
-                best_fit = population[0][0]
+                # The fresh climbs may have landed better than the record; they
+                # are in the population now, so compare.  This is the *only*
+                # other place the record may move, and again only upwards --
+                # resetting it to the population's best, as this once did, let
+                # the next mediocre child count as an improvement and overwrite
+                # a champion the run could no longer reach.
+                if population[0][0] > best_fit + 1e-9:
+                    best_fit, best_ever = population[0][0], list(population[0][1])
 
     # Final pass on the whole text: the genetic algorithm ranks well, but the
     # last two or three cells want every digraph and a best-improvement scan.
     # The top few grids are all polished, since their scores on the short window
     # are close enough that the ranking can be wrong about which one is really
     # nearest the truth.
+    #
+    # The best grid the run ever produced leads the list, and that is the whole
+    # point of tracking it: polishing only what the population happens to end on
+    # made a *longer* search report a *worse* answer.  Measured on the 1,602
+    # letter test ciphertext, the same worker scored -5.30/char given a 15 s
+    # slice and -6.24/char given 30 s -- because the 30 s run had reseeded its
+    # stagnant tail in between and thrown the champion away.  An anytime search
+    # must never return less than it already found.
     polish = evaluator(n)
-    best_key, best_fit = population[0][1], polish("".join(population[0][1]))
-    for entry in population[:3]:
-        if time.time() > deadline - 0.5:
+    seeds: list[list[str]] = [list(best_ever)]
+    seeds += [list(entry[1]) for entry in population[:3]]
+    best_key, best_fit = list(seeds[0]), -99.0
+    for seed in seeds:
+        if best_fit > -98.0 and time.time() > deadline - 0.5:
             break
-        key, fit = steepest(list(entry[1]), polish, max_passes=12)
+        key, fit = steepest(seed, polish, max_passes=12)
         if fit > best_fit:
             best_key, best_fit = key, fit
     if not full_window:

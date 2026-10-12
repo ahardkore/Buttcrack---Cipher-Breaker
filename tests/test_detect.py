@@ -147,6 +147,80 @@ class TestIdentify(unittest.TestCase):
         likes = [h.likelihood for h in hypotheses]
         self.assertEqual(likes, sorted(likes, reverse=True))
 
+    def test_the_displayed_list_keeps_the_rule_that_named_the_cipher(self):
+        """The list the API and CLI show is the *rules*, and must stay readable.
+
+        A 35-letter Caesar: all six polyalphabetic ciphers read 0.65 on it (the
+        family's generic flat-IC read, which is not evidence for any one of
+        them) and the shift rule reads 0.23 for the right answer.  Merged, the
+        family's half-weight self-assessments crowd the correct hypothesis off
+        the six-entry list -- which is exactly what the web-interface job's
+        "identify must name caesar" assertion caught.  The engine asks for the
+        self-assessments explicitly (``self_assessment=True``); anything that
+        *shows* hypotheses does not.
+        """
+        hypotheses, _ = identify("Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj")
+        named = {h.cipher: h.likelihood for h in hypotheses}
+        self.assertIn("caesar", named, f"the shift rule was crowded out: {named}")
+        self.assertLessEqual(len(hypotheses), 6)
+        # ...and asking for them puts them in the list the engine sees.
+        engine_view, _ = identify("Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj", limit=32, self_assessment=True)
+        self.assertIn("caesar", {h.cipher for h in engine_view})
+        self.assertGreater(len(engine_view), len(hypotheses))
+
+    def test_a_ciphers_own_structural_read_is_consulted_even_when_rules_fired(self):
+        # The wheel cipher's self-assessment is the sharpest detector in the
+        # collection: every 25th letter goes through the same disk, so the
+        # columns of a period-25 split are monoalphabetic and it reads 0.9 on a
+        # real M-94.  It used to be consulted only when *no* rule had fired, so
+        # on a wheel ciphertext -- where the generic "flat IC" rule obligingly
+        # named Vigenere -- the M-94 never appeared in the hypotheses at all.
+        # The engine orders its attacks by these, so it never attacked the wheel
+        # and spent the whole budget on polyalphabetic guesses.
+        wheel = get("m94")
+        ciphertext = wheel.encrypt(PLAINTEXT, {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 4})
+        hypotheses, _ = identify(ciphertext, limit=999, self_assessment=True)
+        named = {h.cipher: h.likelihood for h in hypotheses}
+        self.assertIn("m94", named, f"the wheel's own read was dropped: {named}")
+        # Its evidence is split across two readings: the raw text still has the
+        # flat IC of a polyalphabetic cipher, so the structural read is halved
+        # and the wheel lands mid-list (rank 10 of 22 here) rather than on top.
+        # That is exactly why the engine must ask for the whole list.
+        self.assertGreater(named["m94"], 0.25)
+        # And the evidence still explains itself, like every other hypothesis.
+        wheel_hypothesis = next(h for h in hypotheses if h.cipher == "m94")
+        self.assertGreater(len(wheel_hypothesis.reason), 10)
+        # The period-25 columns are monoalphabetic even though the text as a
+        # whole is not -- that gap is what makes the wheel inferable at all.
+        self.assertLess(characterise(ciphertext).ic, 0.055)
+        from buttcrack.text import ic_of_columns, letters_only
+
+        self.assertGreater(ic_of_columns(letters_only(ciphertext), 25), 0.065)
+
+    def test_real_playfair_clears_the_engines_strong_layer_bar(self):
+        # This is the evidence that lets the engine name a cipher it could not
+        # solve: real Playfair reads ~0.9 -- past the 0.6 "this text *is* that
+        # cipher" bar -- while every failed unciphering it competes with is
+        # noise.  If Playfair's tells ever get weaker than this bar, the
+        # unsolved report goes back to naming whichever failure scored 0.011
+        # instead of the cipher the identifier is 90% sure of.
+        from buttcrack.engine import STRONG_LAYER
+        from tests.test_engine import PARAGRAPH, enc
+
+        hypotheses, _ = identify(enc("playfair", PARAGRAPH * 3, "MONARCHY"), limit=999)
+        read = {h.cipher: h.likelihood for h in hypotheses}
+        self.assertGreaterEqual(read.get("playfair", 0.0), STRONG_LAYER, read)
+        self.assertGreater(len(next(h for h in hypotheses if h.cipher == "playfair").reason), 10)
+
+    def test_a_cipher_keeps_its_strongest_evidence(self):
+        # Several rules can name the same cipher, and the engine turns the
+        # hypotheses into a per-cipher lookup table, so a later weaker entry
+        # must not overwrite an earlier strong one.
+        hypotheses, _ = identify(ct("substitution"))
+        substitution = [h for h in hypotheses if h.cipher == "substitution"]
+        self.assertEqual(len(substitution), 1, "the same cipher appears twice in the hypotheses")
+        self.assertGreater(substitution[0].likelihood, 0.5)
+
     def test_gibberish_produces_no_confident_answer(self):
         hypotheses, stats = identify("Xk9#Qv2!Lm7$Zr4@Wp8%Ty3^Bn6&Js1*Hd5")
         self.assertLess(stats.confidence, 0.62)

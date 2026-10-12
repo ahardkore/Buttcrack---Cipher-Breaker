@@ -452,6 +452,7 @@ function renderMeta(report, best, notes) {
     ["corpus record", notes.corpus_match || "", true],
     ["construction", notes.mechanism || "", false],
     ["evidence", notes.evidence || "", false],
+    ["named by", notes.named_by || "", false],
     ["language", report.language || "", false],
     ["reads as", report.language_detected || "", false],
     ["letters", report.stats ? report.stats.letters : "", false],

@@ -575,6 +575,53 @@ class TestLikelihood(unittest.TestCase):
         )
 
 
+class TestTapCodeDecidable(unittest.TestCase):
+    """A tap code is made of taps; prose with taps in it is not a tap code.
+
+    ``decodable`` is the gate that lets the engine peel a tap-code layer off a
+    ciphertext.  Since X, x, O and o double as taps, any prose at all can offer
+    runs that happen to be legal coordinates, and on a wheel ciphertext the
+    eight letters that fell out of ``express``-and-``stood``-style runs outranked
+    every real reading of the message -- the engine "solved" the ciphertext into
+    a tap-code peel and an affine.  The gate now requires the text to be nothing
+    but taps.
+    """
+
+    #: A real 25-letter window of a wheel ciphertext.  Its x/o runs are
+    #: ``[2, 3, 1, 1, 1, 1]``: four or more runs, an even count, every run a
+    #: legal coordinate, more than one distinct run -- every old test passed, and
+    #: the window "decoded" to six letters.
+    CIPHERTEXT_WINDOW = "NZJHUZIPOXBWDZENQOOXFZVRKJMIVXRQXPFKKBZLVUCJRPUSSAFZOJUUOEPWTYSNVYZKJWESI"
+
+    def test_the_old_rule_would_have_accepted_a_ciphertext_window(self):
+        import re
+
+        normalised = self.CIPHERTEXT_WINDOW.replace("x", ".").replace("X", ".").replace("o", ".").replace("O", ".")
+        runs = [len(group) for group in re.split(r"[^.]+", normalised) if group]
+        self.assertGreaterEqual(len(runs), 4)
+        self.assertEqual(len(runs) % 2, 0)
+        self.assertTrue(all(1 <= run <= 5 for run in runs))
+        self.assertGreater(len(set(runs)), 1)
+
+    def test_that_window_is_not_treated_as_a_tap_code_layer(self):
+        self.assertFalse(get("tap_code").decodable(self.CIPHERTEXT_WINDOW))
+
+    def test_real_letters_alongside_taps_disqualify_the_text(self):
+        self.assertFalse(get("tap_code").decodable("x xo XOO o xoxo stood"))
+
+    def test_genuine_tap_code_is_still_decodable(self):
+        cipher = get("tap_code")
+        encoded = cipher.encode("Attack at dawn, bring the maps")
+        self.assertTrue(cipher.decodable(encoded), encoded[:80])
+        self.assertEqual(cipher.decode(encoded), "ATTACCATDAWNBRINGTHEMAPS")
+
+    def test_hand_written_taps_are_still_decodable(self):
+        # X and O are the usual substitutes for a tap, and a page of nothing but
+        # taps must keep working -- the fix is about foreign letters, not about
+        # the substitutes themselves.
+        self.assertTrue(get("tap_code").decodable("Xooo xo Xoo x Xo Xoo"))
+
+
 class TestPrescreen(unittest.TestCase):
     def test_prescreen_prefers_the_true_key(self):
         cipher = get("caesar")

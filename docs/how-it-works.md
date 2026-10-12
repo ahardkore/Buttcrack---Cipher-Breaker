@@ -69,9 +69,27 @@ structural questions are the only ones with an answer:
 6. **Below 60 letters, an inconclusive shift test is still reported** (0.20 +
    0.35 × closeness) rather than dropped: "a shift was considered and could not
    be decided" is more useful than silence.
-7. **If nothing fired**, each cipher is asked for its own `likelihood()` — a
-   structural self-assessment — and the results are reported at half weight,
-   labelled as self-assessment.
+7. **Every cipher's own `likelihood()`** — a structural self-assessment — can be
+   asked for as well (`self_assessment=True`), and the results join the list at
+   half weight, labelled as self-assessment. This is not a formality: a wheel
+   cipher (M-94) has the flat IC of a polyalphabetic cipher, so rule 5 obligingly
+   names Vigenère and the text never reaches the one hook that recognises it.
+   Every 25th letter of a wheel goes through the same disk, so the columns of a
+   period-25 split are monoalphabetic and the M-94's own read is 0.90 — the
+   sharpest evidence in the collection, and it used to be discarded whenever a
+   cheaper rule had already spoken.
+
+   The engine always asks for it; **the display path does not, by default.** On a
+   short text a family's generic read is not evidence for any one member of it —
+   Vigenère, Beaufort, Variant Beaufort, Gronsfeld, Trithemius and Porta all
+   self-assess at 0.65 on a 35-letter Caesar — and merged at half weight they
+   outrank the shift rule and push the right answer off a six-entry list. The
+   reference pages, the API and the desktop window keep the rules-first list.
+
+   A cipher named twice keeps its strongest reading, and the engine asks for the
+   whole list (its own `HYPOTHESIS_LIMIT`, 32) rather than the six entries the CLI
+   displays: the hypotheses are what order the attacks and weight their slices, so
+   a cipher cut off the end is attacked last with the smallest slice of all.
 
 Two rules keep this honest. A hypothesis produced by *decrypting* something
 (a shift that restored English, a base64 that decoded) is reported undamped; a
@@ -85,10 +103,10 @@ Attacks are ordered by cost class, not by alphabet:
 
 | class | seconds of a 30 s budget | who is in it |
 | --- | --- | --- |
-| `CHEAP` (1) | 3 s slice | caesar, rot13, rot47, atbash, affine, reverse, trithemius, all codes and encodings, rail fence, skip |
-| `MODERATE` (3) | 6 s slice | vigenère family, autokey, route, xor_repeating |
-| `EXPENSIVE` (10) | 25 s slice | substitution, keyword_substitution, columnar, playfair |
-| `BRUTAL` (30) | 12 s slice | bifid |
+| `CHEAP` (1) | 3 s slice | caesar, rot13, rot47, atbash, affine, reverse, trithemius, rail fence, skip, xor_single, all codes and encodings (19 ciphers) |
+| `MODERATE` (3) | 6 s slice | vigenère, beaufort, variant beaufort, gronsfeld, porta, autokey, quagmire3, route, xor_repeating (9) |
+| `EXPENSIVE` (10) | 25 s slice | substitution, keyword_substitution, columnar, myszkowski, amsco, sum_clock, hill, playfair (8) |
+| `BRUTAL` (30) | 20 s slice | bifid, four_square, trifid, m94 (4) |
 
 The identification hypotheses are blended into that order as priors
 (`_blend_priors`): a cipher the detector named goes first inside its cost class,
@@ -96,6 +114,28 @@ but it never jumps the class boundary, so a 26-key Caesar answer still arrives i
 milliseconds even when the detector is confused. Cheap attacks run to completion
 before expensive ones start, and the search exits early once a candidate reaches
 `CERTAIN_CONFIDENCE` (0.86).
+
+The expensive tiers are **planned before any of them runs** (`_phase_budgets`).
+Unplanned, they competed: on a wheel ciphertext the `EXPENSIVE` group ran from 14s
+to 62s of a 90s budget and the `BRUTAL` group — Bifid, four-square, Trifid and the
+M-94 that solves a wheel in four seconds — was left 0.08s, so the one attack that
+would have answered never started. Each tier now asks for the time its own
+per-cipher slices add up to, and when that does not fit, the tiers share what is
+left in proportion, so a tier with four ciphers keeps room to run four ciphers.
+
+What a tier asks for is `_phase_demand`: **size scaled by evidence.** Size alone is
+the wrong question — asked that way, `BRUTAL` claims four ciphers' worth of time on
+*every* text, and on a transposition ciphertext, where all four come back empty,
+that is time the columnar, Myszkowski and AMSCO searches in the tier before it
+needed (measured on the self-test's Myszkowski and AMSCO puzzles: the 7.7s of
+attack time became 5.5s and neither named its cipher any more). So a tier whose
+best cipher is over `PHASE_SUPPORT` (0.35) asks for its full sweep; a tier nothing
+points at asks for one cipher's slice plus a quarter of each of the others. The bar
+is low on purpose — the M-94's structural read of a wheel arrives at 0.45, which is
+what buys `BRUTAL` its 12s there.
+
+Only `EXPENSIVE` and `BRUTAL` are planned: the cheaper tiers take milliseconds and
+their timings are already calibrated.
 
 ## 4. Attack and peel
 
@@ -287,6 +327,26 @@ did.
 ---
 
 ## When it does not solve
+
+**A failure is still named honestly.** Confidence cannot choose between failed
+attempts — the winner is whichever noise scored highest, and 0.011 against 0.000
+is not evidence of anything — while the identifier can be emphatic, because a
+cipher's structure is a fact about the text rather than a guess about a key. So
+when nothing clears the solve bar and the identification is over `STRONG_LAYER`,
+the report names *that* cipher (`_named_by_evidence`):
+
+* a reading of that cipher within `EVIDENCE_TIE_BAND` (0.05) of the winner is
+  promoted to first place and carries the reason — "the identifier reads this as
+  playfair at 90%, ahead of four_square at 1%, and both readings are still noise";
+* if no reading of it came back at all — on a short budget the earlier phases can
+  spend the whole allowance, so it never got a slice — the winner keeps its place
+  and is annotated instead, so `vigenere, key=AMYYYY` on a Playfair puzzle cannot
+  be mistaken for a confirmed answer;
+* a reading that genuinely reads better (say 0.57 from the substitution hill
+  climb) is left alone. The tie band settles noise against noise, nothing more.
+
+`solved` stays false throughout: this decides what to *call* the failure, not
+whether to admit one. The note appears in the CLI, the web UI and `--json`.
 
 In rough order of usefulness:
 
