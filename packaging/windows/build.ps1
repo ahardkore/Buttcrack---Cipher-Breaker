@@ -46,6 +46,16 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# PowerShell 7.3 and newer turn a non-zero exit code from a native program into
+# a terminating error when $ErrorActionPreference is 'Stop'.  This script checks
+# $LASTEXITCODE itself everywhere and reports what went wrong in its own words --
+# most importantly for the tkinter probe, whose whole point is to say "re-run the
+# python.org installer and tick tcl/tk" instead of dumping a Python traceback.
+# Opt out where the variable exists; Windows PowerShell 5.1 does not have it.
+if (Get-Variable -Name 'PSNativeCommandUseErrorActionPreference' -ErrorAction SilentlyContinue) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
 $Here = $PSScriptRoot
 $Root = Split-Path (Split-Path $Here -Parent) -Parent
 $VenvDir = Join-Path $Root '.venv-build'
