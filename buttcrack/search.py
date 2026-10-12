@@ -93,6 +93,18 @@ def _serial(worker: Callable[[tuple], tuple], payloads: Sequence[tuple], deadlin
     return results
 
 
+#: What a spawned pool charges before any of its workers can compute.
+#:
+#: Measured rather than guessed, on the batch that exposed this: the same
+#: two-payload substitution climb returned 0.30 s after submission through
+#: ``fork`` and 1.06-1.14 s through ``spawn``.  The difference is a fresh
+#: interpreter importing the package and re-reading the n-gram tables in every
+#: worker, and it is a cost the *engine* chose to take on -- so the engine
+#: absorbs it rather than charging it to the caller's search budget.  See
+#: :func:`parallel_restarts`.
+SPAWN_STARTUP = 1.0
+
+
 def parallel_restarts(
     worker: Callable[[tuple], tuple],
     payloads: Sequence[tuple],
@@ -105,6 +117,22 @@ def parallel_restarts(
     climbs that *did* finish instead of discarding the batch -- and instead of
     starting again serially, which cannot beat the clock and doubles the work.
 
+    The deadline stops new work from being *started*; it does not cancel work
+    already running.  A batch submitted inside the budget therefore keeps
+    listening for :data:`SPAWN_STARTUP` seconds past it, because the alternative
+    is worse than a fraction of a second: a batch issued just before the bell
+    was the whole point of spending that part of the budget, and dropping it
+    discards the only result available.  Windows is where this bites -- every
+    spawned worker boots an interpreter and re-reads the n-gram tables before it
+    can compute at all, so its batch returns just after the bell while the
+    identical batch under ``fork`` returns just before it.
+
+    A pool started *after* the deadline gets no such latitude: that budget is
+    spent, and the caller's cap is what keeps a search responsive.  Because the
+    clock is re-read on every call, at most one batch per search gets the extra
+    window -- a cascade whose stages keep issuing pools will find the deadline
+    already behind it and be cut off immediately, as it should be.
+
     Falls back to a serial loop when no pool can be created at all: a solver
     with no usable start method (a restricted container, a web request thread)
     must still produce an answer.
@@ -112,7 +140,24 @@ def parallel_restarts(
     if workers <= 1 or len(payloads) <= 1:
         return _serial(worker, payloads, deadline)
 
+    submitted = time.time()
     method = start_method()
+    if deadline is not None and method == "spawn" and deadline - submitted <= SPAWN_STARTUP:
+        # A spawned pool cannot compute inside a slice this short: booting the
+        # interpreters alone costs more than the slice has left, so the workers
+        # would finish after the bell and -- before this -- their answers were
+        # thrown away, turning a solvable puzzle into an unsolved one.  Doing
+        # the work here is not merely cheaper than starting a pool that cannot
+        # pay for itself; it is faster than a pool that *can*, because there is
+        # no boot to pay for.  Measured, on the batch that exposed this: two
+        # substitution climbs cost 0.21 s each in this process and 1.06-1.14 s
+        # through ``spawn``.
+        return _serial(worker, payloads, deadline)
+
+    #: ``None`` means "no deadline"; a time in the past means "no waiting".
+    collect_until = deadline
+    if deadline is not None and submitted < deadline and method == "spawn":
+        collect_until = deadline + SPAWN_STARTUP
     results: list[tuple] = []
     if method is not None:
         try:
@@ -120,8 +165,10 @@ def parallel_restarts(
             with ctx.Pool(processes=min(workers, len(payloads))) as pool:
                 pending = [pool.apply_async(worker, (payload,)) for payload in payloads]
                 while pending:
-                    if deadline is not None and time.time() >= deadline:
-                        break
+                    # Drain first, then decide whether to keep waiting: checking
+                    # the clock before looking at the handles threw away climbs
+                    # that had already finished, which is the bug this exists to
+                    # prevent.
                     running = []
                     for handle in pending:
                         if not handle.ready():
@@ -134,8 +181,11 @@ def parallel_restarts(
                         if result:
                             results.append(result)
                     pending = running
-                    if pending:
-                        time.sleep(0.005)
+                    if not pending:
+                        break
+                    if collect_until is not None and time.time() >= collect_until:
+                        break
+                    time.sleep(0.005)
         except Exception:
             results = []
     if results:

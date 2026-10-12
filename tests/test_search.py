@@ -185,6 +185,54 @@ class TestParallelRestarts(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             parallel_restarts(exploding, [(1, 0.0)], 1)
 
+    def test_a_batch_that_lands_just_after_the_bell_is_still_collected(self):
+        # The bug: the loop checked the clock *before* it looked at the handles,
+        # so anything that became ready just after the deadline was thrown away
+        # along with all the budget spent producing it.  On Windows that is not a
+        # corner case -- a spawned worker boots an interpreter before it can
+        # compute, so its answer reliably arrives just after the bell.
+        #
+        # The slice is deliberately longer than the pool's startup, so the batch
+        # really is pooled, and the pool really is forked: the grace is a
+        # property of the spawned *code path*, and forking keeps the measurement
+        # about the deadline rather than about how long an interpreter takes to
+        # boot on the machine running the tests.
+        slice_seconds = 1.5
+        landing = slice_seconds + 0.05
+        real_context = multiprocessing.get_context
+        started = time.time()
+        with (
+            mock.patch("buttcrack.search.start_method", return_value="spawn"),
+            mock.patch("buttcrack.search.multiprocessing.get_context", side_effect=lambda _m: real_context("fork")),
+        ):
+            results = parallel_restarts(
+                _worker,
+                [(1, landing), (2, landing)],
+                2,
+                deadline=started + slice_seconds,
+            )
+        self.assertGreater(time.time() - started, slice_seconds, "the answers beat the deadline; nothing was exercised")
+        self.assertEqual(sorted(results), [(1, 2), (2, 4)])
+
+    def test_a_slice_too_short_to_boot_a_pool_is_worked_in_this_process(self):
+        # A spawned pool charges its startup before any worker can compute.  If
+        # the slice cannot cover that, the batch is finished -- or rather not
+        # finished -- before the work begins, so the payloads run here instead.
+        # Inline is not a consolation prize: it is the faster option, because
+        # there is no boot to pay for.
+        payloads = [(i, 0.0) for i in range(3)]
+        started = time.time()
+        with mock.patch("buttcrack.search.start_method", return_value="spawn"):
+            results = parallel_restarts(_pid_worker, payloads, 3, deadline=time.time() + 0.05)
+        elapsed = time.time() - started
+        self.assertEqual(len(results), 3)
+        self.assertEqual(
+            {pid for _index, pid in results},
+            {os.getpid()},
+            "a pool was started for a slice shorter than the pool's own startup",
+        )
+        self.assertLess(elapsed, 0.5, "the payloads did not run here and now")
+
 
 class TestStartMethod(unittest.TestCase):
     """Which way this platform starts a worker, and why it matters."""
