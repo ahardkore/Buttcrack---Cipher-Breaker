@@ -71,6 +71,11 @@ jobs:
   tests:
     name: tests (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    # A backstop, not a budget: the suite takes about three minutes.  Without a
+    # ceiling, a search that never returns leaves the job -- and the pull request
+    # -- waiting for the six-hour default, which reads as "still running" rather
+    # than "broken".
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -105,8 +110,21 @@ jobs:
       - name: Doctests
         run: python scripts/run_doctests.py
 
+      # The self-test is where a search that never returns gets stuck, so it
+      # runs under a clock and keeps its log: `timeout` turns a hang into a
+      # failure, and the tail -- which prints each check as it starts -- names
+      # the check that hung.  `-u` keeps that tail current rather than sitting
+      # in a block buffer while the process is stuck.
       - name: Self-test (quick)
-        run: python -m buttcrack selftest --quick
+        run: |
+          set -o pipefail
+          timeout -k 15 900 python -u -m buttcrack selftest --quick 2>&1 | tee selftest.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            echo "::error title=self-test (quick) failed with exit $code::$(tail -n 6 selftest.log | tr '\n' ' ')"
+            tail -n 30 selftest.log | sed 's/^/::notice::/'
+            exit "$code"
+          fi
 
       - name: CLI smoke test
         run: |
@@ -159,6 +177,9 @@ jobs:
   slow:
     name: slow searches and sample puzzles
     runs-on: ubuntu-latest
+    # Generous, because this job is supposed to be slow -- but bounded, because
+    # an unbounded one is indistinguishable from a hung one.
+    timeout-minutes: 90
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
@@ -181,7 +202,15 @@ jobs:
           }
 
       - name: Self-test (full)
-        run: python -m buttcrack selftest --slow
+        run: |
+          set -o pipefail
+          timeout -k 15 3600 python -u -m buttcrack selftest --slow 2>&1 | tee selftest-slow.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            echo "::error title=self-test (slow) failed with exit $code::$(tail -n 6 selftest-slow.log | tr '\n' ' ')"
+            tail -n 30 selftest-slow.log | sed 's/^/::notice::/'
+            exit "$code"
+          fi
 
       - name: Sample puzzles
         run: python examples/generate.py --check
