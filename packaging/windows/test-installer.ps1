@@ -162,11 +162,23 @@ function Get-UserPath {
 }
 
 function Test-PathEntry {
+    <#
+        Whether $Directory is one of the entries on the user's PATH.
+
+        Parsed entry by entry and compared in long form rather than as a
+        substring.  Two reasons: the installer writes the folder the way /DIR
+        spelled it, which under %TEMP% is the 8.3 short name, while this script
+        may be holding the long one; and "C:\Foo" must not match inside
+        "C:\FooBar", which a plain substring search would allow.
+    #>
     param([string]$Directory)
-    # Semicolon-padded, case-insensitive: the same test the installer's own
-    # NeedsAddPath does, so "C:\Foo" is not found inside "C:\FooBar".
-    $padded = ';' + (Get-UserPath).ToLowerInvariant() + ';'
-    return $padded.Contains(';' + $Directory.ToLowerInvariant() + ';')
+    $wanted = (Convert-ToLongPath $Directory).TrimEnd('\')
+    foreach ($entry in ((Get-UserPath) -split ';')) {
+        $candidate = $entry.Trim().TrimEnd('\')
+        if (-not $candidate) { continue }
+        if ((Convert-ToLongPath $candidate) -ieq $wanted) { return $true }
+    }
+    return $false
 }
 
 function Invoke-InstalledCli {
@@ -282,7 +294,7 @@ $Script:InstallDir = $InstallDir
 # Now that both spellings are long, the two can be compared, which checks that
 # the installer honoured /DIR rather than quietly using its default location.
 $registered = Get-InstalledLocation
-Assert-True ($registered -and $registered.TrimEnd('\') -ieq $InstallDir.TrimEnd('\')) `
+Assert-True ($registered -and (Convert-ToLongPath $registered.TrimEnd('\')) -ieq $InstallDir.TrimEnd('\')) `
     'the installer used the directory it was asked for' "registered '$registered'"
 
 # --------------------------------------------------------------------------- #
@@ -357,11 +369,12 @@ $launcher = Join-Path $groupDir 'Buttcrack.lnk'
 Assert-True (Test-Path -LiteralPath $launcher) 'the Start-menu launcher exists'
 $shortcut = $shell.CreateShortcut($launcher)
 $target = $shortcut.TargetPath
-Assert-True ($target -ieq (Join-Path $InstallDir 'Buttcrack Desktop.exe')) `
+Assert-True ((Convert-ToLongPath $target) -ieq (Join-Path $InstallDir 'Buttcrack Desktop.exe')) `
     'the launcher points at the installed executable' "points at '$target'"
 Assert-True (Test-Path -LiteralPath $target) 'the launcher target exists on disk' $target
 $workingDir = $shortcut.WorkingDirectory
-Assert-True ($workingDir -ieq $InstallDir) 'the launcher sets a working directory inside the install' "'$workingDir'"
+Assert-True ((Convert-ToLongPath $workingDir).TrimEnd('\') -ieq $InstallDir.TrimEnd('\')) `
+    'the launcher sets a working directory inside the install' "'$workingDir'"
 
 # Two places, because OneDrive redirects the desktop on some machines and the
 # shell's answer and the plain path can disagree.  Guarded against an empty
