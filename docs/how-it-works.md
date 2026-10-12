@@ -69,19 +69,27 @@ structural questions are the only ones with an answer:
 6. **Below 60 letters, an inconclusive shift test is still reported** (0.20 +
    0.35 × closeness) rather than dropped: "a shift was considered and could not
    be decided" is more useful than silence.
-7. **Every cipher's own `likelihood()`** — a structural self-assessment — is
-   asked for as well, and the results join the list at half weight, labelled as
-   self-assessment. This runs *whatever else fired*, and it is not a formality:
-   a wheel cipher (M-94) has the flat IC of a polyalphabetic cipher, so rule 5
-   obligingly names Vigenère and the text never reaches the one hook that
-   recognises it. Every 25th letter of a wheel goes through the same disk, so the
-   columns of a period-25 split are monoalphabetic and the M-94's own read is
-   0.90 — the sharpest evidence in the collection, and it used to be discarded
-   whenever a cheaper rule had already spoken. A cipher named twice keeps its
-   strongest reading, and the engine asks for the whole list (its own
-   `HYPOTHESIS_LIMIT`, 32) rather than the six entries the CLI displays: the
-   hypotheses are what order the attacks and weight their slices, so a cipher cut
-   off the end is attacked last with the smallest slice of all.
+7. **Every cipher's own `likelihood()`** — a structural self-assessment — can be
+   asked for as well (`self_assessment=True`), and the results join the list at
+   half weight, labelled as self-assessment. This is not a formality: a wheel
+   cipher (M-94) has the flat IC of a polyalphabetic cipher, so rule 5 obligingly
+   names Vigenère and the text never reaches the one hook that recognises it.
+   Every 25th letter of a wheel goes through the same disk, so the columns of a
+   period-25 split are monoalphabetic and the M-94's own read is 0.90 — the
+   sharpest evidence in the collection, and it used to be discarded whenever a
+   cheaper rule had already spoken.
+
+   The engine always asks for it; **the display path does not, by default.** On a
+   short text a family's generic read is not evidence for any one member of it —
+   Vigenère, Beaufort, Variant Beaufort, Gronsfeld, Trithemius and Porta all
+   self-assess at 0.65 on a 35-letter Caesar — and merged at half weight they
+   outrank the shift rule and push the right answer off a six-entry list. The
+   reference pages, the API and the desktop window keep the rules-first list.
+
+   A cipher named twice keeps its strongest reading, and the engine asks for the
+   whole list (its own `HYPOTHESIS_LIMIT`, 32) rather than the six entries the CLI
+   displays: the hypotheses are what order the attacks and weight their slices, so
+   a cipher cut off the end is attacked last with the smallest slice of all.
 
 Two rules keep this honest. A hypothesis produced by *decrypting* something
 (a shift that restored English, a base64 that decoded) is reported undamped; a
