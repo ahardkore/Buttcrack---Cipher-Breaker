@@ -258,7 +258,7 @@ Write-Step 'Checking the installed file tree'
 # shortcut opens, the prompt helper, and the uninstaller.
 $missing = @()
 $required = @(
-    'Buttcrack.exe',
+    'Buttcrack Desktop.exe',
     'buttcrack.exe',
     'buttcrack-prompt.cmd',
     'unins000.exe',
@@ -288,6 +288,16 @@ if ($missing) {
 $installedBytes = (Get-ChildItem $InstallDir -Recurse -File | Measure-Object -Property Length -Sum).Sum
 Write-Note "$([math]::Round($installedBytes / 1MB, 1)) MB installed"
 
+# Two names is not the same as two programs, and this is the check that caught
+# it: the first Windows build named them Buttcrack.exe and buttcrack.exe, which
+# on a case-insensitive filesystem is one file, so PyInstaller kept whichever it
+# wrote last and the Start-menu shortcut launched the command line.  Comparing
+# the contents is the property that actually matters.
+$guiHash = (Get-FileHash -LiteralPath (Join-Path $InstallDir 'Buttcrack Desktop.exe') -Algorithm SHA256).Hash
+$cliHash = (Get-FileHash -LiteralPath (Join-Path $InstallDir 'buttcrack.exe') -Algorithm SHA256).Hash
+Assert-True ($guiHash -ne $cliHash) `
+    'the windowed and console programs are different binaries, not one file under two names'
+
 # --------------------------------------------------------------------------- #
 # 3. shortcuts and the PATH entry
 # --------------------------------------------------------------------------- #
@@ -308,7 +318,7 @@ $shell = New-Object -ComObject WScript.Shell
 $launcher = Join-Path $groupDir 'Buttcrack.lnk'
 Assert-True (Test-Path -LiteralPath $launcher) 'the Start-menu launcher exists'
 $target = $shell.CreateShortcut($launcher).TargetPath
-Assert-True ($target -ieq (Join-Path $InstallDir 'Buttcrack.exe')) `
+Assert-True ($target -ieq (Join-Path $InstallDir 'Buttcrack Desktop.exe')) `
     'the launcher points at the installed executable' "points at '$target'"
 Assert-True (Test-Path -LiteralPath $target) 'the launcher target exists on disk' $target
 $workingDir = $shell.CreateShortcut($launcher).WorkingDirectory
@@ -359,14 +369,14 @@ Assert-True ($report.stats.quadgram_fitness -lt 0) 'the bundled language model s
 Write-Note "confidence $($report.confidence); $($report.attacks.Count) attack(s) tried in $($report.elapsed)s"
 
 Write-Step 'Booting the windowed executable'
-# Buttcrack.exe is a different binary from buttcrack.exe and fails differently:
+# The desktop program is a different binary from buttcrack.exe and fails
 # it has no console, so anything printing to a stream PyInstaller left as None
 # raises AttributeError, and Tk has to be inside the bundle or there is no window
 # at all.  --help walks through every one of those and exits; actually opening
 # the window is not something a runner can be asked to do.
-$windowed = Start-Process -FilePath (Join-Path $InstallDir 'Buttcrack.exe') -ArgumentList '--help' `
+$windowed = Start-Process -FilePath (Join-Path $InstallDir 'Buttcrack Desktop.exe') -ArgumentList '--help' `
     -NoNewWindow -Wait -PassThru
-Assert-True ($windowed.ExitCode -eq 0) 'Buttcrack.exe boots and parses arguments' "exit $($windowed.ExitCode)"
+Assert-True ($windowed.ExitCode -eq 0) 'the desktop program boots and parses arguments' "exit $($windowed.ExitCode)"
 
 Write-Step 'Exercising the SQLite-backed results store'
 $database = Join-Path $Script:WorkDir 'results.sqlite3'
@@ -410,14 +420,14 @@ catch {
 # The uninstaller copies itself into %TEMP% and the original process returns
 # immediately, so the process exiting is not the same as the product being gone.
 $deadline = (Get-Date).AddSeconds(120)
-while ((Test-Path -LiteralPath (Join-Path $InstallDir 'Buttcrack.exe')) -and (Get-Date) -lt $deadline) {
+while ((Test-Path -LiteralPath (Join-Path $InstallDir 'Buttcrack Desktop.exe')) -and (Get-Date) -lt $deadline) {
     Start-Sleep -Milliseconds 500
 }
 Start-Sleep -Milliseconds 500  # let the last of the file deletions settle
 
 Write-Step 'Checking nothing was left behind'
 
-foreach ($relative in @('Buttcrack.exe', 'buttcrack.exe', 'buttcrack-prompt.cmd', 'unins000.exe', '_internal')) {
+foreach ($relative in @('Buttcrack Desktop.exe', 'buttcrack.exe', 'buttcrack-prompt.cmd', 'unins000.exe', '_internal')) {
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $InstallDir $relative))) "removed $relative"
 }
 

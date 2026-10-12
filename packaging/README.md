@@ -12,8 +12,10 @@ windows/
   test-installer.ps1     install, exercise, uninstall, and check nothing is left
   buttcrack.spec         PyInstaller recipe (works on macOS/Linux too)
   buttcrack.iss          Inno Setup installer definition
-  entry_gui.py           entry point for Buttcrack.exe  (windowed)
+  entry_gui.py           entry point for the windowed build
   entry_cli.py           entry point for buttcrack.exe  (console)
+                         -- the windowed build cannot be called Buttcrack.exe;
+                            see the note in buttcrack.spec
   buttcrack-prompt.cmd   Start-menu shortcut: a prompt with the CLI on PATH
   assets/                buttcrack.ico, wizard bitmaps, the 1024px master
 ```

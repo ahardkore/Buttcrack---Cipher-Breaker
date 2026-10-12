@@ -1,4 +1,4 @@
-"""Entry point for ``Buttcrack.exe`` -- the windowed desktop build.
+"""Entry point for ``Buttcrack Desktop.exe`` -- the windowed desktop build.
 
 This is what the Start-menu shortcut runs.  It is deliberately almost empty:
 everything it does belongs to :mod:`buttcrack.desktop`, which also has to work

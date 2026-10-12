@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Build Buttcrack.exe, buttcrack.exe and buttcrack-setup-<version>.exe.
+    Build Buttcrack Desktop.exe, buttcrack.exe and buttcrack-setup-<version>.exe.
 
 .DESCRIPTION
     One command, from a clean checkout, on a Windows machine:
@@ -197,10 +197,22 @@ try {
     & $VenvPython -m PyInstaller --clean --noconfirm (Join-Path $Here 'buttcrack.spec')
     if ($LASTEXITCODE -ne 0) { Fail 'PyInstaller failed.' }
 
-    $GuiExe = Join-Path $AppDir 'Buttcrack.exe'
+    $GuiExe = Join-Path $AppDir 'Buttcrack Desktop.exe'
     $CliExe = Join-Path $AppDir 'buttcrack.exe'
     foreach ($exe in @($GuiExe, $CliExe)) {
         if (-not (Test-Path $exe)) { Fail "Expected $exe, which PyInstaller did not produce." }
+    }
+
+    # Two names is not the same as two programs.  On a case-insensitive
+    # filesystem a spec that names them Buttcrack.exe and buttcrack.exe produces
+    # ONE file, both checks above still pass, and the Start-menu shortcut ends up
+    # launching the command line.  That is exactly what shipped the first time
+    # this was built on Windows, so compare the two files rather than their names.
+    $guiSize = (Get-Item $GuiExe).Length
+    $cliSize = (Get-Item $CliExe).Length
+    if ($guiSize -eq $cliSize) {
+        Fail ("$([System.IO.Path]::GetFileName($GuiExe)) and $([System.IO.Path]::GetFileName($CliExe)) are identical in size, " +
+              "which almost certainly means they are the same file. The names in buttcrack.spec must differ by more than letter case.")
     }
     $appSize = [math]::Round((Get-ChildItem $AppDir -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB, 1)
     Write-Note "dist\Buttcrack\  ($appSize MB)"

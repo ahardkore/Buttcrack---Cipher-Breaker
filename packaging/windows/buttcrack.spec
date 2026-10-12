@@ -4,8 +4,18 @@
 Produces one application directory containing two executables that share a
 single copy of Python and of the language model:
 
-    Buttcrack.exe    windowed  -- the desktop app (Start-menu shortcut)
-    buttcrack.exe    console   -- the CLI, identical to `pip install buttcrack`
+    Buttcrack Desktop.exe    windowed  -- the desktop app (Start-menu shortcut)
+    buttcrack.exe            console   -- the CLI, identical to `pip install buttcrack`
+
+The windowed one is *not* called Buttcrack.exe, and that is not a style choice.
+Windows and macOS filesystems are case-insensitive by default, so on those
+platforms `Buttcrack.exe` and `buttcrack.exe` are the same file.  COLLECT would
+write one over the other, the bundle would contain a single program, and the
+Start-menu shortcut would launch whichever of the two happened to survive.
+That is what the first Windows build of this installer did: it shipped a
+"desktop app" whose shortcut opened the command line.  Nothing caught it until
+an installer test read the shortcut's target back and compared it to the file it
+expected -- so the names are asserted distinct below as well.
 
 Build it with the wrapper, which also makes the installer::
 
@@ -188,18 +198,31 @@ COMMON = dict(
     contents_directory="_internal",
 )
 
+#: The two program names, kept here so the collision below cannot creep back in.
+#: `buttcrack` has to stay as it is: it is what the README, the installer's PATH
+#: entry and the Start-menu command-prompt shortcut all promise.
+GUI_NAME = "Buttcrack Desktop"
+CLI_NAME = "buttcrack"
+
+if GUI_NAME.lower() == CLI_NAME.lower():
+    raise SystemExit(
+        f"[buttcrack] {GUI_NAME}.exe and {CLI_NAME}.exe differ only in letter case. "
+        "On a case-insensitive filesystem -- Windows, and macOS by default -- "
+        "COLLECT would silently keep one and discard the other."
+    )
+
 gui_exe = EXE(  # noqa: F821
     gui_pyz, gui_a.scripts, [],
-    name="Buttcrack",
+    name=GUI_NAME,
     console=False,
-    version=version_file("Buttcrack.exe", "Buttcrack - automatic cipher breaker"),
+    version=version_file(f"{GUI_NAME}.exe", "Buttcrack - automatic cipher breaker"),
     **COMMON,
 )
 cli_exe = EXE(  # noqa: F821
     cli_pyz, cli_a.scripts, [],
-    name="buttcrack",
+    name=CLI_NAME,
     console=True,
-    version=version_file("buttcrack.exe", "Buttcrack command line"),
+    version=version_file(f"{CLI_NAME}.exe", "Buttcrack command line"),
     **COMMON,
 )
 
@@ -218,4 +241,4 @@ coll = COLLECT(  # noqa: F821
 )
 
 print(f"[buttcrack] spec: version {VERSION}, icon {'yes' if ICON else 'no'}, "
-      f"output {os.path.join('dist', 'Buttcrack')}")
+      f"output {os.path.join('dist', 'Buttcrack')} ({GUI_NAME}.exe, {CLI_NAME}.exe)")

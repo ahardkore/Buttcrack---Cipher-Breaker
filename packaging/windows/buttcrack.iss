@@ -21,7 +21,13 @@
 
 #define AppName       "Buttcrack"
 #define AppPublisher  "ahardkore"
-#define AppExeName    "Buttcrack.exe"
+; The windowed desktop app.  Deliberately NOT "Buttcrack.exe": Windows and macOS
+; filesystems are case-insensitive, so a build containing both Buttcrack.exe and
+; buttcrack.exe keeps only one of them -- and the shortcut below would then launch
+; the command line instead of the app.  The console program keeps the plain
+; `buttcrack` name, because that is what PATH, the README and the command-prompt
+; shortcut all promise.
+#define AppExeName    "Buttcrack Desktop.exe"
 #define CliExeName    "buttcrack.exe"
 #define AppUrl        "https://ahardkore.github.io/Buttcrack---Cipher-Breaker/"
 #define SourceDir     "..\..\dist\Buttcrack"

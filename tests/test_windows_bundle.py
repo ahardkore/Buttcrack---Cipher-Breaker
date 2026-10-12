@@ -191,11 +191,26 @@ class TestBuildOutputShape(unittest.TestCase):
     def test_the_build_produces_exactly_two_executables(self):
         exes = self._kinds("EXE")
         self.assertEqual(len(exes), 2)
-        self.assertEqual({call.kwargs["name"] for call in exes}, {"Buttcrack", "buttcrack"})
+        self.assertEqual({call.kwargs["name"] for call in exes}, {"Buttcrack Desktop", "buttcrack"})
+
+    def test_the_two_executable_names_differ_by_more_than_case(self):
+        # The bug this exists for: the first Windows build named them
+        # Buttcrack.exe and buttcrack.exe.  On a case-insensitive filesystem --
+        # Windows, and macOS by default -- those are the same file, so COLLECT
+        # kept one and discarded the other, both of build.ps1's existence checks
+        # still passed, and the Start-menu shortcut launched the console program.
+        # Nothing in the repository noticed until an installer test read the
+        # shortcut's target back on a real Windows machine.
+        names = [call.kwargs["name"] for call in self._kinds("EXE")]
+        self.assertEqual(
+            len({name.lower() for name in names}),
+            len(names),
+            f"executable names collide on a case-insensitive filesystem: {names}",
+        )
 
     def test_the_windowed_executable_has_no_console_and_the_cli_does(self):
         by_name = {call.kwargs["name"]: call.kwargs for call in self._kinds("EXE")}
-        self.assertFalse(by_name["Buttcrack"]["console"], "Buttcrack.exe must be windowed")
+        self.assertFalse(by_name["Buttcrack Desktop"]["console"], "the desktop app must be windowed")
         self.assertTrue(by_name["buttcrack"]["console"], "buttcrack.exe must be a console app")
 
     def test_upx_is_off_because_it_gets_flagged_by_antivirus(self):
@@ -220,6 +235,9 @@ class TestBuildOutputShape(unittest.TestCase):
         # "ExeName": the version define interpolates AppExeName inside
         # GetStringFileInfo(...) and would otherwise be read as a filename.
         declared = set(re.findall(r"^#define\s+\w*ExeName\s+\"([^\"]+)\"", iss, re.MULTILINE))
+        # "Buttcrack Desktop.exe" has a space in it, so the define has to be read
+        # as a whole quoted value rather than split on the first space.
+        self.assertIn('AppExeName    "Buttcrack Desktop.exe"', iss)
         self.assertEqual(declared, {f"{name}.exe" for name in built})
 
     def test_the_installer_and_the_app_agree_about_the_display_name(self):

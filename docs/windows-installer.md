@@ -15,18 +15,18 @@ This page covers how to build it and where to put it.
 
 ```
 dist/
-  Buttcrack/                     the application directory
-    Buttcrack.exe                windowed  -- the desktop app
-    buttcrack.exe                console   -- the CLI
-    _internal/                   Python runtime, the six language models, the web UI
+  Buttcrack/                       the application directory
+    Buttcrack Desktop.exe          windowed  -- the desktop app
+    buttcrack.exe                  console   -- the CLI
+    _internal/                     Python runtime, the six language models, the web UI
   installer/
-    buttcrack-setup-1.2.0.exe    ← this is the thing you publish
+    buttcrack-setup-1.2.0.exe      ← this is the thing you publish
     buttcrack-setup-1.2.0.exe.sha256
 ```
 
 Two executables, one shared runtime:
 
-| | `Buttcrack.exe` | `buttcrack.exe` |
+| | `Buttcrack Desktop.exe` | `buttcrack.exe` |
 | --- | --- | --- |
 | Start menu / desktop shortcut | yes | no |
 | Console window | no | yes, it *is* the console |
@@ -35,6 +35,19 @@ Two executables, one shared runtime:
 
 They share one copy of Python and one copy of the 1.8 MB of n-gram tables, so
 shipping both costs almost nothing over shipping either.
+
+The desktop app is **not** called `Buttcrack.exe`, and that is not a style
+choice. Windows and macOS filesystems are case-insensitive by default, so a build
+directory containing both `Buttcrack.exe` and `buttcrack.exe` is a directory
+containing one file: `COLLECT` writes the second over the first, the bundle holds
+a single program, and the Start menu quietly launches whichever survived. The
+first Windows build of this installer did exactly that, and shipped a "desktop
+app" whose shortcut opened the command line.
+
+Three things now refuse to let it happen again: `buttcrack.spec` exits if the two
+names collide when lowercased, `build.ps1` compares the two files rather than
+their names, and `test-installer.ps1` checks the installed programs have
+different contents and that the shortcut's target is the one it claims to be.
 
 ### What the user sees
 
