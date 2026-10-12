@@ -332,6 +332,11 @@ def render_report(report: CrackReport, args: argparse.Namespace, pal: Palette) -
             rows.append((note_key.replace("_", " "), str(report.notes[note_key])))
     if report.notes.get("evidence"):
         rows.append(("caveat", str(report.notes["evidence"])))
+    # Why this cipher is named when nothing cleared the solve bar: without this
+    # line the verdict looks arbitrary, because the reading that carries the name
+    # is not the one with the highest confidence.
+    if report.notes.get("named_by"):
+        rows.append(("note", str(report.notes["named_by"])))
     if report.notes.get("key_note"):
         rows.append(("note", str(report.notes["key_note"])))
     if report.notes.get("language"):

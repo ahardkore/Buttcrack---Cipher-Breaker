@@ -51,7 +51,7 @@ from .lang import (
     resolve_language,
 )
 from .paradigm import exact_candidate
-from .results import AttackLog, Candidate, CrackReport
+from .results import AttackLog, Candidate, CrackReport, Hypothesis
 from .text import A26, letters_only, respaced, restore_shape, trim
 
 #: Families whose ciphers preserve character positions, so the original spacing
@@ -312,6 +312,24 @@ class CandidatePool:
 #: that encoding" rather than "this text might be that encoding".
 STRONG_LAYER = 0.6
 
+#: How much confidence a reading may give away and still be named when nothing
+#: was solved, if the identifier is emphatic about its cipher.  Wide enough to
+#: settle noise against noise (0.000 against 0.011), narrow enough that a
+#: genuinely better reading still wins: a Caesar reading at 0.35 is not
+#: overturned by an identification that rated Vigenere highly.
+EVIDENCE_TIE_BAND = 0.05
+
+#: How many hypotheses the engine asks :func:`buttcrack.detect.identify` for.
+#:
+#: It wants *every* opinion the collection has: the hypotheses order the
+#: attacks, weight their slices, and now name an unsolved report.  ``identify``'s
+#: 6-entry default is a display limit for humans.  Trimming the list here is not
+#: cosmetic -- a cipher past the end is treated as having no evidence at all and
+#: falls to :data:`LIKELIHOOD_FLOOR`, which is how a wheel cipher whose
+#: period-25 columns read 0.9 (rank 10 of 22 on a 250-letter sample) was left
+#: with the smallest slice on offer and never ran.
+HYPOTHESIS_LIMIT = 32
+
 
 class Solver:
     """Automatic cipher breaker.
@@ -379,7 +397,7 @@ class Solver:
         self._cipher_nodes = 0
         self._cheap_cipher_nodes = 0
         self._explored.clear()
-        hypotheses, stats = identify(text, self.model)
+        hypotheses, stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT)
         report.hypotheses = hypotheses
         report.stats = stats.as_dict()
         self._say(
@@ -508,7 +526,7 @@ class Solver:
         # text's statistics is how a Vigenere ends up reported as its
         # alphabetically-earlier equivalent.
         if likelihoods is None:
-            node_hypotheses, _node_stats = identify(text, self.model)
+            node_hypotheses, _node_stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT)
             likelihoods = {h.cipher: h.likelihood for h in node_hypotheses}
             likelihoods = self._blend_priors(text, ctx, likelihoods)
 
@@ -1314,17 +1332,28 @@ class Solver:
         sink: list[Candidate] | None = None,
     ) -> None:
         letters = letters_only(text)
+
+        # Gather the phases first, so that the expensive ones can be *planned*
+        # rather than discovered.  Each phase's ciphers are ordered: likely
+        # ciphers first, then the canonical name among equivalent readings
+        # (Vigenere before its variant spellings -- they decrypt identically,
+        # and the search stops at the first certain answer, so whichever runs
+        # first is the one the user is told about), then alphabetical for
+        # determinism.
+        #
+        # Time within a phase is shared out in proportion to how likely each
+        # cipher is, not equally.  An equal split sounds fair and is not: adding
+        # ten ciphers to the collection would silently take time away from the
+        # substitution hill climb that was going to solve the puzzle, and a
+        # keyed Polybius (which is a Polybius peel followed by a substitution
+        # search) would stop coming out.  The floor keeps every cipher in the
+        # running, because a misidentification must never cost the user their
+        # plaintext.
+        phases: list[tuple[float, list[Cipher], list[float]]] = []
         for cost in costs:
-            if ctx.expired() or pool.certain:
-                return
             group = [c for c in self.ciphers if c.info.cost == cost]
             if not group:
                 continue
-            # Within a phase: likely ciphers first, then the canonical name among
-            # equivalent readings (Vigenere before its variant spellings -- they
-            # decrypt identically, and the search stops at the first certain
-            # answer, so whichever runs first is the one the user is told about),
-            # then alphabetical for determinism.
             group.sort(
                 key=lambda c: (
                     -likelihoods.get(c.info.name, 0.0),
@@ -1332,20 +1361,62 @@ class Solver:
                     c.info.name,
                 )
             )
-            # Time within a phase is shared out in proportion to how likely
-            # each cipher is, not equally.  An equal split sounds fair and is
-            # not: adding ten ciphers to the collection would silently take
-            # time away from the substitution hill climb that was going to
-            # solve the puzzle, and a keyed Polybius (which is a Polybius
-            # peel followed by a substitution search) would stop coming out.
-            # The floor keeps every cipher in the running, because a
-            # misidentification must never cost the user their plaintext.
             weights = [max(LIKELIHOOD_FLOOR, likelihoods.get(c.info.name, 0.0)) for c in group]
+            phases.append((cost, group, weights))
+
+        budgets = self._phase_budgets(phases, ctx, costs)
+        for (cost, group, weights), budget in zip(phases, budgets):
+            if ctx.expired() or pool.certain:
+                return
+            started_phase = time.time()
             for index, cipher in enumerate(group):
                 if ctx.expired() or pool.certain:
                     return
+                # A planned phase may spend only its own budget: whatever is left
+                # of it, and then it stands aside for the phases behind it
+                # instead of eating their time.
+                cap = None if budget is None else budget - (time.time() - started_phase)
+                if cap is not None and cap <= 0.0:
+                    break
                 share = weights[index] / sum(weights[index:])
-                self._run(cipher, text, letters, ctx, pool, report, cost, share, sink)
+                self._run(cipher, text, letters, ctx, pool, report, cost, share, sink, slice_cap=cap)
+
+    def _phase_budgets(
+        self,
+        phases: list[tuple[float, list[Cipher], list[float]]],
+        ctx: CrackContext,
+        costs: tuple[float, ...],
+    ) -> list[float | None]:
+        """How long each expensive phase may spend, decided before any of it does.
+
+        Unplanned, the phases competed and the strongest ate the budget: on a
+        wheel ciphertext the EXPENSIVE group ran from 14s to 62s of a 90s
+        budget, and the BRUTAL group -- Bifid, Four-square, Trifid and M-94 --
+        was left 0.08s, so the one attack that solves a wheel cipher in four
+        seconds never started.  A wheel is not a rare shape; it is the case
+        :data:`PHASE_SLICES` was calibrated for ("a wheel-cipher climb measured
+        ~2-in-3 solves inside 20s"), and the cap was simply unreachable.
+
+        Each phase is offered the time its own per-cipher caps add up to.  When
+        that does not fit in what is left, the phases share proportionally --
+        so a phase with four ciphers keeps room to run four ciphers, and no
+        phase is starved to nothing.
+
+        Only the expensive tiers are planned.  Cheap and moderate attacks get a
+        flat cap each and take milliseconds, so they need no arbitration, and
+        planning them would change timings that are already well calibrated.
+        Returns ``None`` per phase when planning does not apply.
+        """
+        if not phases or not all(cost >= EXPENSIVE for cost in costs):
+            return [None] * len(phases)
+        available = ctx.remaining()
+        if available <= 0:
+            return [0.0] * len(phases)
+        caps = [PHASE_SLICES[cost] * len(group) for cost, group, _ in phases]
+        total = sum(caps)
+        if total <= available:
+            return caps
+        return [available * cap / total for cap in caps]
 
     def _run(
         self,
@@ -1358,6 +1429,7 @@ class Solver:
         cost: float,
         share: float,
         sink: list[Candidate] | None = None,
+        slice_cap: float | None = None,
     ) -> None:
         prepared = cipher.prepare(text)
         alphabet = cipher.info.alphabet
@@ -1376,6 +1448,9 @@ class Solver:
             slice_seconds = min(PHASE_SLICES[cost], remaining * max(0.0, min(1.0, share)))
         else:
             slice_seconds = min(PHASE_SLICES[cost], remaining)
+        if slice_cap is not None:
+            # What is left of the phase's planned budget (see _phase_budgets).
+            slice_seconds = min(slice_seconds, slice_cap)
         if slice_seconds <= 0:
             return
         sub = ctx.child(budget=slice_seconds)
@@ -1437,6 +1512,13 @@ class Solver:
         report.candidates = ranked
         report.best = ranked[0] if ranked else None
         report.solved = bool(report.best and report.best.confidence >= SOLVED_CONFIDENCE)
+        if report.best is not None and not report.solved:
+            named = self._named_by_evidence(ranked, report.hypotheses)
+            if named is not None:
+                ranked.remove(named)
+                ranked.insert(0, named)
+                report.best = named
+                report.candidates = ranked
         report.elapsed = time.time() - started
         if report.best is not None:
             self._present(report, original, stats)
@@ -1447,6 +1529,54 @@ class Solver:
             1.0,
         )
         return report
+
+    def _named_by_evidence(self, ranked: list[Candidate], hypotheses: list[Hypothesis]) -> Candidate | None:
+        """The reading to hand back when nothing was solved.
+
+        Confidence cannot choose between failed attempts.  The winner is
+        whichever noise happened to score highest, and 0.011 against 0.000 is
+        not evidence of anything -- while the identifier can be emphatic,
+        because a cipher's structure is a fact about the text rather than a
+        guess about a key.  Playfair's tells (flat IC, even length, no doubled
+        digraph) read 0.90 on a real Playfair ciphertext, and the engine used to
+        answer "four_square, confidence 0.01" anyway.
+
+        So when the identification clears :data:`STRONG_LAYER` -- the engine's
+        own "this text *is* that cipher" bar -- and that cipher has a reading
+        within :data:`EVIDENCE_TIE_BAND` of the noise that outranked it, the
+        report names the cipher and says why.  Nothing about the plaintext
+        changes, and ``solved`` stays false: this decides what to *call* the
+        failure, not whether to admit one.
+
+        When there is no reading of the identified cipher to name -- on a short
+        budget the earlier phases can spend the whole allowance and the cipher
+        never gets a slice -- the winner keeps its place but is annotated, so a
+        "vigenere, key=AMYYYY" verdict on a Playfair puzzle cannot be mistaken
+        for a confirmed one.  A reading that genuinely reads better is left
+        alone: the annotation is for the case where nothing reads better.
+        """
+        if not ranked or not hypotheses:
+            return None
+        evidence = max(hypotheses, key=lambda h: h.likelihood)
+        if evidence.likelihood < STRONG_LAYER or ranked[0].cipher == evidence.cipher:
+            return None
+        winner = ranked[0]
+        named = next((candidate for candidate in ranked if candidate.cipher == evidence.cipher), None)
+        if named is None:
+            winner.notes["named_by"] = (
+                f"nothing cleared the solve bar; the identifier reads this as {evidence.cipher} "
+                f"at {evidence.likelihood:.0%} ({evidence.reason}), but no reading of {evidence.cipher} "
+                f"came back -- {winner.cipher} at {winner.confidence:.0%} is only the best of what did"
+            )
+            return None
+        if named.confidence < winner.confidence - EVIDENCE_TIE_BAND:
+            return None
+        named.notes["named_by"] = (
+            f"nothing cleared the solve bar; the identifier reads this as {evidence.cipher} "
+            f"at {evidence.likelihood:.0%} ({evidence.reason}), ahead of {winner.cipher} "
+            f"at {winner.confidence:.0%}, and both readings are still noise"
+        )
+        return named
 
     def _note_language(self, report: CrackReport) -> None:
         """Flag a plaintext that reads better under another shipped model.

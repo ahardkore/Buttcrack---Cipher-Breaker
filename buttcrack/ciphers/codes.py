@@ -465,7 +465,17 @@ class TapCode(_Encoding):
             return False
         # Every run must be a legal coordinate, and a stream of single taps is
         # not a tap code -- it is a stream of dots (Morse, or just punctuation).
-        return all(1 <= r <= 5 for r in runs) and len(set(runs)) > 1
+        if not (all(1 <= r <= 5 for r in runs) and len(set(runs)) > 1):
+            return False
+        # X, x, O and o stand in for taps in hand-written tap code, but they are
+        # also ordinary letters, so a text that merely *contains* runs of them
+        # otherwise decodes to a handful of letters and is treated as a tap-code
+        # layer.  A wheel ciphertext holding "express" and "stood" was peeled
+        # this way and the eight letters it produced outranked every real
+        # reading of the message.  Genuine tap code is made of taps, not of
+        # prose with taps in it: any other letter at all means this is not it.
+        foreign = sum(1 for ch in text if ch.isalpha() and ch not in "xoXO")
+        return foreign == 0
 
     def encode(self, text: str) -> str:
         out = []

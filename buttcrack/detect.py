@@ -260,8 +260,24 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     out: list[Hypothesis] = []
 
     def add(cipher: str, likelihood: float, reason: str) -> None:
-        if likelihood > 0:
-            out.append(Hypothesis(cipher, round(min(1.0, likelihood), 4), reason))
+        """Record one piece of evidence, keeping the strongest for each cipher.
+
+        A cipher can be named twice -- substitution is implied both by a
+        measured permutation and by its own self-assessment -- and the engine
+        turns these hypotheses into a per-cipher lookup table, where the *last*
+        entry would silently win.  Keeping the strongest, with the reason that
+        produced it, makes that table mean "the best evidence for this cipher"
+        rather than "the last rule to mention it".
+        """
+        if likelihood <= 0:
+            return
+        value = round(min(1.0, likelihood), 4)
+        for index, existing in enumerate(out):
+            if existing.cipher == cipher:
+                if value > existing.likelihood:
+                    out[index] = Hypothesis(cipher, value, reason)
+                return
+        out.append(Hypothesis(cipher, value, reason))
 
     stripped = text.strip()
     compact = re.sub(r"\s+", "", stripped)
@@ -606,19 +622,35 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
                         "playfair", round(0.15 + 0.2 * weight, 2), "a polygraphic cipher flattens IC the same way"
                     )
 
-    # 3. Fall back to each cipher's own likelihood estimate.
-    if not out:
-        from .ciphers import all_ciphers
-        from .ciphers.base import CrackContext
+    # 3. Every cipher's own structural read, merged in.
+    #
+    # This pass used to run only when nothing above had fired, which quietly
+    # discarded the sharpest detectors in the collection.  A wheel cipher is the
+    # clearest case: every 25th letter goes through the same disk, so the
+    # columns of a period-25 split are monoalphabetic and the M-94's own
+    # likelihood reads 0.90 on a real one -- but the generic "flat IC" rule had
+    # already named Vigenere, so `out` was non-empty and the pass never ran.  The
+    # engine orders its attacks by these hypotheses, so a wheel cipher was never
+    # attacked at all, and the engine would spend the whole budget on
+    # polyalphabetic guesses instead.
+    #
+    # Rules and self-assessments answer different questions -- "what does this
+    # text look like?" against "how well does this cipher's signature fit?" --
+    # and a cipher only reaches here if its own hook is opinionated, so both
+    # belong in the list.  The 0.5 factor keeps a self-assessment below the
+    # structural rules: it is corroboration, not proof, and nothing at 0.5 can
+    # clear STRONG_LAYER and force a peel.
+    from .ciphers import all_ciphers
+    from .ciphers.base import CrackContext
 
-        ctx = CrackContext(model=model, budget=0.0)
-        for cipher in all_ciphers():
-            try:
-                score = cipher.likelihood(text, ctx)
-            except Exception:
-                continue
-            if score > 0.05:
-                add(cipher.info.name, score * 0.5, f"{cipher.info.title} self-assessment")
+    ctx = CrackContext(model=model, budget=0.0)
+    for cipher in all_ciphers():
+        try:
+            score = cipher.likelihood(text, ctx)
+        except Exception:
+            continue
+        if score > 0.05:
+            add(cipher.info.name, score * 0.5, f"{cipher.info.title} self-assessment")
 
     out.sort(key=lambda h: -h.likelihood)
     return out[:limit], stats
