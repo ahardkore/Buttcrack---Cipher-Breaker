@@ -147,6 +147,27 @@ class TestIdentify(unittest.TestCase):
         likes = [h.likelihood for h in hypotheses]
         self.assertEqual(likes, sorted(likes, reverse=True))
 
+    def test_the_displayed_list_keeps_the_rule_that_named_the_cipher(self):
+        """The list the API and CLI show is the *rules*, and must stay readable.
+
+        A 35-letter Caesar: all six polyalphabetic ciphers read 0.65 on it (the
+        family's generic flat-IC read, which is not evidence for any one of
+        them) and the shift rule reads 0.23 for the right answer.  Merged, the
+        family's half-weight self-assessments crowd the correct hypothesis off
+        the six-entry list -- which is exactly what the web-interface job's
+        "identify must name caesar" assertion caught.  The engine asks for the
+        self-assessments explicitly (``self_assessment=True``); anything that
+        *shows* hypotheses does not.
+        """
+        hypotheses, _ = identify("Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj")
+        named = {h.cipher: h.likelihood for h in hypotheses}
+        self.assertIn("caesar", named, f"the shift rule was crowded out: {named}")
+        self.assertLessEqual(len(hypotheses), 6)
+        # ...and asking for them puts them in the list the engine sees.
+        engine_view, _ = identify("Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj", limit=32, self_assessment=True)
+        self.assertIn("caesar", {h.cipher for h in engine_view})
+        self.assertGreater(len(engine_view), len(hypotheses))
+
     def test_a_ciphers_own_structural_read_is_consulted_even_when_rules_fired(self):
         # The wheel cipher's self-assessment is the sharpest detector in the
         # collection: every 25th letter goes through the same disk, so the
@@ -158,7 +179,7 @@ class TestIdentify(unittest.TestCase):
         # and spent the whole budget on polyalphabetic guesses.
         wheel = get("m94")
         ciphertext = wheel.encrypt(PLAINTEXT, {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 4})
-        hypotheses, _ = identify(ciphertext, limit=999)
+        hypotheses, _ = identify(ciphertext, limit=999, self_assessment=True)
         named = {h.cipher: h.likelihood for h in hypotheses}
         self.assertIn("m94", named, f"the wheel's own read was dropped: {named}")
         # Its evidence is split across two readings: the raw text still has the

@@ -111,9 +111,21 @@ The expensive tiers are **planned before any of them runs** (`_phase_budgets`).
 Unplanned, they competed: on a wheel ciphertext the `EXPENSIVE` group ran from 14s
 to 62s of a 90s budget and the `BRUTAL` group — Bifid, four-square, Trifid and the
 M-94 that solves a wheel in four seconds — was left 0.08s, so the one attack that
-would have answered never started. Each tier is now offered the time its own
+would have answered never started. Each tier now asks for the time its own
 per-cipher slices add up to, and when that does not fit, the tiers share what is
 left in proportion, so a tier with four ciphers keeps room to run four ciphers.
+
+What a tier asks for is `_phase_demand`: **size scaled by evidence.** Size alone is
+the wrong question — asked that way, `BRUTAL` claims four ciphers' worth of time on
+*every* text, and on a transposition ciphertext, where all four come back empty,
+that is time the columnar, Myszkowski and AMSCO searches in the tier before it
+needed (measured on the self-test's Myszkowski and AMSCO puzzles: the 7.7s of
+attack time became 5.5s and neither named its cipher any more). So a tier whose
+best cipher is over `PHASE_SUPPORT` (0.35) asks for its full sweep; a tier nothing
+points at asks for one cipher's slice plus a quarter of each of the others. The bar
+is low on purpose — the M-94's structural read of a wheel arrives at 0.45, which is
+what buys `BRUTAL` its 12s there.
+
 Only `EXPENSIVE` and `BRUTAL` are planned: the cheaper tiers take milliseconds and
 their timings are already calibrated.
 

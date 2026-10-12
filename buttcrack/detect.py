@@ -247,13 +247,29 @@ def _bacon_groups(stripped: str) -> bool:
     return len([c for c in stripped if not c.isspace()]) % 5 == 0
 
 
-def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> tuple[list[Hypothesis], TextStats]:
+def identify(
+    text: str,
+    model: LanguageModel | None = None,
+    limit: int = 6,
+    *,
+    self_assessment: bool = False,
+) -> tuple[list[Hypothesis], TextStats]:
     """Rank the ciphers that could have produced ``text``.
 
     Returns ``(hypotheses, stats)``.  Hypotheses are ordered by likelihood and
     each carries a human-readable reason.  The engine uses them to *order*
     attacks -- never to exclude them, because a misidentification must not cost
     the user their plaintext.
+
+    ``self_assessment=True`` adds every cipher's own structural read to the list
+    whether or not a rule already fired.  The engine asks for it (see
+    :data:`buttcrack.engine.HYPOTHESIS_LIMIT`): a wheel ciphertext has the flat
+    IC of a polyalphabetic cipher, so the "flat IC" rule names Vigenere and the
+    one hook that recognises the wheel is never consulted.  It is off by default
+    for anything that *shows* the hypotheses, because on a short text a family's
+    generic read is not evidence for any one member of it: all six
+    polyalphabetic ciphers read 0.65 on a 35-letter Caesar, and merged at half
+    weight they would crowd the correct answer out of a six-entry list.
     """
     model = model or get_model()
     stats = characterise(text, model)
@@ -624,8 +640,8 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
 
     # 3. Every cipher's own structural read, merged in.
     #
-    # This pass used to run only when nothing above had fired, which quietly
-    # discarded the sharpest detectors in the collection.  A wheel cipher is the
+    # On the display path this runs only when nothing above had fired, which
+    # quietly discarded the sharpest detectors in the collection.  A wheel cipher is the
     # clearest case: every 25th letter goes through the same disk, so the
     # columns of a period-25 split are monoalphabetic and the M-94's own
     # likelihood reads 0.90 on a real one -- but the generic "flat IC" rule had
@@ -640,17 +656,25 @@ def identify(text: str, model: LanguageModel | None = None, limit: int = 6) -> t
     # belong in the list.  The 0.5 factor keeps a self-assessment below the
     # structural rules: it is corroboration, not proof, and nothing at 0.5 can
     # clear STRONG_LAYER and force a peel.
-    from .ciphers import all_ciphers
-    from .ciphers.base import CrackContext
+    #
+    # ``self_assessment`` decides whether that happens *besides* the rules or
+    # only instead of them.  Displaying it always would make the list worse to
+    # read -- the polyalphabetic family all read 0.65 on a short Caesar, and
+    # merged at half weight they outrank the actual shift and push it off a
+    # six-entry list -- while the engine needs it always, because which cipher
+    # is attacked first is decided by these likelihoods.
+    if not out or self_assessment:
+        from .ciphers import all_ciphers
+        from .ciphers.base import CrackContext
 
-    ctx = CrackContext(model=model, budget=0.0)
-    for cipher in all_ciphers():
-        try:
-            score = cipher.likelihood(text, ctx)
-        except Exception:
-            continue
-        if score > 0.05:
-            add(cipher.info.name, score * 0.5, f"{cipher.info.title} self-assessment")
+        ctx = CrackContext(model=model, budget=0.0)
+        for cipher in all_ciphers():
+            try:
+                score = cipher.likelihood(text, ctx)
+            except Exception:
+                continue
+            if score > 0.05:
+                add(cipher.info.name, score * 0.5, f"{cipher.info.title} self-assessment")
 
     out.sort(key=lambda h: -h.likelihood)
     return out[:limit], stats

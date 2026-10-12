@@ -319,6 +319,15 @@ STRONG_LAYER = 0.6
 #: overturned by an identification that rated Vigenere highly.
 EVIDENCE_TIE_BAND = 0.05
 
+#: Minimum likelihood for a cipher to count as *evidence* that its cost class is
+#: the right place to spend time (see :meth:`Solver._phase_demand`).  Deliberately
+#: low: the M-94's structural read of a wheel ciphertext arrives here at 0.45.
+PHASE_SUPPORT = 0.35
+
+#: What share of the remaining ciphers' slices an unsupported phase still asks
+#: for.  Enough to look at the tier, not enough to sweep it.
+UNSUPPORTED_PHASE_SHARE = 0.25
+
 #: How many hypotheses the engine asks :func:`buttcrack.detect.identify` for.
 #:
 #: It wants *every* opinion the collection has: the hypotheses order the
@@ -397,7 +406,7 @@ class Solver:
         self._cipher_nodes = 0
         self._cheap_cipher_nodes = 0
         self._explored.clear()
-        hypotheses, stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT)
+        hypotheses, stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT, self_assessment=True)
         report.hypotheses = hypotheses
         report.stats = stats.as_dict()
         self._say(
@@ -526,7 +535,7 @@ class Solver:
         # text's statistics is how a Vigenere ends up reported as its
         # alphabetically-earlier equivalent.
         if likelihoods is None:
-            node_hypotheses, _node_stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT)
+            node_hypotheses, _node_stats = identify(text, self.model, limit=HYPOTHESIS_LIMIT, self_assessment=True)
             likelihoods = {h.cipher: h.likelihood for h in node_hypotheses}
             likelihoods = self._blend_priors(text, ctx, likelihoods)
 
@@ -1381,6 +1390,32 @@ class Solver:
                 share = weights[index] / sum(weights[index:])
                 self._run(cipher, text, letters, ctx, pool, report, cost, share, sink, slice_cap=cap)
 
+    @staticmethod
+    def _phase_demand(cost: float, weights: list[float]) -> float:
+        """The time one phase asks for, from its size *and* its evidence.
+
+        A phase's size alone is the wrong question.  Asked that way, the BRUTAL
+        tier claims four ciphers' worth of time on *every* text, and on a
+        transposition ciphertext -- where Bifid, four-square, Trifid and the
+        M-94 all come back empty -- that is time the columnar, Myszkowski and
+        AMSCO searches in the tier before it needed: measured on the self-test's
+        Myszkowski and AMSCO puzzles, the 7.7s of attack time became 5.5s and
+        both stopped naming their cipher.
+
+        So the demand is scaled by whether anything in the phase has evidence.
+        :data:`PHASE_SUPPORT` is the bar a cipher's likelihood has to clear for
+        its phase to be worth a full sweep, and it is deliberately low: the
+        hypotheses are capped at ``STRONG_LAYER``-ish values, and on a wheel
+        ciphertext the M-94's structural read reaches the engine at 0.45.
+        Below the bar the phase is only *possible* -- a misidentification must
+        still not cost the user their plaintext -- and it asks for one cipher's
+        slice plus a fraction of each of the others.
+        """
+        top = max(weights) if weights else 0.0
+        if top >= PHASE_SUPPORT:
+            return PHASE_SLICES[cost] * len(weights)
+        return PHASE_SLICES[cost] * (1.0 + UNSUPPORTED_PHASE_SHARE * (len(weights) - 1))
+
     def _phase_budgets(
         self,
         phases: list[tuple[float, list[Cipher], list[float]]],
@@ -1391,16 +1426,16 @@ class Solver:
 
         Unplanned, the phases competed and the strongest ate the budget: on a
         wheel ciphertext the EXPENSIVE group ran from 14s to 62s of a 90s
-        budget, and the BRUTAL group -- Bifid, Four-square, Trifid and M-94 --
+        budget, and the BRUTAL group -- Bifid, four-square, Trifid and M-94 --
         was left 0.08s, so the one attack that solves a wheel cipher in four
         seconds never started.  A wheel is not a rare shape; it is the case
         :data:`PHASE_SLICES` was calibrated for ("a wheel-cipher climb measured
         ~2-in-3 solves inside 20s"), and the cap was simply unreachable.
 
-        Each phase is offered the time its own per-cipher caps add up to.  When
-        that does not fit in what is left, the phases share proportionally --
-        so a phase with four ciphers keeps room to run four ciphers, and no
-        phase is starved to nothing.
+        Each phase asks for :meth:`_phase_demand` and the phases share what is
+        left in proportion, so a phase with evidence and four ciphers keeps room
+        to run four ciphers, and a phase nothing points at does not take that
+        room from the phase something does point at.
 
         Only the expensive tiers are planned.  Cheap and moderate attacks get a
         flat cap each and take milliseconds, so they need no arbitration, and
@@ -1412,7 +1447,7 @@ class Solver:
         available = ctx.remaining()
         if available <= 0:
             return [0.0] * len(phases)
-        caps = [PHASE_SLICES[cost] * len(group) for cost, group, _ in phases]
+        caps = [self._phase_demand(cost, weights) for cost, _, weights in phases]
         total = sum(caps)
         if total <= available:
             return caps

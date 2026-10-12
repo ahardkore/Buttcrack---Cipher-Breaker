@@ -19,6 +19,7 @@ from buttcrack.engine import (
     EVIDENCE_TIE_BAND,
     PHASE_SLICES,
     STRONG_LAYER,
+    UNSUPPORTED_PHASE_SHARE,
     CandidatePool,
     Solver,
     attack_ciphers,
@@ -586,6 +587,31 @@ class TestSolverControls(unittest.TestCase):
                 self.assertGreater(budgets[1], 0.0)
                 asked = [PHASE_SLICES[cost] * len(group) for cost, group, _ in phases]
                 self.assertAlmostEqual(budgets[0] / budgets[1], asked[0] / asked[1], places=6)
+
+    def test_an_unsupported_phase_does_not_take_room_from_a_supported_one(self):
+        """Size alone is the wrong question -- evidence is the other half.
+
+        Asked by size alone, the BRUTAL tier claims four ciphers' worth of time
+        on every text, and on a transposition ciphertext (where Bifid,
+        four-square, Trifid and M-94 all come back empty) that is time the
+        columnar, Myszkowski and AMSCO searches needed: measured on the
+        self-test's Myszkowski and AMSCO puzzles, the 7.7s of attack time became
+        5.5s and neither named its cipher any more.
+        """
+        supported = self.solver_phase_demand(EXPENSIVE, [0.85] + [0.15] * 7)
+        unsupported = self.solver_phase_demand(BRUTAL, [0.15] * 4)
+        self.assertAlmostEqual(supported, PHASE_SLICES[EXPENSIVE] * 8)
+        self.assertAlmostEqual(
+            unsupported,
+            PHASE_SLICES[BRUTAL] * (1.0 + UNSUPPORTED_PHASE_SHARE * 3),
+        )
+        self.assertLess(unsupported, PHASE_SLICES[BRUTAL] * 4, "an unsupported phase asks for less than its size")
+        # A wheel ciphertext is the case the reservation exists for: the M-94's
+        # own read arrives at 0.45, over the bar, so BRUTAL is worth its sweep.
+        self.assertGreaterEqual(self.solver_phase_demand(BRUTAL, [0.45, 0.19, 0.15, 0.15]), PHASE_SLICES[BRUTAL])
+
+    def solver_phase_demand(self, cost, weights):
+        return Solver._phase_demand(cost, weights)
 
     def test_a_phase_keeps_its_own_cap_when_everything_fits(self):
         expensive = [c for c in attack_ciphers() if c.info.cost == EXPENSIVE]
