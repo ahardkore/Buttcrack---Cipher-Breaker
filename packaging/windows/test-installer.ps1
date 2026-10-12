@@ -115,6 +115,32 @@ function Assert-True {
     Fail ($(if ($Detail) { "$Text -- $Detail" } else { $Text }))
 }
 
+function Convert-ToLongPath {
+    <#
+        Expand an 8.3 short path to its long form.
+
+        %TEMP% on Windows is usually C:\Users\RUNNER~1\AppData\Local\Temp while
+        the installer records the long name it resolved the directory to
+        (C:\Users\runneradmin\...).  Those are the same folder spelled two ways,
+        so comparing them as strings calls a perfectly good install a failure --
+        which is what this script did the first time it ran on a real runner.
+        Normalising once, here, keeps every later comparison honest.
+
+        Path.GetFullPath does not do this; only Win32 expands short names.
+    #>
+    param([string]$Path)
+    if (-not ('Win32PathHelper' -as [type])) {
+        Add-Type -Namespace Win32 -Name PathHelper -MemberDefinition @'
+[System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+public static extern uint GetLongPathName(string shortPath, System.Text.StringBuilder longPath, uint size);
+'@
+    }
+    $buffer = New-Object System.Text.StringBuilder 1024
+    $length = [Win32.PathHelper]::GetLongPathName($Path, $buffer, 1024)
+    if ($length -gt 0 -and $length -le 1024) { return $buffer.ToString() }
+    return $Path
+}
+
 function Get-InstalledLocation {
     <#
         Where the product says it installed itself.
@@ -247,6 +273,18 @@ if (-not (Test-Path -LiteralPath $InstallDir)) {
 }
 Write-Pass 'the install directory exists'
 
+# From here on, compare like with like: the installer writes the long form of
+# every path it records, and %TEMP% is usually the 8.3 spelling of the same
+# place.  See Convert-ToLongPath.
+$InstallDir = Convert-ToLongPath $InstallDir
+$Script:InstallDir = $InstallDir
+
+# Now that both spellings are long, the two can be compared, which checks that
+# the installer honoured /DIR rather than quietly using its default location.
+$registered = Get-InstalledLocation
+Assert-True ($registered -and $registered.TrimEnd('\') -ieq $InstallDir.TrimEnd('\')) `
+    'the installer used the directory it was asked for' "registered '$registered'"
+
 # --------------------------------------------------------------------------- #
 # 2. what landed on disk
 # --------------------------------------------------------------------------- #
@@ -317,11 +355,12 @@ Assert-True ($groupLinks.Count -ge 3) 'the Start-menu group has its shortcuts' "
 $shell = New-Object -ComObject WScript.Shell
 $launcher = Join-Path $groupDir 'Buttcrack.lnk'
 Assert-True (Test-Path -LiteralPath $launcher) 'the Start-menu launcher exists'
-$target = $shell.CreateShortcut($launcher).TargetPath
+$shortcut = $shell.CreateShortcut($launcher)
+$target = $shortcut.TargetPath
 Assert-True ($target -ieq (Join-Path $InstallDir 'Buttcrack Desktop.exe')) `
     'the launcher points at the installed executable' "points at '$target'"
 Assert-True (Test-Path -LiteralPath $target) 'the launcher target exists on disk' $target
-$workingDir = $shell.CreateShortcut($launcher).WorkingDirectory
+$workingDir = $shortcut.WorkingDirectory
 Assert-True ($workingDir -ieq $InstallDir) 'the launcher sets a working directory inside the install' "'$workingDir'"
 
 # Two places, because OneDrive redirects the desktop on some machines and the
