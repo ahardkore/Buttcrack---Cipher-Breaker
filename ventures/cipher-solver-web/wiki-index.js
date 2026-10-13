@@ -205,6 +205,12 @@ window.WIKI_INDEX = {
    "d": "Trifid: Three coordinates per letter in a 3x3x3 cube, recombined within a period. Experimental solver."
   },
   {
+   "t": "Ratchet (self-rotating alphabet)",
+   "s": "ratchet-cipher-wiki.html",
+   "f": "Wheel and rotor devices",
+   "d": "Ratchet (self-rotating alphabet): Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the…"
+  },
+  {
    "t": "Single-byte XOR",
    "s": "xor-single-cipher-wiki.html",
    "f": "Byte-level ciphers",

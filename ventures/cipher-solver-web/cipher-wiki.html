@@ -44,7 +44,7 @@
           <ul>
             <li><a href="cipher-wiki.html" aria-current="page">Main page</a></li>
             <li><a href="unsolved-ciphers.html">Unsolved cipher archive</a></li>
-            <li><a href="cipher-wiki.html#families">Contents — all 50</a></li>
+            <li><a href="cipher-wiki.html#families">Contents — all 51</a></li>
             <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
           </ul>
         </details>
@@ -80,9 +80,9 @@
         </ul>
       </details>
       <details class="wiki-side-group" open>
-        <summary><a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a><span class="side-count">1</span></summary>
+        <summary><a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a><span class="side-count">2</span></summary>
         <ul>
-<li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a></li>
+<li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a></li><li><a href="ratchet-cipher-wiki.html">Ratchet (self-rotating alphabet)</a></li>
         </ul>
       </details>
       <details class="wiki-side-group" open>
@@ -139,7 +139,7 @@
       <div class="wiki-infobox-title">Buttcrack Cipher Wiki</div>
       <div class="wiki-infobox-sub">The free field guide</div>
       <table class="wiki-infobox-table"><tbody>
-        <tr><th>Cipher articles</th><td>50</td></tr><tr><th>Families</th><td><a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a>, <a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a>, <a href="cipher-wiki.html#family-polyalphabetic">Polyalphabetic ciphers</a>, <a href="cipher-wiki.html#family-transposition">Transposition ciphers</a>, <a href="cipher-wiki.html#family-polygraphic">Polygraphic ciphers</a>, <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a>, <a href="cipher-wiki.html#family-xor">Byte-level ciphers</a>, <a href="cipher-wiki.html#family-code">Codes and alphabets</a>, <a href="cipher-wiki.html#family-encoding">Encodings</a></td></tr><tr><th>History features</th><td>Timeline · Codebreakers · Famous ciphers · Unsolved archive</td></tr><tr><th>Written by</th><td>the solver's registry, at build time</td></tr><tr><th>License</th><td><a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Open source</a></td></tr>
+        <tr><th>Cipher articles</th><td>51</td></tr><tr><th>Families</th><td><a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a>, <a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a>, <a href="cipher-wiki.html#family-polyalphabetic">Polyalphabetic ciphers</a>, <a href="cipher-wiki.html#family-transposition">Transposition ciphers</a>, <a href="cipher-wiki.html#family-polygraphic">Polygraphic ciphers</a>, <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a>, <a href="cipher-wiki.html#family-xor">Byte-level ciphers</a>, <a href="cipher-wiki.html#family-code">Codes and alphabets</a>, <a href="cipher-wiki.html#family-encoding">Encodings</a></td></tr><tr><th>History features</th><td>Timeline · Codebreakers · Famous ciphers · Unsolved archive</td></tr><tr><th>Written by</th><td>the solver's registry, at build time</td></tr><tr><th>License</th><td><a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Open source</a></td></tr>
       </tbody></table>
       <div class="wiki-infobox-note">One article per cipher, generated from the code that implements it — so a page cannot quietly disagree with the tool above it.</div>
     </aside>
@@ -243,6 +243,7 @@
       <p>Physical devices: a stack of mixed alphabets on a spindle. The key is the order of the disks, and the keyspace is enormous.</p>
       <ul class="cipher-index">
         <li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a> <span class="chip chip-full">full version</span> — US Army M-94 (1922-1943): 25 mixed-alphabet wheels on a spindle, one letter per wheel. The key is the wheel order -- the alphabets themselves are the standard published set. Solved by hill climbing over wheel swaps with the read-out row recovered from the text; wants 200+ letters and a generous budget, and the honest-evidence rule caps solutions under 150 letters (25 wheels want ~6 letters each).</li>
+        <li><a href="ratchet-cipher-wiki.html">Ratchet (self-rotating alphabet)</a> <span class="chip chip-full">full version</span> — Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the emitted letter leads -- a ratchet, and the reason the design is a running sum. Designed by @ahardkore, the author of this repository, as the 409-letter challenge the attack came out of. A crib breaks it outright in about a second; without one it takes a search over several thousand letters.</li>
       </ul>
     </section>
     <section class="wiki-family" id="family-xor">
