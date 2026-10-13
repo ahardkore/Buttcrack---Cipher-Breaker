@@ -52,9 +52,9 @@ dependencies = []
 dev = ["ruff>=0.16"]
 
 [project.urls]
-Homepage = "https://github.com/ahardkore/buttcrack"
-Repository = "https://github.com/ahardkore/buttcrack"
-Issues = "https://github.com/ahardkore/buttcrack/issues"
+Homepage = "https://github.com/ahardkore/Buttcrack---Cipher-Breaker"
+Repository = "https://github.com/ahardkore/Buttcrack---Cipher-Breaker"
+Issues = "https://github.com/ahardkore/Buttcrack---Cipher-Breaker/issues"
 
 [project.scripts]
 buttcrack = "buttcrack.cli:main"
