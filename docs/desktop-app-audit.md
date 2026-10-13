@@ -18,6 +18,12 @@ Method: static reading of the above, plus a live probe — the server was starte
 `/api/health`, `/api/paradigm`). Every "verified" note below is an observed result,
 not an inference. Effort tags: **XS** ≤30 min, **S** half a day, **M** a day or more.
 
+**Status (same day):** items A1, A2, C1, E1, B1, B4, D1 and D3 have been
+implemented — see the "1.2.1" list at the end of the change that touches
+`buttcrack/desktop.py`, `buttcrack/_wintray.py`, `buttcrack/server.py`,
+`buttcrack/static/` and `ventures/cipher-solver-web/`. Everything else below is
+still open, and the sections describe the code as it was audited.
+
 Nothing here is a rewrite. The app is in good shape — the entry points, the
 loopback binding, the fallback chain (window → message box → console), the
 uninstaller's PATH cleanup and the installer contract are all deliberate and

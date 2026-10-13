@@ -271,7 +271,9 @@ holds its URL:
 2. Upload `buttcrack-setup-<version>.exe` somewhere private-by-obscurity and
    cheap — **Cloudflare R2** is the usual answer: 10 GB free, no egress charge
    ever, custom domain in two clicks. Give the file an unguessable name.
-3. Put that URL in `site.json` under `windows_app.delivery_url`, along with the
+3. Put that URL in `site.json` under `windows_app.delivery_url` — the bucket's own
+   domain, not its `pub-<hash>.r2.dev` test hostname, which is rate-limited and
+   would publish the paid file at a second URL — along with the
    `version`, `size` and `sha256` the build printed.
 4. In Stripe, set the payment link's post-payment redirect to the `winapp`
    delivery URL that `build_pages.py` prints.

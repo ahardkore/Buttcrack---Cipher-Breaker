@@ -224,6 +224,17 @@ This is where the file should go — pick one, upload, paste the URL into
 | **Bunny.net Storage** | paid, ~$0.01/GB | ~$0.01/GB | Cheap, fast, simple. Good if you want a CDN too. |
 | **AWS S3 + CloudFront** | 12 months limited | ~$0.085/GB | Works, and will happily bill you if something goes viral. |
 
+**Use the bucket's own domain, not the `r2.dev` hostname.** R2 hands every bucket
+a `pub-<hash>.r2.dev` address so you can test public access in a minute, and
+Cloudflare's own dashboard says what it is: *"usage is rate-limited and is not
+recommended for production"*, with Access and Cache unavailable on it. For a paid
+installer it is worse than slow — it is a **second public URL for the same
+object**, so the unguessable-name arrangement below is only as private as the
+weakest of the two hostnames, and some ISPs have blocked `r2.dev` outright.
+Attach a custom domain (R2 → bucket → Settings → Public access → Connect domain),
+put *that* URL in `windows_app.delivery_url`, then turn the `r2.dev` hostname back
+off. Keep public listing off as well.
+
 With R2, publishing a new version is:
 
 ```bash
@@ -240,9 +251,25 @@ buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
 then paste `https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe`
 into `site.json`. Only the post-payment page ever shows it.
 
-If your bucket supports it, turn off directory listing and set a long
-`Cache-Control`. You do not need signed URLs for a $39.99 download — but R2 and
-S3 both offer them if you later decide you want links that expire.
+Three things about that object:
+
+* **Keep the version in the key and never overwrite it.** A new build gets a new
+  name (`...-1.3.0-<hash>.exe`), so a repeated URL can never hand one customer
+  the previous binary and no cache has to be purged.
+* **Set `Cache-Control: public, max-age=31536000, immutable`** on the object.
+  Cloudflare does *not* cache `.exe` by default — the default list covers
+  `zip`, `7z` and `rar` but not `exe` — so a custom domain serves it from R2 (no
+  egress charge, but one origin fetch per download) unless you add a Cache Rule
+  for the download path. If you add one, do not serve the object with
+  `no-store`/`no-cache`: the rule and the object's headers have to agree, and a
+  "Cache Everything" rule in front of a `no-store` origin is a well-known source
+  of intermittent 404s.
+* **If the zone has Bot Fight Mode on, verify a scripted download.** `curl -sI
+  https://downloads.yourdomain/buttcrack-setup-1.2.0-<hash>.exe` from outside
+  should return `200` with a `Content-Length`, not a challenge page.
+
+You do not need signed URLs for a $39.99 download — but R2 and S3 both offer
+them if you later decide you want links that expire.
 
 ### Selling it somewhere that enforces entitlements
 
@@ -264,12 +291,27 @@ Whatever you use, check these three:
 * **HTTPS, no redirect chain.** Browsers are increasingly hostile to executables
   that arrive over plain HTTP or after a redirect hop.
 * **Publish the SHA-256** next to the link. `build.ps1` writes it to
-  `dist/installer/*.sha256` for you, and the download page shows users the
+  `dist/installer/*.sha256`, the release workflow writes
+  `dist/installer/INSTALLER-SHA256.json`, and the download page shows users the
   one-liner to check it:
 
   ```powershell
   Get-FileHash .\buttcrack-setup-1.2.0.exe -Algorithm SHA256
   ```
+
+  `build_pages.py` prints that digest on the post-payment page from
+  `site.json` — paste the value out of `INSTALLER-SHA256.json` into
+  `windows_app.sha256` (and `size` into `windows_app.size`) on every release, or
+  the page keeps publishing last version's hash beside this version's filename,
+  which is worse than publishing nothing.
+
+* **Say whether it is signed.** `windows_app.signed` in `site.json` is either
+  `false` — the truth while there is no certificate, and what the delivery page,
+  the storefront and the FAQ all print today — or the publisher name on the
+  certificate (`"Aaron Hard, Hardkore Software"`). Set it in the same commit as
+  `-CertThumbprint`, and all three passages switch from "not code-signed, click
+  Run anyway" to naming the publisher. Leaving it alone after signing leaves the
+  page apologising for a certificate it already has.
 
 ### Package managers, if you want them later
 

@@ -1098,6 +1098,46 @@ def page(
 """
 
 
+def windows_signer() -> str:
+    """The publisher name on the installer's certificate, or ``""``.
+
+    ``windows_app.signed`` is ``false`` (the default, and the truth while there
+    is no certificate) or the publisher name the certificate carries.  Three
+    passages on this site used to hardcode "the installer is not code-signed" --
+    the post-payment card, the section on the storefront, and an FAQ answer.  A
+    certificate that arrives while any one of them is still hardcoded leaves the
+    site arguing with its own download, so all three read this instead.
+    """
+    signer = (CFG.get("windows_app") or {}).get("signed")
+    return signer.strip() if isinstance(signer, str) else ""
+
+
+#: Resolved once at import: the FAQ entry below is chosen at module level.
+WINDOWS_SIGNER = windows_signer()
+
+#: The SmartScreen answer, in both worlds.  The signed wording still mentions
+#: the warning on purpose -- a certificate with no download history behind it is
+#: exactly the case SmartScreen is unsure about -- but it names the publisher,
+#: which is the difference the reader is actually asking about.
+WINDOWS_PUBLISHER_FAQ = (
+    (
+        "Why does Windows say the publisher is unknown?",
+        "Because the installer is not code-signed. SmartScreen is reporting the absence of a "
+        "certificate rather than anything it found in the file. Click More info, then Run anyway "
+        "\u2014 and check the published SHA-256 if you want independent confirmation of what you "
+        "downloaded.",
+    )
+    if not WINDOWS_SIGNER
+    else (
+        "Will Windows warn me about the publisher?",
+        f"The installer is code-signed as {WINDOWS_SIGNER}, so Windows shows that name on the "
+        "dialog it puts up before installing. A certificate that has not been seen in many "
+        "downloads yet can still get a SmartScreen prompt: click More info, then Run anyway. "
+        "The published SHA-256 verifies the file either way.",
+    )
+)
+
+
 def delivery_url(raw: str, field: str) -> str:
     """Validate the post-purchase installer URL. Returns "" when unset.
 
@@ -1134,6 +1174,7 @@ def windows_app_config() -> dict:
     cfg = dict(CFG.get("windows_app", {}) or {})
     cfg["payment_link"] = payment_url(cfg.get("payment_link", ""), "windows_app.payment_link")
     cfg["delivery_url"] = delivery_url(cfg.get("delivery_url", ""), "delivery_url")
+    cfg["signer"] = windows_signer()
     cfg["token"] = hashlib.sha256(
         f"{cfg.get('sku', 'winapp')}:{CFG.get('stripe', {}).get('delivery_salt', '')}".encode()
     ).hexdigest()[:20]
@@ -1178,6 +1219,21 @@ def write_windows_delivery(cfg: dict) -> None:
     <p style="font-size:13px;color:var(--muted);margin:14px 0 0">SHA-256, to check the file arrived
       intact:<br><code style="font-size:12px;word-break:break-all">{html_escape(cfg["sha256"])}</code></p>"""
 
+    signing_card = (
+        f"""    <h3 style="margin-top:0">Signed by {html_escape(cfg["signer"])}</h3>
+    <p style="margin-bottom:0">Windows checks that signature before anything runs. A certificate
+      that Windows has not seen many times yet can still raise a SmartScreen prompt: click
+      <strong>More info</strong>, then <strong>Run anyway</strong>. It installs without
+      administrator rights and uninstalls from Add/Remove Programs.</p>
+"""
+        if cfg.get("signer")
+        else """    <h3 style="margin-top:0">Windows will warn you the first time</h3>
+    <p style="margin-bottom:0">The installer is not code-signed, so SmartScreen shows a blue
+      <em>“Windows protected your PC”</em> box. Click <strong>More info</strong>, then
+      <strong>Run anyway</strong>. It installs without administrator rights and uninstalls from
+      Add/Remove Programs.</p>
+"""
+    )
     (HERE / cfg["delivery_page"]).write_text(f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1199,12 +1255,7 @@ def write_windows_delivery(cfg: dict) -> None:
     {action}{sha}
   </div>
   <div class="card">
-    <h3 style="margin-top:0">Windows will warn you the first time</h3>
-    <p style="margin-bottom:0">The installer is not code-signed, so SmartScreen shows a blue
-      <em>“Windows protected your PC”</em> box. Click <strong>More info</strong>, then
-      <strong>Run anyway</strong>. It installs without administrator rights and uninstalls from
-      Add/Remove Programs.</p>
-  </div>
+{signing_card}  </div>
   <div class="card">
     <p style="margin:0">Installed? Open <strong>Buttcrack</strong> from the Start menu — it opens
       the solver in your browser and runs entirely on your machine.</p>
@@ -1228,6 +1279,19 @@ def windows_app_html() -> str:
     price = html_escape(cfg.get("price") or "")
     version = html_escape((cfg.get("version") or "").strip())
     digest = (cfg.get("sha256") or "").strip().lower()
+    signed = cfg.get("signer") or ""
+    signing_heading = "Installing it" if signed else "Windows will warn you the first time"
+    signing_body = (
+        f"It is code-signed as {html_escape(signed)}, so Windows shows that name when it asks for"
+        " confirmation. A certificate Windows has not seen in many downloads yet can still get a"
+        " SmartScreen prompt \u2014 click <strong>More info</strong>, then <strong>Run anyway</strong>."
+    ) if signed else (
+        "The installer is not code-signed, so Windows SmartScreen shows a blue"
+        " <em>\u201cWindows protected your PC\u201d</em> dialog. That is a statement about a certificate"
+        " that costs several hundred dollars a year, not about the file. Click"
+        " <strong>More info</strong>, then <strong>Run anyway</strong> \u2014 and check the SHA-256 above"
+        " first if you would rather not take anyone's word for it."
+    )
 
     spec_bits = " · ".join(
         filter(
@@ -1313,12 +1377,8 @@ def windows_app_html() -> str:
     </ul>
 {checksum}
 
-    <h2>Windows will warn you the first time</h2>
-    <p>The installer is not code-signed, so Windows SmartScreen shows a blue
-    <em>“Windows protected your PC”</em> dialog. That is a statement about a certificate that
-    costs several hundred dollars a year, not about the file. Click <strong>More info</strong>,
-    then <strong>Run anyway</strong> — and check the SHA-256 above first if you would rather not
-    take anyone's word for it.</p>
+    <h2>{signing_heading}</h2>
+    <p>{signing_body}</p>
 
     <h2>Requirements</h2>
     <p>Windows 10 or 11, 64-bit. Roughly 60 MB of disk once installed. No internet connection is
@@ -1697,10 +1757,7 @@ PAGES = [
                 "Does it need administrator rights?",
                 "No. By default it installs into your own user profile, so there is no UAC prompt at all. The first page of the installer offers a machine-wide install if you would rather have one, and that does need an administrator.",
             ),
-            (
-                "Why does Windows say the publisher is unknown?",
-                "Because the installer is not code-signed. SmartScreen is reporting the absence of a certificate rather than anything it found in the file. Click More info, then Run anyway — and check the published SHA-256 if you want independent confirmation of what you downloaded.",
-            ),
+            WINDOWS_PUBLISHER_FAQ,
             (
                 "Does it send my ciphertext anywhere?",
                 "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.",
