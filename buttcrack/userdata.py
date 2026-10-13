@@ -111,3 +111,13 @@ def pk9_ledger() -> Path:
 def assistant_log() -> Path:
     """Where the desktop window appends its saved assistant transcripts."""
     return data_dir() / "buttcrack-assistant.jsonl"
+
+
+def instance_file() -> Path:
+    """The desktop app's "I am running" marker: a locked file holding its URL.
+
+    Held open with an exclusive lock for the life of the process, so a second
+    launch can tell that the first is still there instead of starting a second
+    server on a second port.
+    """
+    return data_dir() / "desktop-instance.json"

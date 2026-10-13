@@ -295,6 +295,41 @@ class TestEntryPoints(unittest.TestCase):
         self.assertIn("from buttcrack.cli import main as cli_main", self._source(PACKAGING / "entry_cli.py"))
 
 
+class TestTraySurvivesTheShell(unittest.TestCase):
+    """The one Win32 message the tray cannot do without.
+
+    Explorer owns the notification area and rebuilds it after a crash, an update
+    or a "restart Explorer".  Every icon in the old one is gone, and the only
+    notice is a broadcast message -- so an app that does not listen for it keeps
+    running with no icon at all.  For this app that is worse than cosmetic:
+    closing the window hides it when the tray is up, so the process would be
+    left invisible with no way back except Task Manager.
+
+    The tray cannot be exercised off Windows, so this is the cheap structural
+    check in the style of the rest of this file.
+    """
+
+    SOURCE = ROOT / "buttcrack" / "_wintray.py"
+
+    def test_the_tray_listens_for_the_shell_being_rebuilt(self):
+        source = self.SOURCE.read_text(encoding="utf-8")
+        self.assertIn('RegisterWindowMessageW("TaskbarCreated")', source)
+        self.assertIn("taskbar_created", source)
+
+    def test_the_icon_can_be_installed_twice(self):
+        # Adding the icon at startup and again after the shell comes back has to
+        # be one code path, or the second one drifts and stops working.
+        import buttcrack._wintray as tray
+
+        self.assertTrue(hasattr(tray.TrayIcon, "_add_icon"))
+
+    def test_the_windowed_entry_point_hides_rather_than_quits_only_with_a_tray(self):
+        # desktop.py must keep tying the close button to whether there is an
+        # icon to bring the window back from.
+        source = (ROOT / "buttcrack" / "desktop.py").read_text(encoding="utf-8")
+        self.assertIn('root.protocol("WM_DELETE_WINDOW", hide if tray.active else shutdown)', source)
+
+
 class TestVersionAgreement(unittest.TestCase):
     """One version, in the places that are read by a person or a program."""
 

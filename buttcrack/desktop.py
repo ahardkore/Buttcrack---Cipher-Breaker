@@ -7,8 +7,10 @@ a double-clickable program rather than a command you have to remember:
 * it binds **127.0.0.1 only** -- a desktop app has no business accepting
   connections from the network, unlike ``buttcrack serve`` which defaults to
   ``0.0.0.0`` so you can reach it from another machine on purpose;
-* it takes whatever port is free instead of failing when 8080 is taken, so a
-  second launch cannot collide with the first;
+* it takes whatever port is free instead of failing when 8080 is taken;
+* launching it twice does not give you two servers.  The first copy holds a lock
+  and publishes its URL, and the second one opens that URL and exits -- see
+  :class:`RunningInstance`;
 * it opens the browser for you;
 * it puts a small control window on screen (and, on Windows, a tray icon) so
   there is something to close.  Closing it stops the server.
@@ -22,16 +24,17 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-import http.server
+import json
 import os
 import socket
 import sys
 import threading
+import urllib.request
 import webbrowser
 from pathlib import Path
-from typing import Any, Callable
+from typing import IO, Any, Callable
 
-from . import __version__
+from . import __version__, userdata
 from .userdata import assistant_log, pk9_ledger
 
 #: A desktop app listens to itself and nothing else.
@@ -47,24 +50,100 @@ PREFERRED_PORT = 8080
 # --------------------------------------------------------------------------- #
 
 
+#: Windowed builds have no console, so this file is the only place a dying
+#: worker's traceback, or a startup failure, survives to be read afterwards.
+LOG_NAME = "buttcrack.log"
+LOG_MAX_BYTES = 512 * 1024
+LOG_KEEP = 2
+
+_LOG_LOCK = threading.Lock()
+_LOG_STREAM: IO[str] | None = None
+
+
+def log_path() -> Path:
+    """Where the frozen build keeps its own output."""
+    return userdata.data_dir(create=False) / "logs" / LOG_NAME
+
+
+def _rotate_log() -> None:
+    """Shift ``buttcrack.log`` aside, keeping :data:`LOG_KEEP` older files."""
+    directory = log_path().parent
+    oldest = directory / f"{LOG_NAME}.{LOG_KEEP}"
+    with contextlib.suppress(OSError):
+        oldest.unlink(missing_ok=True)
+    for index in range(LOG_KEEP - 1, 0, -1):
+        source = directory / f"{LOG_NAME}.{index}"
+        target = directory / f"{LOG_NAME}.{index + 1}"
+        if source.is_file():
+            with contextlib.suppress(OSError):
+                source.replace(target)
+    with contextlib.suppress(OSError):
+        log_path().replace(directory / f"{LOG_NAME}.1")
+
+
+def _log_stream() -> IO[str] | None:
+    """The open log, rotated once it has had enough.  Never raises."""
+    global _LOG_STREAM
+    if _LOG_STREAM is not None:
+        if _LOG_STREAM.closed:
+            over_cap = True
+        else:
+            try:
+                over_cap = _LOG_STREAM.tell() >= LOG_MAX_BYTES
+            except (OSError, ValueError):  # unwritable: start a fresh file
+                over_cap = True
+        if not over_cap:
+            return _LOG_STREAM
+        with contextlib.suppress(OSError):
+            _LOG_STREAM.close()
+        _LOG_STREAM = None
+        _rotate_log()
+    try:
+        log_path().parent.mkdir(parents=True, exist_ok=True)
+        # The handle outlives this call on purpose: it is the log, kept open for
+        # the life of the process and rotated when it fills.
+        _LOG_STREAM = open(log_path(), "a", encoding="utf-8", errors="replace")  # noqa: SIM115
+    except OSError:
+        _LOG_STREAM = None
+    return _LOG_STREAM
+
+
 class _NullStream:
-    """A file-like black hole.
+    """A file-like sink that also keeps what it was given, on disk.
 
     A GUI build on Windows has no console, and PyInstaller sets ``sys.stdout``
     and ``sys.stderr`` to ``None`` there.  Every ``print`` in the server, and
-    every traceback the standard library writes, would then raise
-    ``AttributeError: 'NoneType' object has no attribute 'write'`` -- which is
-    a crash on startup for a program whose only fault was logging.
+    every traceback the standard library writes -- including the one
+    ``multiprocessing`` prints when a worker dies -- would then raise
+    ``AttributeError: 'NoneType' object has no attribute 'write'``: a crash on
+    startup for a program whose only fault was logging.
+
+    Discarding the text was the first fix, and it threw away the only evidence a
+    broken install produces.  It now goes to ``<data dir>/logs/buttcrack.log``,
+    capped and rotated, and every failure to write is swallowed: a program must
+    not fall over because its *log* would not open.
     """
 
     encoding = "utf-8"
     errors = "replace"
 
     def write(self, text: str) -> int:
+        if not text:
+            return 0
+        try:
+            with _LOG_LOCK:
+                handle = _log_stream()
+                if handle is not None:
+                    handle.write(text)
+                    handle.flush()
+        except Exception:  # a missing or read-only log must never be fatal
+            pass
         return len(text)
 
     def flush(self) -> None:
-        return None
+        with _LOG_LOCK, contextlib.suppress(Exception):
+            if _LOG_STREAM is not None:
+                _LOG_STREAM.flush()
 
     def isatty(self) -> bool:
         return False
@@ -93,6 +172,130 @@ def is_frozen() -> bool:
 # --------------------------------------------------------------------------- #
 
 
+def _lock_exclusive(handle: IO[str]) -> bool:
+    """Take a non-blocking exclusive lock on ``handle``.  False if held."""
+    if sys.platform == "win32":  # pragma: no cover - exercised by the release run
+        import msvcrt
+
+        handle.seek(0)
+        try:
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+        except OSError:
+            return False
+        return True
+    import fcntl
+
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        return False
+    return True
+
+
+def _unlock(handle: IO[str]) -> None:
+    """Release a lock taken by :func:`_lock_exclusive`."""
+    if sys.platform == "win32":  # pragma: no cover - exercised by the release run
+        import msvcrt
+
+        handle.seek(0)
+        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        return
+    import fcntl
+
+    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+class RunningInstance:
+    """The "I am the desktop app that is running" marker, and the URL in it.
+
+    Launching twice used to give two servers on two ports: two tray icons, two
+    browser tabs, two ``127.0.0.1:<port>`` addresses -- and two writers of the
+    same SQLite ledger in the data directory.  The marker file is held under an
+    exclusive lock for the life of the process, so the check has no race window,
+    and it carries the URL that a second launch should open instead.
+
+    Every failure here is silent and non-fatal.  A read-only data directory
+    costs the user the duplicate-launch guard; it must not cost them the app.
+    """
+
+    def __init__(self) -> None:
+        self.path = userdata.instance_file()
+        self._handle: IO[str] | None = None
+
+    def claim(self) -> bool:
+        """Take the lock.  False means another copy is already running."""
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            if not self.path.exists():
+                # open(..., "r+") refuses to create the file, and "a+" would put
+                # every later write at the end of it instead of where publish()
+                # seeks -- so the marker is created here and opened for update.
+                self.path.touch()
+            # Held open for the life of the process: the lock lives on the fd.
+            handle = open(self.path, "r+", encoding="utf-8")  # noqa: SIM115
+        except OSError:
+            return True  # nowhere to write: behave as though we are alone
+        try:
+            held = _lock_exclusive(handle)
+        except OSError:
+            handle.close()
+            return True
+        if not held:
+            handle.close()
+            return False
+        self._handle = handle
+        return True
+
+    def publish(self, url: str, port: int) -> None:
+        """Record where a second launch should send the user."""
+        if self._handle is None:
+            return
+        with contextlib.suppress(OSError, ValueError):
+            self._handle.seek(0)
+            json.dump(
+                {"pid": os.getpid(), "port": port, "url": url, "version": __version__},
+                self._handle,
+            )
+            self._handle.truncate()
+            self._handle.flush()
+
+    def release(self) -> None:
+        """Drop the lock and the marker.  Safe to call twice."""
+        handle, self._handle = self._handle, None
+        if handle is None:
+            return
+        with contextlib.suppress(OSError):
+            _unlock(handle)
+        with contextlib.suppress(OSError):
+            handle.close()
+        with contextlib.suppress(OSError):
+            self.path.unlink(missing_ok=True)
+
+
+def running_instance(timeout: float = 0.5) -> str | None:
+    """The URL of a desktop app already serving here, or ``None``.
+
+    The lock says another copy *started*; it does not say that copy is well.  So
+    the URL it published is probed over HTTP and only a live buttcrack behind it
+    counts -- otherwise a crashed copy's marker would refuse every future launch,
+    and so would a process wedged before it ever served a page.  A mutex alone
+    cannot tell those apart; a probe can.
+    """
+    try:
+        state = json.loads(userdata.instance_file().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    url = str(state.get("url") or "")
+    if not url.startswith("http://"):
+        return None
+    try:
+        with urllib.request.urlopen(f"{url}api/health", timeout=timeout) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    return url if payload.get("name") == "buttcrack" else None
+
+
 def free_port(preferred: int = PREFERRED_PORT, host: str = LOCAL_HOST) -> int:
     """``preferred`` if it is free on ``host``, otherwise one the OS picks."""
     if preferred:
@@ -111,16 +314,22 @@ class LocalApp:
     """A running local server plus the handful of actions the UI needs."""
 
     def __init__(self, host: str = LOCAL_HOST, port: int = 0) -> None:
-        from .server import Handler  # imported late: loading the model is slow
+        from .server import make_server  # imported late: loading the model is slow
 
-        http.server.ThreadingHTTPServer.allow_reuse_address = True
-        http.server.ThreadingHTTPServer.daemon_threads = True
         self.host = host
         self.port = port or free_port(PREFERRED_PORT, host)
-        self._httpd = http.server.ThreadingHTTPServer((self.host, self.port), Handler)
+        # make_server keeps the bind address with the server, which is what the
+        # handler checks the Host header against.
+        self._httpd = make_server(self.host, self.port)
         # Port 0 would have been resolved by bind(); ask the socket, not ourselves.
         self.port = int(self._httpd.server_address[1])
         self._thread: threading.Thread | None = None
+        # Best effort: the lock is what tells a second launch to hand over rather
+        # than start a second server.  Claiming it here means every path that
+        # constructs a LocalApp -- including the library's own tests, which
+        # construct several -- behaves the same way.
+        self._instance = RunningInstance()
+        self._instance.claim()
 
     @property
     def url(self) -> str:
@@ -136,9 +345,13 @@ class LocalApp:
             daemon=True,
         )
         self._thread.start()
+        # The lock was taken in __init__ (or lost to a copy that already had it);
+        # publishing here is what lets a second launch find *this* app.
+        self._instance.publish(self.url, self.port)
 
     def stop(self) -> None:
         """Close the socket and wait for the serving thread.  Safe to call twice."""
+        self._instance.release()
         thread, self._thread = self._thread, None
         if thread is not None:
             # Only when the loop is actually running: ThreadingHTTPServer.shutdown()
@@ -1089,13 +1302,24 @@ def run(
     open_browser: bool = True,
     window: bool | None = None,
     on_ready: Callable[[LocalApp], None] | None = None,
+    reuse: bool = False,
 ) -> int:
     """Start the desktop app and block until it is closed.
 
     ``window=None`` means "show one if you can"; ``False`` forces the console
-    loop, which is what ``--console`` and a headless server want.
+    loop, which is what ``--console`` and a headless server want.  ``reuse``
+    asks the copy that is already running to take over, which is what a second
+    click on the Start-menu shortcut should do.
     """
     ensure_streams()
+    if reuse:
+        running = running_instance()
+        if running is not None:
+            print(f"buttcrack is already running at {running}")
+            if open_browser:
+                with contextlib.suppress(Exception):
+                    webbrowser.open(running)
+            return 0
     try:
         app = LocalApp(port=port)
     except OSError as error:
@@ -1165,9 +1389,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--port", "-p", type=int, default=0, help="port to use (default: 8080, or any free port)")
     parser.add_argument("--no-browser", action="store_true", help="do not open a browser on startup")
     parser.add_argument("--console", action="store_true", help="no control window; run in the terminal")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="start even if a copy is already running",
+    )
     args = parser.parse_args(argv)
 
-    return run(port=args.port, open_browser=not args.no_browser, window=False if args.console else None)
+    return run(
+        port=args.port,
+        open_browser=not args.no_browser,
+        window=False if args.console else None,
+        # An explicit port is a request for a server of one's own; without one,
+        # a second launch hands over to the copy that is already up.
+        reuse=not args.force and not args.port,
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover

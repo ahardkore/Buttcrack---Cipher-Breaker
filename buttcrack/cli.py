@@ -847,6 +847,7 @@ def cmd_app(args: argparse.Namespace) -> int:
         port=args.port,
         open_browser=not args.no_browser,
         window=False if args.console else None,
+        reuse=not args.force and not args.port,
     )
 
 
@@ -1060,6 +1061,7 @@ def build_parser() -> argparse.ArgumentParser:
     app.add_argument("--port", "-p", type=int, default=0, help="port to use (default: 8080, or any free port)")
     app.add_argument("--no-browser", action="store_true", help="do not open a browser on startup")
     app.add_argument("--console", action="store_true", help="no control window; run in the terminal")
+    app.add_argument("--force", action="store_true", help="start even if a copy is already running")
     app.add_argument("--no-color", action="store_true")
     app.set_defaults(func=cmd_app)
 
