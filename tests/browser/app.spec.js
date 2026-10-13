@@ -47,26 +47,35 @@ test.describe('real Buttcrack web application', () => {
 
   test('a running search can be stopped', async ({ page }) => {
     // The job endpoints are stubbed so the button is tested rather than the
-    // engine: a search that finishes in 200 ms would make this a race.
-    let finished = false;
+    // engine: a search that finishes in 200 ms would make this a race.  The
+    // stub is faithful about one thing in particular -- a job does not stop
+    // the instant it is asked to, it stops at the next milestone -- so the
+    // status keeps saying "running" until the cancel endpoint is called.
+    // (Setting that flag up front hid the button before the click landed, and
+    // the click then waited for a button that was gone.)
+    let cancelled = false;
+    const running = {
+      id: 'testjob1234',
+      done: false,
+      cancelled: false,
+      error: null,
+      report: null,
+      progress: [{ at: 0.1, message: 'working', fraction: 0.2, extra: {} }],
+    };
     await page.route('**/api/health', (route) => route.fulfill({ json: HEALTH }));
     await page.route('**/api/crack', (route) => route.fulfill({ json: { job: 'testjob1234' } }));
     await page.route('**/api/job/testjob1234', (route) =>
       route.fulfill({
-        json: {
-          id: 'testjob1234',
-          done: finished,
-          cancelled: finished,
-          error: null,
-          report: null,
-          progress: [{ at: 0.1, message: 'working', fraction: 0.2, extra: {} }],
-        },
+        json: cancelled
+          ? { ...running, done: true, cancelled: true, progress: [] }
+          : running,
       }),
     );
     // Registered last, so it wins over the job status route above.
-    await page.route('**/api/job/testjob1234/cancel', (route) =>
-      route.fulfill({ json: { job: 'testjob1234', cancel_requested: true } }),
-    );
+    await page.route('**/api/job/testjob1234/cancel', (route) => {
+      cancelled = true;
+      return route.fulfill({ json: { job: 'testjob1234', cancel_requested: true } });
+    });
 
     await page.goto('/');
     await page.fill('#input', 'Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj');
@@ -74,7 +83,6 @@ test.describe('real Buttcrack web application', () => {
     await expect(page.locator('#cancel')).toBeVisible();
     await expect(page.locator('#progress-card')).toBeVisible();
 
-    finished = true;
     await page.click('#cancel');
     await expect(page.locator('#cancel')).toBeHidden();
     await expect(page.locator('#progress-state')).toHaveText('stopped');
@@ -110,6 +118,10 @@ test.describe('real Buttcrack web application', () => {
     const file = testInfo.outputPath('cipher.txt');
     fs.writeFileSync(file, 'WKH TXLFN EROZQ IRA MXPSV');
     await page.goto('/');
+    // Booted first: the health reply writes the footer's opening line, and a
+    // file read that beats it gets its own line overwritten -- a second after
+    // a real user could have acted, but the machine does it in milliseconds.
+    await expect(page.locator('#health')).toContainText('ciphers');
     await page.setInputFiles('#file', file);
     await expect(page.locator('#input')).toHaveValue('WKH TXLFN EROZQ IRA MXPSV');
     // The promise on the page is that nothing is uploaded, so the line that
