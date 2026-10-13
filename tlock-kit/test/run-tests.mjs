@@ -39,7 +39,7 @@ function runNode(args, env = {}) {
 }
 
 import { spawn } from "node:child_process";
-import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import {
@@ -141,6 +141,20 @@ ok(lockedErr !== null && /too early/i.test(lockedErr), `round ${TARGET_ROUND} st
   const rBad = await runNode([join(kit, "verify-beacon.mjs"), badPath]);
   ok(rOk.status === 0 && /VALID/.test(rOk.stdout), "verify-beacon.mjs accepts the real beacon");
   ok(rBad.status === 1 && /INVALID/.test(rBad.stdout), "verify-beacon.mjs rejects the tampered beacon");
+}
+
+// ---------- 9. web core (the exact code the browser page runs) ----------
+{
+  const { parseTlockStanza, decryptArmored, fmtDuration } = await import("../web/src/core.js");
+  const parsed = parseTlockStanza(pastArmor);
+  ok(parsed?.round === PAST_ROUND && parsed?.chainHash === defaultChainInfo.hash,
+     "web core: parses round + chain from the armored file", JSON.stringify(parsed));
+  const viaWeb = new TextDecoder().decode(await decryptArmored(pastArmor, base));
+  ok(viaWeb === canary, "web core: browser decrypt path reproduces the canary");
+  ok(fmtDuration(90061000) === "1d 1h 1m 1s", "web core: countdown formatting");
+  const bundle = join(kit, "web/app.bundle.js");
+  ok(existsSync(bundle) && statSync(bundle).size > 50_000, "web bundle built (web/app.bundle.js)",
+     existsSync(bundle) ? `${statSync(bundle).size} bytes` : "missing — run: npm run build:web");
 }
 
 server.close();

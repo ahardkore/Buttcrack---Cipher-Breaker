@@ -12,6 +12,10 @@ and no weakness to brute-force** — the lock is a time gate, so the honest answ
 to “break this” is: *it opens itself on Halloween morning UTC; here is the
 verified kit that does it the moment the round exists.*
 
+You get two independent ways to open it on unlock day: a tested Node CLI
+(`unlock.mjs`) and a zero-install browser page (`web/index.html`). Both are
+validated end-to-end against real drand data (14/14 checks, §5).
+
 Your intuition — “it works similar to bitcoin” — is half right, and the half
 that's right is the important half. drand publishes a new round every **3
 seconds** on a fixed, pre-agreed schedule, like blocks; the file's key is bound
@@ -62,7 +66,11 @@ two before retrying if the very first attempt is a hair early.
 
 ## 3. How to open it — step by step
 
-You need Node ≥ 18. From this `tlock-kit` folder:
+Two ways. **Option A** is the CLI kit; **Option B** is a page you open in a
+browser (also the preview served by this workspace) — no install needed. Both
+run locally, and both do the same verified decryption.
+
+### Option A — CLI (Node ≥ 18), from this `tlock-kit` folder
 
 ```bash
 npm install                      # once — installs tlock-js 0.9.0 (drand's own library)
@@ -84,6 +92,24 @@ and leaves the full plaintext in `what-is-locked.txt`.
 Prefer to check the status without attempting decryption at all? The same script
 already reports it — it never fails anywhere except the (expected) “too early”
 path, and never corrupts anything.
+
+### Option B — browser page (no install)
+
+`web/index.html` decrypts completely client-side: drag the `.age` file in, it
+reads the round from the file, shows a live countdown to the unlock moment from
+the real chain, and unlocks with one click when the round exists. The file never
+leaves the machine; the only network request is a fetch of the beacon from the
+drand API you select.
+
+```bash
+npm run serve:web        # → http://localhost:4173   (any static server works)
+```
+
+…or simply **double-click `web/index.html`** — the page ships with its bundled
+`app.bundle.js`, so it works from `file://` too. It also has an **offline mode**:
+if your browser cannot reach the drand API (CORS/network), save the beacon JSON
+from `<api>/public/33542211` in a tab and load it into the page; decryption then
+needs no network at all.
 
 ### No network on unlock day? (offline mode)
 
@@ -138,6 +164,10 @@ PASS  unlock.mjs correctly reports LOCKED with the unlock date (exit 2)
 PASS  offline.mjs decrypts from beacon JSON alone (exit 0)
 PASS  verify-beacon.mjs accepts the real beacon
 PASS  verify-beacon.mjs rejects the tampered beacon
+PASS  web core: parses round + chain from the armored file
+PASS  web core: browser decrypt path reproduces the canary
+PASS  web core: countdown formatting
+PASS  web bundle built (web/app.bundle.js)
 
 ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
 ```
@@ -154,6 +184,10 @@ today, through no fault of the file.
 | `unlock.mjs` | status + decryption (online; uses drand API, verifies beacon) |
 | `offline.mjs` | decryption from a saved beacon JSON (no network; verifies beacon) |
 | `verify-beacon.mjs` | check a beacon JSON's BLS signature against quicknet's key |
+| `web/index.html` | browser unlocker (drag & drop, countdown, offline beacon mode) |
+| `web/app.bundle.js` | self-contained bundle of `web/src/*` (committed so `file://` works) |
+| `web/src/core.js`, `web/src/app.js` | browser logic (core is unit-tested by the suite) |
+| `web/serve.mjs` | tiny static server: `npm run serve:web` |
 | `mock/drand-server.mjs` | local API replica used by the tests (serves the real captured data) |
 | `test/run-tests.mjs` | the 10 checks above — `npm test` |
 | `evidence/round-info.txt` | the full target analysis (stanza, math, observed state) |

@@ -1,7 +1,7 @@
 {
   "name": "tlock-kit",
   "version": "1.0.0",
-  "description": "Unlock kit for the tlock (drand timelock) age file locked to quicknet round 33542211 — unlocks 2026-10-31T06:59:57Z",
+  "description": "Unlock kit for the tlock (drand timelock) age file locked to quicknet round 33542211 \u2014 unlocks 2026-10-31T06:59:57Z",
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,12 +9,17 @@
     "unlock": "node unlock.mjs",
     "offline": "node offline.mjs",
     "verify-beacon": "node verify-beacon.mjs",
-    "mock": "node mock/drand-server.mjs"
+    "mock": "node mock/drand-server.mjs",
+    "build:web": "esbuild web/src/app.js --bundle --format=iife --minify --target=es2020 --outfile=web/app.bundle.js",
+    "serve:web": "node web/serve.mjs"
   },
   "dependencies": {
     "tlock-js": "^0.9.0"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
