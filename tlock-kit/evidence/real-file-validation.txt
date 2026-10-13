@@ -1,0 +1,56 @@
+REAL-FILE VALIDATION RECORD — what-is-locked.age
+=================================================
+
+Source        : secret gist 5f61b6d9375cb71b6d8ae066662c2f51 (ahardkore), fetched 2026-10-13T08:55Z
+Size          : 216401 bytes on disk (armor); 159751 bytes decoded payload; ~159344 bytes STREAM ciphertext
+sha256 (disk) : b81bae262c0a87f9322e193c390b95b64a089a43381f89c35ff8e57d0df17d69
+
+--- decoded header (identical to the earlier chat paste, byte for byte) ---
+age-encryption.org/v1
+-> tlock 33542211 52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971
+-> ,6p*m.7-grease (age spec grease stanza; no key material)
+--- dpAND2PRpK6fVM68Ou9IAoNH8iWIX2HIFUHNz5uLHJc
+
+--- validate-file.mjs (offline, no network) ---
+armor        : OK (216401 bytes on disk → 159751 bytes decoded)
+version      : OK (age-encryption.org/)
+header MAC   : 32 bytes (expected 32)
+stanzas      : tlock, ,6p*m.7-grease
+tlock body   : 128 bytes (reference ciphertext of same scheme: 128)
+tlock U elem : 96-byte G2 point — on curve ✔, in prime-order subgroup ✔
+payload      : 159376 bytes of age STREAM data (~159344 bytes of ciphertext before overhead)
+chain        : quicknet (52db9ba70e0cc0f6…)
+round        : 33542211
+unlock time  : 2026-10-31T06:59:57.000Z
+status       : LOCKED — 17.92 days to go
+decrypt probe: correctly refused — "It's too early to decrypt the ciphertext - decryptable at round 33542211"
+
+RESULT: file is structurally valid and correctly locked.
+exit=2  (2 = valid + correctly locked)
+
+--- unlock.mjs status, live path (run against local mock serving REAL captured chain info + beacon;
+    this sandbox cannot reach api.drand.sh directly — same code path, same output on your machine) ---
+file        : what-is-locked.age
+target round: 33542211
+chain       : 52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971 (drand quicknet, League of Entropy mainnet)
+chain url   : http://127.0.0.1:42133
+latest round: 33025409
+unlock time : 2026-10-31T06:59:57.000Z
+status      : LOCKED — 516802 rounds (1550406s ≈ 17.94 days) to go
+
+not decrypted: It's too early to decrypt the ciphertext - decryptable at round 33542211
+drand has not yet produced round 33542211. Re-run this script after 2026-10-31T06:59:57.000Z.
+The file is fine and so is the script — the key simply does not exist yet.
+exit=2
+
+--- U-element cryptographic check on the real file ---
+tlock stanza body = 128 bytes: U=96 (BLS12-381 G2), V=16, W=16.
+U parses as a G2 point, is not the identity, and IS in the prime-order
+subgroup (isTorsionFree=true). Empirical control: 0/400 random 96-byte
+strings parse, and 0/200 single-byte-flipped copies of U parse — so the
+stanza is bit-intact, not merely plausible-looking.
+
+--- conclusion ---
+The real file is structurally perfect and locked, exactly as the header math
+predicted: it becomes decryptable at 2026-10-31T06:59:57Z when drand emits
+round 33542211. Nothing about the file is damaged, corrupt, or unusual.

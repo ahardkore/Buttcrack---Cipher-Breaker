@@ -1,7 +1,7 @@
 {
   "name": "tlock-kit",
   "version": "1.0.0",
-  "description": "Unlock kit for the tlock (drand timelock) age file locked to quicknet round 33542211 \u2014 unlocks 2026-10-31T06:59:57Z",
+  "description": "Unlock kit for the tlock (drand timelock) age file locked to quicknet round 33542211 — unlocks 2026-10-31T06:59:57Z",
   "type": "module",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
     "validate": "node validate-file.mjs"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.7",
     "tlock-js": "^0.9.0"
   },
   "engines": {

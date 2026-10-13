@@ -16,6 +16,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { timelockDecrypt, timelockEncrypt, defaultChainInfo, roundTime } from "tlock-js";
+import { bls12_381 as bls } from "@noble/curves/bls12-381";
 
 const file = process.argv[2] ?? "what-is-locked.age";
 if (!file || !existsSync(file)) {
@@ -113,6 +114,30 @@ const canaryStanzaBody = Buffer.from(canaryStanza[1].replace(/\n/g, ""), "base64
 say(`tlock body   : ${tlock.body.length} bytes (reference ciphertext of same scheme: ${canaryStanzaBody.length})`);
 if (tlock.body.length !== canaryStanzaBody.length) {
   fail(`tlock stanza body is ${tlock.body.length} bytes but the scheme produces ${canaryStanzaBody.length} — the ciphertext is truncated or from an incompatible tlock version`);
+}
+
+// ---------- 3b. the tlock U element must be a genuine group point ----------
+// decryptOnG2/decryptOnG1 parse U as a curve point; a real IBE ciphertext's U
+// is a random prime-order-subgroup point, while corrupted bytes almost never
+// parse (empirically 0/400 random strings and 0/200 single-bit flips).
+{
+  const pointLen = tlock.body.length - 32; // V and W are 16 bytes each (256-bit hash output)
+  const U = tlock.body.subarray(0, pointLen);
+  const group = pointLen === 96 ? bls.G2.ProjectivePoint : pointLen === 48 ? bls.G1.ProjectivePoint : null;
+  if (!group) {
+    say(`tlock U elem : ${pointLen} bytes — unrecognised point size, skipping curve check`);
+  } else {
+    try {
+      const pt = group.fromHex(U);
+      const identity = pt.equals(group.ZERO);
+      const torsionFree = typeof pt.isTorsionFree === "function" ? pt.isTorsionFree() : null;
+      say(`tlock U elem : ${pointLen}-byte ${pointLen === 96 ? "G2" : "G1"} point — on curve ✔${torsionFree === true ? ", in prime-order subgroup ✔" : torsionFree === false ? ", NOT in prime-order subgroup ✘" : ""}${identity ? ", identity ✘" : ""}`);
+      if (identity) fail("tlock U element is the identity point — not a valid IBE ciphertext");
+      if (torsionFree === false) fail("tlock U element is not in the prime-order subgroup — ciphertext is corrupt or forged");
+    } catch {
+      fail(`tlock U element does not parse as a ${pointLen === 96 ? "G2" : "G1"} curve point — the ciphertext is corrupt`);
+    }
+  }
 }
 
 // ---------- 4. payload sanity ----------

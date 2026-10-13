@@ -1,4 +1,4 @@
-mock drand server: http://127.0.0.1:41811 (serving real quicknet info + real round 33025409 beacon)
+mock drand server: http://127.0.0.1:34979 (serving real quicknet info + real round 33025409 beacon)
 
 PASS  roundTime(33542211) == 2026-10-31T06:59:57Z  — library says 2026-10-31T06:59:57.000Z
 PASS  real beacon 33025409 verifies against quicknet public key

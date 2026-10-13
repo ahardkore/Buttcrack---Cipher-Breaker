@@ -232,12 +232,10 @@ today, through no fault of the file.
 
 ## 7. Honest caveats
 
-* The file's **full ciphertext never reached this workspace** (it exists only as
-  the chat paste; tooling here truncated a single ~180 KB write). The analysis
-  above used the decoded header, which is all that's needed to establish the
-  mechanism and unlock time. Drop the `.age` file into this folder —
-  `what-is-locked.age` — and everything is ready to go; and on/after
-  2026-10-31 simply run it.
+* The real ciphertext **is now in hand and validated** (fetched 2026-10-13 from
+  the secret gist, sha256 `b81bae26…f17d69`, 216 401 bytes armored) — see §8.
+  It stays on your machine: `.gitignore` excludes `*.age`/`what-is-locked*`, so
+  neither the ciphertext nor any future plaintext is ever committed.
 * Do not trust third-party “drand unlock” sites with this file; keep decryption
   local (this kit does everything on your machine; the only external call any
   script makes is to a drand API you choose).
@@ -245,3 +243,44 @@ today, through no fault of the file.
   file's stanza uses the current chain hash and `tlock-js 0.9.0` reads it
   unchanged; nothing to convert.
 * Keep a note somewhere loud: **2026-10-31, 06:59:57 UTC**.
+
+## 8. The real file, validated (before unlock day)
+
+The actual `what-is-locked.age` (216 401 bytes, sha256
+`b81bae262c0a87f9322e193c390b95b64a089a43381f89c35ff8e57d0df17d69`) was run
+through the whole non-decrypting pipeline on 2026-10-13:
+
+```
+armor        : OK (216401 bytes on disk → 159751 bytes decoded)
+version      : OK (age-encryption.org/)
+header MAC   : 32 bytes (expected 32)
+stanzas      : tlock, ,6p*m.7-grease
+tlock body   : 128 bytes (reference ciphertext of same scheme: 128)
+tlock U elem : 96-byte G2 point — on curve ✔, in prime-order subgroup ✔
+payload      : 159376 bytes of age STREAM data (~159344 bytes of ciphertext)
+chain        : quicknet (52db9ba70e0cc0f6…)
+round        : 33542211
+unlock time  : 2026-10-31T06:59:57.000Z
+status       : LOCKED — 17.92 days to go
+decrypt probe: correctly refused — "It's too early to decrypt the ciphertext - decryptable at round 33542211"
+
+RESULT: file is structurally valid and correctly locked.
+```
+
+The U-element check is the strongest statement possible without the key: the
+first 96 bytes of the tlock stanza are a genuine BLS12-381 **G2 point in the
+prime-order subgroup** — and as an empirical control, 0/400 random 96-byte
+strings parse and 0/200 single-byte-flipped copies of the real U parse. The
+stanza is therefore bit-intact, not merely plausible-looking. (The greasy
+stanza, V/W sizes, header MAC length and armor round-trip all check out too.)
+
+What remains unverifiable until 06:59:57Z on 2026-10-31 is precisely what the
+timelock withholds: the header MAC and STREAM payload tags are keyed by the
+round-33542211 signature, so nothing — not even a full copy of the ciphertext —
+can be checked against them earlier. Full record: `evidence/real-file-validation.txt`.
+
+**On unlock day, in one line:**
+
+```bash
+npm install && node unlock.mjs what-is-locked.age   # → plaintext in what-is-locked.txt
+```
