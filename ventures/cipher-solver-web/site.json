@@ -23,10 +23,10 @@
     "title": "Buttcrack for Windows",
     "price": "$39.99",
     "payment_link": "https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05",
-    "delivery_url": "",
+    "delivery_url": "https://pub-067dfa932fcd43178eed7d93d56634f7.r2.dev/buttcrack-setup-1.2.1-347eb70aac291eec.exe",
     "version": "1.2.1",
-    "size": "15.4 MB",
-    "sha256": "54c7bc872f73a90d209b219a6e2fd8df02c8d5f24f64e16892ce3382e226f0be",
+    "size": "16.2 MB",
+    "sha256": "4390c4a2c4bab4a021d52a3848e454e618a4cc6d0007f0894a169e48330c1680",
     "signed": false
   },
   "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
