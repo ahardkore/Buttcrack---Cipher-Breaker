@@ -393,6 +393,28 @@ NOTES: dict[str, dict[str, str]] = {
         "from a wheel cipher Thomas Jefferson designed in the 1790s and then "
         "left in his papers, unpublished, for a century.",
     },
+    "ratchet": {
+        "how": "Two mixed alphabets, one under the other. Find the letter in the top row, "
+        "write the bottom-row letter beneath it, then click the bottom row forward so the "
+        "letter you just wrote leads it. Every plaintext letter moves the necklace one step, "
+        "which is what names it: a ratchet, one click per letter, and the clicks never "
+        "unwind.",
+        "breaking": "The click makes the design a running sum, so the plaintext is a plain "
+        "substitution of the differences of adjacent ciphertext letters. That is fatal under "
+        "known plaintext: every pair of equal ciphertext letters inside a crib gives a linear "
+        "equation in the top row over Z26, a hundred and fifty known letters give more "
+        "equations than the twenty-six unknowns, and the key comes back exactly in about a "
+        "second. With no crib the necklace itself has to be searched for, which needs a few "
+        "thousand letters, a real budget and some luck; a few hundred letters of challenge "
+        "text are genuinely safe. The cipher's own page publishes a challenge of its own, "
+        "with a crib and without one.",
+        "history": "Byrne spent thirty years from 1918 trying to sell a two-alphabet "
+        "machine to the US government; his Chaocipher resisted every cryptanalyst who looked "
+        "at it until his working papers were donated in 2010. This ratchet is a modern "
+        "variant by @ahardkore, the author of this solver -- it drops the extract step and "
+        "keeps the rotating necklace, which turns the machine into a substituted running sum "
+        "and gives the known-plaintext attack above its grip.",
+    },
     "xor_single": {
         "how": "Every byte is XORed with the same key byte.",
         "breaking": "Two hundred and fifty-six keys, scored by byte frequency. The first "
@@ -651,6 +673,97 @@ def categories_for(info) -> list[tuple[str, str]]:
     return cats
 
 
+#: Puzzles published on a cipher's page.  The ciphertext is read from the file the
+#: solver ships rather than copied here, so the page, the file and the tests
+#: cannot disagree; the *answer* is never part of the build at all (the tests
+#: check the published hash against the solution kept out of the site).
+CHALLENGES: dict[str, dict] = {
+    "ratchet": {
+        "file": "examples/ratchet-challenge.txt",
+        "length": 6778,
+        "crib_offset": 4066,
+        "crib": (
+            "NEANARCHIVETHATMINTSITSDOCUMENTSWITHARATCHETISTRUSTINGEVERYCLERKEVERYDUPLICATEEV"
+            "ERYQUOTATIONANDEVERYCITATIONTOKEEPQUIETFOREVERWHICHISAVERYLONGTIMETOAS"
+        ),
+        "digest": "e717727b92da98b0e18360e006312b82e45068bb80403438a03227bfafbe6768",
+    },
+}
+
+
+def _challenge_html(name: str) -> str:
+    """The published-puzzle section for a cipher page, or an empty string."""
+    challenge = CHALLENGES.get(name)
+    if not challenge:
+        return ""
+    path = REPO_ROOT / challenge["file"]
+    if not path.exists():
+        return ""  # a moved file must not break the build of fifty articles
+    ciphertext = "".join(path.read_text(encoding="utf-8").split())
+    crib = challenge["crib"]
+    offset = challenge["crib_offset"]
+    blocks = "\n".join(
+        ciphertext[i : i + 64] for i in range(0, len(ciphertext), 64)
+    )
+    return f"""    <h2 id="the-challenge">The Ratchet challenge</h2>
+    <p>A hand-made message of {challenge['length']:,} letters, enciphered by the cipher's author
+    (@ahardkore) and shipped with the solver as <code>{challenge['file']}</code>. It can be
+    broken two ways, and both are worth doing once: with the fragment published below, which is
+    over in about a second, and from the ciphertext alone, which is the version that tests the
+    ciphertext-only attack.</p>
+
+    <h3>The ciphertext</h3>
+    <pre><code>{_html_escape(blocks)}</code></pre>
+
+    <h3>Route one — the published crib</h3>
+    <p>These {len(crib)} letters are taken from the message at offset {offset:,}. Known plaintext
+    is decisive here: every pair of equal ciphertext letters *inside the fragment* gives a linear
+    equation in the top row of the wheel over Z₂₆, and {len(crib)} known letters give far more
+    equations than the twenty-six unknowns, so the message comes back in full, here and on either
+    side of the fragment. The *key string* is a different matter, and route two explains why: the
+    equations leave the value axis free by a unit factor, so compare readings, or the hash.</p>
+    <pre><code>{_html_escape(crib[0:64])}
+{_html_escape(crib[64:128])}
+{_html_escape(crib[128:])}</code></pre>
+    <pre><code>buttcrack crack --file {challenge['file']} \
+    --crib "{crib[:32]}..." --hint crib_offset={offset} --budget 90</code></pre>
+    <p>In the desktop app, paste the ciphertext, put the fragment in the crib box, and solve.
+    Naming the offset is what makes it a one-second job -- the attack itself takes 1.3 s, and the
+    command line reports the reading in about 33 s because it tries the rest of the collection on
+    the way there. Without the offset the solver sweeps every position the fragment could start at,
+    which costs about twenty-nine seconds over a message this long. Either way the whole message comes back, not just the part after the fragment:
+    the state map the equations pin is relative, so the letters *before* the fragment fall out
+    too, and only the message's very first letter is out of reach.</p>
+
+    <h3>Route two — ciphertext only</h3>
+    <p>This is the hard version, and the one that shows what the cipher is worth. Ignore the
+    fragment and hand the solver the raw ciphertext:</p>
+    <pre><code>buttcrack crack --file {challenge['file']} --budget 300 --workers 2</code></pre>
+    <p>This one is fair, which is the point of publishing it at {challenge['length']:,} letters:
+    measured on four cores, this message comes back <em>exact</em> in 107 seconds inside a
+    300-second budget, and the attack on its own takes 111 s. Give it fewer workers than that and
+    you get a partial reading instead -- a few hundred letters of the same kind of text are
+    genuinely safe, and the search only starts to be reliable somewhere past three thousand. The
+    first plaintext letter is the necklace's starting position and is not recoverable this way, so
+    even a perfect run reads one letter short at the front.</p>
+    <p class="note">One caveat worth knowing, because it is a property of the cipher rather than of
+    the attack: a ciphertext-only reading fixes the message and <em>a</em> key that deciphers it, but
+    not the cipher's own key. The value axis is pinned only where the message exercises it, and any
+    unit scaling of that axis composed with a shift — 12 × 26 = 312 keys — deciphers this ciphertext
+    to the same text, while only the true one deciphers a different message. A crib does not settle
+    that gauge either: it hands back the reading and one of those same key strings, in about a second,
+    which is why route one is the one to try first.</p>
+
+    <h3>Checking an answer</h3>
+    <p>SHA-256 of the plaintext, folded to letters only (<code>A-Z</code>, no spaces):</p>
+    <pre><code>{challenge['digest']}</code></pre>
+    <pre><code>python3 -c "import hashlib,sys;t=open(sys.argv[1]).read();print(hashlib.sha256(''.join(c for c in t.upper() if c.isalpha()).encode()).hexdigest())" answer.txt</code></pre>
+    <p class="note">The plaintext and the key are deliberately not printed anywhere on this site:
+    it is a puzzle, and the hash is what settles it. The message is an original passage written for
+    this page.</p>
+"""
+
+
 def _example(name: str) -> tuple[str, str, str] | None:
     """Encrypt the sample with this cipher, live, at build time, and check it.
 
@@ -686,6 +799,25 @@ def related_links(info, by_family) -> list[tuple[str, str]]:
     """Up to six sibling ciphers, as (title, slug) pairs, for the See-also box."""
     siblings = [c for c in by_family.get(info.family.value, []) if c.info.name != info.name][:6]
     return [(c.info.title, wiki_slug(c.info.name)) for c in siblings]
+
+
+#: The tail of a generated page's <title>.  Search results show about 65
+#: characters, and the audit in scripts/audit_site.py fails --strict on anything
+#: longer, so a long cipher name gets a shorter tail rather than a truncated
+#: phrase.
+_TITLE_TAILS = (
+    " — How It Works and How It Is Broken",
+    " — How It Works and How It Falls",
+    " — How It Works",
+)
+
+
+def page_title(name: str) -> str:
+    """``name`` — a tail that keeps the whole <title> inside 65 characters."""
+    for tail in _TITLE_TAILS:
+        if len(name) + len(tail) <= 65:
+            return name + tail
+    return name
 
 
 def cipher_page_specs() -> list[dict]:
@@ -726,10 +858,11 @@ def cipher_page_specs() -> list[dict]:
             example_html = ""
 
         see_also = " · ".join(f'<a href="{slug}">{title}</a>' for title, slug in related) or "See the field guide."
+        challenge_html = _challenge_html(info.name)
         family_title = FAMILY_TITLES.get(family, family)
         lead = f"<p><b>{info.title}</b> — {notes.get('how', info.description)}</p>\n    <p>{info.description}</p>"
 
-        body = f"""{example_html}
+        body = f"""{example_html}{challenge_html}
     <h2>How it is broken</h2>
     <p>{notes.get("breaking", "See the field guide for the general approach to this family.")}</p>
 
@@ -747,7 +880,7 @@ def cipher_page_specs() -> list[dict]:
         specs.append(
             {
                 "slug": wiki_slug(info.name),
-                "title": f"{info.title} — How It Works and How It Is Broken",
+                "title": page_title(info.title),
                 "desc": _meta_description(info.title, info.description),
                 "h1": info.title,
                 "tagline": notes.get("how", info.description)[:150],

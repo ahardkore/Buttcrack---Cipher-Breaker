@@ -73,6 +73,15 @@ class CipherInfo:
     layer: bool = False
     """True if the engine may peel this as an outer encoding layer."""
     alphabet: str = A26
+    hints: tuple[str, ...] = ()
+    """Hint keys this cipher can actually read: ``("crib", "known", "key")``.
+
+    The engine moves a suited cipher forward when the caller supplies a hint it
+    declares (see :data:`buttcrack.engine.HINT_PRIOR`).  A crib is decisive
+    evidence about the plaintext, so handing it to the ciphers that cannot read
+    it is how the one attack that would have solved the puzzle never runs.
+    Empty means "reads no hints", the default for most of the collection.
+    """
 
     def __post_init__(self) -> None:
         # A bare string alias is an easy typo (``aliases=("hex")``) that would
@@ -81,6 +90,10 @@ class CipherInfo:
             object.__setattr__(self, "aliases", (self.aliases,))
         else:
             object.__setattr__(self, "aliases", tuple(str(a) for a in self.aliases))
+        if isinstance(self.hints, str):
+            object.__setattr__(self, "hints", (self.hints,))
+        else:
+            object.__setattr__(self, "hints", tuple(str(h) for h in self.hints))
 
     def as_dict(self) -> dict:
         return {
@@ -98,6 +111,7 @@ class CipherInfo:
             "example_key": self.example_key,
             "layer": self.layer,
             "alphabet": self.alphabet,
+            "hints": list(self.hints),
         }
 
 

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ratchet (self-rotating alphabet) — How It Works and How It Falls</title>
+<meta name="description" content="Ratchet (self-rotating alphabet): Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the…">
+<link rel="canonical" href="https://ciphersolverpro.com/ratchet-cipher-wiki.html">
+<meta name="google-site-verification" content="W6A3khnBQhiMpC10V5ammyaBt1RTQuotaBh3Jyt7oY8">
+<meta property="og:title" content="Ratchet (self-rotating alphabet) — How It Works and How It Falls">
+<meta property="og:description" content="Ratchet (self-rotating alphabet): Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ciphersolverpro.com/ratchet-cipher-wiki.html">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Ratchet (self-rotating alphabet)", "description": "Ratchet (self-rotating alphabet): Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the\u2026", "inLanguage": "en", "isAccessibleForFree": true, "articleSection": "Wheel and rotor devices"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the Ratchet (self-rotating alphabet) broken?", "acceptedAnswer": {"@type": "Answer", "text": "The click makes the design a running sum, so the plaintext is a plain substitution of the differences of adjacent ciphertext letters. That is fatal under known plaintext: every pair of equal ciphertext letters inside a crib gives a linear equation in the top row over Z26, a hundred and fifty known letters give more equations than the twenty-six unknowns, and the key comes back exactly in about a second. With no crib the necklace itself has to be searched for, which needs a few thousand letters, a real budget and some luck; a few hundred letters of challenge text are genuinely safe. The cipher's own page publishes a challenge of its own, with a crib and without one."}}, {"@type": "Question", "name": "What key does the Ratchet (self-rotating alphabet) use?", "acceptedAnswer": {"@type": "Answer", "text": "TOP|BOTTOM. The keyspace is unbounded in practice."}}, {"@type": "Question", "name": "How much ciphertext do I need?", "acceptedAnswer": {"@type": "Answer", "text": "At least 32 characters for this solver to attempt it; short messages can be readable and still not be proof."}}, {"@type": "Question", "name": "Can I break a Ratchet (self-rotating alphabet) on this page?", "acceptedAnswer": {"@type": "Answer", "text": "Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page."}}]}</script>
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3618476692316013"></script>
+</head>
+<body data-preset="vigenere">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header site-header-compact">
+  <div class="wrap wrap-wide">
+    <a class="brand" href="index.html" aria-label="Buttcrack cipher solver home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>buttcrack<span class="brand-dot">.</span></span>
+    </a>
+    <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
+    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="windows-app.html">Windows app</a><a href="downloads.html">Puzzle books</a><a href="book.html">Kryptos book</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+  </div>
+</header>
+
+<main class="wrap wrap-wide" id="main-content">
+  <div class="wiki-layout">
+<aside class="wiki-side" aria-label="Wiki navigation">
+      <div class="wiki-search" role="search">
+        <input class="wiki-search-input" type="search" placeholder="Search the wiki"
+          autocomplete="off" aria-label="Search the cipher wiki">
+        <button class="wiki-search-go" type="button">Go</button>
+        <div class="wiki-search-results" hidden></div>
+      </div>
+      <nav class="wiki-side-nav">
+        <details class="wiki-side-group" open>
+          <summary>Navigation<span class="side-count">4</span></summary>
+          <ul>
+            <li><a href="cipher-wiki.html">Main page</a></li>
+            <li><a href="unsolved-ciphers.html">Unsolved cipher archive</a></li>
+            <li><a href="cipher-wiki.html#families">Contents — all 51</a></li>
+            <li><a class="wiki-random" href="cipher-wiki.html">Random article&nbsp;↻</a></li>
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Cipher families</h3>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-shift">Shift and reciprocal alphabets</a><span class="side-count">6</span></summary>
+        <ul>
+<li><a href="affine-cipher-wiki.html">Affine</a></li><li><a href="atbash-cipher-wiki.html">Atbash</a></li><li><a href="caesar-cipher-wiki.html">Caesar (ROT-N)</a></li><li><a href="rot13-cipher-wiki.html">ROT13</a></li><li><a href="rot47-cipher-wiki.html">ROT47</a></li><li><a href="reverse-cipher-wiki.html">Reverse</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-substitution">Monoalphabetic substitution</a><span class="side-count">2</span></summary>
+        <ul>
+<li><a href="keyword-substitution-cipher-wiki.html">Keyword substitution</a></li><li><a href="substitution-cipher-wiki.html">Simple substitution</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-polyalphabetic">Polyalphabetic ciphers</a><span class="side-count">9</span></summary>
+        <ul>
+<li><a href="autokey-cipher-wiki.html">Autokey</a></li><li><a href="beaufort-cipher-wiki.html">Beaufort</a></li><li><a href="gronsfeld-cipher-wiki.html">Gronsfeld</a></li><li><a href="porta-cipher-wiki.html">Porta</a></li><li><a href="quagmire3-cipher-wiki.html">Quagmire III (keyed alphabet)</a></li><li><a href="sum-clock-cipher-wiki.html">Sum-clock (additive wheels)</a></li><li><a href="trithemius-cipher-wiki.html">Trithemius / progressive key</a></li><li><a href="variant-beaufort-cipher-wiki.html">Variant Beaufort</a></li><li><a href="vigenere-cipher-wiki.html">Vigenère</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-transposition">Transposition ciphers</a><span class="side-count">6</span></summary>
+        <ul>
+<li><a href="amsco-cipher-wiki.html">AMSCO transposition</a></li><li><a href="columnar-cipher-wiki.html">Columnar transposition</a></li><li><a href="myszkowski-cipher-wiki.html">Myszkowski transposition</a></li><li><a href="rail-fence-cipher-wiki.html">Rail fence</a></li><li><a href="route-cipher-wiki.html">Route transposition</a></li><li><a href="skip-cipher-wiki.html">Skip / scytale</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-polygraphic">Polygraphic ciphers</a><span class="side-count">5</span></summary>
+        <ul>
+<li><a href="bifid-cipher-wiki.html">Bifid</a></li><li><a href="four-square-cipher-wiki.html">Four-square</a></li><li><a href="hill-cipher-wiki.html">Hill cipher (matrix)</a></li><li><a href="playfair-cipher-wiki.html">Playfair</a></li><li><a href="trifid-cipher-wiki.html">Trifid</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a><span class="side-count">2</span></summary>
+        <ul>
+<li><a href="m94-wheel-cipher.html">M-94 wheel cipher</a></li><li><a href="ratchet-cipher-wiki.html" aria-current="page">Ratchet (self-rotating alphabet)</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-xor">Byte-level ciphers</a><span class="side-count">2</span></summary>
+        <ul>
+<li><a href="xor-repeating-cipher-wiki.html">Repeating-key XOR</a></li><li><a href="xor-single-cipher-wiki.html">Single-byte XOR</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-code">Codes and alphabets</a><span class="side-count">9</span></summary>
+        <ul>
+<li><a href="a1z26-cipher-wiki.html">A1Z26 (numbered alphabet)</a></li><li><a href="bacon-case-cipher-wiki.html">Bacon (letter case)</a></li><li><a href="bacon-cipher-wiki.html">Bacon cipher</a></li><li><a href="baudot-cipher-wiki.html">Baudot / ITA2 (5-bit)</a></li><li><a href="braille-cipher-wiki.html">Braille (Unicode patterns)</a></li><li><a href="morse-cipher-wiki.html">Morse code</a></li><li><a href="nato-cipher-wiki.html">NATO phonetic alphabet</a></li><li><a href="polybius-cipher-wiki.html">Polybius square</a></li><li><a href="tap-code-cipher-wiki.html">Tap code</a></li>
+        </ul>
+      </details>
+      <details class="wiki-side-group" open>
+        <summary><a href="cipher-wiki.html#family-encoding">Encodings</a><span class="side-count">10</span></summary>
+        <ul>
+<li><a href="base85-cipher-wiki.html">ASCII85 / base85</a></li><li><a href="base32-cipher-wiki.html">Base32</a></li><li><a href="base58-cipher-wiki.html">Base58</a></li><li><a href="base64-cipher-wiki.html">Base64</a></li><li><a href="binary-cipher-wiki.html">Binary ASCII</a></li><li><a href="decimal-ascii-cipher-wiki.html">Decimal ASCII</a></li><li><a href="base16-cipher-wiki.html">Hex / base16</a></li><li><a href="quoted-printable-cipher-wiki.html">Quoted-printable</a></li><li><a href="url-cipher-wiki.html">URL encoding</a></li><li><a href="uuencode-cipher-wiki.html">uuencode</a></li>
+        </ul>
+      </details>
+        <h3 class="wiki-side-heading">History</h3>
+        <details class="wiki-side-group" open>
+          <summary>Codebreaking<span class="side-count">4</span></summary>
+          <ul>
+<li><a href="history-of-codebreaking.html">History of codebreaking</a></li><li><a href="famous-cryptanalysts.html">The codebreakers</a></li><li><a href="famous-ciphers.html">Famous ciphers</a></li><li><a href="unsolved-ciphers.html">Unsolved cipher archive</a></li>
+          </ul>
+        </details>
+        <h3 class="wiki-side-heading">Tools</h3>
+        <details class="wiki-side-group" open>
+          <summary>Solver &amp; shop<span class="side-count">8</span></summary>
+          <ul>
+<li><a href="index.html">Cipher solver</a></li><li><a href="caesar-cipher-decoder.html">Caesar decoder</a></li><li><a href="vigenere-cipher-solver.html">Vigenère solver</a></li><li><a href="substitution-cipher-solver.html">Substitution solver</a></li><li><a href="morse-code-translator.html">Morse translator</a></li><li><a href="ctf-crypto-solver.html">CTF crypto solver</a></li><li><a href="windows-app.html">Windows app</a></li><li><a href="downloads.html">Puzzle books</a></li><li><a href="kryptos/">Kryptos explorer</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
+    <div class="wiki-content">
+      <article class="wiki-article">
+        <nav class="wiki-breadcrumb" aria-label="Breadcrumb"><a href="cipher-wiki.html">Cipher wiki</a> <span aria-hidden="true">›</span> <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a> <span aria-hidden="true">›</span> <span class="crumb-here">Ratchet (self-rotating alphabet)</span></nav>
+        <h1 class="wiki-title">Ratchet (self-rotating alphabet)</h1>
+        <p class="wiki-from">From the Buttcrack Cipher Wiki — the free field guide to classical ciphers</p>
+        <nav class="wiki-tabs" aria-label="Page sections">
+          <span class="wiki-tab is-here" aria-current="page">Article</span>
+          <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
+        </nav>
+        <div class="study-controls" aria-label="Reading controls">
+          <span>Reading tools:</span>
+          <button type="button" data-study="larger">Larger text</button>
+          <button type="button" data-study="contrast">High contrast</button>
+          <button type="button" data-study="reset">Reset</button>
+        </div>
+        <div class="wiki-article-body">
+          <aside class="wiki-infobox" aria-label="Cipher facts">
+      <div class="wiki-infobox-title">Ratchet (self-rotating alphabet)</div>
+      <div class="wiki-infobox-sub">Wheel and rotor devices</div>
+      <table class="wiki-infobox-table"><tbody>
+        <tr><th>Family</th><td><a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a></td></tr><tr><th>Key</th><td>TOP|BOTTOM</td></tr><tr><th>Keyspace</th><td>unbounded</td></tr><tr><th>Search cost</th><td>expensive</td></tr><tr><th>Minimum text</th><td>32 characters</td></tr><tr><th>Also known as</th><td>ratchet, ratchet_cipher, rotating, rotating_alphabet, rotating-alphabet, chaocipher</td></tr><tr><th>Example key</th><td><code>ABCDEFGHIJKLMNOPQRSTUVWXYZ|ZYXWVUTSRQPONMLKJIHGFEDCBA</code></td></tr><tr><th>Breaks in this browser</th><td>no — needs the <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">full solver</a></td></tr>
+      </tbody></table>
+      <div class="wiki-infobox-note">Generated from the solver's cipher registry — these figures describe the implementation, not an idealised cipher.</div>
+    </aside>
+          <p><b>Ratchet (self-rotating alphabet)</b> — Two mixed alphabets, one under the other. Find the letter in the top row, write the bottom-row letter beneath it, then click the bottom row forward so the letter you just wrote leads it. Every plaintext letter moves the necklace one step, which is what names it: a ratchet, one click per letter, and the clicks never unwind.</p>
+    <p>Two mixed alphabets; each letter is read from the bottom row, which then turns one click so the emitted letter leads -- a ratchet, and the reason the design is a running sum. Designed by @ahardkore, the author of this repository, as the 409-letter challenge the attack came out of. A crib breaks it outright in about a second; without one it takes a search over several thousand letters.</p>
+          <figure class="wiki-figure"><img src="rotor-stack.svg" alt="Stacked cipher rotors" loading="lazy" decoding="async"><figcaption>Stacked cipher rotors. Original explanatory artwork prepared for the Cipher Wiki; it is not documentary evidence or a claim about any specific ciphertext.</figcaption></figure>
+          <nav class="wiki-toc" aria-label="Contents">
+        <div class="wiki-toc-title">Contents</div>
+        <ul><li><a href="#a-worked-example">A worked example</a></li><li><a href="#the-challenge">The Ratchet challenge</a><ul><li><a href="#the-ciphertext">The ciphertext</a></li><li><a href="#route-one-the-published-crib">Route one — the published crib</a></li><li><a href="#route-two-ciphertext-only">Route two — ciphertext only</a></li><li><a href="#checking-an-answer">Checking an answer</a></li></ul></li><li><a href="#how-it-is-broken">How it is broken</a></li><li><a href="#history-and-context">History and context</a></li><li><a href="#see-also">See also</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul>
+      </nav>
+    <h2 id="a-worked-example">A worked example<a class="section-anchor" href="#a-worked-example" aria-label="Link to this section">§</a></h2>
+    <p>Encrypting a sample with the cipher itself, at build time:</p>
+    <pre><code>MEET ME BY THE OLD CLOCK TOWER AT DAWN</code></pre>
+    <p>Key: <code>ABCDEFGHIJKLMNOPQRSTUVWXYZ|ZYXWVUTSRQPONMLKJIHGFEDCBA</code></p>
+    <p>produces the ciphertext</p>
+    <pre><code>NJFM AW VX EXT FUR PEQOE LXBXG GN KKOB</code></pre>
+    <p class="note">This example is generated by running the cipher when the page is built,
+    and the round trip is checked, so it always matches what the solver does.</p>
+    <h2 id="the-challenge">The Ratchet challenge<a class="section-anchor" href="#the-challenge" aria-label="Link to this section">§</a></h2>
+    <p>A hand-made message of 6,778 letters, enciphered by the cipher's author
+    (@ahardkore) and shipped with the solver as <code>examples/ratchet-challenge.txt</code>. It can be
+    broken two ways, and both are worth doing once: with the fragment published below, which is
+    over in about a second, and from the ciphertext alone, which is the version that tests the
+    ciphertext-only attack.</p>
+
+    <h3 id="the-ciphertext">The ciphertext<a class="section-anchor" href="#the-ciphertext" aria-label="Link to this section">§</a></h3>
+    <pre><code>TFAOXMEBOTQIFJWRECXMEUEOFETKHBKQWZAFMBFGSTFAFCKMLJPRVXJZJNLZJWPI
+MQSVRLSGSXZJLXYXBPRAZGOUNEVYSCIMBPAUVJDYUERFNEJUVAFEDJWLYJWROIFA
+VTMKTOTETFGPFSOGQWHRNQIOGQJWSWSGSZHJFGPAICIOTOIFSZQIAFLDLJNYLUKL
+NYKEOGSZQJDYLDMAPGYCMCBTOKABMBNMFIGYFOLZSGYKQWADPVCFAOFYVHWYUARA
+BFARQWVRUZDNVYEOXWZDNVDLQWCLBMKTEFAYWRHYDVDHGTEQIGVHAFEMHSGDJHYD
+MECXLSGZQABIMAEFJZWDWHVERXNVETMKYLDVDNPVNMHGNRCMQZGWZHJPAYWLPHYD
+BNMHGNRCMQZGWZQYLDENDNUNBDWGONHVAPHGTMHUTRABPIKMBHAPGSZQHDJZIVAR
+UVAFUTPFVBMEUBUNJCFOSRUEARLNUKBKAXCFOSRUKEJDYLMSLYZWPIOYJDYVHWDB
+FAONDPIKXNMPEMAPMUAIMWRIBRHOCJFEVSGLXOGLVAMNBKOGQIZCKZWSVCKQMCHJ
+FQKIYSECYVHBGKTAIOKEPWSHXXCBMECQXYBPGZDPHPNMUKIKMPJIGHKCLQSVIKMI
+OBKQSHFALYWSYUEDYLYLNBHMQKHJZVYNBPBGLGONHPFODLGCTBMCXDZGXLSGXDVY
+JFAOKECPVSIFOTAFVAETJYLIFUPDBMUTOITANMWTGIFKMQGNBPGAXDLYJDEVATEC
+BUBMBXDLMPHPBUNUTOLCQZHJFPMIQCKIQIDBYUVBHWTBPAOHWTGZQZQSVRNQIECH
+LXDHGWVYQJPALNRVXGYSXMQFQRFKMKMIKZIBMEUJQJIXZQYLDGNHSWRYXYGSZQXZ
+HMKTEMQXCQIMKMUJZPNHGQOCXGYVRPHKQIOTAFEMKTEMSJNLXHWVFIKFBVRPFIKZ
+SZHKYLGONPMNMIRFBAUZQSZDMTJIKXTKMHRVXVDHKZJSGIQWTDWHYRHAYRCZGOXM
+QSYJZSVWEFNDPFBSWJZCHNSGLUKICJFADECPGCTBIAIMRLVLBERFPRBIAVYNYMTP
+HRUEAOGWZIJDYLJZCPHRMUTLJDYLDJIFEQIGUTEMUTOFARXLSGEOEZLGSZQSGEUP
+TEKEUNQGSZQZDNMPFBSWJZWLQCXLVNIUEKZFIOTNBPSPMNURTOZGIVDHJNUKJPWG
+MSWRAOENTXONHPVNQIBPDIFYXCQGMXLSGXLDJXIQCLOLGHVDLQFAHYZREUEAOFNT
+OIFGLZJLWSWLKCOLYVDJWPDJCIEZWSWPBUNYLFIQCKJZHUVYDHBDBFGSTFAFEMBL
+NZJQDWHVMATODJDYLVWSRTSBFQXQGOKISBFQXQGOLIZRAIGUNBIMWPALXJSLATED
+WYLCYEAOGYFGSXCTOSBXYSGIQFAOXOCXYNDBSKZFCDBFYDSXHWRBIQCKOLYJITXO
+LCLGKMUTJGQFEMKXTOSWRYDBNQZXCIMHRVPHJDHGWDJOLKGWZQEGWZQEUJPOCKMQ
+ABMCXDZGXLSGPARKFQVNUTOLCVLBAEOQIQCIMRTALYWSLVPHPNHJGCQHDBMKTECP
+TEKISYAGYSWYDFJEOCKLVKZWSZHJFALNOLQIZKXJFERTCYVYIQOFSZGEARKMIJQI
+QZQSZHVZQIMIFJQWOTDGHPNDPHALZCFQMQHDJZIQCJDNIGIOSQIRYJIXTGLXDQCM
+BMKMIZKCOTIFTKZOTOIFIZUMCDUYVHWABPHSXZHGCVHWVENOISKMKCOTPMKCLWVA
+GCQWYLKXONZGPNDPFRQCJOTOLGUEARLCIRMTGDJWHDJOSWHBEKXNMPMUHXVAPHVA
+FMQZJLXKMKCKQQVNUCZGSWSQKXNJZHOCXGOXYEBMZHVUNMWQSHNHPVNMHDBFKFBV
+PFVHYSGSHFGSTFETMFGTKXDPOFBRHLYRAOEXCJHYSCXNEKXNPMNJZJDJHVZQAODH
+WHDJHWRXQKAIBMEUCOTENMKZCYHBEUVRNPBUNPOQJCXGOHSVDLYLFIOHBAUEBKEM
+FERLXLSGXLNBMIFRTPHSOTDNVUTJGQZXCAIQZDVUTLGWHDWZOSQZXCVEPHPHSOCY
+RCDYLDJDYLURVYXZJNEJBUNYVHWDJWYUHWCKAOFGIVWPBUPDSWSOEMXYMZXQABHW
+HPHRFPBUNMPCOLIFIZFVKYJZSRPVXGSHBMETFAVYVRVUBHBKGFRTOLGUNFAPWBAZ
+WSVCJWRDUTDTGTSVLABIUNUPSTMLSGLJWJNIALNYKCOTNEZCXZDXZGIENDZQZJZW
+YRWMQOXZHJFQMKQOHSGXDZIAIZYXQLXLSGEODLYDUYUMQKHBEMEZKUDJNLYWSLNR
+VLXLYLDHAHWABGIVUNQABIGYCXCZSHZJLNUGYZQHYXKGOTWHDJSYDJIGOGFQSVMB
+FZIZCFITIFGIVWPFKXPDNEVGNHGJIZRHPVWXNHSONDLYVHWDNVYSVSYUHNDLYRWH
+DJYLJWRDJPATMGOCEKXSLVPHFMBFARYDJPZRFISWLVWHDBMZHVGNETEJSQWGOGSG
+LNJZANDPHJDPKCOTAOQIZKZSZGPFRNYLVSVTMPWRUNYVYSTEMCGOBKHMIFJZHPHO
+KECTGSZQSEOUQXCTOTAFEKMPKJLVYBPABKBSLYWRAHRTBEUVRPMPGXDRVFGIVRPH
+UNTDUNPDUEAOJZJNSGTGIEMAJDENDNUNBAGWENQICAOXJPRUEARBIRPVWSVHTALD
+JFGIVSXTOWAIYXBPDIQCKZWXPUNYVRPHRVEMCTMFIKMAPBPACJQGNRTALYWSXOGO
+XHAVNICIOGQIWJNJZDXLSGSYJIXTMUZJBKYRUPBRFBAUVRPHGCVHWVRVQZJLNUBU
+TLYWSLNRVLXLYLDBNQFQJVETLSVRABPIKMBHOKHXCXNDJXLSGZGSLYRFYDUAROIF
+OTMKPWLKGONLVUCJHOYJDYLPHRIDZHYSWSMKBPBMBFERJZJBPHJSWREKFXCPLNZY
+EAREUPBAFGLYLMKTEKMNEKMKTESHVDNHBNPMNURFTESOLZCXCRAVYVRVUBKETFAF
+QNBKJNLYWSRPHWGYKHWTOSCKCOTCLPHRABPVWHWVMQFKWYVXYHWHBNETFERDNVET
+MFQKMPVWSVUNXPFITGITAFMBMZQKCYDWKWZYSHFBXYDWHYRHVAHPNDNESYROLGUN
+FATSHPNDPCJSYRWSFLNJQIQZQSLZCXGOUPCOTCXCRAGLZJZSVWPBUNBKEUKEUVYH
+MZGSZHZWRDVYSWPJVWPIMLCJSQZQUEDBNKQOGONEXOIYSEKMWYRWHDJWSGAXDNHB
+NPFBSLVLPHPNDVWPBKSGLYWSHRXQKZWBRHPHLXJWCHPUTDFRFIWSQZNPVQHDWOIT
+KCLJPKXHWVEMTXKBWGWOZDXLUNYVFTMYWPOXZJLXDPVRPUNUPSXZCLYLPHJLNBSX
+LJENHPRNYVAOHRFNJZLVWHDJDMCOSUMHSHGJPDISBFQENDVAPBUNURNBMBPDYRCZ
+FRFVBPFVHBDMEBWJSLNOECIMBLXJITKMAPHSXSXOLYJNYUVCXGOGVAOFTLXJWREU
+BMAFVHWTPFVBMCFAFMBFNTXJAVYVHWOITARUNAPHFRFBVZQMCZQZXCDYLXKJPRNY
+BPDNDIWJZCXGOTVKZJSHJWREUZDLXLSGFAGPMFETMCTKCOTRECFKMUERVMBFIZRL
+SGUKQIBRYXCPVWCYVUOKEPBUNVERXTJQJCVAEMADWGCXQIOLGUMBIVDLQZXCZQGN
+JDBHBGUEARBPRUKARWRYXZDTERYJVYUWPMOGQWHFGXYSOWSNDPNDZAEAXLIJLNSX
+LJNURVUKCBUNUPRTWPMIWRIQJVYLAOCKPARAOFYUVYIRVLCKETLNTOSDJZUKQIRF
+ONHPNHOTKCOTUNUEUMFGIVWPBMEUDJXIQCLOGQIWRYPFBCLGOYWPSVWXPHVNERVN
+DLYLGEUTRABPUNPRTBPMIWJNEXOCJIZUOSITOKECTGSZQSEKZPHRLNYNDQJRVUEA
+REUBMZGSZDFIFXCZXDAUVJWSGIQCKOLKTMUNMUKQABRKMKTXLWLGSLZJWTGEZLXO
+GXNHPNMISWOIFITKCZRUEBNWSNDPKPWSYPHEUMXBGPWLKZJZQYLDEYMCXDNHBNMU
+ZQYLDEDWHAFEOFIZYLXRSUPHPJNBPTEKJLZFMAECWSYAVAPYVDVYVAOCSHZHZGTM
+UHGYQOFAFIKMQSTFEQIOSIQCKBIOGEUVRCZNMIFPOENEVUKCBUNUBMECXNDPHXCM
+ARKMWHBYLUKBHVPHGQWZGECMHBGIQIGXNHPNPHGLXLJDBFITANOSLZJSHJWTMLCL
+WRAUJIZARJNEIOYWPRVEJFETMCTKJZWSWJNIEAFIZTETFABIGUGYNUTARAUARQWT
+KCOLYEUMBNDAREOFAFEFAOCBGTWHTCKXOLCJBNHJRNBVDLZHFMCQIBREMKCOXCKI
+FVRNERUBIQVWVYUZKXJFAYUZQGYSEXGWYLCJWHVYCXQJXQGXLZIAOXPUTJHYSGDJ
+HMHAEUEAROTXWZQGXNMFBKCXGOLWPOFIZKIFVUNZNHPISLYWSISTOGQWHPNDHAMB
+ARLDJIJBIOXCHVYKZCPARCQITKCOTCJDQCKCQHDUDJFAEBVWABIQGNBOKSGXQGSZ
+QWVDNVPHPVXDLMKTECZGSZLXLZFEMNBRVWTUOLKFJLXJDYUECBWEFLCJDJWLJPSX
+RPHRABIQAOFNDFBSHJZTSVWBKEUCIAVDLQZDMITOTDUCTLSVRTNZRBGTXLXBMEUC
+OTENHVZQWETMNIAFMBEUJLNYJWDWYWPDJWHAPGSZQGNRNPCJDWSQZGIQCKMUZJLX
+DPSZGDJPWAOWYVYXKIJNICLDJDYUVDNHJDJXBPGSHFMAYWLJBUOGQISYCOKSGCQH
+BFIKGOTWLGKZUKJXZXYFCKMLJSWYDJIGOGXLSGXDVYECYVTGYXRPFNDNPRAOFYDW
+TEHMFEJZDLYWSTGNYVYNMUZJLXSGLKTXOGLXDIOSQISCJSQGSWJZDNVYNKFIKCOT
+NERWLMBNZQJCJYUVTFQCJWTGIFETXLSHTKZCPBRBPRABPJSYDNMPCOLIFITKJLNU
+EARXYCHNDLYDHAQZXCQIRFBSXZPNMKCOTDUJAMBNUBEUKECTSHJZPNENDBFBAFQG
+TMWSWJZJBKZIZCFAOURFIKMIZPDHPNDHDUGYSETFGSXZJLXNVAVYRWOXVIQWZHSP
+RNPVWRUPDSOTBPRAXJZJLXJPBWJZJSLYWSLCIVYVHAFBPTEKIQJEMFRNQOFUEARE
+UPRTUNPRFBUNBPFNEZJXYJWSIAIZWYEAUJLZSWJZURECQISQIMRNYLXJAEUBDUMK
+TEMTXKBPRAEBVWRYEOXLSKMPVYBRHLNPNEKCGOCQWXCGYKMZGSZHNEQOFUCOTENH
+VENJCMCLDBNQKXZGKECMAFTUNUEUMFGLXLVARKMUDEMLDJPGSHNDBAXJZGSLMAHZ
+QSGIRVNUTGFAGSHGWERAUEMAPBPACJQGSHBAZHRUNUTNJNPHYSWPHQVETMCTKZKM
+ZXPDIGONJZJDJHVAHVKPNMTEMFGKMQSGKMUQOFAVFTXTECTDJRVUOISQRBIVYCOL
+CMBNWSHZJLNUBRGOGQWHDBARKMIUNDLAIOGONUTXTGLBEBAECEUCIQCXGOQHDWOI
+TKJLRABPSZHSOTANDHPNMKARAEOEQIVEKMKTEOFAETFGSVUMACKJSWJPNHJDBMKZ
+FMBSHROKCOLJZFQKHGWMXQKZCLYWSYKQWAREOXNHPNPMTEHBSPIKXEZDNDHAVDLX
+YGSZQFAFIFOKETFAPHCXRTCJGLNOIZKCOTKCLDENDLQZXQGSZQAXJZHJFIKMWLJZ
+HVYVHRVYVHBGXDLMPHPBPAEOARHLCIOIDPMFAYUMIJHBGKTUOLJYMHDZHJGNMRVE
+MQNMISCZHKTGFGIFSLAOHWVERXLSGXLNUPRAUJWPJPUTZGIEXGOTUWSCIMKXFACI
+OKRYLZCXGOQZXCDBCJCJIFNDQJYLJRNPVZIFERTWJNUTBFGPNUKGOFERQJNBHYZX
+LYLGSZDFTXONJZJDJHVXDPAQZXCQCJEUTRABPWRHLBIEUPBARYGYSECVETMBNUKC
+XDQLKZCXGOFKMQGNBPBUNQOAHWVYSTEMCERVDSZTGNBRHLCKCXCZSWJHWSOTOGOX
+ZARVISQRWLGUEARFBPARYUWSOEBNWPJDYLNJEAOBPBGIVYNKTMHDNVAEUZGFPHRV
+WOTKQISECQIMRYJWJDYLURVYXBKMFBKCBIGOLIZRAFMBEUKEBNWPJDYLWSLJPYLZ
+JNYXVXDPHVHBQFQKAFMBEUBAOMBFLGXNVDQCIOLJDPFBVYVHYSCEOXDZDQLYRLNB
+PFNEZJPDISNDPKXJFERTCYVHYSCEOXDLNBWJSNDNESYRKFYLYWSJZSLNWSPMSZHE
+UUQGSYLNQHAEXJSWHWZKXJPCHIHSGCXNMFAPSXRPHRVCDWHDBQCKMPIKXZQZPMIZ
+PRTCKRFIKOKVYKZIDYUWSWYRHWOEBWNOTCMBMKMISQRNUBWLABPAFAJDNBILXKIW
+LYWRUPDSOTWEHSXZXCPJHANRVWHBDWHVAGICIVCMBRWBKWREUMBIVDLQOGYDTUKF
+BMBLYNMKTEKCOLGYDJRNQIMHWHDJXLSGVHWSOISLIFAPBGLGONSVXWHDJZMSVRNE
+RURTZQEUNYDUDARXDLMKTEKZJIKMKTXZYLAFETKBIOGXCBFAFPMIQCKHAQ</code></pre>
+
+    <h3 id="route-one-the-published-crib">Route one — the published crib<a class="section-anchor" href="#route-one-the-published-crib" aria-label="Link to this section">§</a></h3>
+    <p>These 150 letters are taken from the message at offset 4,066. Known plaintext
+    is decisive here: every pair of equal ciphertext letters *inside the fragment* gives a linear
+    equation in the top row of the wheel over Z₂₆, and 150 known letters give far more
+    equations than the twenty-six unknowns, so the message comes back in full, here and on either
+    side of the fragment. The *key string* is a different matter, and route two explains why: the
+    equations leave the value axis free by a unit factor, so compare readings, or the hash.</p>
+    <pre><code>NEANARCHIVETHATMINTSITSDOCUMENTSWITHARATCHETISTRUSTINGEVERYCLERK
+EVERYDUPLICATEEVERYQUOTATIONANDEVERYCITATIONTOKEEPQUIETFOREVERWH
+ICHISAVERYLONGTIMETOAS</code></pre>
+    <pre><code>buttcrack crack --file examples/ratchet-challenge.txt     --crib "NEANARCHIVETHATMINTSITSDOCUMENTS..." --hint crib_offset=4066 --budget 90</code></pre>
+    <p>In the desktop app, paste the ciphertext, put the fragment in the crib box, and solve.
+    Naming the offset is what makes it a one-second job -- the attack itself takes 1.3 s, and the
+    command line reports the reading in about 33 s because it tries the rest of the collection on
+    the way there. Without the offset the solver sweeps every position the fragment could start at,
+    which costs about twenty-nine seconds over a message this long. Either way the whole message comes back, not just the part after the fragment:
+    the state map the equations pin is relative, so the letters *before* the fragment fall out
+    too, and only the message's very first letter is out of reach.</p>
+
+    <h3 id="route-two-ciphertext-only">Route two — ciphertext only<a class="section-anchor" href="#route-two-ciphertext-only" aria-label="Link to this section">§</a></h3>
+    <p>This is the hard version, and the one that shows what the cipher is worth. Ignore the
+    fragment and hand the solver the raw ciphertext:</p>
+    <pre><code>buttcrack crack --file examples/ratchet-challenge.txt --budget 300 --workers 2</code></pre>
+    <p>This one is fair, which is the point of publishing it at 6,778 letters:
+    measured on four cores, this message comes back <em>exact</em> in 107 seconds inside a
+    300-second budget, and the attack on its own takes 111 s. Give it fewer workers than that and
+    you get a partial reading instead -- a few hundred letters of the same kind of text are
+    genuinely safe, and the search only starts to be reliable somewhere past three thousand. The
+    first plaintext letter is the necklace's starting position and is not recoverable this way, so
+    even a perfect run reads one letter short at the front.</p>
+    <p class="note">One caveat worth knowing, because it is a property of the cipher rather than of
+    the attack: a ciphertext-only reading fixes the message and <em>a</em> key that deciphers it, but
+    not the cipher's own key. The value axis is pinned only where the message exercises it, and any
+    unit scaling of that axis composed with a shift — 12 × 26 = 312 keys — deciphers this ciphertext
+    to the same text, while only the true one deciphers a different message. A crib does not settle
+    that gauge either: it hands back the reading and one of those same key strings, in about a second,
+    which is why route one is the one to try first.</p>
+
+    <h3 id="checking-an-answer">Checking an answer<a class="section-anchor" href="#checking-an-answer" aria-label="Link to this section">§</a></h3>
+    <p>SHA-256 of the plaintext, folded to letters only (<code>A-Z</code>, no spaces):</p>
+    <pre><code>e717727b92da98b0e18360e006312b82e45068bb80403438a03227bfafbe6768</code></pre>
+    <pre><code>python3 -c "import hashlib,sys;t=open(sys.argv[1]).read();print(hashlib.sha256(''.join(c for c in t.upper() if c.isalpha()).encode()).hexdigest())" answer.txt</code></pre>
+    <p class="note">The plaintext and the key are deliberately not printed anywhere on this site:
+    it is a puzzle, and the hash is what settles it. The message is an original passage written for
+    this page.</p>
+
+    <h2 id="how-it-is-broken">How it is broken<a class="section-anchor" href="#how-it-is-broken" aria-label="Link to this section">§</a></h2>
+    <p>The click makes the design a running sum, so the plaintext is a plain substitution of the differences of adjacent ciphertext letters. That is fatal under known plaintext: every pair of equal ciphertext letters inside a crib gives a linear equation in the top row over Z26, a hundred and fifty known letters give more equations than the twenty-six unknowns, and the key comes back exactly in about a second. With no crib the necklace itself has to be searched for, which needs a few thousand letters, a real budget and some luck; a few hundred letters of challenge text are genuinely safe. The cipher's own page publishes a challenge of its own, with a crib and without one.</p>
+
+    <h2 id="history-and-context">History and context<a class="section-anchor" href="#history-and-context" aria-label="Link to this section">§</a></h2>
+    <p>Byrne spent thirty years from 1918 trying to sell a two-alphabet machine to the US government; his Chaocipher resisted every cryptanalyst who looked at it until his working papers were donated in 2010. This ratchet is a modern variant by @ahardkore, the author of this solver — it drops the extract step and keeps the rotating necklace, which turns the machine into a substituted running sum and gives the known-plaintext attack above its grip.</p>
+
+    <h2 id="see-also">See also<a class="section-anchor" href="#see-also" aria-label="Link to this section">§</a></h2>
+    <p><a href="m94-wheel-cipher.html">M-94 wheel cipher</a></p>
+    <p class="wiki-seealso-more">Browse every cipher in the
+    <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a> family, read the
+    <a href="history-of-codebreaking.html">history of codebreaking</a>, or return to the
+    <a href="cipher-wiki.html">wiki main page</a>.</p>
+    <h2 id="frequently-asked-questions">Frequently asked questions<a class="section-anchor" href="#frequently-asked-questions" aria-label="Link to this section">§</a></h2>
+    <details class="faq"><summary>How is the Ratchet (self-rotating alphabet) broken?</summary><p>The click makes the design a running sum, so the plaintext is a plain substitution of the differences of adjacent ciphertext letters. That is fatal under known plaintext: every pair of equal ciphertext letters inside a crib gives a linear equation in the top row over Z26, a hundred and fifty known letters give more equations than the twenty-six unknowns, and the key comes back exactly in about a second. With no crib the necklace itself has to be searched for, which needs a few thousand letters, a real budget and some luck; a few hundred letters of challenge text are genuinely safe. The cipher's own page publishes a challenge of its own, with a crib and without one.</p></details><details class="faq"><summary>What key does the Ratchet (self-rotating alphabet) use?</summary><p>TOP|BOTTOM. The keyspace is unbounded in practice.</p></details><details class="faq"><summary>How much ciphertext do I need?</summary><p>At least 32 characters for this solver to attempt it; short messages can be readable and still not be proof.</p></details><details class="faq"><summary>Can I break a Ratchet (self-rotating alphabet) on this page?</summary><p>Not with the browser build, which targets the common puzzle families. The desktop version searches it: see the Windows app page.</p></details>
+        </div>
+<div class="wiki-categories"><span class="wiki-categories-label">Categories:</span> <a href="cipher-wiki.html#family-wheel">Wheel and rotor devices</a> | <a href="cipher-wiki.html#families">Full-version ciphers</a> | <a href="cipher-wiki.html">Cipher wiki</a></div>
+        <div class="wiki-article-note">The facts in this article are generated from <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>&#39;s cipher registry when the site is built, so they describe the implementation you can run on this page. Registry-generated content is checked against the code; the history is editorial.</div>
+      </article>
+
+      <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">
+        <h2 class="wiki-solver-title">Try it live — break a real puzzle</h2>
+        <section class="solver-shell" aria-label="Cipher solver">
+    <div class="solver-heading">
+      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
+      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
+    </div>
+    <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
+    <textarea id="ciphertext" spellcheck="false"
+      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
+    <div class="controls">
+      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
+      <button class="ghost" id="clear">Clear</button>
+      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button><button data-sample="pk1">PK1 verified</button></span>
+    </div>
+    <details class="solver-limits">
+      <summary>What this browser solver can—and cannot—do</summary>
+      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, KRYPTOS-alphabet Quagmire III, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution. It also recognizes the ten published Paradigm Kryptos PK1–PK10 ciphertexts by exact normalized equality and labels those results separately as verified corpus matches.</p>
+      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. A high language-model score is a lead to verify with the method, key, and source context—not a guarantee. The PK label is only emitted for an exact canonical-corpus match, never merely for similar length or style.</p>
+      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    </details>
+    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+  </section>
+      </section>
+
+      <div id="output" aria-live="polite"></div>
+
+      
+    </div>
+  </div>
+
+  <section class="support">
+      <h3>This tool is free and has no account, no upload, no tracking of your text</h3>
+      <p>Everything runs in your browser. If it saved you time, keeping it alive costs nothing but a click.</p>
+      <div class="btns"><a class="btn primary" rel="noopener" target="_blank" href="https://github.com/sponsors/ahardkore">Sponsor on GitHub</a><a class="btn" rel="noopener" target="_blank" href="https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04">Leave a tip</a><a class="btn" rel="noopener" target="_blank" href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">Star on GitHub</a></div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Powered by <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker">buttcrack</a>, an open-source automatic cipher breaker.
+    This browser build uses a compact trigram model; the <a href="windows-app.html">desktop
+    version</a> searches 50 ciphers — including the M-94 wheel cipher — with quadgram models in
+    six languages, and runs its own local interface entirely offline.</p>
+    <p>For puzzles, CTFs and curiosity. Don't use it on anything you have no right to read.</p>
+  </div>
+</footer>
+
+<script src="model.js"></script>
+<script src="paradigm.js"></script>
+<script src="app.js"></script>
+<script src="wiki-index.js"></script>
+<script src="wiki.js"></script>
+</body>
+</html>

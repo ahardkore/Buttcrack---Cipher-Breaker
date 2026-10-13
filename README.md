@@ -162,7 +162,7 @@ Handy options on `crack`:
 
 ## What it breaks
 
-50 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
+51 ciphers, codes and encodings, each with its own attack rather than a brute-force loop over a shared interface.
 
 | family | members | how it is attacked |
 | --- | --- | --- |
@@ -171,7 +171,7 @@ Handy options on `crack`:
 | **polyalphabetic** | vigenère, beaufort, variant beaufort, gronsfeld, porta, autokey, trithemius, quagmire III, sum-clock | coset index-of-coincidence for the period, then chi-squared per column — in the *keyed* alphabet's index space for Quagmire III, and jointly over the wheels for a sum-clock |
 | **transposition** | columnar, rail fence, route, skip/scytale, myszkowski, amsco | anagram scoring over key permutations, rail counts and ordered partitions |
 | **polygraphic** | playfair, bifid, hill (2×2 and 3×3), four-square, trifid | grid hill climbing; Hill is solved by scoring each row of the decryption matrix separately (see *Limits* for four-square and trifid) |
-| **wheel** | M-94 / CSP-488 | hill climb over 25! disk orders, quadgram-scored per read row |
+| **wheel** | M-94 / CSP-488, ratchet (self-rotating alphabet) | hill climb over 25! disk orders, quadgram-scored per read row; the ratchet is broken by linear algebra from a crib, and by a circulant-fit search plus a profiled substitution on long messages |
 | **xor** | single-byte, repeating-key | byte-coset IC for the key length, per-byte chi-squared, then refinement |
 | **codes** | morse, bacon (+ case variant), a1z26, polybius, tap code, NATO alphabet, braille, baudot/ITA2 | structural decode — these are recognised, not searched |
 | **encodings** | base64, base32, base16, base58, base85, url, binary, decimal ASCII, quoted-printable, uuencode | peeled as layers, in any order, to any depth |
@@ -246,7 +246,7 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 `buttcrack serve` starts a local server (stdlib `http.server`, no framework, no build step) with three panels:
 
 * **Break** — paste ciphertext, watch the identification hypotheses arrive, then the ranked readings with confidence, key, decode chain and evidence. Long searches run as background jobs and poll. The language dropdown sends `--language` (including *Auto-detect*).
-* **Playground** — pick any of the 50 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
+* **Playground** — pick any of the 51 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
 * **Reference** — the cipher table with keyspaces, search costs and each cipher's own notes on what breaks it.
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
@@ -260,7 +260,7 @@ BUTTCRACK_ALLOWED_HOSTS='*.preview.example.com' buttcrack serve --port 8099   # 
 
 A comma-separated list, a port after a name is ignored, and `*.` matches subdomains only. Nothing is accepted by default: the server has to be told which name is yours.
 
-There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (50 ciphers, six languages, the M-94) is the full local tool.
+There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (51 ciphers, six languages, the M-94) is the full local tool.
 
 ---
 
@@ -338,6 +338,8 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
   | crib of 19 letters, pure algebra | **5 of 5, 0.1 s each** |
 
   Nineteen letters is the point where the equations outnumber the nineteen effective unknowns and no search is needed at all. Below it, the crib still collapses the dimension and the remainder is annealed. Use `--crib`.
+* **The ratchet is a crib cipher, and its crib is cheap.** Two mixed rows with the bottom one clicking forward after every letter collapse to `alpha(c_k) = alpha(c_{k-1}) + T.index(p_k)`, so the plaintext is a substitution of the differences of adjacent ciphertext letters and every pair of equal ciphertext letters gives a linear equation in the key over Z_26. A **150-letter crib solves a 900-letter message in under a second** (measured; a single 26-entry CRT enumeration, then the rows fall out — `--crib "THEMESSAGEOPENS..."`), and **1.4 s** on the published 6,778-letter challenge when `--hint crib_offset=4066` names where the fragment sits — the same solve by offset sweep alone costs about 29 s, and either way the whole message comes back, crib in the middle or not. Without a crib it is a hidden-permutation search: the pair matrix at each skip is a permuted circulant, and a tournament seed plus a hill climb on the difference histogram and a text-scored polish recover the necklace — but only once the message is several thousand letters long. Measured on 2 cores with a 90 s budget: 1 of 3 at 1200 letters, 2 of 3 at 2000-3000 and all of three runs at 4000; inside the engine's ~20 s slice, 2 of 3 at 4000 and 3 of 3 at 7000. **A few hundred letters of challenge text are genuinely safe**, and the first plaintext letter is unrecoverable ciphertext-only either way: it is the necklace's start offset. At length the attack is exact and needs a real budget rather than a slice: 8,000 letters of English prose came back fully recovered in 140 s with `--budget 300 --workers 2`, and the published 6,778-letter challenge comes back exact in 107 s with `--budget 300 --workers 4`. One caveat that belongs to the cipher, not the attack: a ciphertext-only reading returns the message and *a* key that deciphers it, but the value axis is only pinned where the message exercises it, so 12 × 26 = 312 keys decipher that ciphertext identically and only the true one deciphers another message. A crib does not settle that gauge either — it hands back the reading and one of the same 312 key strings — which is why the puzzle is checked with a hash of the plaintext and not with a key. The construction is [@ahardkore](https://github.com/ahardkore)'s own, built as a hand-made challenge for this solver; the cipher, the crib attack and the published puzzle are described on the [ratchet wiki page](ventures/cipher-solver-web/ratchet-cipher-wiki.html). Method and measurements: [`rotor-kit/`](rotor-kit/).
+
 * **The M-94 is a genuine search.** 25! ≈ 1.5×10²⁵ disk orders; the hill climb over pairwise swaps lands from ~200 letters given a real slice of budget (measured: 2-in-3 solves at 250 letters inside 20 s with 2 workers; the true order's read row is always found once the order is). Below 150 letters the honest-evidence rule caps the verdict below *solved* — 25 wheels want ~6 letters each. `--budget 120 --workers 2` and 250+ letters is the reliable recipe; `--hint key=<order>` is exact immediately.
 
 ---
@@ -345,7 +347,7 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 512 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 576 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end
@@ -379,7 +381,7 @@ buttcrack/
   selftest.py    known-answer verification of the whole install
   server.py      REST API + static file serving
   cli.py         the command line
-  ciphers/       one module per family, 50 ciphers behind one interface
+  ciphers/       one module per family, 51 ciphers behind one interface
   data/          the language models (see NOTICE for provenance)
   static/        the web interface
 scripts/

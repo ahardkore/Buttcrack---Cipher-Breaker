@@ -82,6 +82,12 @@ class TestRegistry(unittest.TestCase):
                 self.assertTrue(info.keyspace is None or info.keyspace >= 1)
                 self.assertTrue(info.title)
                 self.assertTrue(info.description)
+                # Hint support is declared, not guessed at: the engine moves a
+                # cipher to the front only when the caller offers a key it lists.
+                self.assertIsInstance(info.hints, tuple)
+                for hint_key in info.hints:
+                    self.assertIsInstance(hint_key, str)
+                    self.assertTrue(hint_key)
                 if info.keyed:
                     self.assertIsNotNone(info.example_key)
 

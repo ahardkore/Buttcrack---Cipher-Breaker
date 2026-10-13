@@ -1,0 +1,9 @@
+L= 1200 trial0:  87.0s tail-match 1.00000 fitness -4.09
+L= 1200 trial1:  86.7s tail-match 0.07339 fitness -6.73
+L= 1200 trial2:  86.7s tail-match 0.11927 fitness -6.55
+L= 2000 trial0:  87.0s tail-match 1.00000 fitness -4.10
+L= 2000 trial1:  86.7s tail-match 0.50225 fitness -5.58
+L= 2000 trial2:  87.2s tail-match 1.00000 fitness -4.10
+L= 3000 trial0:  87.5s tail-match 1.00000 fitness -4.09
+L= 3000 trial1:  88.5s tail-match 0.69456 fitness -5.43
+L= 3000 trial2:  87.3s tail-match 1.00000 fitness -4.09

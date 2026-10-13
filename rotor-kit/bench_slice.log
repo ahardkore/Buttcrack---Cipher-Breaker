@@ -1,0 +1,6 @@
+L= 4000 trial0 slice=20s:  17.5s tail-match 1.00000 fitness -4.10
+L= 4000 trial1 slice=20s:  17.8s tail-match 0.19555 fitness -6.53
+L= 4000 trial2 slice=20s:  17.5s tail-match 1.00000 fitness -4.10
+L= 7000 trial0 slice=20s:  17.9s tail-match 1.00000 fitness -4.10
+L= 7000 trial1 slice=20s:  17.3s tail-match 1.00000 fitness -4.10
+L= 7000 trial2 slice=20s:  19.0s tail-match 1.00000 fitness -4.10

@@ -317,6 +317,7 @@ class SumClock(_KeyedPeriodic):
         aliases=("multi_clock", "clock", "sumclock", "quagmire_sum"),
         description="Two or more short wheels summed mod 26 over a keyed alphabet. Solved by joint coordinate ascent over the wheels, not by columns.",
         example_key={"periods": [10, 8], "alphabet": "kryptos"},
+        hints=("crib", "known"),
     )
 
     #: Wheel-set shapes tried when the key does not name them.  Small periods
