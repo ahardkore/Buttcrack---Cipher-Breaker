@@ -100,6 +100,12 @@ jobs:
         run: |
           set -o pipefail
           python -m unittest discover -s tests -t . -v 2>&1 | tee unit.log || {
+            # One annotation that names every failing test *and* the message: the
+            # runner keeps about ten, and they arrive oldest-first, so the reason
+            # is the thing that gets dropped when each line is its own.
+            names=$(grep -E "^(FAIL|ERROR):" unit.log | sed -E 's/ \(.*$//; s/^(FAIL|ERROR): //' | tr '\n' ' ')
+            cause=$(grep -E "^[A-Za-z_.]*(Error|Exception):" unit.log | tail -n 1)
+            echo "::error title=unit test failure::${names}-- ${cause}"
             grep -E "^(FAIL|ERROR):" unit.log | sed 's/^/::error title=unit test failure::/'
             # The cause is at the *end* of each traceback, so dump the tail of the
             # failure block rather than its head.

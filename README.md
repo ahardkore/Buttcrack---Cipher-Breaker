@@ -336,7 +336,7 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 506 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 508 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end
