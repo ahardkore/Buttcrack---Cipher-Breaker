@@ -77,14 +77,23 @@ jobs:
       # Without this job the installer is written once, reviewed by eye, and
       # shipped -- and the first person to find out whether it works is a
       # customer.
+      # Pinned, because the compiler decides the installer's layout, its
+      # compression and therefore its size: "the same script builds the same
+      # thing on the maintainer's machine and here" needs the same version on
+      # both (see docs/windows-installer.md).  If the feed ever drops the pinned
+      # one, say so and take the newest rather than stopping the release.
       - name: Install Inno Setup
         shell: pwsh
         run: |
-          choco install innosetup --no-progress -y
+          choco install innosetup --version=6.3.3 --no-progress -y
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "::warning title=Inno Setup 6.3.3 unavailable::installing the newest published version instead"
+            choco install innosetup --no-progress -y
+          }
           $iscc = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue |
             Select-Object -First 1
           if (-not $iscc) { throw 'Inno Setup did not install where it was expected' }
-          Write-Host "ISCC: $($iscc.FullName)"
+          Write-Host "ISCC: $($iscc.FullName) (version $($iscc.VersionInfo.ProductVersion))"
 
       # build.ps1 does the freeze, the Caesar smoke test and the installer in
       # one go, so CI runs the same command a maintainer runs by hand.

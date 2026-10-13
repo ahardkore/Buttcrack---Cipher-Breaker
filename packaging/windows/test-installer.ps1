@@ -430,6 +430,58 @@ $windowed = Start-Process -FilePath (Join-Path $InstallDir 'Buttcrack Desktop.ex
     -NoNewWindow -Wait -PassThru
 Assert-True ($windowed.ExitCode -eq 0) 'the desktop program boots and parses arguments' "exit $($windowed.ExitCode)"
 
+# The desktop program's own files go here rather than into the runner's user
+# profile: what is under test is the product, not the machine.
+$env:BUTTCRACK_DATA_DIR = Join-Path $Script:WorkDir 'data'
+New-Item -ItemType Directory -Force -Path $env:BUTTCRACK_DATA_DIR | Out-Null
+
+Write-Step 'Asking the installed build what it is (doctor)'
+$run = Invoke-InstalledCli -Exe (Join-Path $InstallDir 'buttcrack.exe') -Arguments @('doctor')
+$diagnosis = ($run.Output -join "`n")
+Assert-True ($run.ExitCode -eq 0) 'doctor reports a healthy install' "exit $($run.ExitCode): $($run.Error)"
+Assert-True ($diagnosis -match 'no problems found') 'doctor says so in words' $diagnosis
+Assert-True ($diagnosis -match 'frozen executable') 'it knows it is the installed build' $diagnosis
+Assert-True ($diagnosis -match [regex]::Escape($env:BUTTCRACK_DATA_DIR)) `
+    'doctor names the data directory in use' $diagnosis
+
+Write-Step 'Booting the installed desktop program for real (no window)'
+# The windowed binary is what the shortcut runs, and in a windowed build stdout
+# is a file rather than a console -- which makes this the only place the log file
+# (docs/desktop-app-audit.md, E1) and the single-instance handover (A2) can be
+# watched from outside.  --console keeps Tk out of it, so a runner needs no
+# desktop session.
+$desktopExe = Join-Path $InstallDir 'Buttcrack Desktop.exe'
+$log = Join-Path $env:BUTTCRACK_DATA_DIR 'logs\buttcrack.log'
+if (Test-Path -LiteralPath $log) { Remove-Item -LiteralPath $log -Force }
+$first = Start-Process -FilePath $desktopExe -ArgumentList '--console', '--no-browser' -PassThru
+try {
+    $deadline = (Get-Date).AddSeconds(60)
+    while ((Get-Date) -lt $deadline -and -not (Test-Path -LiteralPath $log)) { Start-Sleep -Seconds 1 }
+    Assert-True (Test-Path -LiteralPath $log) 'the windowed build wrote its log file' $log
+    $banner = [string](Get-Content -LiteralPath $log -Raw -ErrorAction SilentlyContinue)
+    Assert-True ($banner -match 'buttcrack \d+\.\d+') 'the log begins with the version banner' $banner
+    $match = [regex]::Match($banner, 'http://127\.0\.0\.1:(\d+)/')
+    Assert-True $match.Success 'the log names the address it is serving' $banner
+    if ($match.Success) {
+        $port = [int]$match.Groups[1].Value
+        $health = Invoke-RestMethod -Uri "http://127.0.0.1:$port/api/health" -TimeoutSec 30
+        Assert-True ($health.name -eq 'buttcrack') "the installed desktop program serves on port $port" "$health"
+    }
+
+    Write-Step 'Starting it a second time (it has to hand over, not pile up)'
+    $second = Start-Process -FilePath $desktopExe -ArgumentList '--console', '--no-browser' -PassThru
+    $handedOver = $second.WaitForExit(60000)
+    if (-not $handedOver) { try { $second.Kill() } catch { } }
+    Assert-True $handedOver 'the second launch exits instead of starting a second server'
+    Assert-True (-not $first.HasExited) 'the first copy is still running'
+}
+finally {
+    if (-not $first.HasExited) {
+        try { $first.Kill() } catch { }
+        $first.WaitForExit(15000) | Out-Null
+    }
+}
+
 Write-Step 'Exercising the SQLite-backed results store'
 $database = Join-Path $Script:WorkDir 'results.sqlite3'
 $run = Invoke-InstalledCli -Exe (Join-Path $InstallDir 'buttcrack.exe') -Arguments @('results', $database, '--limit', '5')
