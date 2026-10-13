@@ -3,9 +3,16 @@
 synthetic 409-letter instance, then run on the challenge ciphertext."""
 from __future__ import annotations
 
-import json, math, os, random, sys, time
-import numpy as np
+import json
+import math
+import os
+import random
+import sys
+import time
+from pathlib import Path
+
 import common as C
+import numpy as np
 import solver2 as S
 
 
@@ -81,10 +88,10 @@ def worker(which, seconds, seed, logpath):
         pt, top, bottom, ct = S.synthetic()
         u_true = S.gt_u(bottom)
     else:
-        ct = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "challenge.txt")).read().strip()
+        ct = Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "challenge.txt")).read_text().strip()
         u_true = None
     fast = Fast2(ct)
-    log = open(logpath, "w")
+    log = open(logpath, "w")  # noqa: SIM115 -- written for the whole run, closed below
     best = (-1e18, None, None)
     cur_u = C.rng_perm(rng)
     sigma = uni_sigma(fast.dist(cur_u))

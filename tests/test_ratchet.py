@@ -326,9 +326,8 @@ class TestCiphertextOnlySlow(unittest.TestCase):
         cipher = get("ratchet")
         rng = random.Random(99)
         key = random_key(rng)
-        corpus = letters_only(
-            open("examples/english_samples.txt", encoding="utf-8").read() * 5, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        )
+        with open("examples/english_samples.txt", encoding="utf-8") as handle:
+            corpus = letters_only(handle.read() * 5, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         plaintext = corpus[:8000]
         ciphertext = cipher.encrypt(plaintext, key)
         hits = [

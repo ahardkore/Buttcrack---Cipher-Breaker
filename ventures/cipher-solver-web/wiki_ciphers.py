@@ -801,6 +801,25 @@ def related_links(info, by_family) -> list[tuple[str, str]]:
     return [(c.info.title, wiki_slug(c.info.name)) for c in siblings]
 
 
+#: The tail of a generated page's <title>.  Search results show about 65
+#: characters, and the audit in scripts/audit_site.py fails --strict on anything
+#: longer, so a long cipher name gets a shorter tail rather than a truncated
+#: phrase.
+_TITLE_TAILS = (
+    " — How It Works and How It Is Broken",
+    " — How It Works and How It Falls",
+    " — How It Works",
+)
+
+
+def page_title(name: str) -> str:
+    """``name`` — a tail that keeps the whole <title> inside 65 characters."""
+    for tail in _TITLE_TAILS:
+        if len(name) + len(tail) <= 65:
+            return name + tail
+    return name
+
+
 def cipher_page_specs() -> list[dict]:
     """One page spec per registered cipher that has no hand-written article."""
     by_family: dict[str, list] = {}
@@ -861,7 +880,7 @@ def cipher_page_specs() -> list[dict]:
         specs.append(
             {
                 "slug": wiki_slug(info.name),
-                "title": f"{info.title} — How It Works and How It Is Broken",
+                "title": page_title(info.title),
                 "desc": _meta_description(info.title, info.description),
                 "h1": info.title,
                 "tagline": notes.get("how", info.description)[:150],

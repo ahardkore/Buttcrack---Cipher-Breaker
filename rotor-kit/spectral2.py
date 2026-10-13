@@ -3,8 +3,8 @@
 with the SAME eigenvectors, so their sum has ~k x the data on the same phases."""
 from __future__ import annotations
 
-import numpy as np
 import common as C
+import numpy as np
 
 
 def skip_matrix(ct: str, k: int) -> np.ndarray:
@@ -96,7 +96,6 @@ def diagnostics(ct, K=4, keep=6):
         v = vecs[:, rank]
         mod = np.abs(v)
         ratio = mod.std() / mod.mean() if mod.mean() else 9.9
-        phase = np.angle(v)
         line = f"eig {abs(vals[rank]):7.2f} modulus std/mean={ratio:5.2f}"
         # best rounding distance is unknown without truth; show phase spread
         lines.append(line)

@@ -20,14 +20,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import random
 import time
 from pathlib import Path
 
-import numpy as np
-
 import common as C
+import numpy as np
 
 WORK = Path("/home/user/rotor-attack")
 
@@ -290,7 +288,6 @@ def mode_real(seconds: float = 300.0, seed0: int = 7):
     print(f"ciphertext: {len(ct)} letters")
     best = (-1e18, None, None)
     t0 = time.time()
-    rng = random.Random(seed0)
     round_no = 0
     while time.time() - t0 < seconds:
         round_no += 1

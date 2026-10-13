@@ -74,8 +74,9 @@ import math
 import random
 import time
 from collections import defaultdict
+from collections.abc import Iterator
 from itertools import permutations, product
-from typing import Any, Iterator
+from typing import Any
 
 from ..results import Candidate
 from ..search import parallel_restarts
@@ -827,7 +828,7 @@ def _swap_changes(
     """
     changes: dict[int, int] = {}
     for c in range(26):
-        if c == x or c == y:
+        if c in (x, y):
             continue
         wx, wy = symmetric[x][c], symmetric[y][c]
         if wx:
@@ -1128,9 +1129,9 @@ def _sub_delta(
     """Change in the bigram score from swapping ``tau[x]`` and ``tau[y]``."""
     tx, ty = tau[x], tau[y]
     delta = 0.0
-    row_x, row_y = table[tx], table[ty]
+    row_x = table[tx]
     for c in range(26):
-        if c == x or c == y:
+        if c in (x, y):
             continue
         tc = tau[c]
         delta += counts[x][c] * (table[ty][tc] - row_x[tc])

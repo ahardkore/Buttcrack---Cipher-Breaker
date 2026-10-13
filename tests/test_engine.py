@@ -30,8 +30,8 @@ from buttcrack.engine import (
     solve,
 )
 from buttcrack.lang import SOLVED_CONFIDENCE, get_model
-from buttcrack.text import letters_only
 from buttcrack.results import Candidate, CrackReport, Hypothesis
+from buttcrack.text import letters_only
 
 SLOW = os.environ.get("BUTTCRACK_SLOW") == "1"
 BUDGET = 25.0

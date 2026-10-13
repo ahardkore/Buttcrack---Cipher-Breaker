@@ -14,9 +14,8 @@ and keep whatever is a permutation with a good circulant residual.
 """
 from __future__ import annotations
 
-import numpy as np
-
 import common as C
+import numpy as np
 
 W26 = np.exp(2j * np.pi / 26.0)
 

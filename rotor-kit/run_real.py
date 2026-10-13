@@ -2,16 +2,25 @@
 """Portfolio search: fast SA on the necklace (fixed-substitution kernel) with
 periodic exact re-cracking, running on synthetic (validation) and the real
 challenge ciphertext simultaneously."""
-import json, math, os, random, sys, time
-import numpy as np
+import json
+import math
+import os
+import random
+import sys
+import time
+from pathlib import Path
+
 import common as C
+import numpy as np
 import solver2 as S
+
 
 def uni_sigma(d):
     dist = np.bincount(d, minlength=26).astype(np.float64)
     order = np.argsort(-dist, kind="stable")
     qorder = np.argsort(-C.ENGLISH_FREQ_PCT, kind="stable")
-    s = np.empty(26, dtype=np.int64); s[order] = qorder
+    s = np.empty(26, dtype=np.int64)
+    s[order] = qorder
     return s
 
 def obj_kernel(u, c0, c1, sigma):
@@ -51,14 +60,14 @@ def worker(which, seconds, seed, outpath):
         pt, top, bottom, ct = S.synthetic()
         u_true = S.gt_u(bottom)
     else:
-        ct = open(os.path.join(os.path.dirname(__file__), "challenge.txt")).read().strip()
+        ct = Path(os.path.join(os.path.dirname(__file__), "challenge.txt")).read_text().strip()
         u_true = None
     fast = S.Fast(ct)
     best = (-1e18, None, None)
     sigma = None
     rounds = 0
     t0 = time.time()
-    log = open(outpath, "w")
+    log = open(outpath, "w")  # noqa: SIM115 -- written for the whole run, closed below
     while time.time() - t0 < seconds:
         rounds += 1
         u0 = C.rng_perm(rng)
@@ -85,7 +94,8 @@ def worker(which, seconds, seed, outpath):
             if u_true is not None:
                 rec["struct_dist"] = S.struct_dist(u1, u_true)
                 rec["solved"] = rec["struct_dist"] == 0
-            log.write(json.dumps(rec) + "\n"); log.flush()
+            log.write(json.dumps(rec) + "\n")
+            log.flush()
             print(f"[{which} {time.time()-t0:6.0f}s r{rounds}] {sc:8.1f} "
                   f"{'SOLVED ' if rec.get('solved') else ''}{txt[:60]}", flush=True)
         sigma = sig

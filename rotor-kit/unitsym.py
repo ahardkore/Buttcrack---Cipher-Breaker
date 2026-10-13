@@ -7,7 +7,6 @@ is English."""
 from __future__ import annotations
 
 import numpy as np
-import common as C
 
 UNITS = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]
 

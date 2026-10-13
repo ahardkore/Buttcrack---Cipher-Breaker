@@ -22,9 +22,8 @@ from __future__ import annotations
 import itertools
 from collections import defaultdict
 
-import numpy as np
-
 import common as C
+import numpy as np
 
 
 def _letter_class_sums(ct, pt):
@@ -37,7 +36,7 @@ def _letter_class_sums(ct, pt):
         rows[p].add(i)
         occ[c].append(i)
     eqs = []
-    for c, pos in occ.items():
+    for pos in occ.values():
         for a, b in zip(pos, pos[1:]):
             counts = defaultdict(int)
             for p, plist in rows.items():
