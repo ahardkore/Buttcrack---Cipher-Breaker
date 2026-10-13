@@ -314,6 +314,37 @@ class SingleInstanceTests(unittest.TestCase):
             app.stop()
         self.assertIsNone(desktop.running_instance(), "the marker outlived the app")
 
+    def test_the_url_stays_readable_while_the_lock_is_held(self) -> None:
+        # The bug the installer test found on Windows: the lock byte used to sit
+        # on the file that carries the URL.  Windows byte-range locks are
+        # mandatory, so every read of that file from the second launch raised
+        # ERROR_LOCK_VIOLATION, ``running_instance()`` returned None, and the
+        # second copy started its own server -- in the installed build only,
+        # where a POSIX-only test suite could never see it.
+        first = desktop.RunningInstance()
+        self.assertTrue(first.claim())
+        try:
+            self.assertNotEqual(
+                userdata.instance_file(),
+                userdata.instance_lock_file(),
+                "the URL shares a file with the lock: unreadable on Windows",
+            )
+            first.publish("http://127.0.0.1:8123/", 8123)
+            published = json.loads(userdata.instance_file().read_text(encoding="utf-8"))
+            self.assertEqual(published["url"], "http://127.0.0.1:8123/")
+
+            # A second copy does not become the owner, and must not talk over
+            # the app the user is looking at.
+            second = desktop.RunningInstance()
+            self.assertFalse(second.claim())
+            second.publish("http://127.0.0.1:9999/", 9999)
+            self.assertEqual(json.loads(userdata.instance_file().read_text(encoding="utf-8"))["port"], 8123)
+        finally:
+            first.release()
+            second.release()
+        self.assertFalse(userdata.instance_lock_file().exists())
+        self.assertFalse(userdata.instance_file().exists())
+
     def test_a_stale_marker_does_not_stop_the_next_launch(self) -> None:
         # Written by a copy that crashed: nothing is listening on that port.
         userdata.instance_file().write_text(

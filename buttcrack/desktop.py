@@ -296,56 +296,67 @@ class RunningInstance:
 
     def __init__(self) -> None:
         self.path = userdata.instance_file()
+        self.lock_path = userdata.instance_lock_file()
         self._handle: IO[str] | None = None
+        # False while another copy holds the lock: that copy owns the marker.
+        self._owner = False
 
     def claim(self) -> bool:
         """Take the lock.  False means another copy is already running."""
         try:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            if not self.path.exists():
-                # open(..., "r+") refuses to create the file, and "a+" would put
-                # every later write at the end of it instead of where publish()
-                # seeks -- so the marker is created here and opened for update.
-                self.path.touch()
+            self.lock_path.parent.mkdir(parents=True, exist_ok=True)
+            if not self.lock_path.exists():
+                # open(..., "r+") refuses to create the file, so it is created
+                # here and opened for update -- the lock is all this file is for.
+                self.lock_path.touch()
             # Held open for the life of the process: the lock lives on the fd.
-            handle = open(self.path, "r+", encoding="utf-8")  # noqa: SIM115
+            handle = open(self.lock_path, "r+", encoding="utf-8")  # noqa: SIM115
         except OSError:
+            self._owner = True
             return True  # nowhere to write: behave as though we are alone
         try:
             held = _lock_exclusive(handle)
         except OSError:
             handle.close()
+            self._owner = True
             return True
         if not held:
             handle.close()
             return False
         self._handle = handle
+        self._owner = True
         return True
 
     def publish(self, url: str, port: int) -> None:
-        """Record where a second launch should send the user."""
-        if self._handle is None:
+        """Record where a second launch should send the user.
+
+        Through its own handle, never through the locked one: on Windows a
+        byte-range lock is mandatory, so a reader that lands on a locked byte is
+        refused rather than given the URL.  Only the lock's owner publishes --
+        a ``--force`` or ``--port`` copy must not take the marker away from the
+        app the user is actually looking at.
+        """
+        if not self._owner:
             return
-        with contextlib.suppress(OSError, ValueError):
-            self._handle.seek(0)
-            json.dump(
-                {"pid": os.getpid(), "port": port, "url": url, "version": __version__},
-                self._handle,
-            )
-            self._handle.truncate()
-            self._handle.flush()
+        payload = json.dumps({"pid": os.getpid(), "port": port, "url": url, "version": __version__})
+        with contextlib.suppress(OSError):
+            self.path.write_text(payload, encoding="utf-8")
 
     def release(self) -> None:
         """Drop the lock and the marker.  Safe to call twice."""
         handle, self._handle = self._handle, None
-        if handle is None:
+        owner, self._owner = self._owner, False
+        if not owner:
             return
-        with contextlib.suppress(OSError):
-            _unlock(handle)
-        with contextlib.suppress(OSError):
-            handle.close()
+        if handle is not None:
+            with contextlib.suppress(OSError):
+                _unlock(handle)
+            with contextlib.suppress(OSError):
+                handle.close()
         with contextlib.suppress(OSError):
             self.path.unlink(missing_ok=True)
+        with contextlib.suppress(OSError):
+            self.lock_path.unlink(missing_ok=True)
 
 
 def running_instance(timeout: float = 0.5) -> str | None:
