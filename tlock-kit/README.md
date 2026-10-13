@@ -14,7 +14,7 @@ verified kit that does it the moment the round exists.*
 
 You get two independent ways to open it on unlock day: a tested Node CLI
 (`unlock.mjs`) and a zero-install browser page (`web/index.html`). Both are
-validated end-to-end against real drand data (17/17 checks, §5).
+validated end-to-end against real drand data (19/19 checks, §5).
 
 Your intuition — “it works similar to bitcoin” — is half right, and the half
 that's right is the important half. drand publishes a new round every **3
