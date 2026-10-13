@@ -78,7 +78,11 @@ On the Windows machine you build from:
   during installation tick **"tcl/tk and IDLE"** (the desktop window is Tk) and
   **"Add python.exe to PATH"**.
 * **Inno Setup 6.3+**: `winget install --id JRSoftware.InnoSetup`, or from
-  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php).
+  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php). CI installs
+  **6.3.3**, and the compiler decides the installer's layout and compression, so
+  the same script and the same version give the same file — if the size you
+  build differs from the size CI published, check the version before anything
+  else.
 
 PyInstaller is installed automatically into a throwaway virtualenv; it is not
 added to your environment and is not a dependency of the project.
@@ -362,6 +366,12 @@ It installs silently into a temporary directory, then checks:
 * that the SQLite-backed `results` command runs, because the build used to
   exclude `sqlite3` from the bundle and both that command and the campaign panel
   in the window died on it;
+* that the installed `buttcrack.exe doctor` reports a healthy build and names
+  the data directory it is using;
+* that the *windowed* Desktop executable, started with `--console` so it needs
+  no desktop session, writes its log file, serves `/api/health` on the address
+  it printed, and that a second launch hands over to it and exits instead of
+  starting a second server;
 * the full 142-check self-test, unless you pass `-SkipSelftest`;
 * that a silent uninstall removes every file, both shortcuts and the `PATH`
   entry, and leaves no non-empty directory behind.
@@ -402,9 +412,14 @@ by the ordinary test suite rather than by a customer.
 
 ## Where the installed app keeps its data
 
-The desktop window owns two files: the PK9 campaign ledger and the saved
-assistant transcripts. Both live in `%LOCALAPPDATA%\Buttcrack` (on macOS,
-`~/Library/Application Support/Buttcrack`; on Linux, `$XDG_DATA_HOME/buttcrack`).
+The desktop window owns the PK9 campaign ledger, the saved assistant transcripts,
+`logs\buttcrack.log` (a windowed build has no console, so this file is where a
+failing worker or startup leaves its traceback) and `desktop-state.json` (where
+the windows were, and the port that worked last time). They live in
+`%LOCALAPPDATA%\Buttcrack` (on macOS, `~/Library/Application Support/Buttcrack`;
+on Linux, `$XDG_DATA_HOME/buttcrack`). `buttcrack.exe doctor`, or **Help → Copy
+diagnostics** in the window, prints that path along with everything else worth
+asking a user for.
 
 They used to be relative paths — `kryptos\pk9-results.sqlite3` and
 `%USERPROFILE%\buttcrack-assistant.jsonl`. From a checkout the first is

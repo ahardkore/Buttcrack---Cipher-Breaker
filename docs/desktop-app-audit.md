@@ -18,11 +18,22 @@ Method: static reading of the above, plus a live probe — the server was starte
 `/api/health`, `/api/paradigm`). Every "verified" note below is an observed result,
 not an inference. Effort tags: **XS** ≤30 min, **S** half a day, **M** a day or more.
 
-**Status (same day):** items A1, A2, C1, E1, B1, B4, D1 and D3 have been
-implemented — see the "1.2.1" list at the end of the change that touches
-`buttcrack/desktop.py`, `buttcrack/_wintray.py`, `buttcrack/server.py`,
-`buttcrack/static/` and `ventures/cipher-solver-web/`. Everything else below is
-still open, and the sections describe the code as it was audited.
+**Status.** 1.2.1 implements A1–A6, B1–B6, C1–C3, D1–D3, E1–E2 and F1–F3; the
+sections below describe the code as it was audited, and the table at the end says
+which finding shipped and which did not. Deliberately still open:
+
+* **B7** (`msedge --app=`) — a chromeless window is a nicer shape than a browser
+  tab, but it changes what a double-click opens. A decision, not a defect.
+* **C4** — no rate limiting, by design. The `Host` check is the real defence.
+* **D4/D5** — uploading from the release job needs Cloudflare credentials as
+  repository secrets; the manual route in `docs/windows-installer.md` is what
+  this release uses.
+* **E3** — the update story. The storefront still promises no update check; the
+  minimum that keeps that promise is a user-clicked "Check for updates" against
+  a `version.json` on the Cloudflare host.
+* **F3's manifest** — DPI awareness is set at runtime, which is what the window
+  needs. A custom manifest would replace PyInstaller's (and `*.manifest` is
+  deliberately git-ignored), so it wants a Windows build to try it on.
 
 Nothing here is a rewrite. The app is in good shape — the entry points, the
 loopback binding, the fallback chain (window → message box → console), the
@@ -464,35 +475,35 @@ slow checks that look like failures, that is the number to explain.
 
 ## Effort summary
 
-| # | Finding | Effort | Value |
-| --- | --- | --- | --- |
-| A1 | Tray icon lost after Explorer restart | S | High |
-| A2 | No single-instance guard | S | High |
-| A3 | No DPI awareness | S | High (visible) |
-| A4 | Window geometry not remembered | XS | Medium |
-| A5 | First-hide balloon | XS | Medium |
-| A6 | Menu bar and accelerators in the Tk window | XS | Medium |
-| B1 | Cancel a running search | S | High |
-| B2 | Remember the last session | XS | High |
-| B3 | Drop/open a file | XS | Medium |
-| B4 | Default workers = cores − 1 | XS | Medium |
-| B5 | `color-scheme`, print stylesheet | XS | Low |
-| B6 | Remember the bound port | XS | Medium |
-| B7 | `msedge --app=` window | M | Medium |
-| C1 | `Host`/`Origin`/CSP checks | XS | High |
-| C2 | Warn on the `serve` LAN binding | XS | Low |
-| C3 | Do not evict running jobs | XS | Medium |
-| D1 | R2 custom domain, disable `r2.dev` | XS | High |
-| D2 | Versioned immutable keys + cache rule | XS | Medium |
-| D3 | Publish digest; conditional unsigned card | XS | High |
-| D4 | Upload from the release job | S | Medium |
-| D5 | Verify downloads behind Bot Fight Mode | XS | Low |
-| E1 | `_NullStream` → log file on disk | S | High |
-| E2 | Diagnostics button + `buttcrack doctor` | S | High |
-| E3 | Decide on updates (or document the absence) | M | Medium |
-| F1 | Real browser test | S | High |
-| F2 | Frozen-build behaviours in the installer test | S | Medium |
-| F3 | Packaging nits (manifest, Inno pin) | XS | Low |
+| # | Finding | Effort | Value | 1.2.1 |
+| --- | --- | --- | --- | --- |
+| A1 | Tray icon lost after Explorer restart | S | High | done |
+| A2 | No single-instance guard | S | High | done |
+| A3 | No DPI awareness | S | High (visible) | done (runtime; manifest open) |
+| A4 | Window geometry not remembered | XS | Medium | done |
+| A5 | First-hide balloon | XS | Medium | done |
+| A6 | Menu bar and accelerators in the Tk window | XS | Medium | done |
+| B1 | Cancel a running search | S | High | done |
+| B2 | Remember the last session | XS | High | done |
+| B3 | Drop/open a file | XS | Medium | done |
+| B4 | Default workers = cores − 1 | XS | Medium | done |
+| B5 | `color-scheme`, print stylesheet | XS | Low | done |
+| B6 | Remember the bound port | XS | Medium | done |
+| B7 | `msedge --app=` window | M | Medium | open (decision) |
+| C1 | `Host`/`Origin`/CSP checks | XS | High | done |
+| C2 | Warn on the `serve` LAN binding | XS | Low | done |
+| C3 | Do not evict running jobs | XS | Medium | done (429 instead) |
+| D1 | R2 custom domain, disable `r2.dev` | XS | High | done (guide) |
+| D2 | Versioned immutable keys + cache rule | XS | Medium | done (guide) |
+| D3 | Publish digest; conditional unsigned card | XS | High | done |
+| D4 | Upload from the release job | S | Medium | open (secrets) |
+| D5 | Verify downloads behind Bot Fight Mode | XS | Low | done (guide) |
+| E1 | `_NullStream` → log file on disk | S | High | done |
+| E2 | Diagnostics button + `buttcrack doctor` | S | High | done |
+| E3 | Decide on updates (or document the absence) | M | Medium | open (decision) |
+| F1 | Real browser test | S | High | done (new CI job) |
+| F2 | Frozen-build behaviours in the installer test | S | Medium | done |
+| F3 | Packaging nits (manifest, Inno pin) | XS | Low | Inno pinned; manifest open |
 
 A credible 1.2.1: §A1, §A2, §C1, §E1, §B1, §B4, §D1, §D3 — one focused day, no new
 dependencies, and it covers every finding that a first-time Windows user or a paying
