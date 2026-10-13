@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   publish:
@@ -58,7 +59,7 @@ jobs:
             if [ -z "${!name}" ]; then missing="$missing $name"; fi
           done
           if [ -n "$missing" ]; then
-            echo "::error title=storage secrets missing::Set$missing in Settings -> Secrets and variables -> Actions. docs/windows-installer.md lists what each one is; the endpoint and bucket are not secret, only the two keys are."
+            echo "::error title=storage secrets missing::Set$missing in Settings -> Secrets and variables -> Actions. docs/windows-installer.md lists what each one is; the endpoint and bucket are not [...]"
             exit 1
           fi
           echo "All five storage variables are present."
