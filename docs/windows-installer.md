@@ -333,6 +333,70 @@ The `installer` job in `.github/workflows/release.yml` runs this on
 `windows-latest` for every push and pull request, so the wizard is exercised on
 every change instead of on the day someone downloads it.
 
+### What that job leaves behind, and for how long
+
+The job uploads the installer, its `.sha256` and `INSTALLER-SHA256.json` as one
+workflow artifact, and then — for any run triggered by a push or a pull request
+— deletes it again in its last step. That is not tidiness for its own sake.
+
+**A public repository's artifacts are public.** The rule above says the paid
+`.exe` never goes in the repository and never goes on the site, because both are
+public; a workflow artifact of a public repository belongs on that list. It
+needs no account: `GET /repos/<owner>/<repo>/actions/artifacts` answers
+anonymously and lists every artifact with its size, and
+`GET .../actions/artifacts/<id>/zip` answers with a redirect to a signed
+download URL. Anyone who knows the repository is called can be holding a copy of
+the product a minute later. Thirty days of retention, refreshed by every push to
+`main`, is a paid download sitting on a public shelf.
+
+So a run that is verifying a commit keeps no copy past the checks that read it.
+The copy you publish comes from a run you ask for:
+
+```powershell
+gh workflow run 'Release artifacts'          # or Actions -> Release artifacts -> Run workflow
+gh run list --workflow 'Release artifacts' --limit 5
+gh run download <run-id> --name buttcrack-installer-<version> --dir dist\installer
+```
+
+A deliberate run keeps its artifact for one day (`retention-days: 1`), which is
+the window in which it is downloaded, checked against its own digest, and
+uploaded to storage. If that window closes, dispatch another run: the build is
+reproducible, and the digest that matters is the one of the file you actually
+uploaded. `INSTALLER-SHA256.json` travels with the artifact, and the run's
+`SHA-256 the installer` step echoes it into the log.
+
+Because ordinary runs give their copy back, the newest run is usually *not* the
+one to look in — ask what exists instead of reading runs one at a time:
+
+```powershell
+gh api "repos/{owner}/{repo}/actions/artifacts?per_page=100" `
+  --jq '.artifacts[] | select(.name | startswith("buttcrack-installer")) | "\(.created_at)  \(.name)  id=\(.id)  until \(.expires_at)"'
+```
+
+Every name that comes back is a build that passed the install, exercise and
+uninstall test, because the upload happens after it — so a live artifact is a
+verified installer, and the list is also the honest answer to "what can somebody
+download from this repository right now?". One of them is fetched like this:
+
+```powershell
+gh run download <run-id> --name buttcrack-installer-<version> --dir dist\installer
+```
+
+The delete step never fails the build. A pull request from a fork runs with a
+read-only token, so it cannot withdraw anything; when that happens the run says
+so with a warning and the artifact lapses on its own after a day. It says
+something either way — a notice naming the artifact it withdrew, or a warning
+naming the one it could not — so whether a build of this repository is
+downloadable at any moment can be answered from the API alone, without opening
+a log or taking anyone's word for it.
+
+The `checks` job is treated the same way, and for the same reason. Its `dist`
+artifact is `Buttcrack/` frozen by PyInstaller — both executables and the
+runtime they share — which is the application the wizard wraps, and the thing
+the price actually buys: a copy that runs without Python. It is uploaded as a
+build record and withdrawn the moment the checks are done. Rebuilding it is one
+command locally, so nothing is lost but the public copy.
+
 ---
 
 ## Parallel solving on Windows
