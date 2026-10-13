@@ -18,16 +18,18 @@ Method: static reading of the above, plus a live probe — the server was starte
 `/api/health`, `/api/paradigm`). Every "verified" note below is an observed result,
 not an inference. Effort tags: **XS** ≤30 min, **S** half a day, **M** a day or more.
 
-**Status.** 1.2.1 implements A1–A6, B1–B6, C1–C3, D1–D3, E1–E2 and F1–F3; the
-sections below describe the code as it was audited, and the table at the end says
-which finding shipped and which did not. Deliberately still open:
+**Status.** 1.2.1 implements A1–A6, B1–B6, C1–C3, D1–D3, D5, E1–E2, F1, F2 and
+F3's version record; the sections below describe the code as it was audited, and
+the table at the end says which finding shipped and which did not. Deliberately
+still open:
 
 * **B7** (`msedge --app=`) — a chromeless window is a nicer shape than a browser
   tab, but it changes what a double-click opens. A decision, not a defect.
 * **C4** — no rate limiting, by design. The `Host` check is the real defence.
-* **D4/D5** — uploading from the release job needs Cloudflare credentials as
+* **D4** — uploading from the release job needs Cloudflare credentials as
   repository secrets; the manual route in `docs/windows-installer.md` is what
-  this release uses.
+  this release uses. D5 (Bot Fight Mode versus real downloads) is written up
+  beside it and needs the same domain to verify.
 * **E3** — the update story. The storefront still promises no update check; the
   minimum that keeps that promise is a user-clicked "Check for updates" against
   a `version.json` on the Cloudflare host.
