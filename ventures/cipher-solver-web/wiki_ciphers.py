@@ -393,6 +393,20 @@ NOTES: dict[str, dict[str, str]] = {
         "from a wheel cipher Thomas Jefferson designed in the 1790s and then "
         "left in his papers, unpublished, for a century.",
     },
+    "rotating": {
+        "how": "Two mixed alphabets, one under the other. Find the letter in the top row, "
+        "write the bottom-row letter beneath it, then turn the bottom row so the letter "
+        "you just wrote sits at the front. Every letter moves the necklace.",
+        "breaking": "The rotation makes it a running sum, so the plaintext is a substitution "
+        "of the differences of adjacent ciphertext letters. A crib of a hundred letters "
+        "gives linear equations whose solutions are the key, and the answer comes back in "
+        "seconds; with no crib the necklace has to be searched for, which needs a few "
+        "thousand letters. A few hundred letters of challenge text are genuinely safe.",
+        "history": "John F. Byrne spent thirty years, from 1918, trying to sell this design "
+        "to the US government as Chaocipher, and it resisted every cryptanalyst who looked "
+        "at it -- until 2010, when his family donated his working papers and the algorithm "
+        "turned out to be more tractable than the machine it was written for.",
+    },
     "xor_single": {
         "how": "Every byte is XORed with the same key byte.",
         "breaking": "Two hundred and fifty-six keys, scored by byte frequency. The first "

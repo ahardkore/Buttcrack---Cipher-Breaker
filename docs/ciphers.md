@@ -1,6 +1,6 @@
 # The cipher table
 
-50 ciphers, codes and encodings behind one interface. Each entry has its own
+51 ciphers, codes and encodings behind one interface. Each entry has its own
 attack — the interface exists so the engine can schedule, budget and report them
 uniformly, not so they can share a brute-force loop.
 
@@ -73,6 +73,7 @@ will attempt — below it there is not enough evidence to distinguish keys.
 | cipher | key | keyspace | cost | min text | how it is attacked |
 | --- | --- | --- | --- | --- | --- |
 | `m94`<br>M-94 / CSP-488<br>(aliases `m-94`, `csp488`, `wheel`) | disk order + read row<br>example `order=YRNCIXDULPTWFZHVMQBOKJEGS, row=9` | 25! × 26 ≈ 2^88 | brutal | 100 | The US Army's 25-wheel device with the standard published disk set. Each of the 25 positions has its own mixed alphabet, so the cipher is polyalphabetic with period exactly 25 and no column is a shift. Hill climbing over pairwise spindle-slot swaps, each order scored by its best of 26 read rows (rows are prefiltered on a 60-letter prefix: ~3x faster, same answer); parallel restarts until the budget or certainty. Lands from ~200 letters with a real slice of budget (measured 2-in-3 at 250 letters / 20 s / 2 workers); under 150 letters the honest-evidence rule caps the verdict below SOLVED because 25 wheels want ~6 letters each. A hinted order is exact, and the read row is recovered from the text when the hint omits it. |
+| `rotating`<br>Rotating Alphabet (Chaocipher-style)<br>(aliases `rotating_alphabet`, `chaocipher`) | two rows<br>example `ABCDEFGHIJKLMNOPQRSTUVWXYZ\|ZYXWVUTSRQPONMLKJIHGFEDCBA` | 26! × 26! ≈ 2^176 | expensive | 32 | Two mixed alphabets; each letter is read from the bottom row, which then rotates so the emitted letter leads. Not a rotor machine but a *running sum*: `alpha(c_k) = alpha(c_{k-1}) + T.index(p_k)`, so the plaintext is a substitution of the differences of adjacent ciphertext letters. **Known plaintext is fatal**: intervals between equal ciphertext letters give linear equations in the T-values over Z_26, and enumerating the CRT solution space (Z_2 × Z_13) plus the few spare letters recovers the exact key — a 150-letter crib solves a 900-letter message in under a second. Ciphertext-only is a hidden-permutation problem: the pair matrix at any skip is a permuted circulant, so a tournament seed, a hill climb on the difference histogram and a text-scored polish find the necklace once the message is long — measured reliable from ~4000 letters and a coin toss at 1200-2000, while the first plaintext letter is unrecoverable either way (it is the necklace's start offset). A few hundred letters are genuinely safe, which is what a hand-made challenge text usually is. |
 
 ### XOR (byte level)
 

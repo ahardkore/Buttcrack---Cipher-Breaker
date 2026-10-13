@@ -10,6 +10,7 @@ under a few seconds:
 from __future__ import annotations
 
 import os
+import pathlib
 import time
 import unittest
 
@@ -17,6 +18,7 @@ from buttcrack.ciphers import get
 from buttcrack.ciphers.base import BRUTAL, CHEAP, EXPENSIVE, Cipher, CipherInfo, CrackContext, Family
 from buttcrack.engine import (
     EVIDENCE_TIE_BAND,
+    HINT_PRIOR,
     PHASE_SLICES,
     STRONG_LAYER,
     UNSUPPORTED_PHASE_SHARE,
@@ -26,6 +28,7 @@ from buttcrack.engine import (
     solve,
 )
 from buttcrack.lang import SOLVED_CONFIDENCE, get_model
+from buttcrack.text import letters_only
 from buttcrack.results import Candidate, CrackReport, Hypothesis
 
 SLOW = os.environ.get("BUTTCRACK_SLOW") == "1"
@@ -81,6 +84,54 @@ def enc(name: str, text: str = SENTENCE, key=None) -> str:
 
 def code(name: str, text: str = SENTENCE) -> str:
     return get(name).encode(text)
+
+
+class TestHintPrior(unittest.TestCase):
+    """A crib is decisive evidence -- for the ciphers that can read it.
+
+    ``CipherInfo.hints`` is the declaration and ``Solver._hint_prior`` is the
+    rule that acts on it.  Without it the plan spends a crib on the shift family
+    first, and on the 409-letter wheel challenge that meant the attack which
+    solves the puzzle outright was reached after 40s of a 60s budget.
+    """
+
+    def test_a_declared_hint_moves_a_cipher_to_the_front(self):
+        solver = Solver(budget=5.0, workers=1)
+        ctx = CrackContext.create(budget=5.0, workers=1, hints={"crib": "THE"})
+        blended = solver._hint_prior(ctx, {"vigenere": 0.6})
+        self.assertEqual(blended["rotating"], HINT_PRIOR)
+        self.assertEqual(blended["sum_clock"], HINT_PRIOR)
+        self.assertGreaterEqual(HINT_PRIOR, 0.86)  # above every hook's ceiling
+        # ...and a cipher that cannot read the crib keeps the text's opinion.
+        self.assertEqual(blended["vigenere"], 0.6)
+        self.assertEqual(blended.get("rail_fence", 0.0), 0.0)
+
+    def test_no_hint_and_unusable_hints_change_nothing(self):
+        solver = Solver(budget=5.0, workers=1)
+        for hints in ({}, {"key_length": 5}, {"alphabet": "KRYPTOS"}):
+            with self.subTest(hints=hints):
+                ctx = CrackContext.create(budget=5.0, workers=1, hints=hints)
+                before = {"rotating": 0.0, "vigenere": 0.4}
+                self.assertEqual(solver._hint_prior(ctx, dict(before)), before)
+
+    @unittest.skipUnless(SLOW, "full engine solve")
+    def test_a_crib_reaches_the_cipher_that_declares_it(self):
+        cipher = get("rotating")
+        corpus = letters_only(
+            pathlib.Path("examples/english_samples.txt").read_text(encoding="utf-8")
+        )
+        plaintext = corpus[:420]
+        crib = plaintext[:200]
+        while len(set(crib)) < 26 and len(crib) < len(plaintext):
+            crib = plaintext[: len(crib) + 20]
+        self.assertEqual(len(set(crib)), 26, "a 26-letter crib is exact")
+        ciphertext = cipher.encrypt(plaintext, cipher.info.example_key)
+        report = solve(ciphertext, budget=45.0, workers=WORKERS, hints={"crib": crib})
+        self.assertTrue(report.solved)
+        self.assertEqual(report.path, "rotating")
+        # The first letter is the necklace's start offset, unrecoverable even
+        # with a crib: the crib pins the differences, not the absolute state.
+        self.assertEqual(letters_only(report.plaintext)[1:], plaintext[1:])
 
 
 class TestPlaintext(unittest.TestCase):

@@ -339,6 +339,16 @@ UNSUPPORTED_PHASE_SHARE = 0.25
 #: with the smallest slice on offer and never ran.
 HYPOTHESIS_LIMIT = 32
 
+#: Likelihood a cipher is moved forward with when the caller supplied a hint it
+#: declares it can read.  Above everything :meth:`Cipher.likelihood` returns in
+#: practice (the wheel hook caps at 0.85), so a suited cipher leads its cost
+#: group and its phase counts as supported -- the class that the calibration
+#: behind :data:`PHASE_SUPPORT` was about.  Measured on the 409-letter wheel
+#: challenge: with a 160-letter crib and 60s, the cipher was attacked only after
+#: 40s of attacks that could not use it, and a later scheduling change (a hook
+#: that reads short texts more honestly) pushed it out of the plan entirely.
+HINT_PRIOR = 0.9
+
 
 class Solver:
     """Automatic cipher breaker.
@@ -1260,7 +1270,28 @@ class Solver:
                 continue
             if own and own > blended.get(cipher.info.name, 0.0):
                 blended[cipher.info.name] = own
-        return blended
+        # A hint is evidence about the *plaintext*, and only some of the
+        # collection can read it: a crib means the ciphers that declare crib
+        # support go first, at :data:`HINT_PRIOR`.  Everything else keeps the
+        # ordering the text itself earned -- nothing is excluded either way.
+        return self._hint_prior(ctx, blended)
+
+    def _hint_prior(self, ctx: CrackContext, likelihoods: dict[str, float]) -> dict[str, float]:
+        """Move ciphers that can read the caller's hint to :data:`HINT_PRIOR`.
+
+        Applied wherever a plan is ordered -- the top level builds its attack
+        order straight from :func:`buttcrack.detect.identify`, and the node
+        search blends the ciphers' own readings in, so the boost lives in its
+        own method rather than in one of the two callers.
+        """
+        offered = set(ctx.hints)
+        if not offered:
+            return likelihoods
+        for cipher in self.ciphers:
+            if offered & set(cipher.info.hints):
+                name = cipher.info.name
+                likelihoods[name] = max(likelihoods.get(name, 0.0), HINT_PRIOR)
+        return likelihoods
 
     @staticmethod
     def _applies(layer, text: str) -> bool:
@@ -1358,6 +1389,7 @@ class Solver:
         # search) would stop coming out.  The floor keeps every cipher in the
         # running, because a misidentification must never cost the user their
         # plaintext.
+        likelihoods = self._hint_prior(ctx, dict(likelihoods))
         phases: list[tuple[float, list[Cipher], list[float]]] = []
         for cost in costs:
             group = [c for c in self.ciphers if c.info.cost == cost]

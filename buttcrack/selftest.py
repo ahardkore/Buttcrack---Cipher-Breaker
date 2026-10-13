@@ -453,6 +453,23 @@ SLOW_BREAKS: tuple[tuple[str, str, Any, str, float, str | None, str], ...] = (
     # The wheel cipher needs 250+ letters and a real slice of time: measured
     # ~2-in-3 solves inside a 20 s slice at 250 letters, better at 500.
     ("M-94 wheel cipher", "m94", {"order": "YRNCIXDULPTWFZHVMQBOKJEGS", "row": 9}, LONG_PROSE, 120.0, None, "exact"),
+    # The rotating alphabet is graded "hinted" because its decisive path is a
+    # crib: the interval sums between equal ciphertext letters are linear over
+    # Z_26, so a hundred-odd known letters recover the key exactly in about a
+    # second.  Unhinted it is a search that wants a few thousand letters *and*
+    # more than the 20 s slice the engine gives a BRUTAL attack (measured: 2-in-3
+    # at 2000 letters inside a 90 s budget, reliable from 4000), so the unhinted
+    # reading is reported rather than demanded -- but the key must still return
+    # the plaintext exactly when it is handed over.
+    (
+        "rotating alphabet",
+        "rotating",
+        "CFLTSUBQMRAONXYEVPJDWHGKIZ|EMQTJFAOZUVLYNBXSHGPWIRCDK",
+        LONG_PROSE * 16,
+        120.0,
+        None,
+        "hinted",
+    ),
 )
 
 #: Short prose per shipped language, used by the language checks.  Detection

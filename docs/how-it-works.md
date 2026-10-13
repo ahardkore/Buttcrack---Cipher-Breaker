@@ -105,7 +105,7 @@ Attacks are ordered by cost class, not by alphabet:
 | --- | --- | --- |
 | `CHEAP` (1) | 3 s slice | caesar, rot13, rot47, atbash, affine, reverse, trithemius, rail fence, skip, xor_single, all codes and encodings (19 ciphers) |
 | `MODERATE` (3) | 6 s slice | vigenère, beaufort, variant beaufort, gronsfeld, porta, autokey, quagmire3, route, xor_repeating (9) |
-| `EXPENSIVE` (10) | 25 s slice | substitution, keyword_substitution, columnar, myszkowski, amsco, sum_clock, hill, playfair (8) |
+| `EXPENSIVE` (10) | 25 s slice | substitution, keyword_substitution, columnar, myszkowski, amsco, sum_clock, hill, playfair, rotating alphabet (9) |
 | `BRUTAL` (30) | 20 s slice | bifid, four_square, trifid, m94 (4) |
 
 The identification hypotheses are blended into that order as priors
@@ -114,6 +114,18 @@ but it never jumps the class boundary, so a 26-key Caesar answer still arrives i
 milliseconds even when the detector is confused. Cheap attacks run to completion
 before expensive ones start, and the search exits early once a candidate reaches
 `CERTAIN_CONFIDENCE` (0.86).
+
+A hint from the caller overrides the text's opinion, and only for the ciphers that
+say they can read it. `CipherInfo.hints` lists the hint keys a cipher consumes —
+the rotating alphabet and sum-clock both declare `crib` — and `_hint_prior` moves
+them to `HINT_PRIOR` (0.9, above anything the hooks return) so they lead their cost
+class *and* their tier counts as supported under `PHASE_SUPPORT`. This is not
+cosmetic: on the 409-letter wheel challenge, with a 160-letter crib and a 60 s
+budget, the attacks that cannot use the crib ran first and the one that solves the
+puzzle out of hand was reached after 40 s — and when a later, more honest detector
+stopped over-reading short texts it dropped out of the plan altogether. With the
+hint prior the same challenge is solved in 18 s, and a hint that no cipher
+declares changes nothing.
 
 The expensive tiers are **planned before any of them runs** (`_phase_budgets`).
 Unplanned, they competed: on a wheel ciphertext the `EXPENSIVE` group ran from 14s
