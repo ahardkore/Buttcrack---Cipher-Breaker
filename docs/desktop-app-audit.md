@@ -508,7 +508,7 @@ slow checks that look like failures, that is the number to explain.
 | B5 | `color-scheme`, print stylesheet | XS | Low | done |
 | B6 | Remember the bound port | XS | Medium | done |
 | B7 | `msedge --app=` window | M | Medium | open (decision) |
-| C1 | `Host`/`Origin`/CSP checks | XS | High | done |
+| C1 | `Host`/`Origin`/CSP checks | XS | High | done (opt-in allowlist) |
 | C2 | Warn on the `serve` LAN binding | XS | Low | done |
 | C3 | Do not evict running jobs | XS | Medium | done (429 instead) |
 | D1 | R2 custom domain, disable `r2.dev` | XS | High | done (guide) |
@@ -526,3 +526,11 @@ slow checks that look like failures, that is the number to explain.
 A credible 1.2.1: §A1, §A2, §C1, §E1, §B1, §B4, §D1, §D3 — one focused day, no new
 dependencies, and it covers every finding that a first-time Windows user or a paying
 customer would notice.
+
+**One amendment since the table was written.** C1 shipped with the check refusing
+*every* name unless the caller bound a single specific address — correct for a laptop
+and unusable behind a proxy, where the request arrives under the name the proxy was
+published as (a tunnel, a container port forward, a hosted preview all do this).
+`BUTTCRACK_ALLOWED_HOSTS` now names them explicitly: a comma-separated list, a
+leading `*.` for subdomains, nothing accepted unless written down. The default is
+unchanged, and the `Origin` check still has to agree with the `Host`.

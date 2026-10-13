@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import http.client
 import json
+import os
 import time
 import unittest
 from unittest import mock
@@ -72,6 +73,28 @@ class HostHeaderTests(unittest.TestCase):
         self.assertTrue(server.host_is_allowed("192.168.1.5:8080", "192.168.1.5"))
         self.assertFalse(server.host_is_allowed("192.168.1.6:8080", "192.168.1.5"))
 
+    def test_a_name_the_operator_listed_is_accepted(self) -> None:
+        # A tunnel, a container port forward or a hosted preview sends the name
+        # rather than an address, and the operator is the only one who can say
+        # which name is theirs.
+        listed = {server.ENV_ALLOWED_HOSTS: "preview.example.local, buttcrack.lan:8099"}
+        with mock.patch.dict(os.environ, listed):
+            self.assertTrue(server.host_is_allowed("preview.example.local", "0.0.0.0"))
+            self.assertTrue(server.host_is_allowed("preview.example.local:9000", "127.0.0.1"))
+            self.assertTrue(server.host_is_allowed("buttcrack.lan", "0.0.0.0"), "a written port is not part of the name")
+            self.assertFalse(server.host_is_allowed("evil.example", "0.0.0.0"), "one listed name must not open the rest")
+
+    def test_a_listed_wildcard_covers_the_subdomains_only(self) -> None:
+        with mock.patch.dict(os.environ, {server.ENV_ALLOWED_HOSTS: "*.preview.example"}):
+            self.assertTrue(server.host_is_allowed("8099-abc.preview.example", "0.0.0.0"))
+            self.assertFalse(server.host_is_allowed("preview.example", "0.0.0.0"), "the bare suffix is not a subdomain")
+            self.assertFalse(server.host_is_allowed("evil-preview.example", "0.0.0.0"))
+
+    def test_nothing_is_allowed_by_default(self) -> None:
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertFalse(server.host_is_allowed("preview.example", "0.0.0.0"))
+            self.assertFalse(server.host_is_allowed("evil.example", "0.0.0.0"))
+
     def test_an_origin_is_read_the_same_way_as_a_host(self):
         self.assertEqual(server._authority("http://127.0.0.1:8099"), ("127.0.0.1", 8099))
         self.assertEqual(server._authority("127.0.0.1:8099"), ("127.0.0.1", 8099))
@@ -96,6 +119,15 @@ class LocalServerRefusalTests(unittest.TestCase):
         status, _headers, body = headers_of(self.app.port, "GET", "/api/health", {"Host": "evil.example"})
         self.assertEqual(status, 403, body)
         self.assertIn("Host", json.loads(body)["error"])
+
+    def test_a_listed_name_survives_the_real_handler(self) -> None:
+        # The rule is read per request, so a proxy in front of a running app can
+        # be honoured without restarting it -- which is the whole point.
+        with mock.patch.dict(os.environ, {server.ENV_ALLOWED_HOSTS: "*.preview.example"}):
+            status, _headers, body = headers_of(self.app.port, "GET", "/api/health", {"Host": "8099-abc.preview.example"})
+            self.assertEqual(status, 200, body)
+            status, _headers, body = headers_of(self.app.port, "GET", "/api/health", {"Host": "evil.example"})
+        self.assertEqual(status, 403, body)
 
     def test_the_ordinary_request_still_works(self):
         status, _headers, body = headers_of(self.app.port, "GET", "/api/health")

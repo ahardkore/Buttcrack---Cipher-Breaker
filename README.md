@@ -251,6 +251,15 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
 
+It also checks the `Host` header it is asked on, because a local server answers whatever name the browser was told to use: `evil.example` can be pointed at your loopback address and then read every reply. Loopback names and address literals are accepted, and nothing else — which is what you want on a laptop and not what you want behind a proxy. A tunnel, a container port forward or a hosted preview sends the *name* it is published under, so name it:
+
+```console
+BUTTCRACK_ALLOWED_HOSTS=preview.example.com buttcrack serve --port 8099
+BUTTCRACK_ALLOWED_HOSTS='*.preview.example.com' buttcrack serve --port 8099   # any subdomain
+```
+
+A comma-separated list, a port after a name is ignored, and `*.` matches subdomains only. Nothing is accepted by default: the server has to be told which name is yours.
+
 There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (50 ciphers, six languages, the M-94) is the full local tool.
 
 ---
@@ -336,7 +345,7 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 508 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 512 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end

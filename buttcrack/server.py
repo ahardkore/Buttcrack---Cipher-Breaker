@@ -93,6 +93,49 @@ def _authority(value: str) -> tuple[str, int | None] | None:
         return None
 
 
+#: Extra names to answer to, comma-separated: ``BUTTCRACK_ALLOWED_HOSTS``.
+#:
+#: Binding to every interface and then refusing every name is right for a
+#: laptop, and wrong for the deployments where a *proxy* sends the name: a
+#: tunnel, a container port forward, a hosted preview.  There the name is
+#: chosen by the person running the server, and only they can write it down.
+#: A leading ``*.`` matches any subdomain, so a rotating preview hostname does
+#: not need a code change to keep working.
+ENV_ALLOWED_HOSTS = "BUTTCRACK_ALLOWED_HOSTS"
+
+
+def _configured_hosts() -> list[str]:
+    """The names from :data:`ENV_ALLOWED_HOSTS`, lowercased, in order.
+
+    A port may be written after a name and is dropped, because the check
+    compares names -- ``buttcrack.local:8099`` and ``buttcrack.local`` are the
+    same host arriving on a port the operator already chose.  ``*.`` is kept as
+    written; :func:`_is_configured` is what matches it.
+    """
+    hosts: list[str] = []
+    for part in os.environ.get(ENV_ALLOWED_HOSTS, "").split(","):
+        entry = part.strip().lower()
+        if not entry:
+            continue
+        if entry.startswith("*."):
+            hosts.append(entry)
+            continue
+        authority = _authority(entry)
+        hosts.append(authority[0] if authority else entry)
+    return hosts
+
+
+def _is_configured(name: str) -> bool:
+    """Whether ``name`` is one the operator asked this server to answer to."""
+    for pattern in _configured_hosts():
+        if pattern.startswith("*."):
+            if name.endswith(pattern[1:]) and len(name) > len(pattern) - 1:
+                return True
+        elif name == pattern:
+            return True
+    return False
+
+
 def host_is_allowed(host_header: str, bound: str | None) -> bool:
     """Whether a request's ``Host`` is a name this server is reachable as.
 
@@ -111,12 +154,18 @@ def host_is_allowed(host_header: str, bound: str | None) -> bool:
       literal* is legitimate.  A name is still not: a person typing the LAN
       address is indistinguishable from a rebound domain by the Host header
       alone, but only one of those two can be a name the attacker chose.
+
+    A name is also accepted when the operator listed it in
+    :data:`ENV_ALLOWED_HOSTS` -- the one case where somebody has said out loud
+    which name is theirs.  Nothing is accepted by default.
     """
     authority = _authority(host_header)
     if authority is None:
         return False
     name, _port = authority
     if name in LOOPBACK_NAMES:
+        return True
+    if _is_configured(name):
         return True
     if bound in LAN_BINDS:
         try:
