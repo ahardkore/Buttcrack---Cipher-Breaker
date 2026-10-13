@@ -63,8 +63,21 @@ jobs:
           fi
           echo "All five storage variables are present."
 
+      # GITHUB_TOKEN is set here for a reason that has nothing to do with the
+      # repository being public: fetch_installer.py's anonymous calls to the
+      # artifacts API share GitHub's unauthenticated rate limit -- 60 requests
+      # per hour -- across every hosted runner's IP, not just this job's. An
+      # authenticated call (any valid token, no extra scopes needed) gets 5,000
+      # an hour on its own account instead. Without this, the first real
+      # publish run failed at this exact step with no reason visible anywhere
+      # but a 403 from the API, because the token-free design documented in
+      # fetch_installer.py's own docstring assumes a human's browser or a
+      # sandbox, not a shared CI IP that dozens of unrelated jobs are also
+      # calling anonymously in the same hour.
       - name: Which build?
         id: which
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -o pipefail
           id="${{ inputs.artifact_id }}"
@@ -84,6 +97,8 @@ jobs:
       # Fetched rather than rebuilt: this is the file whose digest is about to
       # be published, and it is the one CI installed, ran and uninstalled.
       - name: Fetch it, digest checked
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/fetch_installer.py --artifact ${{ steps.which.outputs.artifact-id }} --out dist/installer
 
       - name: Upload to your storage
