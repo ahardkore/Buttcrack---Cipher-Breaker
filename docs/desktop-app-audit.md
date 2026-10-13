@@ -512,7 +512,7 @@ slow checks that look like failures, that is the number to explain.
 | E3 | Decide on updates (or document the absence) | M | Medium | open (decision) |
 | F1 | Real browser test | S | High | done (new CI job) |
 | F2 | Frozen-build behaviours in the installer test | S | Medium | done |
-| F3 | Packaging nits (manifest, Inno pin) | XS | Low | Inno pinned; manifest open |
+| F3 | Packaging nits (manifest, Inno pin) | XS | Low | version recorded; manifest open |
 
 A credible 1.2.1: §A1, §A2, §C1, §E1, §B1, §B4, §D1, §D3 — one focused day, no new
 dependencies, and it covers every finding that a first-time Windows user or a paying
