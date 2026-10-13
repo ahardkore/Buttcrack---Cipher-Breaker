@@ -1,5 +1,9 @@
 # rotor-kit — the rotating alphabet, end to end
 
+> **Naming.** This cipher shipped as **`ratchet`** (`Ratchet`, self-rotating alphabet) in
+> `buttcrack/ciphers/ratchet.py`; the research below was written while it was called
+> `rotating`. `rotating`, `rotating_alphabet` and `chaocipher` remain aliases.
+
 Working notes, attacks and measurements for the **self-rotating alphabet
 (Chaocipher-style)** cipher, which is now a first-class cipher in the tool
 (`buttcrack/ciphers/rotating.py`, registered as `rotating`).  Everything here
@@ -34,10 +38,25 @@ top row and a reversed bottom row.
 | `engine.py`, `run_real.py` | earlier alternating/portfolio engines, kept as negative results |
 | `bench_app.py`, `bench_slice.py` | the recall benchmarks behind the thresholds quoted in the README (`.log` files are their output) |
 
-The production form of the attacks lives in `buttcrack/ciphers/rotating.py`:
-pure standard library, worker-safe, and wired into the registry, the engine,
-the CLI, the desktop app and the web app.  This directory is the research
-record, not a dependency of the tool.
+The production form of the attacks lives in `buttcrack/ciphers/ratchet.py`
+(the module shipped as `rotating.py` while the cipher was being named): pure
+standard library, worker-safe, and wired into the registry, the engine, the CLI,
+the desktop app and the web app.  This directory is the research record, not a
+dependency of the tool.
+
+## The published challenge
+
+`../examples/ratchet-challenge.txt` is a second, longer challenge written for
+the cipher's wiki page: 6,778 letters, published with a 150-letter crib taken
+from its own middle and the SHA-256 of the answer.  **`ratchet-challenge-solution.txt`
+in this directory is the answer** — do not open it unless you want the puzzle
+spoiled; the page publishes the hash precisely so the puzzle can be checked
+without the answer travelling with it.  Measured on this container: the crib
+attack is exact in 1.4 s with `--hint crib_offset=4066` and in 29 s by sweeping
+every offset, and the ciphertext-only route is exact in 107 s with
+`--budget 300 --workers 4`.  The page's tests (`tests/test_ratchet.py`,
+`TestPublishedChallenge`) pin the ciphertext, the crib's offset and the digest
+to those artifacts.
 
 ## Measured results (2 cores, this container)
 

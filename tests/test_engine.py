@@ -11,11 +11,13 @@ from __future__ import annotations
 
 import os
 import pathlib
+import random
 import time
 import unittest
 
 from buttcrack.ciphers import get
 from buttcrack.ciphers.base import BRUTAL, CHEAP, EXPENSIVE, Cipher, CipherInfo, CrackContext, Family
+from buttcrack.ciphers.ratchet import random_key
 from buttcrack.engine import (
     EVIDENCE_TIE_BAND,
     HINT_PRIOR,
@@ -99,7 +101,7 @@ class TestHintPrior(unittest.TestCase):
         solver = Solver(budget=5.0, workers=1)
         ctx = CrackContext.create(budget=5.0, workers=1, hints={"crib": "THE"})
         blended = solver._hint_prior(ctx, {"vigenere": 0.6})
-        self.assertEqual(blended["rotating"], HINT_PRIOR)
+        self.assertEqual(blended["ratchet"], HINT_PRIOR)
         self.assertEqual(blended["sum_clock"], HINT_PRIOR)
         self.assertGreaterEqual(HINT_PRIOR, 0.86)  # above every hook's ceiling
         # ...and a cipher that cannot read the crib keeps the text's opinion.
@@ -111,12 +113,12 @@ class TestHintPrior(unittest.TestCase):
         for hints in ({}, {"key_length": 5}, {"alphabet": "KRYPTOS"}):
             with self.subTest(hints=hints):
                 ctx = CrackContext.create(budget=5.0, workers=1, hints=hints)
-                before = {"rotating": 0.0, "vigenere": 0.4}
+                before = {"ratchet": 0.0, "vigenere": 0.4}
                 self.assertEqual(solver._hint_prior(ctx, dict(before)), before)
 
     @unittest.skipUnless(SLOW, "full engine solve")
     def test_a_crib_reaches_the_cipher_that_declares_it(self):
-        cipher = get("rotating")
+        cipher = get("ratchet")
         corpus = letters_only(
             pathlib.Path("examples/english_samples.txt").read_text(encoding="utf-8")
         )
@@ -128,9 +130,31 @@ class TestHintPrior(unittest.TestCase):
         ciphertext = cipher.encrypt(plaintext, cipher.info.example_key)
         report = solve(ciphertext, budget=45.0, workers=WORKERS, hints={"crib": crib})
         self.assertTrue(report.solved)
-        self.assertEqual(report.path, "rotating")
+        self.assertEqual(report.path, "ratchet")
         # The first letter is the necklace's start offset, unrecoverable even
         # with a crib: the crib pins the differences, not the absolute state.
+        self.assertEqual(letters_only(report.plaintext)[1:], plaintext[1:])
+
+    @unittest.skipUnless(SLOW, "full engine solve")
+    def test_a_mid_message_crib_gets_the_time_a_swing_needs(self):
+        """A crib from the middle is found by swinging it through every offset.
+
+        That swing costs seconds, not milliseconds, so the cipher that can read
+        the crib takes the phase's whole budget rather than a share of it.  Given
+        a share, the swing never finishes inside an engine solve -- measured on a
+        900-letter message, a 300-letter crib and a 60s budget, the attack was
+        reached and starved.
+        """
+        cipher = get("ratchet")
+        corpus = letters_only(
+            pathlib.Path("examples/english_samples.txt").read_text(encoding="utf-8")
+        )
+        plaintext = corpus[:900]
+        crib = plaintext[300:600]
+        ciphertext = cipher.encrypt(plaintext, random_key(random.Random(20261013)))
+        report = solve(ciphertext, budget=60.0, workers=WORKERS, hints={"crib": crib})
+        self.assertTrue(report.solved)
+        self.assertEqual(report.path, "ratchet")
         self.assertEqual(letters_only(report.plaintext)[1:], plaintext[1:])
 
 

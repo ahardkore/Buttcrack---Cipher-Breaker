@@ -1,4 +1,10 @@
-"""The self-rotating alphabet (Chaocipher-style) cipher.
+"""The Ratchet cipher: a self-rotating alphabet (Chaocipher-style).
+
+Named the Ratchet by its author (@ahardkore), who built it as a hand-made
+challenge: every plaintext letter turns the necklace exactly one click, which
+is why the ciphertext is a running sum and why a crib empties it.  Registered
+as ``ratchet``; ``rotating``, ``rotating_alphabet`` and ``chaocipher`` are kept
+as aliases so scripts written before the name exist keep working.
 
 Two mixed alphabets, one under the other.  To encipher a letter: find it in
 the *top* row, write down the bottom-row letter underneath it, then rotate the
@@ -94,6 +100,9 @@ _UNITS = (1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25)
 #: N-gram fitness at which a reading grades as language and the sweep can stop
 #: (same convention as the keyed ciphers: English prose runs about -4.3).
 _SOLVED_FITNESS = -4.6
+#: Below this the polish is not worth its seconds: the reading is nowhere near
+#: language, so no swap of two letters is going to rescue it.
+_POLISHABLE = -5.0
 
 #: Letter frequencies, for seeding the substitution fit.
 _ENGLISH = (
@@ -115,7 +124,7 @@ def parse_key(key: Any) -> tuple[str, str]:
         else:
             text = letters_only(key, A26)
             if len(text) != 52:
-                raise ValueError("rotating key must be 'TOP|BOTTOM' (52 letters)")
+                raise ValueError("ratchet key must be 'TOP|BOTTOM' (52 letters)")
             top, bottom = text[:26], text[26:]
     else:
         top, bottom = (letters_only(str(x), A26) for x in key[:2])
@@ -133,16 +142,23 @@ def random_key(rng: random.Random | None = None) -> str:
     return f"{''.join(top)}|{''.join(bottom)}"
 
 
-class RotatingAlphabet(Cipher):
-    """Self-rotating alphabet ('Chaocipher-style'): a moving necklace."""
+class Ratchet(Cipher):
+    """Self-rotating alphabet, one click of the necklace per plaintext letter."""
 
     info = CipherInfo(
-        name="rotating",
-        title="Rotating Alphabet (Chaocipher-style)",
+        name="ratchet",
+        title="Ratchet (self-rotating alphabet)",
         family=Family.WHEEL,
         keyed=True,
         key_type="TOP|BOTTOM",
-        keyspace=None,  # (26! * 26!) / 26 -- not enumerable
+        # The two rows are independent and no relabelling of them is a symmetry
+        # (measured: a permuted pair is a different cipher), so the space is the
+        # pairs, 26!^2 -- not enumerable.  One *message* narrows that to 312 keys
+        # that decipher it identically (12 unit factors x 26 shifts of the value
+        # axis, and only as far as the message exercises it).  A crib pins the reading,
+        # not the gauge: measured, the crib path reports one of those 312 keys as
+        # readily as the publisher's own.  See docs/ciphers.md.
+        keyspace=None,  # 26! * 26! ~ 2^177
         deterministic=False,
         min_length=32,
         # EXPENSIVE, not BRUTAL: the class is the engine's scheduling knob, and
@@ -152,12 +168,22 @@ class RotatingAlphabet(Cipher):
         # ciphertext-only solve needs fifteen seconds and a few thousand letters.
         cost=EXPENSIVE,
         hints=("crib", "known", "key"),
-        aliases=("rotating", "rotating_alphabet", "rotating-alphabet", "chaocipher"),
+        aliases=(
+            "ratchet",
+            "ratchet_cipher",
+            # The names this cipher answered to before its author gave it one.
+            "rotating",
+            "rotating_alphabet",
+            "rotating-alphabet",
+            "chaocipher",
+        ),
         description=(
             "Two mixed alphabets; each letter is read from the bottom row, which "
-            "then rotates so the emitted letter leads. Equivalent to a substituted "
-            "running sum: a crib breaks it outright in about a second, and without "
-            "one it takes a search over several thousand letters."
+            "then turns one click so the emitted letter leads -- a ratchet, and the "
+            "reason the design is a running sum. Designed by @ahardkore, the author "
+            "of this repository, as the 409-letter challenge the attack came out of. "
+            "A crib breaks it outright in about a second; without one it takes a "
+            "search over several thousand letters."
         ),
         example_key=DEFAULT_KEY,
     )
@@ -286,28 +312,75 @@ class RotatingAlphabet(Cipher):
         crib's span, so a crib can sit at any offset; the sweep tries offset 0
         first and stops as soon as a reading grades as language.  What comes out
         is exact -- the interval sums leave the whole key determined -- so a
-        crib of a few hundred letters is game over for the cipher.
+        crib of a few hundred letters is game over for the cipher.  A crib from
+        the middle of a long message costs one elimination per offset it has to
+        rule out (about 30s over 6,800 letters); ``crib_offset`` skips the sweep
+        by naming the position, which is the usual case for a quotation.
         """
         if len(known) < 60 or len(known) > len(stream):
             return
+        last = len(stream) - len(known)
+        order = list(range(last + 1))
+        hinted = ctx.hints.get("crib_offset", ctx.hints.get("offset"))
+        if isinstance(hinted, (int, float)) and 0 <= int(hinted) <= last:
+            hinted = int(hinted)
+            order = [hinted] + [skip for skip in order if skip != hinted]
         best: list[Candidate] = []
-        for offset in range(len(stream) - len(known) + 1):
+        for offset in order:
             if offset and ctx.expired():
                 break
             span = stream[offset : offset + len(known)]
             found = list(self._solve_known(span, known, stream, offset, ctx))
             if found and found[0].fitness >= _SOLVED_FITNESS:
-                yield found[0]
+                yield self._repaired(stream, found[0], ctx)
                 return
             best.extend(found)
             best.sort(key=lambda candidate: -candidate.fitness)
             del best[3:]
         for candidate in best:
-            yield candidate
+            yield self._repaired(stream, candidate, ctx)
+
+    def _repaired(self, stream: str, candidate: Candidate, ctx: CrackContext) -> Candidate:
+        """One short polish of a crib reading, and only then does it count.
+
+        A crib leaves the rows it never exercised free, and a transposition no
+        frequency count can see is exactly what swapping two letters of T
+        repairs -- but it runs *once* per reading, not once per offset: put it
+        inside the sweep and the sweep becomes forty times slower, which is the
+        difference between solving a mid-message crib and timing out on it.  The
+        polish only ever accepts an improvement, so a reading that was already
+        right comes back untouched.
+        """
+        if ctx.expired():
+            return candidate
+        if candidate.fitness < _POLISHABLE:
+            # A reading this far from English is not one transposition away from
+            # it: the polish would spend its seconds and change nothing, and on a
+            # wrong crib the sweep may hand back three of these.
+            return candidate
+        repaired = self._polish(stream, str(candidate.key), ctx, passes=8, seconds=4.0)
+        if repaired == candidate.key:
+            return candidate
+        plain = self.decrypt(stream, repaired)
+        return self.candidate(
+            stream, plain, repaired, ctx,
+            method="known plaintext (linear solve mod 26, polished)",
+            crib=candidate.notes.get("crib"),
+            offset=candidate.notes.get("offset"),
+            note="the crib's rows repaired by swapping the letters the model can see",
+        )
 
     def _solve_known(
         self, span: str, known: str, stream: str, offset: int, ctx: CrackContext
     ) -> Iterator[Candidate]:
+        """Linear algebra on equal ciphertext letters, then completions.
+
+        Equal ciphertext letters at positions i < j inside the crib force the sum
+        of T's values between them to vanish mod 26, so every such pair is a row
+        of a homogeneous system in the twenty-six unknown values.  Ranks are
+        solved over Z_2 and Z_13 and recombined by CRT, which is cheap enough that
+        a crib of a few hundred letters hands over the whole row.
+        """
         occurrences: dict[str, list[int]] = defaultdict(list)
         for i, ch in enumerate(span):
             occurrences[ch].append(i)
@@ -325,8 +398,7 @@ class RotatingAlphabet(Cipher):
 
         basis13 = _nullspace_mod(rows, 13)
         basis2 = _nullspace_mod(rows, 2)
-        combos = 13 ** len(basis13) * 2 ** len(basis2)
-        if combos > 4096:
+        if 13 ** len(basis13) * 2 ** len(basis2) > 4096:
             return  # a crib this thin leaves more freedom than there is budget
         seen: set[tuple[int, ...]] = set()
         for combo13 in product(range(13), repeat=len(basis13)):
@@ -351,65 +423,89 @@ class RotatingAlphabet(Cipher):
         self, span: str, known: str, letters: list[str], tau: list[int],
         stream: str, offset: int, ctx: CrackContext,
     ) -> Iterator[Candidate]:
-        """Turn a T-candidate into a decryption: complete it, decrypt, rank.
+        """Turn a T-candidate into a reading: complete it, decrypt, rank.
 
-        Whatever the crib does not cover is enumerated -- there are at most a few
-        spare values either side -- and the reading is chosen by the language
-        model.  That is what makes the ambiguity harmless: a completion that
-        misplaces a key row shows up as gibberish in the message.
+        The crib pins the rows only where it reaches, and a completion can only
+        be judged on text *outside* the crib -- the letters a crib never used are
+        invisible inside its own span, which is how an earlier version returned a
+        key that was one transposition from the truth while deciphering the crib
+        perfectly.  So every completion is scored on the whole message, and the
+        crib's own span is only a filter, never the judge.
+
+        Two sides can be short: plaintext letters the crib never used (their
+        top-row entries) and ciphertext letters it never used (their state
+        values).  Both are enumerated while the product stays under a few
+        hundred, and the survivors are ranked by the sharp score.  The crib's
+        position does not matter -- the equations only ever compare equal letters
+        *within* the span, and the state map that falls out is relative to the
+        crib, so the whole message deciphers from it (all but the very first
+        letter, whose necklace position no running sum can reveal).
         """
         tval = dict(zip(letters, tau))
         alpha: dict[str, int] = {}
         acc = 0
-        first: tuple[str, int] | None = None
-        for index, (ch, plain_char) in enumerate(zip(span, known)):
+        for ch, plain_char in zip(span, known):
             acc = (acc + tval[plain_char]) % 26
-            if index == 0:
-                first = (ch, acc)
-                continue
             if ch in alpha:
                 if alpha[ch] != acc:
                     return
             else:
                 alpha[ch] = acc
-        used = set(alpha.values())
-        if len(used) != len(alpha):
+        if len(set(alpha.values())) != len(alpha):
             return
 
-        missing_letters = [ch for ch in A26 if ch not in alpha]
-        if first is not None and first[0] not in alpha:
-            missing_letters.append(first[0])
         missing_plain = [ch for ch in A26 if ch not in tval]
-        if len(missing_letters) > 5 or len(missing_plain) > 5:
-            return
-        if _factorial(len(missing_letters)) * _factorial(len(missing_plain)) > 2048:
-            return
+        missing_ct = [ch for ch in A26 if ch not in alpha]
+        if _factorial(len(missing_plain)) * _factorial(len(missing_ct)) > 720:
+            return  # a crib this thin is not worth the sweep it is attached to
+        spare_values = [v for v in range(26) if v not in set(alpha.values())]
+        spare_t = [v for v in range(26) if v not in set(tau)]
 
-        spare_positions = [v for v in range(26) if v not in used]
-        spare_values = [v for v in range(26) if v not in set(tau)]
-        tail = stream[offset:]
-        probe = tail[:800]
-
-        ranked: list[tuple[float, str]] = []
-        plain_options = permutations(spare_values) if missing_plain else [()]
-        position_options = permutations(spare_positions) if missing_letters else [()]
-        position_options = list(position_options)
-        for plain_completion in plain_options:
-            top_row = _top_row(letters, missing_plain, tau + list(plain_completion))
-            for position_completion in position_options:
-                if ctx.expired():
-                    break
-                bottom = _bottom_row_with(alpha, missing_letters, position_completion)
-                key = f"{top_row}|{bottom}"
-                value = ctx.model.search_fitness(self.decrypt(probe, key))
-                ranked.append((value, key))
+        # Two stages, and this is what makes an offset sweep affordable: a
+        # hundred letters of reading is enough to throw out a completion that is
+        # not English, so every completion is *sniffed* on a short prefix of the
+        # message and only the survivors pay for the whole of it.  On a 6,700
+        # letter message the sniff costs about a tenth of the full score, and a
+        # sweep tries every completion at every offset.
+        ranked: list[tuple[float, float, str]] = []
+        sniff = min(len(stream), 200)
+        for ct_order in permutations(range(len(missing_ct))) if missing_ct else [()]:
+            bottom = _bottom_row_with(
+                alpha, missing_ct, tuple(spare_values[i] for i in ct_order)
+            )
+            for pt_order in (
+                permutations(range(len(missing_plain))) if missing_plain else [()]
+            ):
+                top = _top_row(
+                    letters,
+                    missing_plain,
+                    list(tau) + [spare_t[i] for i in pt_order],
+                )
+                key = f"{top}|{bottom}"
+                head = self.decrypt(stream[:sniff], key)
+                if offset + len(known) <= sniff and head[offset : offset + len(known)] != known:
+                    # The key must reproduce the crib wherever the sniff window
+                    # covers all of it: a mismatch there is an assembly bug, not a
+                    # bad guess.  A crib that runs past the window defers the check
+                    # to the full reading below -- rejecting on a truncated
+                    # comparison would throw the true placement away.
+                    continue
+                ranked.append((self._sharp(ctx, head), 0.0, key))
         if not ranked:
             return
-        ranked.sort(key=lambda t: -t[0])
+        ranked.sort(key=lambda row: -row[0])
+        finalists: list[tuple[float, float, str]] = []
+        for _, _, key in ranked[:3]:
+            plain = self.decrypt(stream, key)
+            if plain[offset : offset + len(known)] != known:
+                continue
+            finalists.append((self._sharp(ctx, plain), 0.0, key))
+        if not finalists:
+            return
+        finalists.sort(key=lambda row: -row[0])
 
-        emitted = 0
-        for _, key in ranked[:3]:
-            plain = self.decrypt(tail, key)
+        for _, _, key in finalists:
+            plain = self.decrypt(stream, key)
             yield self.candidate(
                 stream, plain, key, ctx,
                 method="known plaintext (linear solve mod 26)",
@@ -417,33 +513,48 @@ class RotatingAlphabet(Cipher):
                 offset=offset,
                 note=(
                     "interval-sum equations between equal ciphertext letters; "
-                    "exact once the crib pins the rows"
+                    "the letters the crib never reached are settled by reading "
+                    "the whole message"
                 ),
             )
-            emitted += 1
-            if emitted >= 3:
-                return
 
     # -- ciphertext-only: circulant fit + profiled substitution -------------- #
 
-    def _polish(self, stream: str, key: str, ctx: CrackContext, passes: int = 4) -> str:
+    def _polish(
+        self, stream: str, key: str, ctx: CrackContext, passes: int = 24,
+        seconds: float | None = None,
+    ) -> str:
         """Repair the top row: the necklace is exact, the substitution may not be.
 
         Swapping two letters of T swaps exactly those two letters in the
         decryption, so each candidate is one ``str.translate`` plus one model
-        score -- cheap enough to hill-climb the last few letters on the *whole*
-        message, with the same quadgram model the candidates are ranked by.
+        score -- cheap enough to hill-climb the last few letters with the same
+        quadgram model the candidates are ranked by.
+
+        The climb runs to convergence rather than to a fixed pass count: each
+        pass applies one transposition, so a cap on passes is a cap on how many
+        letters can be repaired at all, and six was measured to leave the truth
+        exactly one letter short on an 8,000-letter case.  The text it climbs on
+        is the whole message (``max_chars``), not the ranking window, because the
+        letters these swaps separate are the rare ones -- J and Q are
+        indistinguishable inside a 4,000-letter sample of this corpus but not
+        across a long message.
         """
         top, bottom = parse_key(key)
         plain = self.decrypt(stream, key)
-        best = ctx.model.ngram_score(plain, normalise=False)
+        best = self._whole(ctx, plain)
+        deadline = time.time() + (
+            max(1.0, min(20.0, ctx.remaining() * 0.5)) if seconds is None else max(0.5, seconds)
+        )
         for _ in range(passes):
+            if time.time() > deadline:
+                break
             improved = False
             for x in range(26):
                 for y in range(x + 1, 26):
                     a, b = top[x], top[y]
                     swapped = plain.translate(str.maketrans({a: b, b: a}))
-                    value = ctx.model.ngram_score(swapped, normalise=False)
+                    value = self._whole(ctx, swapped)
                     if value > best:
                         best, plain, improved = value, swapped, True
                         top = top[:x] + b + top[x + 1 : y] + a + top[y + 1 :]
@@ -455,6 +566,17 @@ class RotatingAlphabet(Cipher):
         return f"{top}|{bottom}"
 
     @staticmethod
+    def _whole(ctx: CrackContext, plain: str) -> float:
+        """Mean quadgram per letter over the *whole* message.
+
+        ``model.ngram_score`` samples the first 4,000 letters by default, which is
+        the right window for comparing candidates but hides the rare letters a
+        completion or a polish pass has to settle -- J and Q cannot be told apart
+        from a 4,000-letter sample of this corpus, and can across 8,000.
+        """
+        return ctx.model.ngram_score(plain, normalise=False, max_chars=len(plain) or 1)
+
+    @staticmethod
     def _sharp(ctx: CrackContext, plain: str) -> float:
         """Mean quadgram per letter -- the ranking objective for finalists.
 
@@ -462,9 +584,10 @@ class RotatingAlphabet(Cipher):
         saturates, so a reading with one wrong letter scores *identically* to
         the truth.  Candidates are ranked with the plain model score instead,
         which separates the two by ~10 nats over 4000 letters and so lets the
-        last polish pass show up in the order.
+        last polish pass show up in the order -- over the whole message, for the
+        same reason the polish climbs on all of it.
         """
-        return ctx.model.ngram_score(plain, normalise=False)
+        return ctx.model.ngram_score(plain, normalise=False, max_chars=len(plain) or 1)
 
     def _crack_statistical(
         self, stream: str, ctx: CrackContext
@@ -551,31 +674,37 @@ class RotatingAlphabet(Cipher):
         for _, alpha in finals[:5]:
             differences = _differences(stream, dict(enumerate(alpha)))
             pairs = _difference_pair_counts(differences)
-            readings: list[tuple[float, list[int], int]] = []
+            readings: list[tuple[float, str, list[int]]] = []
             for unit in _UNITS:
                 for sign in (1, -1):
                     scale = (sign * unit) % 26
                     table = _scale_counts(pairs, scale)
                     tau, _ = _fit_substitution(table, bigram, sweeps=4)
-                    scaled = [(scale * d) % 26 for d in differences]
-                    plain = "".join(A26[tau[d]] for d in scaled)
-                    readings.append((self._sharp(ctx, plain), tau, scale))
+                    plain = "".join(A26[tau[(scale * d) % 26]] for d in differences)
+                    readings.append((self._sharp(ctx, plain), plain, tau))
             readings.sort(key=lambda t: -t[0])
-            for _, tau, scale in readings[:4]:
-                # The necklace comes from the search's own alpha, rescaled by the
-                # transform -- not from the guessed text, which would demand a
-                # flawless substitution fit before the key could be assembled.
-                gamma = {chr(65 + i): (scale * alpha[i]) % 26 for i in range(26)}
-                key = f"{_tau_row(tau)}|{_bottom_row(gamma)}"
-                plain = self.decrypt(stream, key)
-                fits.append((self._sharp(ctx, plain), key))
+            for _, plain, tau in readings[:3]:
+                # The reading is the answer and the key is derived *from* it: one
+                # necklace state per ciphertext letter, summed off the plaintext
+                # itself (position 0 is the free one and goes in last).  Building
+                # the key out of the search's own alpha instead let a fitted row
+                # contradict the text it came with, which is how a key one
+                # transposition from the truth used to survive to the ranking.
+                tval = {A26[tau[v]]: v for v in range(26)}
+                key = _assemble_key(stream, "." + plain, tval)
+                if key is None:
+                    continue
+                fits.append((self._sharp(ctx, self.decrypt(stream, key)), key))
         # Repairing the top rows is one translate plus one score each, so every
-        # serious candidate gets it before the ranking is final.
-        polished = []
-        for _, key in fits[:8]:
-            repaired = self._polish(stream, key, ctx, passes=6)
-            plain = self.decrypt(stream, repaired)
-            polished.append((self._sharp(ctx, plain), repaired))
+        # serious candidate gets it before the ranking is final -- and the climb
+        # runs to convergence, which is what fixes the last letter or two.
+        polished: list[tuple[float, str]] = []
+        share = max(1.0, ctx.remaining() * 0.5 / max(1, min(6, len(fits))))
+        for _, key in fits[:6]:
+            if ctx.expired():
+                break
+            repaired = self._polish(stream, key, ctx, seconds=share)
+            polished.append((self._sharp(ctx, self.decrypt(stream, repaired)), repaired))
         polished.extend(fits)
         polished.sort(key=lambda t: -t[0])
 
@@ -1048,6 +1177,43 @@ def _tau_row(tau: list[int]) -> str:
     return "".join(row)
 
 
+def _value_counts(text: str, bottom: str, cap: int = 3000) -> list[int]:
+    """How often each necklace value shows up as a difference, crib or no crib.
+
+    ``bottom`` is complete here, so the differences are exact -- and they are
+    the plaintext's own values relabelled, which is all the frequency prior
+    needs.  Deliberately independent of the top row: that is the row still
+    being guessed at.
+    """
+    position = {ch: i for i, ch in enumerate(bottom)}
+    counts = [0] * 26
+    previous: int | None = None
+    for ch in text[:cap]:
+        value = position[ch]
+        if previous is not None:
+            counts[(value - previous) % 26] += 1
+        previous = value
+    return counts
+
+
+def _frequency_assignment(
+    missing: list[str], spare: list[int], counts: list[int]
+) -> list[int]:
+    """Pair the busiest spare values with the most common missing letters.
+
+    Both rankings are sorted independently and zipped, the same move that seeds
+    a substitution fit.  It is a starting point, not an answer: the caller
+    hill-climbs it against the language model, because frequency alone cannot
+    tell ``K`` from ``X`` at these counts.
+    """
+    by_letter = sorted(range(len(missing)), key=lambda i: -_ENGLISH[ord(missing[i]) - 65])
+    by_value = sorted(range(len(spare)), key=lambda j: -counts[spare[j]])
+    assignment = [0] * len(missing)
+    for i, j in zip(by_letter, by_value):
+        assignment[i] = spare[j]
+    return assignment
+
+
 def _top_row(letters: list[str], missing: list[str], fitted: list[int]) -> str:
     """Value label -> letter, from the crib's letters and any completions."""
     row = ["?"] * 26
@@ -1072,6 +1238,55 @@ def _bottom_row_with(
     for ch, value in zip(missing, assignment):
         chars[value] = ch
     return "".join(chars)
+
+
+def _assemble_key(
+    stream: str, plain: str, tval: dict[str, int]
+) -> str | None:
+    """Build the key backwards from a reading: one necklace state per letter.
+
+    ``tval`` maps a plaintext letter to its necklace value, which the attack
+    read off the differences; the state map then follows by summing those values
+    along the ciphertext, and the bottom row is that map inverted.  Deriving the
+    key *from* the decryption -- rather than decrypting with a key assembled out
+    of two independent guesses -- makes the pair self-consistent by construction:
+    the returned key deciphers ``stream`` to ``plain`` again, or the function
+    refuses it.
+
+    ``plain`` may start with a placeholder: the state before the first ciphertext
+    letter is the one thing a running sum never exposes, so position 0 is a free
+    letter and is filled in last from the values nothing else claimed.
+    """
+    alpha: dict[str, int] = {}
+    acc = 0
+    for index, (ch, letter) in enumerate(zip(stream, plain)):
+        acc = (acc + tval.get(letter, 0)) % 26
+        if index == 0:
+            continue
+        if ch in alpha:
+            if alpha[ch] != acc:
+                return None
+        else:
+            alpha[ch] = acc
+    if len(set(alpha.values())) != len(alpha):
+        return None
+    spare = [v for v in range(26) if v not in set(alpha.values())]
+    if stream[0] not in alpha:
+        alpha[stream[0]] = spare.pop(0) if spare else 0
+    for ch in A26:
+        if ch not in alpha:
+            if not spare:
+                return None
+            alpha[ch] = spare.pop(0)
+    bottom = ["?"] * 26
+    for ch, value in alpha.items():
+        bottom[value] = ch
+    top = ["?"] * 26
+    for letter, value in tval.items():
+        top[value] = letter
+    if "?" in top or "?" in bottom:
+        return None
+    return f"{''.join(top)}|{''.join(bottom)}"
 
 
 def _factorial(n: int) -> int:

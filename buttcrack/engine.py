@@ -1406,6 +1406,8 @@ class Solver:
             phases.append((cost, group, weights))
 
         budgets = self._phase_budgets(phases, ctx, costs)
+        offered = set(ctx.hints)
+        hint_spent = False
         for (cost, group, weights), budget in zip(phases, budgets):
             if ctx.expired() or pool.certain:
                 return
@@ -1420,6 +1422,16 @@ class Solver:
                 if cap is not None and cap <= 0.0:
                     break
                 share = weights[index] / sum(weights[index:])
+                # A crib is decisive evidence and only a few ciphers in the
+                # collection can read it.  The first of those takes the phase's
+                # whole remaining budget instead of a share: a mid-message crib
+                # is found by swinging it through every offset, which costs tens
+                # of seconds, and a fraction of a phase never finishes the swing.
+                # The phase's own budget still bounds it, so the ciphers behind
+                # it lose nothing but the time the hint needed.
+                if not hint_spent and offered & set(cipher.info.hints):
+                    hint_spent = True
+                    share = 1.0
                 self._run(cipher, text, letters, ctx, pool, report, cost, share, sink, slice_cap=cap)
 
     @staticmethod

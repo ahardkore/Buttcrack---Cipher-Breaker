@@ -44,7 +44,7 @@ from .polyalphabetic import (
     Vigenere,
 )
 from .polygraphic import Bifid, FourSquare, Playfair, Trifid
-from .rotating import RotatingAlphabet
+from .ratchet import Ratchet
 from .shift import ROT13, ROT47, Affine, Atbash, Caesar, Reverse
 from .substitution import KeywordSubstitution, Substitution
 from .transposition import (
@@ -95,7 +95,7 @@ ALL_CIPHERS: list[Cipher] = [
     Trifid(),
     # wheel ciphers
     M94(),
-    RotatingAlphabet(),
+    Ratchet(),
     # byte level
     SingleByteXOR(),
     RepeatingKeyXOR(),
