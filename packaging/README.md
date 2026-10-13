@@ -47,6 +47,17 @@ Both are run on `windows-latest` for every push by the `installer` job in
 `.github/workflows/release.yml`, so the wizard is verified on every change rather
 than on the day someone downloads it.
 
+Then put it where buyers can get it -- an unguessable name on storage you
+control, with the URL, size and SHA-256 printed for `site.json`:
+
+```console
+python scripts\publish_installer.py dist\installer\buttcrack-setup-<version>.exe --dry-run
+```
+
+`.github/workflows/publish-installer.yml` does the same from CI, against the
+artifact of a run that already passed the test above. See
+`docs/windows-installer.md` for the five environment variables.
+
 Nothing here is a dependency of the project. `buttcrack` itself still installs
 with `pip install .` and still has an empty `dependencies` list; PyInstaller is
 fetched into a throwaway virtualenv (`.venv-build/`) that the build makes and

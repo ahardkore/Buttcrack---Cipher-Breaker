@@ -1,0 +1,109 @@
+name: Publish installer to storage
+
+# Manual, and deliberately so.  Every other workflow here builds and verifies;
+# this is the one that puts the paid file somewhere a buyer can download it, so
+# it takes an explicit click -- or `gh workflow run 'Publish installer to
+# storage'` -- and the storage credentials stay in repository secrets.
+#
+# It publishes a build that has *already* passed the install, exercise and
+# uninstall test rather than building a fresh one, because the digest that goes
+# on the download page has to be the digest of the file that was tested.  See
+# docs/windows-installer.md.
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_id:
+        description: Installer artifact id to publish. Blank publishes the newest live one.
+        required: false
+        default: ""
+      token:
+        description: Object-name token. Blank mints a new unguessable URL; reuse one to republish the same URL.
+        required: false
+        default: ""
+      dry_run:
+        description: Print what would be uploaded, without uploading it. Needs no secrets.
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: publish (fetch verified build, upload, print the delivery URL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Checked before anything is fetched, so an unconfigured repository says
+      # which value is missing instead of failing at the upload with an
+      # authentication error from a storage service.
+      - name: Are the storage secrets set?
+        if: ${{ !inputs.dry_run }}
+        env:
+          BUTTCRACK_DELIVERY_ENDPOINT: ${{ secrets.BUTTCRACK_DELIVERY_ENDPOINT }}
+          BUTTCRACK_DELIVERY_BUCKET: ${{ secrets.BUTTCRACK_DELIVERY_BUCKET }}
+          BUTTCRACK_DELIVERY_BASE_URL: ${{ secrets.BUTTCRACK_DELIVERY_BASE_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          missing=""
+          for name in BUTTCRACK_DELIVERY_ENDPOINT BUTTCRACK_DELIVERY_BUCKET \
+                      BUTTCRACK_DELIVERY_BASE_URL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error title=storage secrets missing::Set$missing in Settings -> Secrets and variables -> Actions. docs/windows-installer.md lists what each one is; the endpoint and bucket are not secret, only the two keys are."
+            exit 1
+          fi
+          echo "All five storage variables are present."
+
+      - name: Which build?
+        id: which
+        run: |
+          set -o pipefail
+          id="${{ inputs.artifact_id }}"
+          if [ -z "$id" ]; then
+            id=$(python scripts/fetch_installer.py --list --json | python -c "
+          import json, sys
+          rows = json.load(sys.stdin)
+          if not rows:
+              raise SystemExit('no installer artifact is live -- run the Release artifacts workflow first')
+          print(rows[0]['id'])
+          ")
+            echo "Chose the newest live installer artifact: $id"
+          fi
+          echo "artifact-id=$id" >> "$GITHUB_OUTPUT"
+          python scripts/fetch_installer.py --list | grep -E "version|$id" || true
+
+      # Fetched rather than rebuilt: this is the file whose digest is about to
+      # be published, and it is the one CI installed, ran and uninstalled.
+      - name: Fetch it, digest checked
+        run: python scripts/fetch_installer.py --artifact ${{ steps.which.outputs.artifact-id }} --out dist/installer
+
+      - name: Upload to your storage
+        env:
+          BUTTCRACK_DELIVERY_ENDPOINT: ${{ secrets.BUTTCRACK_DELIVERY_ENDPOINT }}
+          BUTTCRACK_DELIVERY_BUCKET: ${{ secrets.BUTTCRACK_DELIVERY_BUCKET }}
+          BUTTCRACK_DELIVERY_BASE_URL: ${{ secrets.BUTTCRACK_DELIVERY_BASE_URL }}
+          BUTTCRACK_DELIVERY_PREFIX: ${{ secrets.BUTTCRACK_DELIVERY_PREFIX }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          set -o pipefail
+          python scripts/publish_installer.py dist/installer/*.exe \
+            --token "${{ inputs.token }}" \
+            --annotate \
+            ${{ inputs.dry_run && '--dry-run' || '' }} | tee /tmp/publish.log
+          {
+            echo "## Installer published"
+            echo
+            echo '```'
+            cat /tmp/publish.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

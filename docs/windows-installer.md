@@ -89,6 +89,10 @@ added to your environment and is not a dependency of the project.
 powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1
 ```
 
+(That builds. `python scripts\publish_installer.py ...` is what puts the result
+where buyers can download it — see [Publishing it](#publishing-it-one-command-or-one-click)
+below.)
+
 or double-click `packaging\windows\build.bat`.
 
 It will, in order: find a usable Python, refuse to continue if that Python has
@@ -187,6 +191,91 @@ changes where it can live, and the rule is short:
 containing an `.exe` or `.msi`, so a stray copy fails the deploy instead of
 quietly publishing the product. (`BUTTCRACK_PUBLISH_BINARIES=1` overrides it,
 for the day you decide to give something away.)
+
+### Publishing it: one command, or one click
+
+Building the installer and *publishing* it are two steps on purpose — one is
+verified by CI on every push, the other decides where the paid file lives — and
+there is a command for the second:
+
+```console
+python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe --dry-run
+python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe
+```
+
+The first prints what would happen and uploads nothing, and needs no credentials
+at all. The second uploads it under an unguessable name and prints the four
+values `site.json` needs — `delivery_url`, `version`, `size`, `sha256` — which is
+the whole job:
+
+```
+published https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
+  15,558,568 bytes (15.6 MB), sha256 8cb5ffeb...
+
+ventures/cipher-solver-web/site.json, under windows_app:
+  "delivery_url": "https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe",
+  ...
+```
+
+Four environment variables say where, and the two credentials are the pair any
+S3 client already reads. The endpoint, bucket and base URL are configuration,
+not secrets; only the keys are:
+
+```bash
+export BUTTCRACK_DELIVERY_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+export BUTTCRACK_DELIVERY_BUCKET=buttcrack-downloads
+export BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain   # the custom domain on the bucket
+export BUTTCRACK_DELIVERY_PREFIX=                                 # optional folder inside the bucket
+export AWS_ACCESS_KEY_ID=...                                      # an R2 API token, or an S3 key
+export AWS_SECRET_ACCESS_KEY=...
+```
+
+The upload itself is `aws s3 cp`, so it works against R2, B2 and S3 unchanged and
+the script does not carry a second copy of the S3 signing rules. It sets the
+three headers the download depends on, which are easy to lose with a drag-and-drop
+upload: `Content-Type: application/octet-stream` (a host that guesses serves a
+`.exe` as `text/html` and it arrives corrupt), `Content-Disposition: attachment`,
+and a long `Cache-Control` (the object never changes once it is named).
+
+Two more things it does, both because they have bitten this project:
+
+* **The version comes out of the filename**, and anything that is not
+  `buttcrack-setup-<version>.exe` is refused. The installer filename, the
+  Add/Remove Programs entry and `OutputBaseFilename` all follow `__version__`;
+  a publish that reads the name is a publish that cannot disagree with the build.
+* **It will not publish a file that disagrees with its own `.sha256`.** The
+  sidecar `build.ps1` writes next to the installer is compared before anything is
+  uploaded, and the two are uploaded together. The page tells buyers to check the
+  digest, so a digest that does not match its file is worse than none at all.
+
+**Publish the build that was tested, and only that one.** The digest this prints
+is of the file on the disk it ran on; `site.json` has to carry that same number.
+Two builds of the same commit are not byte-identical, so fetching a fresh
+artifact and publishing an older digest — or the other way round — describes a
+file nobody can download. CI enforces this by fetching the artifact of a run that
+already passed the install-and-uninstall test rather than building again:
+
+**Actions → Publish installer to storage → Run workflow.** It takes an optional
+artifact id (blank publishes the newest live one) and an optional token (blank
+mints a new URL). `dry_run` prints the whole thing, including the URL, without
+uploading and without needing any secrets — which is the way to see what a first
+publish would look like. The storage credentials go in **Settings → Secrets and
+variables → Actions** under exactly the five names above, plus the optional
+prefix; the run checks they are set *before* it fetches anything, so an
+unconfigured repository says which value is missing instead of failing at the
+upload with an authentication error from a storage service.
+
+`gh workflow run 'Publish installer to storage'` does the same from a terminal.
+
+### Withdrawing a publish
+
+Republishing with the same URL is what `--token` is for: pass back the token
+already in `delivery_url` and the object name, and therefore the link in buyers'
+bookmarks, stays the same. Pass a new one and the old URL stops being the one you
+advertise — but it keeps working until the object is deleted, so if a link does
+start circulating, delete the old object too. An unguessable URL is the entire
+paywall for a $39.99 download with no licence server, which is exactly why the
+remedy has to be deleting the object rather than changing the link.
 
 ### How the sale actually flows
 

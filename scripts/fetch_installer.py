@@ -176,12 +176,35 @@ def download(artifact: dict, out_dir: Path) -> Path:
     return setup
 
 
+def as_json(artifacts: list[dict]) -> str:
+    """The same facts as ``--list``, for whatever wants to read them.
+
+    ``publish-installer.yml`` picks the newest live artifact with this rather
+    than with a fourth copy of the filtering rules.
+    """
+    return json.dumps(
+        [
+            {
+                "id": artifact["id"],
+                "name": artifact["name"],
+                "version": version_of(artifact),
+                "created_at": artifact["created_at"],
+                "expires_at": artifact["expires_at"],
+                "size_in_bytes": artifact["size_in_bytes"],
+            }
+            for artifact in artifacts
+        ],
+        indent=2,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="List and download the Windows installers CI has built.",
         epilog="Nothing here touches the network but the GitHub API.",
     )
     parser.add_argument("--list", action="store_true", help="show every live installer and when it lapses")
+    parser.add_argument("--json", action="store_true", help="with --list, print JSON instead of a table")
     parser.add_argument("--version", help="fetch this version instead of the newest")
     parser.add_argument("--artifact", type=int, help="fetch this artifact id instead of the newest")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help=f"where to write it (default {DEFAULT_OUT})")
@@ -189,6 +212,9 @@ def main(argv: list[str] | None = None) -> int:
 
     artifacts = live_installers()
     if args.list:
+        if args.json:
+            print(as_json(artifacts))
+            return 0
         if not artifacts:
             print("no installer artifact is live right now.")
             print("Ask for one:  gh workflow run 'Release artifacts'")
