@@ -1,12 +1,12 @@
-# rotor-kit — the rotating alphabet, end to end
+# rotor-kit — the Ratchet cipher, end to end
 
 > **Naming.** This cipher shipped as **`ratchet`** (`Ratchet`, self-rotating alphabet) in
 > `buttcrack/ciphers/ratchet.py`; the research below was written while it was called
 > `rotating`. `rotating`, `rotating_alphabet` and `chaocipher` remain aliases.
 
-Working notes, attacks and measurements for the **self-rotating alphabet
-(Chaocipher-style)** cipher, which is now a first-class cipher in the tool
-(`buttcrack/ciphers/rotating.py`, registered as `rotating`).  Everything here
+Working notes, attacks and measurements for the **Ratchet** cipher (a
+self-rotating alphabet, Chaocipher-style), which is now a first-class cipher in
+the tool (`buttcrack/ciphers/ratchet.py`, registered as `ratchet`).  Everything here
 exists so the numbers quoted in the README and in the cipher module can be
 reproduced rather than believed.
 
@@ -29,7 +29,7 @@ top row and a reversed bottom row.
 
 | file | what it is |
 | --- | --- |
-| `challenge.txt` | the 409-letter challenge ciphertext, unbroken here (see below) |
+| `challenge.txt` | the 409-letter challenge ciphertext the cipher was recovered from (see below) |
 | `common.py` | corpus scoring: quadgrams with an unseen-gram floor, `to_idx`, key permutation, `encrypt_text`/`decrypt_with_key` |
 | `solver2.py` | the fast quadgram scorer and the original hill climb over the necklace |
 | `spectral.py`, `spectral2.py` | the pooled skip-matrix attack: `M_k` is a permuted circulant for every `k`, so their sum has several times the data on one set of phases |
@@ -61,16 +61,22 @@ to those artifacts.
 ## Measured results (2 cores, this container)
 
 **Known plaintext is decisive.** A crib of 150-500 letters recovers the exact
-key in under a second, at any message length, including a crib taken from the
-middle of the message (the letter before the crib is not recoverable — that is
-the necklace's start offset).  Through the app:
+key in about a second, at any message length, including a crib taken from the
+middle of a message — the whole message comes back, not just the part after the
+fragment.  The message's *first* letter is the necklace's start offset and is
+not recoverable; everything from the second letter on is.
 
 ```console
-$ buttcrack crack --file challenge409.txt --crib "THEMESSAGEOPENSTHE..." --budget 60
-SOLVED  confidence 1.00  in 40.43s
-  cipher    rotating
+$ buttcrack crack --file ../examples/ratchet-challenge.txt --crib "NEANARCHIVE..." \
+      --hint crib_offset=4066 --budget 90
+SOLVED  confidence 1.00  in 33.0s
+  cipher    ratchet
   method    known plaintext (linear solve mod 26)
 ```
+
+The 33 s is the collection being tried on the way to the cipher that declares
+the hint — the ratchet attack itself is 1.3 s.  Sweeping every offset instead
+of naming one costs 29 s.
 
 **Ciphertext-only needs length.** The transition statistic is flat enough at a
 few hundred letters that the truth sits inside the sampling noise; the climb
@@ -79,7 +85,8 @@ engine's ~25 s slice is the binding constraint inside the app.
 
 | letters | budget | result |
 | --- | --- | --- |
-| 409 | any | **not broken** — the challenge ciphertext, and the reason the app offers `--crib` |
+| 409 | 60 s | **not broken** without a crib — the original challenge, and the reason the app offers `--crib` (with one: 0.46 s) |
+| 6,778 (the published challenge) | 300 s, 4 workers | **exact** in 111 s (direct) / 107 s (through the engine) |
 | 1200 | 90 s | 1 of 3 (bench_app.log) |
 | 2000 | 90 s | 2 of 3 |
 | 3000 | 90 s | 2 of 3 |
@@ -102,8 +109,8 @@ key never lands from a few hundred letters (measured 605.9 against a truth of
 ## Reproducing
 
 ```console
-$ python3 -m unittest tests.test_rotating             # cipher + crib path
-$ BUTTCRACK_SLOW=1 python3 -m unittest tests.test_rotating   # adds the 8000-letter search
+$ python3 -m unittest tests.test_ratchet              # cipher + crib path + the published puzzle
+$ BUTTCRACK_SLOW=1 python3 -m unittest tests.test_ratchet    # adds the 8000-letter search
 $ PYTHONPATH=. python3 rotor-kit/bench_app.py 90      # the recall table
 $ PYTHONPATH=. python3 rotor-kit/bench_slice.py 20    # what the engine's slice buys
 ```

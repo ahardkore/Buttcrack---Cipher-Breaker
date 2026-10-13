@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fast solver for the rotating-alphabet (self-rotating necklace) cipher.
+Fast solver for the Ratchet cipher (self-rotating necklace).
 
 Model (see common.py): with u[letter] = position of the letter on the hidden
 necklace, the plaintext satisfies

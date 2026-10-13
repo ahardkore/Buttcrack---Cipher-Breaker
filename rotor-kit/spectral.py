@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Spectral (phase) attack on the rotating-alphabet cipher.
+"""Spectral (phase) attack on the Ratchet cipher.
 
 Under the model the transition-count matrix of the ciphertext satisfies
 

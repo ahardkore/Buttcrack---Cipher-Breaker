@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Known-plaintext key recovery for the rotating-alphabet cipher.
+"""Known-plaintext key recovery for the Ratchet cipher.
 
 Identity used (derived from the algorithm):
 

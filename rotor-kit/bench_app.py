@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Recall benchmark for the app's rotating-alphabet statistical attack."""
+"""Recall benchmark for the app's Ratchet statistical attack."""
 import random, sys, time
 from buttcrack.ciphers import get
 from buttcrack.ciphers.base import CrackContext
 
-c = get('rotating')
+c = get('ratchet')
 corpus = "".join(ch for ch in open('examples/english_samples.txt').read().upper() if ch.isalpha())
 BUDGET = float(sys.argv[1]) if len(sys.argv) > 1 else 90.0
 for L in (1200, 2000, 3000):
