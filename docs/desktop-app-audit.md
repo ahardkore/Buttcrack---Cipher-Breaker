@@ -424,6 +424,42 @@ last two CI regressions in this area.
   installation) is better placed in `tests/` where the fast suite can run it on any
   OS.
 
+**The release gate is timing-dependent, and it flakes.** The `installer (build,
+install, uninstall)` job ends by running the 142-check self-test *inside the
+installed build* (`release.yml` l.112–131). Two runs of commit `6a2470c` passed
+and two failed, on runners that took 3 m 20 s and 4 m 15 s for the same work; the
+failure is always the same shape — `FAIL break (169.1s) -- 2 of 47 failed`. The
+break checks are wall-clock budgeted (`buttcrack/selftest.py` l.462–500), and the
+tightest of them are not comfortable even on an idle two-core box:
+
+| check | used | budget | share |
+| --- | --- | --- | --- |
+| six ciphers: reverse, rail fence, skip, … | 22.2 s | 30 s | 74% |
+| reverse over Vigenere | 17.0 s | 25 s | 68% |
+| AMSCO transposition | 13.4 s | 20 s | 67% |
+| Myszkowski transposition | 13.4 s | 20 s | 67% |
+| five layers: hex, base64, Morse, reverse, Caesar | 15.1 s | 25 s | 60% |
+| Polybius square | 9.0 s | 15 s | 60% |
+| Hill cipher (2x2) | 11.2 s | 20 s | 56% |
+
+A frozen build on a shared runner is perhaps 20–30% slower than that, which is
+the whole margin. Fix: scale the budgets by a measured speed factor rather than
+raising the constants — time a fixed piece of work at the top of the self-test and
+multiply the budgets by `clamp(measured / reference, 1, 3)`. A hung search still
+fails (it exceeds even 3x), a slow laptop stops reporting a scary 140/142, and the
+release job stops going red for reasons unrelated to the change.
+
+The same run shows the other half of the picture: `caesar in german` and `caesar
+in spanish` take **8.02 s each** — exactly the 8 s budget `check_languages` passes
+(`selftest.py` l.656) — while the same check for English, French, Italian and
+Latin finishes in 0.02–0.07 s with a *higher* confidence (0.73 and 0.79 against
+0.96–1.00). The obvious reading is that those two never clear the engine's
+solved bar, so the search keeps going until the budget expires and reports its
+best guess anyway; that is 16 of the self-test's 167 seconds spent proving nothing
+new. Worth five minutes with `--verbose` before touching the small language
+models, but if a user's first impression of "verify my installation" is two
+slow checks that look like failures, that is the number to explain.
+
 ---
 
 ## Effort summary
