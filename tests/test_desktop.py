@@ -138,25 +138,47 @@ class LocalAppTests(unittest.TestCase):
             probe.bind(("127.0.0.1", port))
 
 
-class FrozenBuildTests(unittest.TestCase):
+class ScratchDataDirMixin:
+    """A data directory of one's own, and a log sink closed after the test.
+
+    The tests below exercise the sink a windowed build writes to, so they need
+    somewhere harmless for it to write: without this, running the suite would
+    append to the log of the person running it.
+    """
+
+    def setUp(self) -> None:
+        self.base = tempfile.TemporaryDirectory()
+        self.addCleanup(self.base.cleanup)
+        env = mock.patch.dict(os.environ, {userdata.ENV_DATA_DIR: self.base.name})
+        env.start()
+        self.addCleanup(env.stop)
+        stream = mock.patch.object(desktop, "_LOG_STREAM", None)
+        stream.start()
+        self.addCleanup(stream.stop)
+        # Reverse order: the open handle is closed before the patch that owns
+        # the global is undone, so no test leaves a file descriptor behind.
+        self.addCleanup(self._close_log)
+
+    @staticmethod
+    def _close_log() -> None:
+        handle = desktop._LOG_STREAM
+        if handle is not None and not handle.closed:
+            handle.close()
+
+
+class FrozenBuildTests(ScratchDataDirMixin, unittest.TestCase):
     """The things that only break inside a PyInstaller --windowed build."""
 
     def test_ensure_streams_replaces_missing_stdout(self) -> None:
         # PyInstaller sets both to None in a windowed build, and the first
         # print() in the server would then raise AttributeError on startup.
-        # The replacement sink writes to the data directory, so it is pointed at
-        # a temporary one: a test run must not append to the user's real log.
-        with tempfile.TemporaryDirectory() as base:
-            with mock.patch.dict(os.environ, {userdata.ENV_DATA_DIR: base}):
-                with mock.patch.object(desktop, "_LOG_STREAM", None):
-                    with mock.patch.object(sys, "stdout", None), mock.patch.object(sys, "stderr", None):
-                        desktop.ensure_streams()
-                        self.assertIsNotNone(sys.stdout)
-                        print("this must not raise", file=sys.stderr)
-                        sys.stdout.write("nor this")
-                        sys.stdout.flush()
-                    self.assertIn("nor this", desktop.log_path().read_text(encoding="utf-8"))
-                    LogFileTests._close_log()
+        with mock.patch.object(sys, "stdout", None), mock.patch.object(sys, "stderr", None):
+            desktop.ensure_streams()
+            self.assertIsNotNone(sys.stdout)
+            print("this must not raise", file=sys.stderr)
+            sys.stdout.write("nor this")
+            sys.stdout.flush()
+        self.assertIn("nor this", desktop.log_path().read_text(encoding="utf-8"))
 
     def test_ensure_streams_leaves_real_streams_alone(self) -> None:
         before = sys.stdout
@@ -228,32 +250,13 @@ class CliWiringTests(unittest.TestCase):
         self.assertEqual(args.host, "0.0.0.0")
 
 
-class LogFileTests(unittest.TestCase):
+class LogFileTests(ScratchDataDirMixin, unittest.TestCase):
     """What a windowed build keeps after the window is gone.
 
     A GUI build has no console, so this file is the only record of a worker that
     died or a startup that failed -- which makes "it silently discards" a bug
     with a support cost, not a cosmetic one.
     """
-
-    def setUp(self) -> None:
-        self.base = tempfile.TemporaryDirectory()
-        self.addCleanup(self.base.cleanup)
-        env = mock.patch.dict(os.environ, {userdata.ENV_DATA_DIR: self.base.name})
-        env.start()
-        self.addCleanup(env.stop)
-        stream = mock.patch.object(desktop, "_LOG_STREAM", None)
-        stream.start()
-        self.addCleanup(stream.stop)
-        # Reverse order: the open handle is closed before the patch that owns
-        # the global is undone, so no test leaves a file descriptor behind.
-        self.addCleanup(self._close_log)
-
-    @staticmethod
-    def _close_log() -> None:
-        handle = desktop._LOG_STREAM
-        if handle is not None and not handle.closed:
-            handle.close()
 
     def test_the_sink_writes_to_a_file_in_the_data_directory(self) -> None:
         stream = desktop._NullStream()
