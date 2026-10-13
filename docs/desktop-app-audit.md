@@ -35,6 +35,15 @@ which finding shipped and which did not. Deliberately still open:
   needs. A custom manifest would replace PyInstaller's (and `*.manifest` is
   deliberately git-ignored), so it wants a Windows build to try it on.
 
+**Found by the release gate, after A2 had shipped.** The marker was locked *and*
+read: the URL lived in the file the exclusive lock sat on. Windows byte-range
+locks are mandatory, so the second launch's read of that file raised
+`ERROR_LOCK_VIOLATION`, `running_instance()` returned `None`, and the second copy
+started its own server on its own port — the exact symptom A2 removed, on the one
+platform this suite cannot run on. The lock and the message now live in two files
+(`desktop-instance.lock`, `desktop-instance.json`) and only the lock's owner
+publishes. The installer test is what caught it, which is F2 paying for itself.
+
 Nothing here is a rewrite. The app is in good shape — the entry points, the
 loopback binding, the fallback chain (window → message box → console), the
 uninstaller's PATH cleanup and the installer contract are all deliberate and

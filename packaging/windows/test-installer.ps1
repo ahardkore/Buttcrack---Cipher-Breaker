@@ -468,11 +468,20 @@ try {
         Assert-True ($health.name -eq 'buttcrack') "the installed desktop program serves on port $port" "$health"
     }
 
+    # The marker is what the second launch reads, and on Windows it has to be
+    # readable while the first copy holds its lock: a byte-range lock is
+    # mandatory there, so a marker that carried the lock was unreadable and the
+    # second copy started a server of its own.  That is what this asserts.
+    $marker = Join-Path $env:BUTTCRACK_DATA_DIR 'desktop-instance.json'
+    $markerText = if (Test-Path -LiteralPath $marker) { (Get-Content -LiteralPath $marker -Raw).Trim() } else { '(no marker)' }
+    Assert-True ($markerText -match '"url"') 'the running app leaves a mark a second launch can read' $markerText
+
     Write-Step 'Starting it a second time (it has to hand over, not pile up)'
     $second = Start-Process -FilePath $desktopExe -ArgumentList '--console', '--no-browser' -PassThru
     $handedOver = $second.WaitForExit(60000)
     if (-not $handedOver) { try { $second.Kill() } catch { } }
-    Assert-True $handedOver 'the second launch exits instead of starting a second server'
+    Assert-True $handedOver 'the second launch exits instead of starting a second server' `
+        "exit $($second.ExitCode); marker: $markerText"
     Assert-True (-not $first.HasExited) 'the first copy is still running'
 }
 finally {

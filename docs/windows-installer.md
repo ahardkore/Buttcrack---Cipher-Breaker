@@ -78,11 +78,14 @@ On the Windows machine you build from:
   during installation tick **"tcl/tk and IDLE"** (the desktop window is Tk) and
   **"Add python.exe to PATH"**.
 * **Inno Setup 6.3+**: `winget install --id JRSoftware.InnoSetup`, or from
-  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php). CI installs
-  **6.3.3**, and the compiler decides the installer's layout and compression, so
-  the same script and the same version give the same file — if the size you
-  build differs from the size CI published, check the version before anything
-  else.
+  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php). The compiler
+  decides the installer's layout and compression, so its version is part of what
+  the file is: CI installs the current release from the vendor and prints the
+  version it turned out to be in the job log. It cannot be pinned for long —
+  jrsoftware keeps only the newest dozen releases online, and Chocolatey carries
+  one — so a size that differs from the published one is worth explaining by
+  version first. What the site publishes is a SHA-256, and that is the thing to
+  compare.
 
 PyInstaller is installed automatically into a throwaway virtualenv; it is not
 added to your environment and is not a dependency of the project.
@@ -414,8 +417,12 @@ by the ordinary test suite rather than by a customer.
 
 The desktop window owns the PK9 campaign ledger, the saved assistant transcripts,
 `logs\buttcrack.log` (a windowed build has no console, so this file is where a
-failing worker or startup leaves its traceback) and `desktop-state.json` (where
-the windows were, and the port that worked last time). They live in
+failing worker or startup leaves its traceback), `desktop-state.json` (where the
+windows were, and the port that worked last time) and the second-launch pair
+`desktop-instance.json` (the address already being served) and
+`desktop-instance.lock` (whose lock says the app is running — two files on
+purpose, because a Windows byte-range lock makes the file it sits on unreadable
+to everyone else). They live in
 `%LOCALAPPDATA%\Buttcrack` (on macOS, `~/Library/Application Support/Buttcrack`;
 on Linux, `$XDG_DATA_HOME/buttcrack`). `buttcrack.exe doctor`, or **Help → Copy
 diagnostics** in the window, prints that path along with everything else worth

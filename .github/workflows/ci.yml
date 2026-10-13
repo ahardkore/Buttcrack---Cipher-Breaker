@@ -352,16 +352,20 @@ jobs:
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
 
-      # The html report is uploaded below; the annotation is what makes a red
+      # The html report is uploaded below; the annotations are what make a red
       # run readable from the API alone, which is how this repository reads CI.
+      #
+      # No `set -o pipefail` here on purpose: the runner runs this script under
+      # `bash -e`, where pipefail turns the deliberately-tolerant pipeline below
+      # into an immediate exit -- which is exactly how the first version of this
+      # step failed without saying a word about which test broke.
       - name: Run the browser tests
         run: |
-          set -o pipefail
           npx playwright test --reporter=list 2>&1 | tee browser-tests.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
-            echo "::error title=browser interface failed (exit $code)::$(grep -E '^(  [0-9]+\)|Error:|expect)' browser-tests.log | tail -n 8 | tr '\n' ' ')"
-            tail -n 30 browser-tests.log | sed 's/^/::notice::/'
+            echo "::error title=browser interface failed (exit $code)::$(grep -E '^  [0-9]+\)|Error:|expect\(' browser-tests.log | tail -n 10 | tr '\n' ' ')"
+            tail -n 60 browser-tests.log | sed 's/^/::notice::/'
             exit "$code"
           fi
 
