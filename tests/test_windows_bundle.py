@@ -323,6 +323,59 @@ class TestTraySurvivesTheShell(unittest.TestCase):
 
         self.assertTrue(hasattr(tray.TrayIcon, "_add_icon"))
 
+class TestTheWindowIsAWorthwhileWindow(unittest.TestCase):
+    """The Tk window as a desktop application rather than a launcher.
+
+    None of this can run off Windows in CI (there is no Tk in the test
+    environment and no display for it), so the checks are structural: they pin
+    the things that were missing -- a menu, keys, remembered geometry, a DPI
+    call -- to the places they have to happen, and would notice if a later
+    change quietly dropped one.
+    """
+
+    SOURCE = ROOT / "buttcrack" / "desktop.py"
+
+    def source(self) -> str:
+        return self.SOURCE.read_text(encoding="utf-8")
+
+    def test_dpi_awareness_is_set_before_the_first_window_exists(self):
+        source = self.source()
+        self.assertIn("SetProcessDpiAwareness", source)
+        # Order is the whole point: awareness is read when a window is created.
+        self.assertLess(source.index("enable_dpi_awareness()"), source.index("tk.Tk()"))
+        # And Tk's own idea of the screen's resolution follows from it.
+        self.assertIn('root.tk.call("tk", "scaling"', source)
+
+    def test_every_panel_goes_through_the_one_that_remembers_geometry(self):
+        # Nine panels, one Toplevel() call: if a panel is added and makes its
+        # own window, that window is the one that will not come back where the
+        # user left it.
+        source = self.source()
+        self.assertEqual(source.count("tk.Toplevel(root)"), 1)
+        self.assertEqual(source.count("= open_panel("), 9, "a panel bypasses open_panel()")
+        self.assertIn("remember_geometry", source)
+
+    def test_the_window_has_a_menu_and_keyboard_shortcuts(self):
+        source = self.source()
+        self.assertIn("tk.Menu(root)", source)
+        self.assertIn("root.config(menu=", source)
+        self.assertIn("root.bind_all(", source)
+        for key in ("<F1>", "<Control-q>", "<Control-d>", "<Alt-Key-"):
+            self.assertIn(key, source, f"{key} is not bound")
+
+    def test_the_support_pair_is_reachable_from_the_window_and_the_tray(self):
+        source = self.source()
+        for label in ('"Copy diagnostics"', '"Open data folder"'):
+            # Button, menu and tray item: one of them is what a stuck user finds.
+            self.assertGreaterEqual(source.count(label), 2, f"{label} is offered in only one place")
+        self.assertIn("report_text(", source)
+
+    def test_the_shipped_cli_can_answer_what_and_where(self):
+        from buttcrack import cli
+
+        self.assertIn("doctor", cli.SUBCOMMANDS)
+
+
     def test_the_windowed_entry_point_hides_rather_than_quits_only_with_a_tray(self):
         # desktop.py must keep tying the close button to whether there is an
         # icon to bring the window back from.

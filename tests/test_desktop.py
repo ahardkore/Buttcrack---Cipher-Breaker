@@ -336,13 +336,101 @@ class SingleInstanceTests(unittest.TestCase):
         opened.assert_called_once_with(url)
         app.assert_not_called()
 
+    @mock.patch.object(desktop, "save_state")
     @mock.patch.object(desktop, "run_window", return_value=True)
     @mock.patch.object(desktop, "LocalApp")
     @mock.patch.object(desktop, "running_instance")
-    def test_the_handover_is_not_consulted_unless_asked_for(self, probe, app, _window) -> None:
+    def test_the_handover_is_not_consulted_unless_asked_for(self, probe, app, _window, _state) -> None:
         desktop.run(open_browser=False)
         probe.assert_not_called()
         app.assert_called_once()
+
+    @mock.patch.object(desktop, "save_state")
+    @mock.patch.object(desktop, "run_window", return_value=True)
+    @mock.patch.object(desktop, "LocalApp")
+    def test_the_port_that_worked_is_the_one_remembered(self, app, _window, state) -> None:
+        # The desktop app remembers where it served so the bookmark keeps
+        # working; a LocalApp built by a library user does not write anything.
+        app.return_value.port = 53412
+        desktop.run(open_browser=False)
+        state.assert_called_once_with(port=53412)
+
+
+class RememberedStateTests(unittest.TestCase):
+    """The small file that makes the second launch feel like the first."""
+
+    def setUp(self) -> None:
+        self.base = tempfile.TemporaryDirectory()
+        self.addCleanup(self.base.cleanup)
+        env = mock.patch.dict(os.environ, {userdata.ENV_DATA_DIR: self.base.name})
+        env.start()
+        self.addCleanup(env.stop)
+
+    def test_state_round_trips(self) -> None:
+        desktop.save_state(port=53412, windows={"main": "430x520+100+80"})
+        self.assertEqual(desktop.remembered_port(), 53412)
+        self.assertEqual(desktop.load_state()["windows"], {"main": "430x520+100+80"})
+
+    def test_saving_keeps_what_was_there(self) -> None:
+        desktop.save_state(windows={"main": "430x520+100+80"})
+        desktop.save_state(port=53412)
+        self.assertEqual(desktop.load_state()["windows"], {"main": "430x520+100+80"})
+
+    def test_a_corrupt_or_missing_file_is_not_an_error(self) -> None:
+        self.assertEqual(desktop.load_state(), {})
+        self.assertEqual(desktop.remembered_port(), 0)
+        desktop.state_path().write_text("{not json", encoding="utf-8")
+        self.assertEqual(desktop.load_state(), {})
+        desktop.state_path().write_text('["a list"]', encoding="utf-8")
+        self.assertEqual(desktop.load_state(), {})
+
+    def test_only_a_plausible_port_is_remembered(self) -> None:
+        for stored in (0, -1, 70000, "8080", None, 8080.5):
+            desktop.state_path().write_text(json.dumps({"port": stored}), encoding="utf-8")
+            self.assertEqual(desktop.remembered_port(), 0, stored)
+
+    def test_a_withdrawn_windows_geometry_is_not_restored(self) -> None:
+        self.assertFalse(desktop.usable_geometry("1x1+0+0"))
+        self.assertFalse(desktop.usable_geometry(""))
+        self.assertTrue(desktop.usable_geometry("430x520+100+80"))
+        self.assertTrue(desktop.usable_geometry("430x520-10-20"))
+
+    def test_a_busy_familiar_port_falls_through_to_anything_free(self) -> None:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as busy:
+            busy.bind(("127.0.0.1", 0))
+            busy.listen(1)
+            taken = busy.getsockname()[1]
+            chosen = desktop.desktop_port(preferred=taken)
+        self.assertGreater(chosen, 0)
+        self.assertNotEqual(chosen, taken)
+
+    def test_the_remembered_port_beats_a_random_one(self) -> None:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as free_socket:
+            free_socket.bind(("127.0.0.1", 0))
+            remembered = free_socket.getsockname()[1]
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as busy:
+            busy.bind(("127.0.0.1", 0))
+            busy.listen(1)
+            taken = busy.getsockname()[1]
+            desktop.save_state(port=remembered)
+            self.assertEqual(desktop.desktop_port(preferred=taken), remembered)
+
+    def test_the_dpi_call_declines_off_windows(self) -> None:
+        if sys.platform == "win32":  # pragma: no cover - not where CI runs
+            self.skipTest("this is the Windows path")
+        self.assertFalse(desktop.enable_dpi_awareness())
+
+    def test_the_data_folder_is_created_before_it_is_opened(self) -> None:
+        # Whether the file manager actually starts is the desktop's business;
+        # that the directory exists when it is asked for is ours.
+        with mock.patch.object(desktop, "open_path", return_value=True) as opened:
+            self.assertTrue(desktop.open_data_folder())
+        self.assertTrue(userdata.data_dir().is_dir())
+        opened.assert_called_once_with(userdata.data_dir())
+
+    def test_a_tray_that_is_not_running_cannot_notify(self) -> None:
+        tray = TrayIcon("Buttcrack")
+        self.assertFalse(tray.notify("title", "message"))
 
 
 if __name__ == "__main__":

@@ -41,10 +41,13 @@ _WM_APP = 0x8000
 _WM_TRAY = _WM_APP + 1
 
 _NIM_ADD = 0
+_NIM_MODIFY = 1
 _NIM_DELETE = 2
 _NIF_MESSAGE = 0x01
 _NIF_ICON = 0x02
 _NIF_TIP = 0x04
+_NIF_INFO = 0x10
+_NIIF_INFO = 0x01
 
 _IMAGE_ICON = 1
 _LR_LOADFROMFILE = 0x0010
@@ -92,6 +95,8 @@ class TrayIcon:
         # Built in _create(); the window procedure needs it to remove the icon
         # on WM_DESTROY, and may be reached before _create() has finished.
         self._nid: object = None
+        # Kept so notify() can reach the shell after the icon exists.
+        self._shell32: Any = None
 
     # ----------------------------------------------------------------- #
     # public surface
@@ -121,6 +126,28 @@ class TrayIcon:
     # ----------------------------------------------------------------- #
     # the thread
     # ----------------------------------------------------------------- #
+
+    def notify(self, title: str, message: str) -> bool:
+        """Show a balloon from the icon -- a toast, on Windows 10 and later.
+
+        Used once, the first time the window is hidden: without it "the app
+        closed" and "the app is in the tray" look identical.  Returns whether
+        the shell accepted it; a missing icon is not an error.
+        """
+        if not self.active or self._nid is None or self._shell32 is None:
+            return False
+        try:
+            nid = type(self._nid)()
+            nid.cbSize = ctypes.sizeof(nid)
+            nid.hWnd = self._nid.hWnd
+            nid.uID = self._nid.uID
+            nid.uFlags = _NIF_INFO
+            nid.szInfoTitle = title[:63]
+            nid.szInfo = message[:255]
+            nid.dwInfoFlags = _NIIF_INFO
+            return bool(self._shell32.Shell_NotifyIconW(_NIM_MODIFY, ctypes.byref(nid)))
+        except Exception:
+            return False
 
     def _run(self) -> None:
         try:
@@ -236,6 +263,7 @@ class TrayIcon:
         kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
 
         instance = kernel32.GetModuleHandleW(None)
+        self._shell32 = shell32
 
         # The shell owns the notification area, and it is not a permanent thing:
         # an Explorer crash, a Windows update or "restart Explorer" builds a new

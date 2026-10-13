@@ -27,6 +27,7 @@ import hashlib
 import json
 import os
 import socket
+import subprocess
 import sys
 import threading
 import urllib.request
@@ -168,6 +169,81 @@ def is_frozen() -> bool:
 
 
 # --------------------------------------------------------------------------- #
+# what the app remembers
+# --------------------------------------------------------------------------- #
+
+#: Window geometry per panel, and the port that worked last time.  One small
+#: JSON file: nothing here is worth a database, and nothing here is worth
+#: failing over -- a read-only data directory costs the user a remembered
+#: window, never the app.
+STATE_NAME = "desktop-state.json"
+
+
+def state_path() -> Path:
+    return userdata.data_dir() / STATE_NAME
+
+
+def load_state() -> dict[str, Any]:
+    """The remembered state, or an empty dict if there is none to read."""
+    try:
+        loaded = json.loads(state_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def save_state(**updates: Any) -> None:
+    """Merge ``updates`` into the state file.  Never raises."""
+    state = load_state()
+    state.update(updates)
+    try:
+        state_path().parent.mkdir(parents=True, exist_ok=True)
+        state_path().write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def usable_geometry(geometry: str) -> bool:
+    """Whether a Tk geometry string is worth restoring.
+
+    A withdrawn window reports ``1x1+0+0`` on some systems; writing that back
+    would make the next launch a one-pixel window.  Anything narrower than the
+    root's own minimum is a report like that rather than a real window.
+    """
+    width = geometry.split("x", 1)[0]
+    return "x" in geometry and width.isdigit() and int(width) >= 300
+
+
+def remembered_port() -> int:
+    """The port that worked last time, or 0 when there is nothing usable."""
+    port = load_state().get("port")
+    return port if isinstance(port, int) and 0 < port < 65536 else 0
+
+
+def is_free(port: int, host: str = LOCAL_HOST) -> bool:
+    """Whether ``port`` can be bound on ``host`` right now."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        try:
+            probe.bind((host, port))
+        except OSError:
+            return False
+    return True
+
+
+def desktop_port(preferred: int = PREFERRED_PORT, host: str = LOCAL_HOST) -> int:
+    """Which port to serve on.
+
+    The familiar one if it is free, then the one that worked last time -- so a
+    bookmark survives the day some other program takes 8080 -- and only then a
+    port the OS picks.
+    """
+    for candidate in (preferred, remembered_port()):
+        if candidate and is_free(candidate, host):
+            return candidate
+    return free_port(0, host)
+
+
+# --------------------------------------------------------------------------- #
 # the server, on a thread
 # --------------------------------------------------------------------------- #
 
@@ -298,13 +374,8 @@ def running_instance(timeout: float = 0.5) -> str | None:
 
 def free_port(preferred: int = PREFERRED_PORT, host: str = LOCAL_HOST) -> int:
     """``preferred`` if it is free on ``host``, otherwise one the OS picks."""
-    if preferred:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-            try:
-                probe.bind((host, preferred))
-                return preferred
-            except OSError:
-                pass
+    if preferred and is_free(preferred, host):
+        return preferred
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
         probe.bind((host, 0))
         return int(probe.getsockname()[1])
@@ -317,7 +388,7 @@ class LocalApp:
         from .server import make_server  # imported late: loading the model is slow
 
         self.host = host
-        self.port = port or free_port(PREFERRED_PORT, host)
+        self.port = port or desktop_port(host=host)
         # make_server keeps the bind address with the server, which is what the
         # handler checks the Host header against.
         self._httpd = make_server(self.host, self.port)
@@ -382,6 +453,10 @@ class LocalApp:
 def summary_lines(app: LocalApp) -> list[str]:
     """The few facts worth putting in front of someone: where it is, what it knows."""
     lines = [f"buttcrack {__version__}", f"Listening on {app.url}"]
+    if app.port != PREFERRED_PORT:
+        # The bookmark people have is the familiar port; saying why this is not
+        # it is worth the line, and it names the URL to bookmark instead.
+        lines.append(f"port {PREFERRED_PORT} was busy, so this is {app.port} -- bookmark this address")
     try:
         from .ciphers import ALL_CIPHERS
         from .lang import LANGUAGES, get_model
@@ -414,6 +489,55 @@ def _icon_path() -> str | None:
     return next((path for path in candidates if os.path.isfile(path)), None)
 
 
+def enable_dpi_awareness() -> bool:
+    """Tell Windows this process draws its own pixels.  No-op anywhere else.
+
+    A DPI-unaware process on a 125-200% display is rendered at 96 dpi and then
+    bitmap-stretched by the compositor, which is what makes every Tk widget
+    blurry and slightly wrong-sized.  System awareness is the cheap 90% of the
+    fix and needs nothing but this call, done before the first window exists;
+    per-monitor v2 needs a manifest, which is a packaging change.
+
+    Returns whether the process is aware.  Fails quietly: a manifest may have
+    set this already, which is the same outcome by a different route.
+    """
+    if sys.platform != "win32":
+        return False
+    try:
+        import ctypes
+
+        try:
+            # PROCESS_SYSTEM_DPI_AWARE, Windows 8.1 and later.
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except (AttributeError, OSError):
+            ctypes.windll.user32.SetProcessDPIAware()  # the pre-8.1 call
+        return True
+    except Exception:
+        return False
+
+
+def open_path(target: Path) -> bool:
+    """Hand a file or folder to the desktop environment.  False if it could not."""
+    try:
+        if sys.platform == "win32":
+            os.startfile(target)  # type: ignore[attr-defined]  # Windows only
+        elif sys.platform == "darwin":
+            subprocess.Popen(["open", str(target)])
+        else:
+            subprocess.Popen(["xdg-open", str(target)])
+        return True
+    except Exception:
+        return False
+
+
+def open_data_folder() -> bool:
+    """Show the data directory in the file manager, creating it if necessary."""
+    directory = userdata.data_dir()
+    with contextlib.suppress(OSError):
+        directory.mkdir(parents=True, exist_ok=True)
+    return open_path(directory)
+
+
 def run_window(app: LocalApp) -> bool:
     """Show the Tk control panel and block until it is closed.
 
@@ -426,10 +550,18 @@ def run_window(app: LocalApp) -> bool:
     except Exception:
         return False
 
+    # Before the first window exists: awareness is a process property, and Tk
+    # reads it when it creates one.
+    enable_dpi_awareness()
     try:
         root = tk.Tk()
     except Exception:  # no display
         return False
+
+    with contextlib.suppress(Exception):
+        # Tk assumes 96 dpi; this is the display's own answer, so the window is
+        # the size the rest of the desktop is.
+        root.tk.call("tk", "scaling", root.winfo_fpixels("1i") / 72.0)
 
     stopping = threading.Event()
     from .project import Project
@@ -441,6 +573,8 @@ def run_window(app: LocalApp) -> bool:
             return
         stopping.set()
         with contextlib.suppress(Exception):
+            remember_geometry()
+        with contextlib.suppress(Exception):
             tray.stop()
         with contextlib.suppress(Exception):
             root.destroy()
@@ -448,6 +582,33 @@ def run_window(app: LocalApp) -> bool:
     root.title("Buttcrack")
     root.minsize(430, 0)
     root.resizable(False, False)
+
+    # Panels the user has opened, so their geometry can be written back on the
+    # way out (see "what the app remembers" above).
+    open_panels: dict[str, Any] = {}
+    remembered_windows = load_state().get("windows") or {}
+
+    def open_panel(title: str, width: int, height: int) -> tk.Toplevel:
+        """A panel, put back where the user last had it."""
+        opened = tk.Toplevel(root)
+        opened.title(title)
+        opened.minsize(width, height)
+        place = remembered_windows.get(title)
+        if isinstance(place, str):
+            with contextlib.suppress(Exception):
+                opened.geometry(place)
+        open_panels[title] = opened
+        return opened
+
+    def remember_geometry() -> None:
+        """Write back where the windows are, so the next launch opens there."""
+        windows = {"main": root.winfo_geometry()} if usable_geometry(root.winfo_geometry()) else {}
+        for title, panel in open_panels.items():
+            with contextlib.suppress(Exception):
+                if panel.winfo_exists() and usable_geometry(panel.winfo_geometry()):
+                    windows[title] = panel.winfo_geometry()
+        if windows:
+            save_state(windows=windows)
     with contextlib.suppress(Exception):
         icon = _icon_path()
         if icon:
@@ -465,10 +626,26 @@ def run_window(app: LocalApp) -> bool:
     entry.grid(row=1, column=0, columnspan=2, sticky="we", pady=(12, 0))
 
     def copy_address() -> None:
+        focused = root.focus_get()
+        if isinstance(focused, (tk.Entry, tk.Text)) and focused.selection_present():
+            # Ctrl+C in a field means "copy what I selected", not "copy the URL".
+            with contextlib.suppress(Exception):
+                focused.event_generate("<<Copy>>")
+            return
         with contextlib.suppress(Exception):
             root.clipboard_clear()
             root.clipboard_append(app.url)
         status.set("Address copied to the clipboard.")
+
+    def copy_diagnostics() -> None:
+        """One paste for a support email: version, paths, port, tray."""
+        from .diagnostics import report_text
+
+        body = report_text(port=app.port, tray=tray.active)
+        with contextlib.suppress(Exception):
+            root.clipboard_clear()
+            root.clipboard_append(body)
+        status.set("Diagnostics copied to the clipboard.")
 
     ttk.Button(frame, text="Copy", width=8, command=copy_address).grid(row=1, column=2, sticky="e", pady=(12, 0))
 
@@ -476,9 +653,7 @@ def run_window(app: LocalApp) -> bool:
         status.set("Opened in your browser." if app.open_browser() else "Could not open a browser.")
 
     def open_candidate_panel() -> None:
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Candidate Manager")
-        panel.minsize(760, 560)
+        panel = open_panel("Buttcrack — Candidate Manager", 760, 560)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         ttk.Label(body, text="Candidate Manager", font=("Segoe UI", 13, "bold")).pack(anchor="w")
@@ -570,9 +745,7 @@ def run_window(app: LocalApp) -> bool:
 
         from .results_db import ResultDB
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — PK9 Campaign")
-        panel.minsize(760, 560)
+        panel = open_panel("Buttcrack — PK9 Campaign", 760, 560)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         ttk.Label(body, text="PK9 Global Campaign", font=("Segoe UI", 13, "bold")).pack(anchor="w")
@@ -665,9 +838,7 @@ def run_window(app: LocalApp) -> bool:
     def open_scoring_dashboard() -> None:
         from .scoring import score_all
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Score Dashboard")
-        panel.minsize(650, 480)
+        panel = open_panel("Buttcrack — Score Dashboard", 650, 480)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         ttk.Label(body, text="Language Score Dashboard", font=("Segoe UI", 13, "bold")).pack(anchor="w")
@@ -698,9 +869,7 @@ def run_window(app: LocalApp) -> bool:
 
         from .transposition import decrypt, encrypt
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Transposition Lab")
-        panel.minsize(760, 620)
+        panel = open_panel("Buttcrack — Transposition Lab", 760, 620)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         ttk.Label(body, text="Interactive Transposition Grid", font=("Segoe UI", 13, "bold")).pack(anchor="w")
@@ -815,9 +984,7 @@ def run_window(app: LocalApp) -> bool:
     def open_verification() -> None:
         from .verification import round_trip
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Verification Center")
-        panel.minsize(700, 620)
+        panel = open_panel("Buttcrack — Verification Center", 700, 620)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         fields = {}
@@ -900,9 +1067,7 @@ def run_window(app: LocalApp) -> bool:
 
         from .crib import consistent_period, implied_shifts
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Crib Dragging Lab")
-        panel.minsize(700, 520)
+        panel = open_panel("Buttcrack — Crib Dragging Lab", 700, 520)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
         ttk.Label(body, text="Ciphertext").pack(anchor="w")
@@ -946,9 +1111,7 @@ def run_window(app: LocalApp) -> bool:
         """Show a local, checkpoint-aware attack queue scaffold."""
         from .queue import AttackQueue
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Attack Queue")
-        panel.minsize(620, 420)
+        panel = open_panel("Buttcrack — Attack Queue", 620, 420)
         panel.transient(root)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
@@ -1027,9 +1190,7 @@ def run_window(app: LocalApp) -> bool:
         """Browse the exact-match PK1–PK10 corpus without implying a generic solve."""
         from .paradigm import RECORDS
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Paradigm Kryptos PK1–PK10 Archive")
-        panel.minsize(820, 570)
+        panel = open_panel("Buttcrack — Paradigm Kryptos PK1–PK10 Archive", 820, 570)
         panel.transient(root)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
@@ -1115,9 +1276,7 @@ def run_window(app: LocalApp) -> bool:
         from .project import Project
         from .provenance import AssistantRecord
 
-        panel = tk.Toplevel(root)
-        panel.title("Buttcrack — Local Assistant")
-        panel.minsize(620, 440)
+        panel = open_panel("Buttcrack — Local Assistant", 620, 440)
         panel.transient(root)
         body = ttk.Frame(panel, padding=16)
         body.pack(fill="both", expand=True)
@@ -1215,6 +1374,11 @@ def run_window(app: LocalApp) -> bool:
         row=5, column=2, sticky="e", pady=(4, 0)
     )
 
+    support = ttk.Frame(frame)
+    support.grid(row=11, column=0, columnspan=3, sticky="w", pady=(10, 0))
+    ttk.Button(support, text="Copy diagnostics", command=copy_diagnostics).grid(row=0, column=0, sticky="w")
+    ttk.Button(support, text="Open data folder", command=open_data_folder).grid(row=0, column=1, sticky="w", padx=(8, 0))
+
     ttk.Separator(frame, orient="horizontal").grid(row=6, column=0, columnspan=3, sticky="we", pady=14)
 
     for offset, line in enumerate(summary_lines(app)[1:]):
@@ -1229,10 +1393,17 @@ def run_window(app: LocalApp) -> bool:
 
     frame.columnconfigure(0, weight=1)
 
+    hidden_once = [False]
+
     def hide() -> None:
         if tray.active:
             root.withdraw()
             status.set("Hidden. Use the tray icon to bring it back.")
+            if not hidden_once[0]:
+                # The difference between "the app closed" and "the app is in the
+                # tray" is one balloon, shown once, never again.
+                hidden_once[0] = True
+                tray.notify("Buttcrack is still running", "Click the tray icon to bring the window back.")
         else:
             root.iconify()
 
@@ -1254,6 +1425,8 @@ def run_window(app: LocalApp) -> bool:
             ("Open Buttcrack", lambda: root.after(0, open_browser)),
             ("Show window", lambda: root.after(0, show)),
             ("Copy address", lambda: root.after(0, copy_address)),
+            ("Copy diagnostics", lambda: root.after(0, copy_diagnostics)),
+            ("Open data folder", lambda: root.after(0, open_data_folder)),
             ("Quit", lambda: root.after(0, shutdown)),
         ),
         on_activate=lambda: root.after(0, show),
@@ -1261,6 +1434,71 @@ def run_window(app: LocalApp) -> bool:
     tray.start()
 
     root.protocol("WM_DELETE_WINDOW", hide if tray.active else shutdown)
+
+    def show_about() -> None:
+        from tkinter import messagebox
+
+        messagebox.showinfo(
+            "About Buttcrack",
+            f"Buttcrack {__version__}\n\n"
+            "Everything runs on this machine: the server is 127.0.0.1 and nothing\n"
+            "is uploaded. The language model, the ciphers and the archive all ship\n"
+            "with the program.\n\n"
+            f"Data: {userdata.data_dir()}\n"
+            f"Log: {log_path()}",
+        )
+
+    def open_log() -> None:
+        open_path(log_path())
+
+    # A menu bar is how a desktop application says what it can do; the buttons
+    # below are the shortcuts for the four things people actually press.
+    menu_bar = tk.Menu(root)
+    file_menu = tk.Menu(menu_bar, tearoff=0)
+    file_menu.add_command(label="Open in browser", accelerator="F1", command=open_browser)
+    file_menu.add_command(label="Copy address", accelerator="Ctrl+C", command=copy_address)
+    file_menu.add_separator()
+    file_menu.add_command(label="Hide to tray", accelerator="Ctrl+H", command=hide)
+    file_menu.add_command(label="Quit", accelerator="Ctrl+Q", command=shutdown)
+    menu_bar.add_cascade(label="File", menu=file_menu)
+
+    lab_entries = (
+        ("Candidate Manager", open_candidate_panel),
+        ("PK9 Campaign", open_campaign_dashboard),
+        ("Score Dashboard", open_scoring_dashboard),
+        ("Transposition Lab", open_transposition_lab),
+        ("Verification Center", open_verification),
+        ("Crib Dragging Lab", open_crib_lab),
+        ("Attack Queue", open_attack_queue),
+        ("PK1-PK10 Archive", open_paradigm_archive),
+        ("Local Assistant", open_local_assistant),
+    )
+    labs_menu = tk.Menu(menu_bar, tearoff=0)
+    for number, (label, opener) in enumerate(lab_entries, start=1):
+        labs_menu.add_command(label=label, accelerator=f"Alt+{number}", command=opener)
+    menu_bar.add_cascade(label="Labs", menu=labs_menu)
+
+    help_menu = tk.Menu(menu_bar, tearoff=0)
+    help_menu.add_command(label="Copy diagnostics", accelerator="Ctrl+D", command=copy_diagnostics)
+    help_menu.add_command(label="Open data folder", command=open_data_folder)
+    help_menu.add_command(label="Open log file", command=open_log)
+    help_menu.add_separator()
+    help_menu.add_command(label="About Buttcrack", command=show_about)
+    menu_bar.add_cascade(label="Help", menu=help_menu)
+    root.config(menu=menu_bar)
+
+    shortcuts = (
+        ("<F1>", open_browser),
+        ("<Control-c>", copy_address),
+        ("<Control-d>", copy_diagnostics),
+        ("<Control-h>", hide),
+        ("<Control-l>", open_log),
+        ("<Control-q>", shutdown),
+    )
+    for sequence, action in shortcuts:
+        root.bind_all(sequence, lambda _event, run=action: run())
+    for number, (_label, opener) in enumerate(lab_entries, start=1):
+        root.bind_all(f"<Alt-Key-{number}>", lambda _event, run=opener: run())
 
     # Tk ignores signals while it is in its own event loop unless it wakes up
     # periodically; this also gives Ctrl-C somewhere to land.
@@ -1327,6 +1565,10 @@ def run(
         return 1
 
     app.start()
+    # Only the desktop app remembers where it served: a library user building a
+    # LocalApp should not have a file change under them (B6).
+    if app.port != remembered_port():
+        save_state(port=app.port)
     if on_ready is not None:
         with contextlib.suppress(Exception):
             on_ready(app)
