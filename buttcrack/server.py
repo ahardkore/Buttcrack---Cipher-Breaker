@@ -642,6 +642,10 @@ def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) ->
         f"  {len(ALL_CIPHERS)} ciphers, {model.ngram_count(4):,} quadgrams, "
         f"{len(model.words):,} words, {len(LANGUAGES)} languages"
     )
+    if _configured_hosts():
+        # An operator who set the variable should see that it was read -- the
+        # alternative is a 403 in a browser and a hunt for a typo.
+        print(f"  also answering for: {', '.join(_configured_hosts())}  (BUTTCRACK_ALLOWED_HOSTS)")
     if host in LAN_BINDS:
         # Saying so out loud matters: `serve` is the one command that is meant to
         # be reachable, and "bound to 0.0.0.0" does not read as "your network can
