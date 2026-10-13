@@ -505,7 +505,11 @@ if ($SkipSelftest) {
 else {
     Write-Step 'Running the installed self-test (142 checks, a couple of minutes)'
     $run = Invoke-InstalledCli -Exe (Join-Path $InstallDir 'buttcrack.exe') -Arguments @('selftest')
-    $tail = ($run.Output -split "`r?`n" | Where-Object { $_ -match 'checks passed|FAIL' } | Select-Object -First 3) -join ' / '
+    # The summary lines *and* the failing checks under them: without the second
+    # half an annotation says "2 of 47 failed" and nothing about which.
+    $tail = ($run.Output -split "`r?`n" |
+        Where-Object { $_ -match 'checks passed|FAIL|^\s+x\s' } |
+        Select-Object -First 4) -join ' / '
     Assert-True ($run.ExitCode -eq 0) 'the installed build passes every self-test' "$tail"
     if ($tail) { Write-Note $tail }
 }

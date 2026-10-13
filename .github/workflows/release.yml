@@ -88,14 +88,21 @@ jobs:
       - name: Install Inno Setup
         shell: pwsh
         run: |
-          $setup = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
-          try {
-            Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe' -OutFile $setup
-            Start-Process -FilePath $setup -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-' -Wait
-          }
-          catch {
-            Write-Host "::warning title=Inno Setup download failed::falling back to Chocolatey -- $_"
-            choco install innosetup --no-progress -y
+          # Chocolatey first: it is already on the runner and it has never
+          # failed here, while the vendor download is one redirect away from
+          # "the file or directory is corrupted and unreadable" (seen on this
+          # runner).  The download is the fallback, not the other way round.
+          choco install innosetup --no-progress -y
+          $have = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue
+          if (-not $have) {
+            try {
+              $setup = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
+              Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe' -OutFile $setup
+              Start-Process -FilePath $setup -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-' -Wait
+            }
+            catch {
+              Write-Host "::warning title=Inno Setup download failed::$_"
+            }
           }
           $iscc = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue |
             Select-Object -First 1

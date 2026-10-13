@@ -469,6 +469,15 @@ multiply the budgets by `clamp(measured / reference, 1, 3)`. A hung search still
 fails (it exceeds even 3x), a slow laptop stops reporting a scary 140/142, and the
 release job stops going red for reasons unrelated to the change.
 
+**Done, after one more red run made the case.** `selftest.speed_factor()` scores a
+fixed 2,000-character sample a thousand times (best of three), compares it with
+`_REFERENCE_CALIBRATION` — 0.27 s, measured on the box the budgets came from — and
+`_budget()` stretches every `solve()` budget by the result. It is 1.00 here, so the
+numbers above are still the ones in force; the runner that failed measured about
+15% slower, which is exactly the margin it did not have. The self-test also prints
+the factor when it is above 1, and the installer test now names the checks that
+failed instead of only counting them.
+
 The same run shows the other half of the picture: `caesar in german` and `caesar
 in spanish` take **8.02 s each** — exactly the 8 s budget `check_languages` passes
 (`selftest.py` l.656) — while the same check for English, French, Italian and
