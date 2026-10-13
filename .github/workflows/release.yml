@@ -52,7 +52,11 @@ jobs:
 
       - name: SHA-256 artifacts
         shell: bash
-        run: python scripts/ci_release.py sha256 dist > dist/SHA256SUMS.json
+        run: |
+          # Same reason as the installer job below: written after hashing, so
+          # the file does not list itself.
+          sums=$(python scripts/ci_release.py sha256 dist)
+          printf '%s\n' "$sums" > dist/SHA256SUMS.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -77,14 +81,37 @@ jobs:
       # Without this job the installer is written once, reviewed by eye, and
       # shipped -- and the first person to find out whether it works is a
       # customer.
+      # The Inno compiler decides the installer's layout, its compression and
+      # therefore its size, so its version is part of what the published file is
+      # -- but it cannot be pinned for long: jrsoftware keeps only the newest
+      # releases online (the /is/6/ index lists about a dozen) and the Chocolatey
+      # feed carries one, so the 6.3.3 this used to ask for was already gone by
+      # the time it was asked.  Take the current release from the vendor and
+      # record which version that turned out to be, so a size that differs from
+      # the published one can be explained afterwards.
       - name: Install Inno Setup
         shell: pwsh
         run: |
+          # Chocolatey first: it is already on the runner and it has never
+          # failed here, while the vendor download is one redirect away from
+          # "the file or directory is corrupted and unreadable" (seen on this
+          # runner).  The download is the fallback, not the other way round.
           choco install innosetup --no-progress -y
+          $have = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue
+          if (-not $have) {
+            try {
+              $setup = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
+              Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe' -OutFile $setup
+              Start-Process -FilePath $setup -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-' -Wait
+            }
+            catch {
+              Write-Host "::warning title=Inno Setup download failed::$_"
+            }
+          }
           $iscc = Get-ChildItem -Path 'C:\Program Files*\Inno Setup*' -Recurse -Filter ISCC.exe -ErrorAction SilentlyContinue |
             Select-Object -First 1
           if (-not $iscc) { throw 'Inno Setup did not install where it was expected' }
-          Write-Host "ISCC: $($iscc.FullName)"
+          Write-Host "ISCC: $($iscc.FullName) (version $($iscc.VersionInfo.ProductVersion))"
 
       # build.ps1 does the freeze, the Caesar smoke test and the installer in
       # one go, so CI runs the same command a maintainer runs by hand.
@@ -172,8 +199,28 @@ jobs:
         shell: bash
         run: |
           cd dist/installer
-          python ../../scripts/ci_release.py sha256 . > INSTALLER-SHA256.json
+          # Hashed into a variable, then written: a plain redirect creates
+          # INSTALLER-SHA256.json before Python walks the directory, so the file
+          # ends up listing *itself* -- at zero bytes, since it is still empty --
+          # and the digest of an empty file inside the digest file is exactly
+          # what makes somebody verifying a download distrust the whole thing.
+          sums=$(python ../../scripts/ci_release.py sha256 .)
+          printf '%s\n' "$sums" > INSTALLER-SHA256.json
           cat INSTALLER-SHA256.json
+          # The three numbers the download page needs -- filename, size, digest
+          # -- as a notice.  Publishing the digest beside the download (D3) is
+          # part of shipping, and a notice is readable from the Checks tab and
+          # from the API alike, so nobody has to open a log archive to fill in
+          # `windows_app.sha256` and `windows_app.size` in site.json.
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name, digest in json.loads(Path("INSTALLER-SHA256.json").read_text()).items():
+              path = Path(name)
+              if path.suffix != ".exe":
+                  continue
+              print(f"::notice title=installer digest::{path.name} | {path.stat().st_size} bytes | sha256 {digest}")
+          PY
 
       # Kept as a workflow artefact rather than attached to a release or
       # committed: this is the paid download, and both of those places are

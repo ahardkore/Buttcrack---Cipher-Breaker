@@ -74,7 +74,7 @@
       <p class="blurb">The complete cipher breaker as a Windows program. One installer, nothing
       else to fetch — the language models and the interface are inside it. Install it on a
       machine that has never seen Python and it works.</p>
-      <p class="spec">version 1.2.0 · Windows 10 / 11, 64-bit · no admin rights needed</p>
+      <p class="spec">version 1.2.1 · Windows 10 / 11, 64-bit · 15.4 MB · no admin rights needed</p>
       <a class="buy" href="https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05">Buy for $39.99</a>
     </div>
     </div>
@@ -117,13 +117,14 @@
       seconds a web page can spare, and the search reports what it tried and what it scored.</li>
     </ul>
 
+    <h2>Verify what you downloaded</h2>
+    <p>The installer's SHA-256 is published before you buy, so you can confirm the file you
+    receive is byte-for-byte the one described here. In PowerShell:</p>
+    <pre class="spec">Get-FileHash .\buttcrack-setup-1.2.1.exe -Algorithm SHA256</pre>
+    <p class="spec">54c7bc872f73a90d209b219a6e2fd8df02c8d5f24f64e16892ce3382e226f0be</p>
 
     <h2>Windows will warn you the first time</h2>
-    <p>The installer is not code-signed, so Windows SmartScreen shows a blue
-    <em>“Windows protected your PC”</em> dialog. That is a statement about a certificate that
-    costs several hundred dollars a year, not about the file. Click <strong>More info</strong>,
-    then <strong>Run anyway</strong> — and check the SHA-256 above first if you would rather not
-    take anyone's word for it.</p>
+    <p>The installer is not code-signed, so Windows SmartScreen shows a blue <em>“Windows protected your PC”</em> dialog. That is a statement about a certificate that costs several hundred dollars a year, not about the file. Click <strong>More info</strong>, then <strong>Run anyway</strong> — and check the SHA-256 above first if you would rather not take anyone's word for it.</p>
 
     <h2>Requirements</h2>
     <p>Windows 10 or 11, 64-bit. Roughly 60 MB of disk once installed. No internet connection is

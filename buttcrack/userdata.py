@@ -111,3 +111,25 @@ def pk9_ledger() -> Path:
 def assistant_log() -> Path:
     """Where the desktop window appends its saved assistant transcripts."""
     return data_dir() / "buttcrack-assistant.jsonl"
+
+
+def instance_file() -> Path:
+    """The desktop app's "I am running" marker: a small JSON file holding its URL.
+
+    Read by a second launch and by the support path, so it is deliberately *not*
+    the file that carries the exclusive lock.  On Windows a byte-range lock is
+    mandatory: while a process holds one over byte 0, every read of that byte by
+    any other process -- and by the same process through a second handle -- fails
+    with ERROR_LOCK_VIOLATION.  A marker that was also the lock could therefore
+    never be read by the launch it exists to inform.
+    """
+    return data_dir() / "desktop-instance.json"
+
+
+def instance_lock_file() -> Path:
+    """The file whose exclusive lock means "the desktop app is running".
+
+    Nothing ever reads it, which is the point: a lock may sit on a file nobody
+    needs to open, but not on one that carries a message.
+    """
+    return data_dir() / "desktop-instance.lock"

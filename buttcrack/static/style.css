@@ -3,6 +3,10 @@
    of the way.  No framework, no web fonts, no images: one file, one request. */
 
 :root {
+  /* Tell the browser which side of the fence we are on, or the scrollbars,
+     dropdowns and autofill popups come from the light theme and ring the page
+     like a badly matched frame. */
+  color-scheme: dark;
   --bg: #0a0c10;
   --bg-raised: #10141b;
   --card: #121721;
@@ -308,4 +312,73 @@ table.data td .clip { display: block; max-width: 420px; overflow: hidden; text-o
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+}
+
+/* ------------------------------------------------------------------- file */
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+#input.dropping {
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+/* The hidden attribute has to win.  Several of the elements the script hides --
+ * the restore bar, the progress card, the error card -- set display for their
+ * own layout, and an author display rule beats the user-agent [hidden] rule, so
+ * the restore bar stayed on screen after the button that dismisses it. */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- session */
+
+.restore {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card-alt);
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+/* ------------------------------------------------------------------ print */
+
+/* A report on paper: the screen theme is dark, and printing it as-is spends a
+   cartridge to say one thing.  Layout keeps the verdict, the plaintext and the
+   log; the chrome around them is what gets in the way. */
+@media print {
+  :root { color-scheme: light; }
+
+  html, body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  header, .tabs, .health, .samples, .file-row, .restore, .controls,
+  .advanced, .actions, .shortcut, #progress-card, #assistant-card,
+  #error-card, .playground-controls, footer {
+    display: none !important;
+  }
+
+  .card, pre, code, textarea, .log li, .meter {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #b0b0b0 !important;
+    box-shadow: none !important;
+  }
+
+  .card + .card { break-before: auto; }
+  .log, pre, textarea { white-space: pre-wrap; }
 }

@@ -6,6 +6,11 @@ __pycache__/
 build/
 dist/
 
+# Node tooling (the browser tests in tests/browser/ -- see README)
+node_modules/
+playwright-report/
+test-results/
+
 # Test and tooling caches
 .pytest_cache/
 .mypy_cache/

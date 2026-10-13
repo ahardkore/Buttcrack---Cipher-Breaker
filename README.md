@@ -111,6 +111,11 @@ powershell -ExecutionPolicy Bypass -File packaging\windows\test-installer.ps1 `
 Both commands run on `windows-latest` for every push, so the wizard is exercised
 on every change instead of on the day someone downloads it.
 
+When something goes wrong on a buyer's machine, the installed `buttcrack.exe
+doctor` prints the same block the window's **Help → Copy diagnostics** puts on
+the clipboard: version, build, data directory, log path, port and model. It is
+the first thing to ask for, and it needs no terminal knowledge to produce.
+
 ---
 
 ## Quick start
@@ -129,6 +134,7 @@ buttcrack encrypt vigenere --key LEMON "meet me at noon"
 buttcrack decrypt caesar --key 3 "Zdvkph uh dg qrrq"
 
 # what does it know?
+buttcrack doctor              # version, data directory, log, port, model -- one block
 buttcrack ciphers
 buttcrack show playfair
 buttcrack demo                # encrypt a few messages, then break them with no hints
@@ -245,6 +251,15 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 
 Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
 
+It also checks the `Host` header it is asked on, because a local server answers whatever name the browser was told to use: `evil.example` can be pointed at your loopback address and then read every reply. Loopback names and address literals are accepted, and nothing else — which is what you want on a laptop and not what you want behind a proxy. A tunnel, a container port forward or a hosted preview sends the *name* it is published under, so name it:
+
+```console
+BUTTCRACK_ALLOWED_HOSTS=preview.example.com buttcrack serve --port 8099
+BUTTCRACK_ALLOWED_HOSTS='*.preview.example.com' buttcrack serve --port 8099   # any subdomain
+```
+
+A comma-separated list, a port after a name is ignored, and `*.` matches subdomains only. Nothing is accepted by default: the server has to be told which name is yours.
+
 There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (50 ciphers, six languages, the M-94) is the full local tool.
 
 ---
@@ -330,15 +345,23 @@ buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography*
 ## Development
 
 ```console
-python3 -m unittest discover -s tests -t .                    # 253 tests, stdlib unittest only
+python3 -m unittest discover -s tests -t .                    # 512 tests, stdlib unittest only
 BUTTCRACK_SLOW=1 python3 -m unittest discover -s tests -t .   # + the expensive searches
 python3 scripts/run_doctests.py                               # the examples in the docstrings
 python3 -m buttcrack selftest                                 # known-answer checks end to end
+python3 -m buttcrack doctor                                   # what is installed, and where
 python3 -m buttcrack selftest --slow                          # + substitution, Playfair, Bifid, M-94
 python3 examples/generate.py --check                          # solve every sample puzzle
 python3 -m buttcrack demo                                     # encrypt, then break with no hints
 pip install -e ".[dev]" && ruff check .                       # lint (CI enforces this)
+npm install && npx playwright install chromium                # once: the browser test runner
+npx playwright test                                           # the web interface, in a real browser
 ```
+
+`tests/browser/` drives the served interface in Chromium — the one part of the
+program the Python suite cannot reach. It is the only thing here that needs
+Node, and its browser is a download, so CI runs it as its own job rather than
+making every contributor wait for it.
 
 `BUTTCRACK_STRICT=1` turns solver warnings into test failures; CI runs the suite
 with it set.

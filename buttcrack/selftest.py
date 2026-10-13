@@ -311,6 +311,53 @@ def check_detection(report: SelfTestReport, verbose: bool) -> None:
         report.checks.append(Check("detection", f"{name} -> {expected}", ok, detail, time.time() - started))
 
 
+#: The calibration loop, and what it costs on the box these budgets were
+#: measured on.  See :func:`speed_factor`.
+_CALIBRATION_TEXT = (
+    "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG AND THEN THE LETTERS THAT FOLLOW ARE NOT RANDOM AT ALL. " * 20
+)
+_CALIBRATION_CALLS = 1000
+_REFERENCE_CALIBRATION = 0.27
+
+#: Set once per run by :func:`run_selftest`; 1.0 until then.
+_BUDGET_SCALE = 1.0
+
+
+def _calibration(model: Any) -> float:
+    """Seconds to score :data:`_CALIBRATION_TEXT` :data:`_CALIBRATION_CALLS` times."""
+    started = time.perf_counter()
+    for _ in range(_CALIBRATION_CALLS):
+        model.fitness(_CALIBRATION_TEXT)
+    return time.perf_counter() - started
+
+
+def speed_factor(runs: int = 3) -> float:
+    """How much slower this machine is than the one the budgets were measured on.
+
+    Every budget here is wall-clock, and a build runner is a slower machine than
+    the desktop those numbers came from: the six-cipher check sat at 74% of its
+    budget on the reference box and crossed it on the release runner, which turns
+    a release gate into a coin toss.  Padding the numbers instead would also
+    pad a real regression, so the machine measures itself -- score a fixed text a
+    thousand times, best of three, and compare.
+
+    Clamped to at least 1 (a faster machine keeps the budgets exactly as
+    measured) and at most 3 (something three times slower than the reference is
+    not a machine to spend twenty minutes on: the failure is the right answer).
+    """
+    try:
+        model = get_model("english")
+        best = min(_calibration(model) for _ in range(runs))
+    except Exception:  # a box without the language model cannot run this at all
+        return 1.0
+    return min(3.0, max(1.0, best / _REFERENCE_CALIBRATION))
+
+
+def _budget(seconds: float) -> float:
+    """A budget, stretched for the machine this is running on."""
+    return seconds * _BUDGET_SCALE
+
+
 #: Break checks: (label, cipher, key, plaintext, budget, expected chain or None).
 QUICK_BREAKS: tuple[tuple[str, str, Any, str, float, str | None], ...] = (
     ("caesar over prose", "caesar", 7, PROSE, 10.0, "caesar"),
@@ -484,7 +531,7 @@ def check_breaks(
         if progress:
             progress(label)
         try:
-            result = solve(ciphertext, budget=budget, workers=workers)
+            result = solve(ciphertext, budget=_budget(budget), workers=workers)
             if expect == "exact":
                 ok = result.solved and _fold_lossy(_inner(name), result.formatted) == _fold_lossy(_inner(name), text)
             else:
@@ -538,7 +585,7 @@ def _check_partial(
     named = result.cipher == inner or inner in result.path
     similarity = _similarity(result.plaintext, text, inner)
     hints = dict(key) if isinstance(key, dict) else {"key": key}
-    hinted = solve(ciphertext, budget=30.0, workers=workers, hints=hints)
+    hinted = solve(ciphertext, budget=_budget(30.0), workers=workers, hints=hints)
     hinted_ok = hinted.solved and _fold_lossy(inner, hinted.formatted) == _fold_lossy(inner, text)
     if expect == "contract":
         # The unhinted search is a documented coin toss that depends on the
@@ -653,7 +700,7 @@ def check_languages(report: SelfTestReport, verbose: bool) -> None:
         started = time.time()
         try:
             ciphertext = caesar.encrypt(sample, 11)
-            result = solve(ciphertext, budget=8.0, language=name)
+            result = solve(ciphertext, budget=_budget(8.0), language=name)
             similarity = _similarity(result.plaintext, sample, "caesar")
             ok = result.solved and similarity >= 0.95
             detail = (
@@ -672,7 +719,7 @@ def check_languages(report: SelfTestReport, verbose: bool) -> None:
     try:
         sample = LANGUAGE_SAMPLES["french"]
         ciphertext = caesar.encrypt(sample, 7)
-        result = solve_auto(ciphertext, budget=12.0)
+        result = solve_auto(ciphertext, budget=_budget(12.0))
         ok = result.solved and result.language == "french" and result.plaintext == sample
         detail = (
             f"solved under {result.language} (detected {result.language_detected}) "
@@ -687,7 +734,7 @@ def check_report_shape(report: SelfTestReport, verbose: bool) -> None:
     """The report has to survive JSON, because the CLI and the web UI both emit it."""
     started = time.time()
     try:
-        result = solve(get("caesar").encrypt(PROSE, 9), budget=10.0, workers=1)
+        result = solve(get("caesar").encrypt(PROSE, 9), budget=_budget(10.0), workers=1)
         payload = result.as_dict(max_candidates=4)
         text = json.dumps(payload, default=str)
         reloaded = json.loads(text)
@@ -713,10 +760,14 @@ def run_selftest(
     stream: io.TextIOBase | None = None,
 ) -> int:
     """Run every check and report.  Returns a process exit status."""
+    global _BUDGET_SCALE
     out = stream if stream is not None else sys.stdout
     pal = _Palette(False if json_output else _colour_requested(color))
     workers = workers or (os.cpu_count() or 1)
     report = SelfTestReport()
+    # Measured once, before any budget is spent: a slow machine gets more room
+    # rather than a red release gate (see speed_factor).
+    _BUDGET_SCALE = speed_factor()
 
     def note(message: str) -> None:
         if not json_output:
@@ -736,6 +787,11 @@ def run_selftest(
             pal.dim(f"python {sys.version.split()[0]}, {workers} worker(s), {'quick' if quick else 'slow'} mode"),
             file=out,
         )
+        if _BUDGET_SCALE > 1.005:
+            print(
+                pal.dim(f"this machine is {_BUDGET_SCALE:.2f}x the reference, so the budgets are stretched"),
+                file=out,
+            )
         print(file=out)
     for title, section in sections:
         section()

@@ -17,22 +17,23 @@
   },
   "_verification_files_note": "For the 'HTML file' method instead of the meta tag (Google Search Console, Bing). Map the exact filename to its exact contents; each is written to the site root on every build. Google's file is named googleXXXX.html and contains the single line 'google-site-verification: googleXXXX.html'.",
   "verification_files": {},
-  "_windows_app_note": "The paid Windows desktop build, produced by packaging/windows/build.ps1. 'payment_link' is the Stripe Payment Link shown on windows-app.html. 'delivery_url' is where the installer actually lives: an unguessable URL on storage you control (Cloudflare R2, Backblaze B2, S3). NEVER put the installer in this repository or in ventures/cipher-solver-web/files/ -- the repo and the site are public, so the paid file would be free to anyone who looked; scripts/build_site.py fails the deploy if it finds one. Set the Stripe Payment Link's post-payment redirect to the delivery URL that build_pages.py prints. version/size/sha256 are published so buyers can verify what they downloaded.",
+  "_windows_app_note": "The paid Windows desktop build, produced by packaging/windows/build.ps1. 'payment_link' is the Stripe Payment Link shown on windows-app.html. 'delivery_url' is where the installer actually lives: an unguessable URL on a Cloudflare R2 bucket served over its own domain (NOT the pub-*.r2.dev development hostname, which is rate-limited and gives every object a second public URL -- see docs/windows-installer.md). NEVER put the installer in this repository or in ventures/cipher-solver-web/files/ -- the repo and the site are public, so the paid file would be free to anyone who looked; scripts/build_site.py fails the deploy if it finds one. Set the Stripe Payment Link's post-payment redirect to the delivery URL that build_pages.py prints. version/size/sha256 are published so buyers can verify what they downloaded. 'signed' is the publisher name on the installer's code-signing certificate, or false while there is no certificate: the delivery page, the storefront and the FAQ write their SmartScreen passage from it, so a certificate never leaves the site contradicting its own download.",
   "windows_app": {
     "sku": "winapp",
     "title": "Buttcrack for Windows",
     "price": "$39.99",
     "payment_link": "https://buy.stripe.com/28EcMY0n59Xf94RaWJbsc05",
     "delivery_url": "",
-    "version": "1.2.0",
-    "size": "",
-    "sha256": ""
+    "version": "1.2.1",
+    "size": "15.4 MB",
+    "sha256": "54c7bc872f73a90d209b219a6e2fd8df02c8d5f24f64e16892ce3382e226f0be",
+    "signed": false
   },
   "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
   "stripe": {
     "tip_jar_url": "https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04",
     "delivery_salt": "bc-Vvn8rtM9jCaejm_NHyYdTLYe",
-    "_buy_button_note": "Optional. Fill BOTH publishable_key (pk_live_... — publishable keys are safe in public HTML by design) and a product's buy_button_id to embed Stripe's checkout on the page instead of linking out. Leave blank to use plain Payment Links. NEVER put a secret key (sk_live_...) here.",
+    "_buy_button_note": "Optional. Fill BOTH publishable_key (pk_live_... \u2014 publishable keys are safe in public HTML by design) and a product's buy_button_id to embed Stripe's checkout on the page instead of linking out. Leave blank to use plain Payment Links. NEVER put a secret key (sk_live_...) here.",
     "publishable_key": "",
     "products": [
       {

@@ -78,7 +78,14 @@ On the Windows machine you build from:
   during installation tick **"tcl/tk and IDLE"** (the desktop window is Tk) and
   **"Add python.exe to PATH"**.
 * **Inno Setup 6.3+**: `winget install --id JRSoftware.InnoSetup`, or from
-  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php).
+  [jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php). The compiler
+  decides the installer's layout and compression, so its version is part of what
+  the file is: CI installs the current release from the vendor and prints the
+  version it turned out to be in the job log. It cannot be pinned for long —
+  jrsoftware keeps only the newest dozen releases online, and Chocolatey carries
+  one — so a size that differs from the published one is worth explaining by
+  version first. What the site publishes is a SHA-256, and that is the thing to
+  compare.
 
 PyInstaller is installed automatically into a throwaway virtualenv; it is not
 added to your environment and is not a dependency of the project.
@@ -108,6 +115,46 @@ Useful flags:
 .\build.ps1 -SkipInstaller    # stop after the executables
 .\build.ps1 -CertThumbprint ABCD...   # sign everything (see below)
 ```
+
+### Building it without a Windows machine
+
+The release workflow builds the same file on `windows-latest`, verifies it — silent
+install into a temp directory, every file and shortcut and PATH entry, the installed
+`doctor`, the installed CLI breaking a cipher, the 142-check self-test, then an
+uninstall that leaves nothing behind — and keeps it as a workflow artifact for 30
+days. That artifact is the deliverable; nothing else has to run locally.
+
+```console
+gh run list --workflow 'Release artifacts' --limit 5      # find the run for the commit
+gh run download <run-id> --name buttcrack-installer-1.2.1 --dir dist/installer
+```
+
+The download carries three things: `buttcrack-setup-<version>.exe`, the `.sha256`
+written beside it, and `INSTALLER-SHA256.json`. Check what arrived before uploading
+it anywhere:
+
+```console
+cd dist/installer && sha256sum -c <<< "$(cat buttcrack-setup-*.exe.sha256)"
+```
+
+The installer job prints the filename, the byte size and the SHA-256 as a run
+**annotation** (`installer digest`), which is where to read the two numbers
+`site.json` wants — `windows_app.size` and `windows_app.sha256` — without opening
+the job log.
+
+**Publish the digest of the build you upload.** Two builds of the same commit are
+*not* byte-identical — PyInstaller records build paths and Inno Setup records
+timestamps, and the sizes differ by a few hundred bytes — so there is no "the"
+digest for a version, only a digest per build. Download one artefact, check it
+against `windows_app.sha256`, upload that file, and if any of those three steps
+happens twice, start again from the digest:
+
+```console
+sha256sum dist/installer/buttcrack-setup-*.exe     # must equal site.json's sha256
+```
+
+A hash from a different build is worse than publishing no hash at all, because the
+page promises the file is the one described there.
 
 ### Building the pieces separately
 
@@ -224,6 +271,17 @@ This is where the file should go — pick one, upload, paste the URL into
 | **Bunny.net Storage** | paid, ~$0.01/GB | ~$0.01/GB | Cheap, fast, simple. Good if you want a CDN too. |
 | **AWS S3 + CloudFront** | 12 months limited | ~$0.085/GB | Works, and will happily bill you if something goes viral. |
 
+**Use the bucket's own domain, not the `r2.dev` hostname.** R2 hands every bucket
+a `pub-<hash>.r2.dev` address so you can test public access in a minute, and
+Cloudflare's own dashboard says what it is: *"usage is rate-limited and is not
+recommended for production"*, with Access and Cache unavailable on it. For a paid
+installer it is worse than slow — it is a **second public URL for the same
+object**, so the unguessable-name arrangement below is only as private as the
+weakest of the two hostnames, and some ISPs have blocked `r2.dev` outright.
+Attach a custom domain (R2 → bucket → Settings → Public access → Connect domain),
+put *that* URL in `windows_app.delivery_url`, then turn the `r2.dev` hostname back
+off. Keep public listing off as well.
+
 With R2, publishing a new version is:
 
 ```bash
@@ -240,9 +298,25 @@ buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
 then paste `https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe`
 into `site.json`. Only the post-payment page ever shows it.
 
-If your bucket supports it, turn off directory listing and set a long
-`Cache-Control`. You do not need signed URLs for a $39.99 download — but R2 and
-S3 both offer them if you later decide you want links that expire.
+Three things about that object:
+
+* **Keep the version in the key and never overwrite it.** A new build gets a new
+  name (`...-1.3.0-<hash>.exe`), so a repeated URL can never hand one customer
+  the previous binary and no cache has to be purged.
+* **Set `Cache-Control: public, max-age=31536000, immutable`** on the object.
+  Cloudflare does *not* cache `.exe` by default — the default list covers
+  `zip`, `7z` and `rar` but not `exe` — so a custom domain serves it from R2 (no
+  egress charge, but one origin fetch per download) unless you add a Cache Rule
+  for the download path. If you add one, do not serve the object with
+  `no-store`/`no-cache`: the rule and the object's headers have to agree, and a
+  "Cache Everything" rule in front of a `no-store` origin is a well-known source
+  of intermittent 404s.
+* **If the zone has Bot Fight Mode on, verify a scripted download.** `curl -sI
+  https://downloads.yourdomain/buttcrack-setup-1.2.0-<hash>.exe` from outside
+  should return `200` with a `Content-Length`, not a challenge page.
+
+You do not need signed URLs for a $39.99 download — but R2 and S3 both offer
+them if you later decide you want links that expire.
 
 ### Selling it somewhere that enforces entitlements
 
@@ -264,12 +338,27 @@ Whatever you use, check these three:
 * **HTTPS, no redirect chain.** Browsers are increasingly hostile to executables
   that arrive over plain HTTP or after a redirect hop.
 * **Publish the SHA-256** next to the link. `build.ps1` writes it to
-  `dist/installer/*.sha256` for you, and the download page shows users the
+  `dist/installer/*.sha256`, the release workflow writes
+  `dist/installer/INSTALLER-SHA256.json`, and the download page shows users the
   one-liner to check it:
 
   ```powershell
   Get-FileHash .\buttcrack-setup-1.2.0.exe -Algorithm SHA256
   ```
+
+  `build_pages.py` prints that digest on the post-payment page from
+  `site.json` — paste the value out of `INSTALLER-SHA256.json` into
+  `windows_app.sha256` (and `size` into `windows_app.size`) on every release, or
+  the page keeps publishing last version's hash beside this version's filename,
+  which is worse than publishing nothing.
+
+* **Say whether it is signed.** `windows_app.signed` in `site.json` is either
+  `false` — the truth while there is no certificate, and what the delivery page,
+  the storefront and the FAQ all print today — or the publisher name on the
+  certificate (`"Aaron Hard, Hardkore Software"`). Set it in the same commit as
+  `-CertThumbprint`, and all three passages switch from "not code-signed, click
+  Run anyway" to naming the publisher. Leaving it alone after signing leaves the
+  page apologising for a certificate it already has.
 
 ### Package managers, if you want them later
 
@@ -320,6 +409,12 @@ It installs silently into a temporary directory, then checks:
 * that the SQLite-backed `results` command runs, because the build used to
   exclude `sqlite3` from the bundle and both that command and the campaign panel
   in the window died on it;
+* that the installed `buttcrack.exe doctor` reports a healthy build and names
+  the data directory it is using;
+* that the *windowed* Desktop executable, started with `--console` so it needs
+  no desktop session, writes its log file, serves `/api/health` on the address
+  it printed, and that a second launch hands over to it and exits instead of
+  starting a second server;
 * the full 142-check self-test, unless you pass `-SkipSelftest`;
 * that a silent uninstall removes every file, both shortcuts and the `PATH`
   entry, and leaves no non-empty directory behind.
@@ -360,9 +455,18 @@ by the ordinary test suite rather than by a customer.
 
 ## Where the installed app keeps its data
 
-The desktop window owns two files: the PK9 campaign ledger and the saved
-assistant transcripts. Both live in `%LOCALAPPDATA%\Buttcrack` (on macOS,
-`~/Library/Application Support/Buttcrack`; on Linux, `$XDG_DATA_HOME/buttcrack`).
+The desktop window owns the PK9 campaign ledger, the saved assistant transcripts,
+`logs\buttcrack.log` (a windowed build has no console, so this file is where a
+failing worker or startup leaves its traceback), `desktop-state.json` (where the
+windows were, and the port that worked last time) and the second-launch pair
+`desktop-instance.json` (the address already being served) and
+`desktop-instance.lock` (whose lock says the app is running — two files on
+purpose, because a Windows byte-range lock makes the file it sits on unreadable
+to everyone else). They live in
+`%LOCALAPPDATA%\Buttcrack` (on macOS, `~/Library/Application Support/Buttcrack`;
+on Linux, `$XDG_DATA_HOME/buttcrack`). `buttcrack.exe doctor`, or **Help → Copy
+diagnostics** in the window, prints that path along with everything else worth
+asking a user for.
 
 They used to be relative paths — `kryptos\pk9-results.sqlite3` and
 `%USERPROFILE%\buttcrack-assistant.jsonl`. From a checkout the first is

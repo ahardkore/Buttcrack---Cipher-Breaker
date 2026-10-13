@@ -95,7 +95,8 @@ def refuse_paid_binaries(tree: Path) -> None:
     raise SystemExit(
         f"refusing to publish executable(s) from the site tree:\n  {listing}\n\n"
         "The Windows installer is sold through Stripe and must live on storage you\n"
-        "control (Cloudflare R2, Backblaze B2, S3), with its URL in site.json under\n"
+        "control (Cloudflare R2, Backblaze B2, S3) and served from a custom domain\n"
+        "rather than the r2.dev test hostname, with its URL in site.json under\n"
         "windows_app.delivery_url. Publishing it here hands the paid build to anyone\n"
         "who finds the path.\n\n"
         "If you genuinely mean to give a binary away, set BUTTCRACK_PUBLISH_BINARIES=1."

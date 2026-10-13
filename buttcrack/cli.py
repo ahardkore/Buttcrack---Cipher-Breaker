@@ -834,6 +834,17 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_doctor(args: argparse.Namespace) -> int:
+    from .diagnostics import report_lines
+
+    lines, problems = report_lines()
+    for line in lines:
+        print(line)
+    print()
+    print("no problems found." if not problems else "problems found -- see above.")
+    return 1 if problems else 0
+
+
 def cmd_serve(args: argparse.Namespace) -> int:
     from .server import serve as serve_web
 
@@ -847,6 +858,7 @@ def cmd_app(args: argparse.Namespace) -> int:
         port=args.port,
         open_browser=not args.no_browser,
         window=False if args.console else None,
+        reuse=not args.force and not args.port,
     )
 
 
@@ -1045,6 +1057,9 @@ def build_parser() -> argparse.ArgumentParser:
     selftest.add_argument("--no-color", action="store_true")
     selftest.set_defaults(func=cmd_selftest)
 
+    doctor = sub.add_parser("doctor", help="print what is installed and where it keeps its files")
+    doctor.set_defaults(func=cmd_doctor)
+
     serve = sub.add_parser("serve", help="run the web interface")
     serve.add_argument("--host", default="0.0.0.0", help="interface to bind (default: 0.0.0.0)")
     serve.add_argument("--port", "-p", type=int, default=int(os.environ.get("PORT", 8080)))
@@ -1060,6 +1075,7 @@ def build_parser() -> argparse.ArgumentParser:
     app.add_argument("--port", "-p", type=int, default=0, help="port to use (default: 8080, or any free port)")
     app.add_argument("--no-browser", action="store_true", help="do not open a browser on startup")
     app.add_argument("--console", action="store_true", help="no control window; run in the terminal")
+    app.add_argument("--force", action="store_true", help="start even if a copy is already running")
     app.add_argument("--no-color", action="store_true")
     app.set_defaults(func=cmd_app)
 
@@ -1080,6 +1096,7 @@ SUBCOMMANDS = (
     "show",
     "demo",
     "selftest",
+    "doctor",
     "serve",
     "app",
 )

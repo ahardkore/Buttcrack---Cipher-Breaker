@@ -24,7 +24,7 @@ import ctypes
 import sys
 import threading
 from collections.abc import Sequence
-from typing import Callable
+from typing import Any, Callable
 
 __all__ = ["TrayIcon"]
 
@@ -41,10 +41,13 @@ _WM_APP = 0x8000
 _WM_TRAY = _WM_APP + 1
 
 _NIM_ADD = 0
+_NIM_MODIFY = 1
 _NIM_DELETE = 2
 _NIF_MESSAGE = 0x01
 _NIF_ICON = 0x02
 _NIF_TIP = 0x04
+_NIF_INFO = 0x10
+_NIIF_INFO = 0x01
 
 _IMAGE_ICON = 1
 _LR_LOADFROMFILE = 0x0010
@@ -92,6 +95,8 @@ class TrayIcon:
         # Built in _create(); the window procedure needs it to remove the icon
         # on WM_DESTROY, and may be reached before _create() has finished.
         self._nid: object = None
+        # Kept so notify() can reach the shell after the icon exists.
+        self._shell32: Any = None
 
     # ----------------------------------------------------------------- #
     # public surface
@@ -121,6 +126,28 @@ class TrayIcon:
     # ----------------------------------------------------------------- #
     # the thread
     # ----------------------------------------------------------------- #
+
+    def notify(self, title: str, message: str) -> bool:
+        """Show a balloon from the icon -- a toast, on Windows 10 and later.
+
+        Used once, the first time the window is hidden: without it "the app
+        closed" and "the app is in the tray" look identical.  Returns whether
+        the shell accepted it; a missing icon is not an error.
+        """
+        if not self.active or self._nid is None or self._shell32 is None:
+            return False
+        try:
+            nid = type(self._nid)()
+            nid.cbSize = ctypes.sizeof(nid)
+            nid.hWnd = self._nid.hWnd
+            nid.uID = self._nid.uID
+            nid.uFlags = _NIF_INFO
+            nid.szInfoTitle = title[:63]
+            nid.szInfo = message[:255]
+            nid.dwInfoFlags = _NIIF_INFO
+            return bool(self._shell32.Shell_NotifyIconW(_NIM_MODIFY, ctypes.byref(nid)))
+        except Exception:
+            return False
 
     def _run(self) -> None:
         try:
@@ -217,6 +244,8 @@ class TrayIcon:
         ]
         user32.LoadIconW.restype = wintypes.HICON
         user32.LoadIconW.argtypes = [wintypes.HINSTANCE, wintypes.LPCWSTR]
+        user32.RegisterWindowMessageW.restype = wintypes.UINT
+        user32.RegisterWindowMessageW.argtypes = [wintypes.LPCWSTR]
         user32.CreatePopupMenu.restype = wintypes.HMENU
         user32.TrackPopupMenu.restype = ctypes.c_int
         user32.TrackPopupMenu.argtypes = [
@@ -234,9 +263,22 @@ class TrayIcon:
         kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
 
         instance = kernel32.GetModuleHandleW(None)
+        self._shell32 = shell32
+
+        # The shell owns the notification area, and it is not a permanent thing:
+        # an Explorer crash, a Windows update or "restart Explorer" builds a new
+        # one, and every icon the old one held is gone.  Explorer announces that
+        # with a registered broadcast message, so the icon has to be put back --
+        # the id is per-session, hence registering the name rather than using a
+        # constant.  Without this the app keeps running with no icon and, since
+        # closing the window hides it, no way back.
+        taskbar_created = user32.RegisterWindowMessageW("TaskbarCreated")
 
         def wndproc(hwnd, message, wparam, lparam):  # noqa: ANN001 - Win32 signature
             try:
+                if taskbar_created and message == taskbar_created:
+                    self._add_icon(shell32)
+                    return 0
                 if message == _WM_TRAY:
                     event = lparam & 0xFFFF
                     if event in (_WM_LBUTTONUP, _WM_LBUTTONDBLCLK):
@@ -309,11 +351,25 @@ class TrayIcon:
         nid.szTip = self.title
         self._nid = nid
 
-        if not shell32.Shell_NotifyIconW(_NIM_ADD, ctypes.byref(nid)):
+        if not self._add_icon(shell32):
             user32.DestroyWindow(hwnd)
             raise OSError("Shell_NotifyIconW(NIM_ADD) failed")
 
         self.active = True
+
+    def _add_icon(self, shell32: Any) -> bool:
+        """Put the icon in the notification area.  False if the shell refused.
+
+        Called at startup and again every time the shell is rebuilt (see the
+        ``TaskbarCreated`` handling in :meth:`_create`), so it must be safe to
+        call twice -- ``NIM_ADD`` on an icon that is already there updates it.
+        """
+        if self._nid is None:
+            return False
+        try:
+            return bool(shell32.Shell_NotifyIconW(_NIM_ADD, ctypes.byref(self._nid)))
+        except Exception:
+            return False
 
     def _pump(self) -> None:
         from ctypes import wintypes

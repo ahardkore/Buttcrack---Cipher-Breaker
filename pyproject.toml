@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "buttcrack"
-version = "1.2.0"
+version = "1.2.1"
 description = "Automatic cipher breaker: identifies the cipher, recovers the key, reads the plaintext — including layered puzzles."
 readme = "README.md"
 requires-python = ">=3.9"
