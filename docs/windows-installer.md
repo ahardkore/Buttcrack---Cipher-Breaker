@@ -230,6 +230,7 @@ export BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain   # the custom d
 export BUTTCRACK_DELIVERY_PREFIX=                                 # optional folder inside the bucket
 export AWS_ACCESS_KEY_ID=...                                      # an R2 API token, or an S3 key
 export AWS_SECRET_ACCESS_KEY=...
+export AWS_DEFAULT_REGION=auto                                    # optional for R2; B2 and S3 need their own
 ```
 
 The upload itself is `aws s3 cp`, so it works against R2, B2 and S3 unchanged and
@@ -278,6 +279,73 @@ that, `publish_installer.py` runs perfectly well by hand. And the artifact it
 fetches belongs to a `Release artifacts` run, so that run has to have happened
 first; the workflow says which version it picked and fails cleanly if no
 installer artifact is live.
+
+### Publishing for the first time, in order
+
+The whole first run, once, on Cloudflare R2 because its egress is free and its
+API token is two clicks. Backblaze B2 is the same six values; S3 differs only in
+that its endpoint is regional.
+
+**1. A bucket.** Cloudflare dashboard → **R2** → *Create bucket* → name it
+whatever you like (`buttcrack-downloads`). This is `BUTTCRACK_DELIVERY_BUCKET`.
+Nothing in it yet, and the name is not secret.
+
+**2. An API token.** On the R2 overview page → **Manage R2 API Tokens** → *Create
+API token* → permission **Object Read & Write**, scoped to that one bucket. It
+shows an **Access Key ID** and a **Secret Access Key**, once. Those are
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, and they are the only two values
+here that are actually secret. The S3 endpoint on the same page —
+`https://<account-id>.r2.cloudflarestorage.com` — is `BUTTCRACK_DELIVERY_ENDPOINT`.
+
+**3. Make the objects reachable.** A new bucket is private, and a private object
+answers `403` to the buyer clicking their link. Either:
+
+* *Quickest:* bucket → **Settings** → **Public access** → *R2.dev subdomain* →
+  Allow. The hostname it shows (`https://pub-<hash>.r2.dev`) is
+  `BUTTCRACK_DELIVERY_BASE_URL`. Cloudflare rate-limits `r2.dev` and says not to
+  use it for production, which for a download link that a handful of buyers
+  click is fine and for anything busier is not; or
+* *Better:* bucket → **Settings** → **Custom Domains** → *Connect Domain* →
+  `downloads.yourdomain`, which needs that domain on Cloudflare. Turn the proxy
+  **off** (`DNS only`) or large downloads go through Workers limits. Then
+  `BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain`.
+
+Either way, check the URL shape with a file you do not mind: the installer's own
+link is
+`<base-url>/buttcrack-setup-<version>-<token>.exe`, and everything under the base
+URL is what buyers reach, so a stray folder in the middle is the difference
+between a download and a 404.
+
+**4. Six secrets.** Repository → **Settings** → **Secrets and variables** →
+**Actions** → *New repository secret*, once per name:
+
+| Secret | Value |
+| --- | --- |
+| `BUTTCRACK_DELIVERY_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
+| `BUTTCRACK_DELIVERY_BUCKET` | the bucket name |
+| `BUTTCRACK_DELIVERY_BASE_URL` | the r2.dev hostname or your custom domain |
+| `AWS_ACCESS_KEY_ID` | from step 2 |
+| `AWS_SECRET_ACCESS_KEY` | from step 2, and nowhere else ever again |
+| `BUTTCRACK_DELIVERY_PREFIX` | optional: a folder inside the bucket, else leave it unset |
+
+**5. Look before you leap.** **Actions** → **Publish installer to storage** →
+*Run workflow* with **dry_run** ticked. It needs no secrets, uploads nothing, and
+prints the exact object name and the exact URL a buyer would get. If the URL is
+not the one you want, fix the base URL and run it again.
+
+**6. Publish.** Same workflow, `dry_run` unticked. It fetches the artifact of a run
+that already passed the install test, uploads it, and prints the four values plus
+the `git diff` for `site.json` in the run summary. Commit that diff.
+
+**7. Point Stripe at the thank-you page.** The run's summary also names the page
+(`thank-you-<token>.html`, printed by `build_pages.py` on every build). Its URL
+goes into the Payment Link's *after payment* redirect. Until that is set, Stripe
+sends buyers somewhere else and the download is, again, an email.
+
+**8. Buy your own copy.** Run the flow once as a customer — pay, get redirected,
+click the button, check the SHA-256 against the value in `site.json`. It is the
+only test that covers the part of the product nobody deploys.
+
 
 ### Withdrawing a publish
 

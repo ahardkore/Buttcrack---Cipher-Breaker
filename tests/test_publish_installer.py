@@ -61,7 +61,7 @@ def fake_upload():
     """A stand-in for the `aws s3 cp` subprocess, recording what it was asked."""
     result = mock.Mock(returncode=0, stdout="upload: ...", stderr="")
 
-    def run(command, capture_output=True, text=True):
+    def run(command, capture_output=True, text=True, env=None):
         return result
 
     return mock.Mock(side_effect=run)
@@ -121,6 +121,30 @@ class Upload(unittest.TestCase):
         self.assertIn("--content-type application/octet-stream", joined)
         self.assertIn("--content-disposition", joined)
         self.assertIn("immutable", joined)
+
+    def test_an_r2_endpoint_gets_the_region_the_cli_refuses_to_sign_without(self):
+        env = publish.upload_env("https://abc123.r2.cloudflarestorage.com")
+        self.assertEqual(env["AWS_DEFAULT_REGION"], "auto")
+
+    def test_an_explicit_region_always_wins(self):
+        with mock.patch.dict(os.environ, {"AWS_DEFAULT_REGION": "us-west-004"}):
+            env = publish.upload_env("https://abc123.r2.cloudflarestorage.com")
+        self.assertEqual(env["AWS_DEFAULT_REGION"], "us-west-004")
+
+    def test_other_hosts_are_not_given_a_region_that_would_break_their_signing(self):
+        # S3 and B2 both sign a real region; inventing one for them turns a
+        # missing setting into a signature error that reads like a bad key.
+        for endpoint in ("https://s3.us-east-1.amazonaws.com", "https://s3.us-west-004.backblazeb2.com"):
+            with self.subTest(endpoint=endpoint), mock.patch.dict(os.environ, {}, clear=True):
+                self.assertNotIn("AWS_DEFAULT_REGION", publish.upload_env(endpoint))
+
+    def test_the_region_is_passed_to_the_upload_subprocess(self):
+        run = fake_upload()
+        with mock.patch.object(publish.subprocess, "run", run), mock.patch.object(
+            publish.shutil, "which", return_value="/usr/bin/aws"
+        ), mock.patch.dict(os.environ, {}, clear=True), captured_stdout():
+            publish.run_upload(Path("x.exe"), "bucket", "key", "https://abc.r2.cloudflarestorage.com")
+        self.assertEqual(run.call_args.kwargs["env"]["AWS_DEFAULT_REGION"], "auto")
 
     def test_a_missing_aws_cli_says_how_to_get_it(self):
         with mock.patch.object(publish.shutil, "which", return_value=None), self.assertRaises(SystemExit) as caught:

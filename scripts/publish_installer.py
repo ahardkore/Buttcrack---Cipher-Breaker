@@ -14,6 +14,7 @@ all do:
     export BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain
     export AWS_ACCESS_KEY_ID=...        # an R2 API token, or an S3 key
     export AWS_SECRET_ACCESS_KEY=...
+    export AWS_DEFAULT_REGION=auto      # optional; filled in automatically for R2
 
     python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe
     python scripts/publish_installer.py ... --dry-run        # say what would happen
@@ -120,6 +121,22 @@ def aws_command(path: Path, bucket: str, key: str, endpoint: str) -> list[str]:
     ]
 
 
+def upload_env(endpoint: str) -> dict[str, str]:
+    """The environment the AWS CLI needs, defaulted so R2 works untouched.
+
+    Signature V4 signs a region, and the CLI refuses to sign anything without
+    one -- ``NoRegionError`` before it ever reaches the network.  R2 accepts any
+    region string and its own tooling writes ``auto``; B2 wants the region in its
+    endpoint (``s3.us-west-004.``) and S3 wants the bucket's real region, so this
+    only fills in R2 and otherwise leaves the environment alone.  An explicit
+    ``AWS_DEFAULT_REGION`` always wins.
+    """
+    env = dict(os.environ)
+    if "AWS_DEFAULT_REGION" not in env and "r2.cloudflarestorage.com" in endpoint:
+        env["AWS_DEFAULT_REGION"] = "auto"
+    return env
+
+
 def run_upload(path: Path, bucket: str, key: str, endpoint: str) -> None:
     if shutil.which("aws") is None:
         raise SystemExit(
@@ -129,7 +146,7 @@ def run_upload(path: Path, bucket: str, key: str, endpoint: str) -> None:
         )
     command = aws_command(path, bucket, key, endpoint)
     print("$ " + " ".join(command))
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output=True, text=True, env=upload_env(endpoint))
     if result.returncode != 0:
         sys.stderr.write(result.stdout + result.stderr)
         raise SystemExit(f"upload failed with exit code {result.returncode}")

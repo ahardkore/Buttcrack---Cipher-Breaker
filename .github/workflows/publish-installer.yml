@@ -94,6 +94,10 @@ jobs:
           BUTTCRACK_DELIVERY_PREFIX: ${{ secrets.BUTTCRACK_DELIVERY_PREFIX }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # R2 accepts any region string and its own tooling writes "auto"; B2
+          # and S3 want a real one, so it is a secret with a default rather than
+          # a hard-coded value (see publish_installer.upload_env).
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'auto' }}
         run: |
           set -o pipefail
           python scripts/publish_installer.py dist/installer/*.exe \
