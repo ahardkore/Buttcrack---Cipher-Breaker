@@ -1,0 +1,4 @@
+node_modules/
+test/tmp/
+*.age
+what-is-locked*

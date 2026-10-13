@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tlock unlocker — what-is-locked.age</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: #10131a; color: #dfe6f3; }
+  main { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #8d9ab3; margin-bottom: 22px; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .card { background: #171c27; border: 1px solid #26304a; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .hint { color: #8d9ab3; font-size: 13px; }
+  #drop { border: 2px dashed #3a4767; border-radius: 10px; padding: 22px; text-align: center; color: #9fb0d0; margin-top: 10px; }
+  #drop.hot { border-color: #6ea8ff; color: #cfe0ff; background: #121a2b; }
+  input[type=file] { margin-top: 10px; color: #aebbd6; }
+  select, button { background: #1e2637; color: #dfe6f3; border: 1px solid #37456a; border-radius: 8px; padding: 8px 12px; font: inherit; }
+  button.primary { background: #2f6bff; border-color: #2f6bff; font-weight: 600; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  #status { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #121826; border: 1px solid #26304a; }
+  #status.locked { border-color: #7a5c1f; background: #201b10; color: #f3d9a4; }
+  #status.ready { border-color: #2c6b3f; background: #0f2015; color: #b5f0c8; }
+  #countdown { font-weight: 700; }
+  #err { white-space: pre-wrap; background: #2a1418; border: 1px solid #7a2b36; color: #ffb9c2; padding: 12px; border-radius: 8px; display: none; }
+  pre#output { max-height: 420px; overflow: auto; background: #0b0e14; border: 1px solid #26304a; border-radius: 8px; padding: 12px; white-space: pre-wrap; word-break: break-word; }
+  a#download { display: none; margin-top: 10px; color: #9dc2ff; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>tlock unlocker</h1>
+  <div class="sub">Decrypts an age file whose key is timelocked to a future drand round. Runs entirely in your browser — the file never leaves this machine; the only network call is to the drand API you pick.</div>
+
+  <div class="card">
+    <label>1 · Load the age file (<code>what-is-locked.age</code>)</label>
+    <div id="drop" class="hint">drag &amp; drop the .age file here, or</div>
+    <input type="file" id="file" accept=".age,.txt">
+    <div id="fileinfo" class="hint" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card">
+    <label>2 · drand API + status</label>
+    <div class="row">
+      <select id="baseurl">
+        <option value="https://api.drand.sh/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971">api.drand.sh (quicknet)</option>
+        <option value="https://api2.drand.sh/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971">api2.drand.sh (quicknet)</option>
+        <option value="https://api3.drand.sh/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971">api3.drand.sh (quicknet)</option>
+        <option value="https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971">drand.cloudflare.com (quicknet)</option>
+      </select>
+      <button id="refresh">Refresh status</button>
+    </div>
+    <div id="chaininfo" class="hint" style="margin-top:8px"></div>
+    <div id="status">Load a file to begin.</div>
+    <div class="row" style="margin-top:12px">
+      <span id="countdown"></span>
+      <button class="primary" id="unlock" disabled>Unlock now</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Offline mode (no network at all)</label>
+    <div class="hint">After the unlock round exists, open
+      <code>&lt;api&gt;/public/&lt;round&gt;</code> in a tab, save the JSON, then load it here to decrypt locally:</div>
+    <input type="file" id="beaconfile" accept=".json">
+  </div>
+
+  <div class="card">
+    <label>Plaintext</label>
+    <a id="download" href="#">download plaintext</a>
+    <pre id="output"></pre>
+  </div>
+
+  <pre id="err"></pre>
+</main>
+<script src="app.bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+mock drand server: http://127.0.0.1:34979 (serving real quicknet info + real round 33025409 beacon)
+
+PASS  roundTime(33542211) == 2026-10-31T06:59:57Z  — library says 2026-10-31T06:59:57.000Z
+PASS  real beacon 33025409 verifies against quicknet public key
+randomness did not match the signature
+PASS  tampered beacon is rejected
+beacon received: {"round":33025409,"randomness":"e9dc96fa8eb786e56ed1a101438c2fc1665867884ab22e22b140859a8b8c239d","signature":"8870a4c828812c380d2ef94177d155b13517468d8b1434beee45e64508d1665ddd27dcbf5b917921b84a9cbf45f7fda4"}
+PASS  encrypt→decrypt round trip on real published round 33025409
+PASS  round 33542211 still locked  — It's too early to decrypt the ciphertext - decryptable at round 33542211
+PASS  unlock.mjs decrypts the canary (exit 0)
+PASS  unlock.mjs correctly reports LOCKED with the unlock date (exit 2)
+PASS  offline.mjs decrypts from beacon JSON alone (exit 0)
+PASS  verify-beacon.mjs accepts the real beacon
+PASS  verify-beacon.mjs rejects the tampered beacon
+PASS  web core: parses round + chain from the armored file  — {"round":33025409,"chainHash":"52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971"}
+beacon received: {"round":33025409,"randomness":"e9dc96fa8eb786e56ed1a101438c2fc1665867884ab22e22b140859a8b8c239d","signature":"8870a4c828812c380d2ef94177d155b13517468d8b1434beee45e64508d1665ddd27dcbf5b917921b84a9cbf45f7fda4"}
+PASS  web core: browser decrypt path reproduces the canary
+PASS  web core: countdown formatting
+PASS  web bundle built (web/app.bundle.js)  — 177389 bytes
+PASS  real file header: parser reads round 33542211 + quicknet chain  — {"round":33542211,"chainHash":"52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971"}
+PASS  real file header: decoded stanza text matches
+PASS  real file header: grease stanza present (no key material)
+PASS  watch.mjs auto-decrypts when the round is already published (exit 0)
+PASS  watch.mjs keeps waiting on a locked file and reports the countdown
+PASS  validate-file.mjs: future-round file is valid + correctly locked (exit 2)
+PASS  validate-file.mjs: published-round file is valid + ready (exit 0)
+PASS  validate-file.mjs: truncated file is rejected (exit 1)
+
+ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
