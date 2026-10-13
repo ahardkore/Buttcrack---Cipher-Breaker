@@ -142,6 +142,15 @@ class JobCancelled(BaseException):
     """
 
 
+class JobStoreFull(RuntimeError):
+    """Every job slot is held by a search that is still running.
+
+    Refusing new work is the honest answer: the alternative is evicting a job
+    that is still computing, whose thread and progress lines then live on with
+    nothing left to observe or stop them.
+    """
+
+
 class JobStore:
     """Crack jobs, their progress lines and their eventual reports."""
 
@@ -186,12 +195,21 @@ class JobStore:
             return True
 
     def _prune(self) -> None:
+        """Make room for one more job, or say that there is none.
+
+        Finished jobs go first -- the ones past their TTL, then the oldest of
+        whatever is left -- and a job that is still running is never dropped.
+        Raises :class:`JobStoreFull` when every slot is busy.
+        """
         cutoff = time.time() - JOB_TTL_SECONDS
         stale = [k for k, v in self._jobs.items() if v["created"] < cutoff and v["done"]]
         for key in stale:
             del self._jobs[key]
-        while len(self._jobs) > MAX_JOBS:
-            oldest = min(self._jobs, key=lambda k: self._jobs[k]["created"])
+        while len(self._jobs) >= MAX_JOBS:
+            finished = [k for k, v in self._jobs.items() if v["done"]]
+            if not finished:
+                raise JobStoreFull(f"{len(self._jobs)} searches are already running")
+            oldest = min(finished, key=lambda k: self._jobs[k]["created"])
             del self._jobs[oldest]
 
     def _run(self, job_id: str) -> None:
@@ -421,7 +439,11 @@ class Handler(BaseHTTPRequestHandler):
                     "language": _clean_language(body.get("language", "english")),
                     "hints": _clean_hints(body.get("hints")),
                 }
-                return self._json({"job": JOBS.create(options), "options": options})
+                try:
+                    job_id = JOBS.create(options)
+                except JobStoreFull as error:
+                    return self._error(429, f"{error} -- stop one and try again")
+                return self._json({"job": job_id, "options": options})
             if path.startswith("/api/job/") and path.endswith("/cancel"):
                 job_id = path[len("/api/job/") : -len("/cancel")].strip("/")
                 if not JOBS.cancel(job_id):

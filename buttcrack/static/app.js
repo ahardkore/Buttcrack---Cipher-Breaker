@@ -110,6 +110,151 @@ function hideError() {
   $("error-card").hidden = true;
 }
 
+/* ------------------------------------------------------------------ session */
+
+/* One versioned key.  The ciphertext in the textarea and the search options are
+ * the two things closing the tab throws away, and both are the user's own work:
+ * this is localStorage on this machine, so the footer's promise -- nothing
+ * leaves it -- still holds.  Restoring is *offered*, never done: the tab may
+ * have been opened to paste something new. */
+const SESSION_KEY = "buttcrack.session.v1";
+const OPTION_IDS = [
+  "budget",
+  "workers",
+  "depth",
+  "language",
+  "exhaustive",
+  "hint-key",
+  "hint-len",
+  "hint-width",
+  "hint-seed",
+  "hint-crib",
+];
+
+function currentOptions() {
+  const options = {};
+  for (const id of OPTION_IDS) {
+    const node = $(id);
+    if (!node) continue;
+    options[id] = node.type === "checkbox" ? node.checked : node.value;
+  }
+  return options;
+}
+
+function saveSession() {
+  try {
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({ text: $("input").value, options: currentOptions(), at: Date.now() }),
+    );
+  } catch (_error) {
+    /* private browsing or a full quota: losing the session is not an error */
+  }
+}
+
+function readSession() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+  } catch (_error) {
+    return null;
+  }
+  if (!saved || typeof saved !== "object" || typeof saved.text !== "string") return null;
+  if (!saved.text.trim()) return null;
+  if (!saved.options || typeof saved.options !== "object") saved.options = {};
+  return saved;
+}
+
+function offerSession() {
+  const saved = readSession();
+  const bar = $("restore");
+  if (!bar || !saved) return;
+  if ($("input").value.trim()) return; // something is already typed: leave it be
+  const when = new Date(saved.at || Date.now());
+  $("restore-when").textContent = `A session from ${when.toLocaleString()} is remembered (${saved.text.trim().length.toLocaleString("en-US")} characters).`;
+  bar.hidden = false;
+}
+
+function applySession() {
+  const saved = readSession();
+  if (!saved) return;
+  $("input").value = saved.text;
+  for (const [id, value] of Object.entries(saved.options)) {
+    const node = $(id);
+    if (!node) continue;
+    if (node.type === "checkbox") node.checked = Boolean(value);
+    else node.value = String(value);
+  }
+  $("restore").hidden = true;
+  $("input").focus();
+}
+
+function wireSession() {
+  let timer = null;
+  const schedule = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(saveSession, 400);
+  };
+  $("input").addEventListener("input", schedule);
+  for (const id of OPTION_IDS) {
+    const node = $(id);
+    if (node) node.addEventListener("change", schedule);
+  }
+  window.addEventListener("beforeunload", saveSession);
+  const bar = $("restore");
+  if (!bar) return;
+  $("restore-yes").addEventListener("click", applySession);
+  $("restore-no").addEventListener("click", () => {
+    bar.hidden = true;
+  });
+}
+
+/* -------------------------------------------------------------------- file */
+
+function wireFileInput() {
+  const input = $("input");
+  const picker = $("file");
+  const opener = $("open-file");
+  if (!input) return;
+  if (opener && picker) {
+    opener.addEventListener("click", () => picker.click());
+    picker.addEventListener("change", () => {
+      const chosen = picker.files && picker.files[0];
+      if (chosen) readFileInto(chosen);
+      picker.value = "";
+    });
+  }
+  const highlight = (on) => input.classList.toggle("dropping", on);
+  for (const name of ["dragenter", "dragover"]) {
+    input.addEventListener(name, (event) => {
+      event.preventDefault();
+      highlight(true);
+    });
+  }
+  for (const name of ["dragleave", "dragend"]) input.addEventListener(name, () => highlight(false));
+  input.addEventListener("drop", (event) => {
+    event.preventDefault();
+    highlight(false);
+    const dropped = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+    if (dropped) readFileInto(dropped);
+  });
+}
+
+function readFileInto(file) {
+  if (file.size > 4 * 1024 * 1024) {
+    showError(`${file.name} is larger than the 4 MB the local server accepts.`);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    $("input").value = String(reader.result || "");
+    $("input").focus();
+    $("footer-status").textContent = `read ${file.name} (${file.size.toLocaleString("en-US")} bytes) here — nothing was uploaded`;
+  };
+  reader.onerror = () => showError(`Could not read ${file.name}.`);
+  reader.readAsText(file);
+}
+
 /* --------------------------------------------------------------------- boot */
 
 async function boot() {
@@ -118,6 +263,8 @@ async function boot() {
   wirePlayground();
   wireReference();
   renderSamples();
+  wireSession();
+  wireFileInput();
 
   try {
     const [health, ciphers] = await Promise.all([api("/api/health"), api("/api/ciphers")]);
@@ -129,6 +276,9 @@ async function boot() {
     renderLanguages(health.languages);
     populatePlayground(ciphers);
     renderReference(ciphers);
+    // After the selects exist, so restoring a remembered choice has somewhere
+    // to land.
+    offerSession();
     if (health.model && health.model.quadgrams) {
       $("about-quadgrams").textContent = `${health.model.quadgrams.toLocaleString("en-US")} quadgram`;
     }
@@ -339,6 +489,7 @@ async function startCrack() {
   }
   hideError();
   resetResult();
+  saveSession();
   $("progress-card").hidden = false;
   $("progress-state").textContent = "starting…";
   $("crack").disabled = true;

@@ -40,7 +40,19 @@
         <textarea id="input" spellcheck="false" rows="7"
           placeholder="Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj&#10;&#10;or try one of the samples below"></textarea>
 
+        <div class="restore" id="restore" hidden>
+          <span id="restore-when">A previous session is remembered.</span>
+          <button class="ghost small" id="restore-yes" type="button">Restore it</button>
+          <button class="ghost small" id="restore-no" type="button">Dismiss</button>
+        </div>
+
         <div class="samples" id="samples" aria-label="Sample ciphertexts"></div>
+
+        <div class="file-row">
+          <button class="ghost small" id="open-file" type="button">Open a file…</button>
+          <span class="hint">or drop a .txt on the box above — it is read in this browser, never uploaded</span>
+          <input type="file" id="file" accept="text/*,.txt,.md,.csv,.json,.b64,.hex" hidden>
+        </div>
 
         <details class="advanced" id="advanced">
           <summary>Search options</summary>

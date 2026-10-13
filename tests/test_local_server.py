@@ -156,6 +156,69 @@ class LocalServerRefusalTests(unittest.TestCase):
         self.assertNotIn("Content-Security-Policy", headers)
 
 
+class JobEvictionTests(unittest.TestCase):
+    """What happens when more searches are started than there are slots.
+
+    Evicting a job that is still running used to leave its thread computing with
+    nobody able to see or stop it; refusing the new job is the honest answer.
+    """
+
+    def setUp(self) -> None:
+        self.store = server.JobStore()
+
+    def _job(self, job_id: str, *, done: bool, age: float) -> None:
+        self.store._jobs[job_id] = {
+            "id": job_id,
+            "created": time.time() - age,
+            "options": {},
+            "progress": [],
+            "done": done,
+            "cancel": False,
+            "cancelled": False,
+            "report": None,
+            "error": None,
+        }
+
+    def test_a_finished_job_makes_room_for_the_next_one(self) -> None:
+        with mock.patch.object(server, "MAX_JOBS", 2):
+            self._job("old", done=True, age=10)
+            self._job("newer", done=True, age=1)
+            self.store._prune()
+        self.assertEqual(list(self.store._jobs), ["newer"])
+
+    def test_a_running_job_is_never_evicted(self) -> None:
+        with mock.patch.object(server, "MAX_JOBS", 2):
+            self._job("running", done=False, age=10)
+            self._job("finished", done=True, age=1)
+            self.store._prune()
+        self.assertIn("running", self.store._jobs)
+        self.assertNotIn("finished", self.store._jobs)
+
+    def test_refusing_new_work_is_an_error_not_a_dropped_search(self) -> None:
+        with mock.patch.object(server, "MAX_JOBS", 1):
+            with mock.patch.object(server, "solve", lambda *_a, **_k: time.sleep(5)):
+                first = self.store.create({"text": "X", "budget": 5.0, "workers": 1})
+                self.store.cancel(first)
+                with self.assertRaises(server.JobStoreFull):
+                    self.store.create({"text": "Y", "budget": 5.0, "workers": 1})
+            self.assertIn(first, self.store._jobs)
+
+    def test_the_endpoint_answers_429_rather_than_dying(self) -> None:
+        app = LocalApp(port=0)
+        try:
+            app.start()
+            request = {"Content-Type": "application/json"}
+            busy = mock.patch.object(server, "solve", lambda *_a, **_k: time.sleep(5))
+            with mock.patch.object(server, "MAX_JOBS", 1), busy:
+                first = headers_of(app.port, "POST", "/api/crack", request, b'{"text": "X", "budget": 5}')
+                self.assertEqual(first[0], 200, first[2])
+                second = headers_of(app.port, "POST", "/api/crack", request, b'{"text": "Y", "budget": 5}')
+            self.assertEqual(second[0], 429, second[2])
+            self.assertIn("already running", json.loads(second[2])["error"])
+        finally:
+            app.stop()
+
+
 class CancelTests(unittest.TestCase):
     """Stopping a search that is already running."""
 

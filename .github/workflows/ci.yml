@@ -324,3 +324,51 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/nope)" = "404"
           test "$(curl -s -o /dev/null -w '%{http_code}' 'http://127.0.0.1:8080/../cli.py')" != "200"
           kill $SERVER
+
+  # The web interface is what the desktop application actually shows, and
+  # ``tests/browser/app.spec.js`` was the only file in the tree that could run
+  # it the way a browser does -- for years, in the sense that nobody ran it.
+  # Everything it needs is a browser and the package: no build step, no
+  # bundler, which is the point of the front end.
+  browser:
+    name: browser interface
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install the package, the test runner and a browser
+        run: |
+          python -m pip install --upgrade pip .
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      # The html report is uploaded below; the annotation is what makes a red
+      # run readable from the API alone, which is how this repository reads CI.
+      - name: Run the browser tests
+        run: |
+          set -o pipefail
+          npx playwright test --reporter=list 2>&1 | tee browser-tests.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            echo "::error title=browser interface failed (exit $code)::$(grep -E '^(  [0-9]+\)|Error:|expect)' browser-tests.log | tail -n 8 | tr '\n' ' ')"
+            tail -n 30 browser-tests.log | sed 's/^/::notice::/'
+            exit "$code"
+          fi
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-report
+          path: playwright-report
+          if-no-files-found: ignore
