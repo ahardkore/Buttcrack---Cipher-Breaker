@@ -368,19 +368,42 @@ uploaded. `INSTALLER-SHA256.json` travels with the artifact, and the run's
 Because ordinary runs give their copy back, the newest run is usually *not* the
 one to look in — ask what exists instead of reading runs one at a time:
 
-```powershell
-gh api "repos/{owner}/{repo}/actions/artifacts?per_page=100" `
-  --jq '.artifacts[] | select(.name | startswith("buttcrack-installer")) | "\(.created_at)  \(.name)  id=\(.id)  until \(.expires_at)"'
+```console
+python scripts/fetch_installer.py --list
+```
+
+```
+created           version        size  lapses           artifact
+2026-10-13 05:00  1.2.1       15.6 MB  2026-11-12 05:00 11790265857
+2026-10-12 23:57  1.2.0       15.6 MB  2026-11-11 23:57 11780675745
+
+2 live. Fetch one with --version <version> or --artifact <id>.
 ```
 
 Every name that comes back is a build that passed the install, exercise and
 uninstall test, because the upload happens after it — so a live artifact is a
 verified installer, and the list is also the honest answer to "what can somebody
-download from this repository right now?". One of them is fetched like this:
+download from this repository right now?". The same script fetches one, checks
+the digest, and prints the three numbers `site.json` wants:
+
+```console
+python scripts/fetch_installer.py                       # newest, into dist/installer
+python scripts/fetch_installer.py --version 1.2.0       # the version the page sells
+python scripts/fetch_installer.py --artifact 11780675745
+```
+
+It uses the anonymous artifact API, so it needs no account and no `gh`; set
+`GITHUB_TOKEN` only if a build is ever private. By hand, the same two steps are
+the run's **Artifacts** section in the browser, or:
 
 ```powershell
 gh run download <run-id> --name buttcrack-installer-<version> --dir dist\installer
 ```
+
+Note that there is no per-artifact web address — `/actions/runs/<run>/artifacts/<id>`
+does not exist, and a link built that way answers 404 however you are signed in.
+The run page shows the artifact with its size and downloads it on click; that is
+the only browser route.
 
 The delete step never fails the build. A pull request from a fork runs with a
 read-only token, so it cannot withdraw anything; when that happens the run says

@@ -28,6 +28,14 @@ powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1
 
 Output: `dist\installer\buttcrack-setup-<version>.exe`, plus its SHA-256.
 
+No Windows machine to hand? CI builds and verifies the same file, and
+`scripts\fetch_installer.py` lists what is live and fetches one, digest checked:
+
+```console
+python scripts\fetch_installer.py --list
+python scripts\fetch_installer.py --version 1.2.0
+```
+
 Then check it actually installs, runs and uninstalls:
 
 ```powershell
