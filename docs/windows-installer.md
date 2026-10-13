@@ -140,8 +140,21 @@ cd dist/installer && sha256sum -c <<< "$(cat buttcrack-setup-*.exe.sha256)"
 The installer job prints the filename, the byte size and the SHA-256 as a run
 **annotation** (`installer digest`), which is where to read the two numbers
 `site.json` wants — `windows_app.size` and `windows_app.sha256` — without opening
-the job log. **Publish the digest of the build you upload**: two builds of the same
-commit are separate files, and a hash from a different build is worse than none.
+the job log.
+
+**Publish the digest of the build you upload.** Two builds of the same commit are
+*not* byte-identical — PyInstaller records build paths and Inno Setup records
+timestamps, and the sizes differ by a few hundred bytes — so there is no "the"
+digest for a version, only a digest per build. Download one artefact, check it
+against `windows_app.sha256`, upload that file, and if any of those three steps
+happens twice, start again from the digest:
+
+```console
+sha256sum dist/installer/buttcrack-setup-*.exe     # must equal site.json's sha256
+```
+
+A hash from a different build is worse than publishing no hash at all, because the
+page promises the file is the one described there.
 
 ### Building the pieces separately
 
