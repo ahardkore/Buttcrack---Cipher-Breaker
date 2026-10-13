@@ -14,7 +14,7 @@ verified kit that does it the moment the round exists.*
 
 You get two independent ways to open it on unlock day: a tested Node CLI
 (`unlock.mjs`) and a zero-install browser page (`web/index.html`). Both are
-validated end-to-end against real drand data (14/14 checks, §5).
+validated end-to-end against real drand data (17/17 checks, §5).
 
 Your intuition — “it works similar to bitcoin” — is half right, and the half
 that's right is the important half. drand publishes a new round every **3
@@ -111,6 +111,20 @@ if your browser cannot reach the drand API (CORS/network), save the beacon JSON
 from `<api>/public/33542211` in a tab and load it into the page; decryption then
 needs no network at all.
 
+### Option C — start it and forget it (watch mode)
+
+Don't want to be awake at the unlock moment? Start the watcher and walk away:
+
+```bash
+nohup node watch.mjs what-is-locked.age > watch.log 2>&1 &   # then: tail -f watch.log
+```
+
+It asks drand every 15 s for the latest round, prints a live countdown, and the
+instant round 33542211 exists it decrypts and writes `what-is-locked.txt`
+(exit 0). The chain — not your local clock — decides when that is, so a skewed
+clock can never fire it early. `WATCH_INTERVAL_MS=3000` polls faster near the
+end. Prefer a nudge instead? Import `unlock-reminder.ics` into your calendar.
+
 ### No network on unlock day? (offline mode)
 
 1. On any machine with a browser/open internet, open:
@@ -168,6 +182,11 @@ PASS  web core: parses round + chain from the armored file
 PASS  web core: browser decrypt path reproduces the canary
 PASS  web core: countdown formatting
 PASS  web bundle built (web/app.bundle.js)
+PASS  real file header: parser reads round 33542211 + quicknet chain  — {"round":33542211,"chainHash":"52db9ba70e…"}
+PASS  real file header: decoded stanza text matches
+PASS  real file header: grease stanza present (no key material)
+PASS  watch.mjs auto-decrypts when the round is already published (exit 0)
+PASS  watch.mjs keeps waiting on a locked file and reports the countdown
 
 ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
 ```
@@ -188,6 +207,9 @@ today, through no fault of the file.
 | `web/app.bundle.js` | self-contained bundle of `web/src/*` (committed so `file://` works) |
 | `web/src/core.js`, `web/src/app.js` | browser logic (core is unit-tested by the suite) |
 | `web/serve.mjs` | tiny static server: `npm run serve:web` |
+| `watch.mjs` | start-and-forget watcher: polls the chain and decrypts automatically the moment the round lands |
+| `fixtures/target-header.b64` | the first 8 armor lines of your actual file — the parser is tested against these real bytes |
+| `unlock-reminder.ics` | calendar event with an alarm ~1 minute before 06:59:57Z |
 | `mock/drand-server.mjs` | local API replica used by the tests (serves the real captured data) |
 | `test/run-tests.mjs` | the 10 checks above — `npm test` |
 | `evidence/round-info.txt` | the full target analysis (stanza, math, observed state) |

@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//tlock-kit//unlock reminder//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:tlock-round-33542211@buttcrack-cipher-breaker
+DTSTAMP:20261013T090000Z
+DTSTART:20261031T065557Z
+DTEND:20261031T071557Z
+SUMMARY:drand round 33542211 emitted — what-is-locked.age unlocks at 06:59:57 UTC
+DESCRIPTION:Two minutes after this event starts the timelock opens.\n\nUnlock it with either:\n  cd tlock-kit && node unlock.mjs what-is-locked.age\nor open tlock-kit/web/index.html and drop the .age file in.\n\nOffline alternative: save https://api.drand.sh/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/33542211 then run:\n  node offline.mjs what-is-locked.age beacon-33542211.json
+BEGIN:VALARM
+TRIGGER:-PT11M
+ACTION:DISPLAY
+DESCRIPTION:Timelock opens in ~1 minute — get the file ready
+END:VALARM
+END:VEVENT
+END:VCALENDAR

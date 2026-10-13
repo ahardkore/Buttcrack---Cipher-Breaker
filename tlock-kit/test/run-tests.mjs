@@ -157,6 +157,48 @@ ok(lockedErr !== null && /too early/i.test(lockedErr), `round ${TARGET_ROUND} st
      existsSync(bundle) ? `${statSync(bundle).size} bytes` : "missing — run: npm run build:web");
 }
 
+// ---------- 10. parser vs the REAL file header (first 8 armor lines of the pasted file) ----------
+{
+  const { parseTlockStanza } = await import("../web/src/core.js");
+  const b64 = readFileSync(join(kit, "fixtures/target-header.b64"), "utf8").trim();
+  const parsed = parseTlockStanza(b64);
+  ok(
+    parsed?.round === 33542211 && parsed?.chainHash === "52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971",
+    "real file header: parser reads round 33542211 + quicknet chain",
+    JSON.stringify(parsed)
+  );
+  const flat = b64.replace(/\n/g, "");
+  const header = Buffer.from(flat + "=".repeat((4 - (flat.length % 4)) % 4), "base64").toString("latin1");
+  ok(header.startsWith("age-encryption.org/v1\n-> tlock 33542211 52db9ba7"), "real file header: decoded stanza text matches");
+  ok(/->\s*,6p\*m\.7-grease/.test(header), "real file header: grease stanza present (no key material)");
+}
+
+// ---------- 11. watch.mjs ----------
+{
+  const r = await runNode([join(kit, "watch.mjs"), pastFile, join(tmp, "watch-out.txt")], {
+    DRAND_CHAIN_URL: base,
+    WATCH_INTERVAL_MS: "500",
+  });
+  let wrote = null;
+  try { wrote = readFileSync(join(tmp, "watch-out.txt"), "utf8"); } catch {}
+  ok(r.status === 0 && wrote === canary, "watch.mjs auto-decrypts when the round is already published (exit 0)",
+     r.status === 0 ? "" : `exit ${r.status}: ${(r.stderr || r.stdout).slice(-200)}`);
+
+  const { spawn } = await import("node:child_process");
+  const child = spawn(process.execPath, [join(kit, "watch.mjs"), futureFile, join(tmp, "watch-future.txt")], {
+    env: { ...process.env, DRAND_CHAIN_URL: base, WATCH_INTERVAL_MS: "500" },
+  });
+  let out = "";
+  child.stdout.on("data", (d) => (out += d));
+  await new Promise((r) => setTimeout(r, 2500));
+  const alive = child.exitCode === null;
+  child.kill("SIGKILL");
+  await new Promise((r) => child.on("close", r));
+  ok(alive && /to go/.test(out) && /2026-10-31T06:59:57/.test(out),
+     "watch.mjs keeps waiting on a locked file and reports the countdown",
+     alive ? "" : "watcher exited unexpectedly");
+}
+
 server.close();
 rmSync(tmp, { recursive: true, force: true });
 console.log(failures === 0 ? "\nALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data." : `\n${failures} CHECK(S) FAILED ✘`);

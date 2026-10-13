@@ -1,4 +1,4 @@
-mock drand server: http://127.0.0.1:33273 (serving real quicknet info + real round 33025409 beacon)
+mock drand server: http://127.0.0.1:39509 (serving real quicknet info + real round 33025409 beacon)
 
 PASS  roundTime(33542211) == 2026-10-31T06:59:57Z  — library says 2026-10-31T06:59:57.000Z
 PASS  real beacon 33025409 verifies against quicknet public key
@@ -17,5 +17,10 @@ beacon received: {"round":33025409,"randomness":"e9dc96fa8eb786e56ed1a101438c2fc
 PASS  web core: browser decrypt path reproduces the canary
 PASS  web core: countdown formatting
 PASS  web bundle built (web/app.bundle.js)  — 177389 bytes
+PASS  real file header: parser reads round 33542211 + quicknet chain  — {"round":33542211,"chainHash":"52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971"}
+PASS  real file header: decoded stanza text matches
+PASS  real file header: grease stanza present (no key material)
+PASS  watch.mjs auto-decrypts when the round is already published (exit 0)
+PASS  watch.mjs keeps waiting on a locked file and reports the countdown
 
 ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
