@@ -98,8 +98,12 @@ jobs:
           set -o pipefail
           python scripts/publish_installer.py dist/installer/*.exe \
             --token "${{ inputs.token }}" \
+            --update-site-json ventures/cipher-solver-web/site.json \
             --annotate \
             ${{ inputs.dry_run && '--dry-run' || '' }} | tee /tmp/publish.log
+          # The exact edit site.json needs, without making it: a runner should
+          # not push to main on its own, and the four lines are the whole change.
+          git diff -- ventures/cipher-solver-web/site.json >> /tmp/publish.log
           {
             echo "## Installer published"
             echo

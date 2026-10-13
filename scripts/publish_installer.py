@@ -31,6 +31,7 @@ building again.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import secrets
 import shutil
@@ -134,6 +135,34 @@ def run_upload(path: Path, bucket: str, key: str, endpoint: str) -> None:
         raise SystemExit(f"upload failed with exit code {result.returncode}")
 
 
+def update_site_json(path: Path, url: str, version: str, size: int, digest: str) -> list[str]:
+    """Write the four published values into ``site.json``; return what changed.
+
+    Opt-in, because this edits a file that is also hand-maintained: only the four
+    keys under ``windows_app`` are touched, everything else is left exactly as it
+    was, and the change is reported rather than assumed.  ``build_pages.py``
+    validates ``delivery_url`` on every build, so a bad one here fails the next
+    deploy instead of quietly going live.
+    """
+    if not url:
+        raise SystemExit(
+            "refusing to write site.json with no delivery URL: set "
+            "BUTTCRACK_DELIVERY_BASE_URL (or --base-url) so the buyer's link can be built."
+        )
+    if not path.is_file():
+        raise SystemExit(f"no such file: {path}")
+
+    document = json.loads(path.read_text(encoding="utf-8"))
+    app = document.setdefault("windows_app", {})
+    wanted = {"delivery_url": url, "version": version, "size": human_megabytes(size), "sha256": digest}
+    changes = [
+        f"  windows_app.{key}: {app.get(key)!r} -> {value!r}" for key, value in wanted.items() if app.get(key) != value
+    ]
+    app.update(wanted)
+    path.write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return changes
+
+
 def fields_block(url: str, version: str, size: int, digest: str) -> str:
     return "\n".join(
         [
@@ -160,6 +189,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--endpoint", default=os.environ.get(ENV["endpoint"], ""))
     parser.add_argument("--base-url", default=os.environ.get(ENV["base_url"], ""))
     parser.add_argument("--dry-run", action="store_true", help="print what would happen; upload nothing")
+    parser.add_argument(
+        "--update-site-json",
+        type=Path,
+        metavar="PATH",
+        help="also write delivery_url/version/size/sha256 into site.json at PATH",
+    )
     parser.add_argument("--annotate", action="store_true", help="also emit ::notice lines for GitHub Actions")
     args = parser.parse_args(argv)
 
@@ -192,6 +227,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  sha256    {digest}")
         if sidecar.is_file():
             print(f"  sidecar   {sidecar.name} would be uploaded beside it")
+        if args.update_site_json:
+            print(f"  site.json {args.update_site_json} would be updated (nothing is written on a dry run)")
         print()
         print(fields_block(url or "<delivery_url>", version, size, digest))
         return 0
@@ -224,6 +261,16 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  {size:,} bytes ({human_megabytes(size)}), sha256 {digest}")
     print()
     print(fields_block(url, version, size, digest))
+
+    if args.update_site_json:
+        changes = update_site_json(args.update_site_json, url, version, size, digest)
+        print()
+        if changes:
+            print(f"{args.update_site_json}:")
+            for change in changes:
+                print(change)
+        else:
+            print(f"{args.update_site_json}: already carries these values; nothing written.")
 
     if args.annotate:
         print(f"::notice title=installer published::{url}")

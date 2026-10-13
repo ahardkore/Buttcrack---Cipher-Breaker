@@ -206,7 +206,9 @@ python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe
 The first prints what would happen and uploads nothing, and needs no credentials
 at all. The second uploads it under an unguessable name and prints the four
 values `site.json` needs — `delivery_url`, `version`, `size`, `sha256` — which is
-the whole job:
+the whole job. Add `--update-site-json ventures/cipher-solver-web/site.json` and
+it writes those four keys for you as well, leaving the rest of that
+hand-maintained file exactly as it was and printing each value it changed:
 
 ```
 published https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
@@ -266,6 +268,16 @@ unconfigured repository says which value is missing instead of failing at the
 upload with an authentication error from a storage service.
 
 `gh workflow run 'Publish installer to storage'` does the same from a terminal.
+The run writes the four values into `site.json` in its checkout and shows you the
+resulting `git diff` in the step summary, rather than committing it: a runner
+should not push to `main` on its own, and four lines is the whole change.
+
+Two things about ordering. The workflow cannot be dispatched until it is on the
+default branch, so it becomes runnable the moment this merges to `main` — before
+that, `publish_installer.py` runs perfectly well by hand. And the artifact it
+fetches belongs to a `Release artifacts` run, so that run has to have happened
+first; the workflow says which version it picked and fails cleanly if no
+installer artifact is live.
 
 ### Withdrawing a publish
 

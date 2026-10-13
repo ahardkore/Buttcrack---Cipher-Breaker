@@ -14,6 +14,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import json
 import os
 import re
 import tempfile
@@ -221,6 +222,68 @@ class MainBehaviour(unittest.TestCase):
     def test_a_file_that_is_not_there_is_named(self):
         with captured_stdout(), self.assertRaises(SystemExit) as caught:
             publish.main([str(Path(self.tmp.name) / "nope.exe"), "--dry-run"])
+        self.assertIn("no such file", str(caught.exception))
+
+    def test_update_site_json_writes_the_values_when_a_real_publish_happens(self):
+        site = Path(self.tmp.name) / "site.json"
+        site.write_text(json.dumps({"_note": "hand-maintained", "windows_app": {"sku": "winapp"}}), encoding="utf-8")
+        code, _ = self._main("--token", "7f3a9c2e51b04d88", "--update-site-json", str(site), *STORAGE_FLAGS)
+        self.assertEqual(code, 0)
+        document = json.loads(site.read_text(encoding="utf-8"))
+        app = document["windows_app"]
+        self.assertEqual(app["version"], "1.2.0")
+        self.assertTrue(app["delivery_url"].endswith("-7f3a9c2e51b04d88.exe"))
+        self.assertEqual(app["sha256"], publish.sha256_of(self.installer))
+        self.assertEqual(app["size"], publish.human_megabytes(self.installer.stat().st_size))
+        # Everything it does not own is left alone.
+        self.assertEqual(app["sku"], "winapp")
+        self.assertEqual(document["_note"], "hand-maintained")
+        self.assertTrue(site.read_text(encoding="utf-8").endswith("\n"))
+
+    def test_a_dry_run_does_not_touch_site_json(self):
+        site = Path(self.tmp.name) / "site.json"
+        original = json.dumps({"windows_app": {"delivery_url": "", "version": "1.2.0"}}, indent=2) + "\n"
+        site.write_text(original, encoding="utf-8")
+        with mock.patch.object(publish.subprocess, "run", fake_upload()), mock.patch.object(
+            publish.shutil, "which"
+        ), captured_stdout() as out:
+            code = publish.main([str(self.installer), "--dry-run", "--update-site-json", str(site), *STORAGE_FLAGS])
+        self.assertEqual(code, 0)
+        self.assertEqual(site.read_text(encoding="utf-8"), original)
+        self.assertIn("site.json", out.getvalue())
+
+
+class SiteJsonEditing(unittest.TestCase):
+    """`update_site_json` on its own: what it refuses, and what it preserves."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.site = Path(self.tmp.name) / "site.json"
+
+    def test_a_second_run_reports_no_change_rather_than_rewriting(self):
+        self.site.write_text(json.dumps({"windows_app": {}}), encoding="utf-8")
+        first = publish.update_site_json(self.site, "https://d.example/a.exe", "1.2.0", 15_558_568, "ab" * 32)
+        self.assertEqual(len(first), 4)
+        second = publish.update_site_json(self.site, "https://d.example/a.exe", "1.2.0", 15_558_568, "ab" * 32)
+        self.assertEqual(second, [])
+
+    def test_an_empty_url_is_refused_because_the_page_would_link_nowhere(self):
+        self.site.write_text("{}", encoding="utf-8")
+        with self.assertRaises(SystemExit) as caught:
+            publish.update_site_json(self.site, "", "1.2.0", 1, "ab" * 32)
+        self.assertIn("no delivery URL", str(caught.exception))
+
+    def test_it_creates_the_windows_app_object_when_there_is_none(self):
+        self.site.write_text(json.dumps({"site_name": "x"}), encoding="utf-8")
+        publish.update_site_json(self.site, "https://d.example/a.exe", "1.2.0", 1, "ab" * 32)
+        document = json.loads(self.site.read_text(encoding="utf-8"))
+        self.assertEqual(document["site_name"], "x")
+        self.assertEqual(document["windows_app"]["delivery_url"], "https://d.example/a.exe")
+
+    def test_a_missing_file_is_named_not_created(self):
+        with self.assertRaises(SystemExit) as caught:
+            publish.update_site_json(self.site, "https://d.example/a.exe", "1.2.0", 1, "ab" * 32)
         self.assertIn("no such file", str(caught.exception))
 
 
