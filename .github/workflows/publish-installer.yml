@@ -44,12 +44,24 @@ jobs:
       # Checked before anything is fetched, so an unconfigured repository says
       # which value is missing instead of failing at the upload with an
       # authentication error from a storage service.
-      - name: Are the storage secrets set?
+      #
+      # ENDPOINT, BUCKET and BASE_URL come from `vars.*`, not `secrets.*`, and
+      # that split is load-bearing, not cosmetic: GitHub Actions redacts any
+      # log text matching the *value* of a secret, unconditionally, everywhere
+      # -- annotations, step summaries, the lot. The whole point of this job is
+      # to print the delivery URL so a human can check it before telling
+      # buyers about it, and a bucket name and an r2.dev hostname are not
+      # secret (the docs said so when these were added as repository secrets
+      # anyway, which is exactly how the first dry run printed
+      # "***/buttcrack-setup-1.2.1-....exe" instead of a URL anyone could read).
+      # Only the two credentials that grant write access to the bucket stay as
+      # `secrets.*`.
+      - name: Are the storage variables set?
         if: ${{ !inputs.dry_run }}
         env:
-          BUTTCRACK_DELIVERY_ENDPOINT: ${{ secrets.BUTTCRACK_DELIVERY_ENDPOINT }}
-          BUTTCRACK_DELIVERY_BUCKET: ${{ secrets.BUTTCRACK_DELIVERY_BUCKET }}
-          BUTTCRACK_DELIVERY_BASE_URL: ${{ secrets.BUTTCRACK_DELIVERY_BASE_URL }}
+          BUTTCRACK_DELIVERY_ENDPOINT: ${{ vars.BUTTCRACK_DELIVERY_ENDPOINT }}
+          BUTTCRACK_DELIVERY_BUCKET: ${{ vars.BUTTCRACK_DELIVERY_BUCKET }}
+          BUTTCRACK_DELIVERY_BASE_URL: ${{ vars.BUTTCRACK_DELIVERY_BASE_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
@@ -59,10 +71,10 @@ jobs:
             if [ -z "${!name}" ]; then missing="$missing $name"; fi
           done
           if [ -n "$missing" ]; then
-            echo "::error title=storage secrets missing::Set$missing in Settings -> Secrets and variables -> Actions. docs/windows-installer.md lists what each one is; the endpoint and bucket are not [...]"
+            echo "::error title=storage configuration missing::Set$missing in Settings -> Secrets and variables -> Actions -- BUTTCRACK_DELIVERY_ENDPOINT, BUTTCRACK_DELIVERY_BUCKET and BUTTCRACK_DELIVERY_BASE_URL go under the Variables tab (they are not secret and need to be readable in the log); AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY go under Secrets. docs/windows-installer.md lists what each one is."
             exit 1
           fi
-          echo "All five storage variables are present."
+          echo "All five storage values are present."
 
       # GITHUB_TOKEN is set here for a reason that has nothing to do with the
       # repository being public: fetch_installer.py's anonymous calls to the
@@ -104,16 +116,18 @@ jobs:
 
       - name: Upload to your storage
         env:
-          BUTTCRACK_DELIVERY_ENDPOINT: ${{ secrets.BUTTCRACK_DELIVERY_ENDPOINT }}
-          BUTTCRACK_DELIVERY_BUCKET: ${{ secrets.BUTTCRACK_DELIVERY_BUCKET }}
-          BUTTCRACK_DELIVERY_BASE_URL: ${{ secrets.BUTTCRACK_DELIVERY_BASE_URL }}
-          BUTTCRACK_DELIVERY_PREFIX: ${{ secrets.BUTTCRACK_DELIVERY_PREFIX }}
+          BUTTCRACK_DELIVERY_ENDPOINT: ${{ vars.BUTTCRACK_DELIVERY_ENDPOINT }}
+          BUTTCRACK_DELIVERY_BUCKET: ${{ vars.BUTTCRACK_DELIVERY_BUCKET }}
+          BUTTCRACK_DELIVERY_BASE_URL: ${{ vars.BUTTCRACK_DELIVERY_BASE_URL }}
+          BUTTCRACK_DELIVERY_PREFIX: ${{ vars.BUTTCRACK_DELIVERY_PREFIX }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # R2 accepts any region string and its own tooling writes "auto"; B2
-          # and S3 want a real one, so it is a secret with a default rather than
-          # a hard-coded value (see publish_installer.upload_env).
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'auto' }}
+          # and S3 want a real one, so it is a variable with a default rather
+          # than a hard-coded value (see publish_installer.upload_env). Not a
+          # secret either -- "auto" or "us-west-2" is not sensitive, and the
+          # same masking problem applies to anything read from `secrets.*`.
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION || 'auto' }}
         run: |
           set -o pipefail
           python scripts/publish_installer.py dist/installer/*.exe \

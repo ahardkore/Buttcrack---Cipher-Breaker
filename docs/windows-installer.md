@@ -363,22 +363,37 @@ link is
 URL is what buyers reach, so a stray folder in the middle is the difference
 between a download and a 404.
 
-**4. Six secrets.** Repository → **Settings** → **Secrets and variables** →
-**Actions** → *New repository secret*, once per name:
+**4. Three variables, two secrets.** Repository → **Settings** → **Secrets and
+variables** → **Actions**, which has two separate tabs. This split is not
+bureaucracy: GitHub Actions redacts any log text that matches the *value* of a
+secret, unconditionally, in every annotation and step summary, with no way to
+opt a specific line out. The first real run of this workflow printed
+`***/buttcrack-setup-1.2.1-....exe` instead of a URL anyone could read or
+check, because a bucket name and an r2.dev hostname had been filed as secrets
+out of habit. Nothing below the two credentials actually needs hiding.
 
-| Secret | Value |
+Under the **Variables** tab → *New repository variable*:
+
+| Variable | Value |
 | --- | --- |
 | `BUTTCRACK_DELIVERY_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
 | `BUTTCRACK_DELIVERY_BUCKET` | the bucket name |
 | `BUTTCRACK_DELIVERY_BASE_URL` | the r2.dev hostname or your custom domain |
+| `BUTTCRACK_DELIVERY_PREFIX` | optional: a folder inside the bucket, else leave it unset |
+| `AWS_DEFAULT_REGION` | optional: R2 defaults to `auto` on its own; B2 and S3 want a real region here |
+
+Under the **Secrets** tab → *New repository secret*:
+
+| Secret | Value |
+| --- | --- |
 | `AWS_ACCESS_KEY_ID` | from step 2 |
 | `AWS_SECRET_ACCESS_KEY` | from step 2, and nowhere else ever again |
-| `BUTTCRACK_DELIVERY_PREFIX` | optional: a folder inside the bucket, else leave it unset |
 
 **5. Look before you leap.** **Actions** → **Publish installer to storage** →
 *Run workflow* with **dry_run** ticked. It needs no secrets, uploads nothing, and
-prints the exact object name and the exact URL a buyer would get. If the URL is
-not the one you want, fix the base URL and run it again.
+prints the exact object name and the exact URL a buyer would get, in the clear,
+because none of those three values are secrets anymore. If the URL is not the
+one you want, fix the base URL and run it again.
 
 **6. Publish.** Same workflow, `dry_run` unticked. It fetches the artifact of a run
 that already passed the install test, uploads it, and prints the four values plus
