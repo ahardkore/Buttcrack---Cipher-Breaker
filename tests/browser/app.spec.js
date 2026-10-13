@@ -22,6 +22,37 @@ test.describe('real Buttcrack web application', () => {
     if (await exportControl.count()) await expect(exportControl).toBeVisible();
     await expect(page.locator('#error-card, #error-text, body').first()).toBeAttached();
   });
+  test('one core is left free by default and a running search can be stopped', async ({ page }) => {
+    // The search runs while somebody is looking at the page, so the default
+    // worker count is one short of the machine -- and a stop button has to be
+    // there for the budget nobody meant to pick.  The health reply is stubbed
+    // so the assertion does not depend on how many cores this machine has.
+    await page.route('**/api/health', (route) =>
+      route.fulfill({
+        json: {
+          name: 'buttcrack',
+          version: '0.0.0-test',
+          python: '3.12',
+          cpus: 4,
+          ciphers: 50,
+          layers: [],
+          paradigm_records: 10,
+          model: {},
+          languages: [],
+        },
+      }),
+    );
+    await page.goto('/');
+    await expect(page.locator('#workers')).toHaveValue('3');
+    await expect(page.locator('#cancel')).toBeHidden();
+
+    await page.fill('#input', 'Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj');
+    await page.click('#crack');
+    await expect(page.locator('#cancel')).toBeVisible();
+    await expect(page.locator('#plaintext')).toContainText('quick', { timeout: 60000 });
+    await expect(page.locator('#cancel')).toBeHidden();
+  });
+
   test('responsive accessibility modes and print mode', async ({ page }) => {
     await page.goto('/');
     await page.emulateMedia({ media: 'print' });

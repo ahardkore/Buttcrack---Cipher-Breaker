@@ -14,6 +14,7 @@ API
 ``POST /api/transform``        ``{"cipher","key","text","operation"}`` -> output
 ``POST /api/crack``            ``{"text","budget","workers","depth","hints"}`` -> ``{"job": id}``
 ``GET  /api/job/<id>``         ``{"done", "progress": [...], "report": {...}}``
+``POST /api/job/<id>/cancel``  ask a running search to stop at its next milestone
 
 Cracking runs in a worker thread and the browser polls the job: that keeps the
 live progress log without needing websockets, and it means a long search cannot
@@ -23,6 +24,7 @@ block the rest of the UI.
 from __future__ import annotations
 
 import contextlib
+import ipaddress
 import json
 import os
 import socket
@@ -50,6 +52,95 @@ MAX_BODY_BYTES = 4 * 1024 * 1024
 JOB_TTL_SECONDS = 600
 MAX_JOBS = 32
 
+#: Names that always mean "this machine".  A hostile page cannot reach a server
+#: on 127.0.0.1 by its address -- the browser would be talking to itself -- so
+#: it has to point a domain of its own at the loopback address (DNS rebinding)
+#: and let the request arrive under *that* name.  Which is why the name is what
+#: gets checked.
+LOOPBACK_NAMES = frozenset({"127.0.0.1", "localhost", "::1"})
+#: Bind addresses that mean "the whole network, on purpose".
+LAN_BINDS = frozenset({"0.0.0.0", "::", ""})
+
+#: The page loads one stylesheet, one script and one ``data:`` favicon, all from
+#: this origin.  Nothing here needs the latitude a default policy grants, and a
+#: strict policy costs nothing to serve.
+CSP = (
+    "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; "
+    "connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'none'"
+)
+
+
+def _authority(value: str) -> tuple[str, int | None] | None:
+    """``(host, port)`` from an ``Origin`` or ``Host`` header value.
+
+    Both are authorities with an optional port and no path, so one parser does
+    for either: ``http://127.0.0.1:8099``, ``127.0.0.1:8099`` and ``localhost``
+    all resolve here.  Returns ``None`` for anything that is not an authority --
+    including the literal string ``null``, which is the opaque origin a sandboxed
+    or ``data:`` document reports.
+    """
+    text = value.strip()
+    if not text or text.lower() == "null":
+        # "null" is the opaque origin a sandboxed frame or a file:// document
+        # reports.  It is never an authority, and it never matches a Host.
+        return None
+    parsed = urlparse(text if "//" in text else f"//{text}")
+    if not parsed.hostname:
+        return None
+    try:
+        return parsed.hostname.lower(), parsed.port
+    except ValueError:  # a port that is not a number
+        return None
+
+
+def host_is_allowed(host_header: str, bound: str | None) -> bool:
+    """Whether a request's ``Host`` is a name this server is reachable as.
+
+    ``http.server`` accepts any name the request happens to carry, so
+    ``http://127.0.0.1:8099/`` and ``http://evil.example:8099/`` are the same
+    request to it once the DNS answer points the second name at the loopback
+    address.  Refusing is what makes the browser's own same-origin policy apply
+    again.
+
+    ``bound`` is the address the server was told to listen on:
+
+    * loopback (what the desktop app binds) -- only loopback names are accepted,
+      and a rebound name is refused.  This is the case the check exists for.
+    * a specific address -- that literal address, plus loopback.
+    * every interface -- the caller asked to be reachable, so any *address
+      literal* is legitimate.  A name is still not: a person typing the LAN
+      address is indistinguishable from a rebound domain by the Host header
+      alone, but only one of those two can be a name the attacker chose.
+    """
+    authority = _authority(host_header)
+    if authority is None:
+        return False
+    name, _port = authority
+    if name in LOOPBACK_NAMES:
+        return True
+    if bound in LAN_BINDS:
+        try:
+            ipaddress.ip_address(name)
+        except ValueError:
+            return False
+        return True
+    if not bound:
+        return False
+    bound_authority = _authority(bound)
+    return name == (bound_authority[0] if bound_authority else bound.lower())
+
+
+class JobCancelled(BaseException):
+    """Raised inside a job to unwind a search the user asked to stop.
+
+    ``BaseException`` on purpose.  The engine wraps every attack in
+    ``except Exception`` so that one broken cipher cannot take down an otherwise
+    good solve, and a cancellation derived from ``Exception`` would be swallowed
+    by exactly that handler -- the search would carry on burning the CPU it was
+    asked to release, and the UI would sit at "cancelling" until the budget ran
+    out on its own.  Nothing else catches ``BaseException`` on this path.
+    """
+
 
 class JobStore:
     """Crack jobs, their progress lines and their eventual reports."""
@@ -68,12 +159,31 @@ class JobStore:
                 "options": options,
                 "progress": [],
                 "done": False,
+                "cancel": False,
+                "cancelled": False,
                 "report": None,
                 "error": None,
             }
         thread = threading.Thread(target=self._run, args=(job_id,), daemon=True)
         thread.start()
         return job_id
+
+    def cancel(self, job_id: str) -> bool:
+        """Ask a running job to stop.  False if there is no such job.
+
+        The flag is read from the progress callback, so the search stops at the
+        next milestone the engine reports -- no engine restructure, and no
+        daemon thread left computing that the UI cannot see or stop.  A job that
+        is between milestones (one long unavoidable call) still finishes and
+        reports normally; the flag only takes effect where progress is visible.
+        """
+        with self._lock:
+            job = self._jobs.get(job_id)
+            if job is None:
+                return False
+            if not job["done"]:
+                job["cancel"] = True
+            return True
 
     def _prune(self) -> None:
         cutoff = time.time() - JOB_TTL_SECONDS
@@ -92,6 +202,9 @@ class JobStore:
         options = job["options"]
 
         def progress(message: str, fraction: float, extra: dict) -> None:
+            with self._lock:
+                if job["cancel"]:
+                    raise JobCancelled()
             with self._lock:
                 job["progress"].append(
                     {
@@ -123,6 +236,17 @@ class JobStore:
             }
             with self._lock:
                 job["report"] = payload
+        except JobCancelled:
+            with self._lock:
+                job["cancelled"] = True
+                job["progress"].append(
+                    {
+                        "at": round(time.time() - job["created"], 3),
+                        "message": "cancelled by request",
+                        "fraction": None,
+                        "extra": {},
+                    }
+                )
         except Exception as error:  # surfaced in the UI rather than swallowed
             with self._lock:
                 job["error"] = f"{type(error).__name__}: {error}"
@@ -139,6 +263,8 @@ class JobStore:
             return {
                 "id": job["id"],
                 "done": job["done"],
+                "cancelled": job["cancelled"],
+                "cancel_requested": job["cancel"],
                 "progress": list(job["progress"]),
                 "report": job["report"],
                 "error": job["error"],
@@ -177,6 +303,31 @@ class Handler(BaseHTTPRequestHandler):
     def _error(self, status: int, message: str) -> None:
         self._json({"error": message}, status)
 
+    def _refusal(self) -> str | None:
+        """Why this request must not be answered, or ``None`` to carry on.
+
+        A local server is reachable from whatever page the browser is showing.
+        Two headers are the whole defence:
+
+        * ``Host`` has to be a name this server is actually reachable as, so a
+          rebound domain that resolves to 127.0.0.1 is refused (see
+          :func:`host_is_allowed`);
+        * ``Origin``, when the browser sends one, has to name the same authority
+          -- which is what a cross-site ``POST`` carries and what the page making
+          it cannot forge.
+
+        Neither is about authentication: the API is meant to be open to the
+        person at the keyboard.  It is about the other pages in the same
+        browser.
+        """
+        host_header = self.headers.get("Host") or ""
+        if not host_is_allowed(host_header, getattr(self.server, "bound_host", None)):
+            return f"unrecognised Host header: {host_header or '(missing)'}"
+        origin = self.headers.get("Origin")
+        if origin and _authority(origin) != _authority(host_header):
+            return f"cross-origin request from {origin}"
+        return None
+
     def _read_body(self) -> dict[str, Any]:
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0:
@@ -195,6 +346,9 @@ class Handler(BaseHTTPRequestHandler):
     # -- routes ------------------------------------------------------------- #
     def do_GET(self) -> None:  # noqa: N802 - stdlib naming
         path = urlparse(self.path).path
+        refusal = self._refusal()
+        if refusal is not None:
+            return self._error(403, refusal)
         try:
             if path in ("/", "/index.html"):
                 return self._static("index.html")
@@ -239,6 +393,15 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
+        refusal = self._refusal()
+        if refusal is not None:
+            return self._error(403, refusal)
+        if self.headers.get("Origin") and "json" not in (self.headers.get("Content-Type") or ""):
+            # A request that carries an Origin is one a browser made, and a
+            # browser only sends a non-JSON content type without a preflight --
+            # which is the one shape of cross-site request CORS cannot refuse
+            # for us.  Command-line clients send no Origin and are unaffected.
+            return self._error(415, "browser requests must use Content-Type: application/json")
         try:
             body = self._read_body()
         except ValueError as error:
@@ -259,6 +422,11 @@ class Handler(BaseHTTPRequestHandler):
                     "hints": _clean_hints(body.get("hints")),
                 }
                 return self._json({"job": JOBS.create(options), "options": options})
+            if path.startswith("/api/job/") and path.endswith("/cancel"):
+                job_id = path[len("/api/job/") : -len("/cancel")].strip("/")
+                if not JOBS.cancel(job_id):
+                    return self._error(404, "no such job")
+                return self._json({"job": job_id, "cancel_requested": True})
             if path == "/api/assistant":
                 text = str(body.get("text") or "")
                 if not text.strip():
@@ -323,7 +491,8 @@ class Handler(BaseHTTPRequestHandler):
             ".png": "image/png",
             ".woff2": "font/woff2",
         }
-        self._send(200, candidate.read_bytes(), types.get(candidate.suffix, "application/octet-stream"))
+        extra = {"Content-Security-Policy": CSP} if candidate.suffix == ".html" else None
+        self._send(200, candidate.read_bytes(), types.get(candidate.suffix, "application/octet-stream"), extra)
 
 
 def _clamp(value: float, low: float, high: float) -> float:
@@ -364,12 +533,31 @@ def _clean_language(value: Any) -> str:
         return "english"
 
 
+class _Server(ThreadingHTTPServer):
+    """``ThreadingHTTPServer`` that knows which address it answers for.
+
+    The handler needs that to judge the ``Host`` header (see
+    :func:`host_is_allowed`).  It is per-server state rather than a module
+    global, so two servers in one process -- which is what the test suite and
+    ``serve`` inside a bigger program both do -- cannot overwrite each other's.
+    """
+
+    allow_reuse_address = True
+    daemon_threads = True
+    bound_host: str = "127.0.0.1"
+
+
+def make_server(host: str, port: int) -> _Server:
+    """A server for ``host:port``, already told what its own name is."""
+    server = _Server((host, port), Handler)
+    server.bound_host = host
+    return server
+
+
 def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) -> int:
     """Run the web interface until interrupted.  Returns a process exit code."""
-    ThreadingHTTPServer.allow_reuse_address = True
-    ThreadingHTTPServer.daemon_threads = True
     try:
-        httpd = ThreadingHTTPServer((host, port), Handler)
+        httpd = make_server(host, port)
     except OSError as error:
         print(f"buttcrack: cannot listen on {host}:{port} ({error})", file=sys.stderr)
         return 1
@@ -383,6 +571,11 @@ def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) ->
         f"  {len(ALL_CIPHERS)} ciphers, {model.ngram_count(4):,} quadgrams, "
         f"{len(model.words):,} words, {len(LANGUAGES)} languages"
     )
+    if host in LAN_BINDS:
+        # Saying so out loud matters: `serve` is the one command that is meant to
+        # be reachable, and "bound to 0.0.0.0" does not read as "your network can
+        # post to this" to anyone who has not met the notation before.
+        print("  reachable from your network: anyone who can reach this port can use it")
     print("  press Ctrl-C to stop")
     if open_browser:
         with contextlib.suppress(Exception):  # headless boxes have no browser; that is fine

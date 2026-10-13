@@ -175,11 +175,17 @@ function renderLanguages(languages) {
 
 function renderWorkers(cpus) {
   const select = $("workers");
+  const maximum = Math.max(1, cpus);
+  // One core short of the machine by default: the search runs while somebody is
+  // looking at this page, and handing it every core is how a laptop stops
+  // responding to the window it is being watched from.
+  const preferred = Math.max(1, maximum - 1);
   clear(select);
-  for (let n = 1; n <= Math.max(1, cpus); n += 1) {
-    const option = make("option", null, n === 1 ? "1 (single process)" : `${n} processes`);
+  for (let n = 1; n <= maximum; n += 1) {
+    const label = n === 1 ? "1 (single process)" : `${n} processes${n === maximum ? " (uses every core)" : ""}`;
+    const option = make("option", null, label);
     option.value = String(n);
-    if (n === cpus) option.selected = true;
+    if (n === preferred) option.selected = true;
     select.appendChild(option);
   }
 }
@@ -224,6 +230,7 @@ function activateTab(name) {
 
 function wireBreak() {
   $("crack").addEventListener("click", () => startCrack());
+  $("cancel").addEventListener("click", () => cancelJob());
   $("identify").addEventListener("click", () => runIdentify());
   $("assistant").addEventListener("click", () => runAssistant());
   $("clear").addEventListener("click", () => {
@@ -305,6 +312,23 @@ function resetResult() {
   $("crack").disabled = false;
   $("identify").disabled = false;
   $("assistant").disabled = false;
+  $("cancel").hidden = true;
+  $("cancel").disabled = false;
+}
+
+/* The engine reports progress at every milestone and the job stops at the next
+ * one, so between the click and the stop the button says what it is doing --
+ * "Stop" twice in a row reads as a button that does nothing. */
+async function cancelJob() {
+  if (!state.job || $("cancel").disabled) return;
+  $("cancel").disabled = true;
+  $("cancel").textContent = "Stopping…";
+  try {
+    await api(`/api/job/${state.job}/cancel`, { method: "POST", headers: { "Content-Type": "application/json" } });
+    $("progress-state").textContent = "cancelling…";
+  } catch (error) {
+    showError(error.message || String(error));
+  }
 }
 
 async function startCrack() {
@@ -319,6 +343,8 @@ async function startCrack() {
   $("progress-state").textContent = "starting…";
   $("crack").disabled = true;
   $("identify").disabled = true;
+  $("cancel").hidden = false;
+  $("cancel").textContent = "Stop";
 
   const body = {
     text,
@@ -342,6 +368,7 @@ async function startCrack() {
   } catch (error) {
     $("crack").disabled = false;
     $("identify").disabled = false;
+    $("cancel").hidden = true;
     showError(error.message || String(error));
   }
 }
@@ -359,6 +386,7 @@ async function pollJob(jobId) {
     stopPolling();
     $("crack").disabled = false;
     $("identify").disabled = false;
+    $("cancel").hidden = true;
     showError(error.message || String(error));
     return;
   }
@@ -368,6 +396,15 @@ async function pollJob(jobId) {
   stopPolling();
   $("crack").disabled = false;
   $("identify").disabled = false;
+  $("cancel").hidden = true;
+  $("cancel").disabled = false;
+  if (job.cancelled) {
+    // Stopping is not a failure: the user asked for it, so it gets a status
+    // line rather than the red error card.
+    $("progress-state").textContent = "stopped";
+    $("progress-bar").style.width = "0%";
+    return;
+  }
   if (job.error) {
     $("progress-state").textContent = "failed";
     showError(`${job.error}\n\n${job.traceback || ""}`.trim());
