@@ -96,6 +96,10 @@ added to your environment and is not a dependency of the project.
 powershell -ExecutionPolicy Bypass -File packaging\windows\build.ps1
 ```
 
+(That builds. `python scripts\publish_installer.py ...` is what puts the result
+where buyers can download it — see [Publishing it](#publishing-it-one-command-or-one-click)
+below.)
+
 or double-click `packaging\windows\build.bat`.
 
 It will, in order: find a usable Python, refuse to continue if that Python has
@@ -234,6 +238,171 @@ changes where it can live, and the rule is short:
 containing an `.exe` or `.msi`, so a stray copy fails the deploy instead of
 quietly publishing the product. (`BUTTCRACK_PUBLISH_BINARIES=1` overrides it,
 for the day you decide to give something away.)
+
+### Publishing it: one command, or one click
+
+Building the installer and *publishing* it are two steps on purpose — one is
+verified by CI on every push, the other decides where the paid file lives — and
+there is a command for the second:
+
+```console
+python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe --dry-run
+python scripts/publish_installer.py dist/installer/buttcrack-setup-1.2.0.exe
+```
+
+The first prints what would happen and uploads nothing, and needs no credentials
+at all. The second uploads it under an unguessable name and prints the four
+values `site.json` needs — `delivery_url`, `version`, `size`, `sha256` — which is
+the whole job. Add `--update-site-json ventures/cipher-solver-web/site.json` and
+it writes those four keys for you as well, leaving the rest of that
+hand-maintained file exactly as it was and printing each value it changed:
+
+```
+published https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe
+  15,558,568 bytes (15.6 MB), sha256 8cb5ffeb...
+
+ventures/cipher-solver-web/site.json, under windows_app:
+  "delivery_url": "https://downloads.yourdomain/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe",
+  ...
+```
+
+Four environment variables say where, and the two credentials are the pair any
+S3 client already reads. The endpoint, bucket and base URL are configuration,
+not secrets; only the keys are:
+
+```bash
+export BUTTCRACK_DELIVERY_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+export BUTTCRACK_DELIVERY_BUCKET=buttcrack-downloads
+export BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain   # the custom domain on the bucket
+export BUTTCRACK_DELIVERY_PREFIX=                                 # optional folder inside the bucket
+export AWS_ACCESS_KEY_ID=...                                      # an R2 API token, or an S3 key
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_DEFAULT_REGION=auto                                    # optional for R2; B2 and S3 need their own
+```
+
+The upload itself is `aws s3 cp`, so it works against R2, B2 and S3 unchanged and
+the script does not carry a second copy of the S3 signing rules. It sets the
+three headers the download depends on, which are easy to lose with a drag-and-drop
+upload: `Content-Type: application/octet-stream` (a host that guesses serves a
+`.exe` as `text/html` and it arrives corrupt), `Content-Disposition: attachment`,
+and a long `Cache-Control` (the object never changes once it is named).
+
+Two more things it does, both because they have bitten this project:
+
+* **The version comes out of the filename**, and anything that is not
+  `buttcrack-setup-<version>.exe` is refused. The installer filename, the
+  Add/Remove Programs entry and `OutputBaseFilename` all follow `__version__`;
+  a publish that reads the name is a publish that cannot disagree with the build.
+* **It will not publish a file that disagrees with its own `.sha256`.** The
+  sidecar `build.ps1` writes next to the installer is compared before anything is
+  uploaded, and the two are uploaded together. The page tells buyers to check the
+  digest, so a digest that does not match its file is worse than none at all.
+
+**Publish the build that was tested, and only that one.** The digest this prints
+is of the file on the disk it ran on; `site.json` has to carry that same number.
+Two builds of the same commit are not byte-identical, so fetching a fresh
+artifact and publishing an older digest — or the other way round — describes a
+file nobody can download. CI enforces this by fetching the artifact of a run that
+already passed the install-and-uninstall test rather than building again:
+
+**Actions → Publish installer to storage → Run workflow.** It takes an optional
+artifact id (blank publishes the newest live one) and an optional token (blank
+mints a new URL). `dry_run` prints the whole thing, including the URL, without
+uploading and without needing any secrets — which is the way to see what a first
+publish would look like. The storage credentials go in **Settings → Secrets and
+variables → Actions** under exactly the five names above, plus the optional
+prefix; the run checks they are set *before* it fetches anything, so an
+unconfigured repository says which value is missing instead of failing at the
+upload with an authentication error from a storage service.
+
+`gh workflow run 'Publish installer to storage'` does the same from a terminal.
+The run writes the four values into `site.json` in its checkout and shows you the
+resulting `git diff` in the step summary, rather than committing it: a runner
+should not push to `main` on its own, and four lines is the whole change.
+
+Two things about ordering. The workflow cannot be dispatched until it is on the
+default branch, so it becomes runnable the moment this merges to `main` — before
+that, `publish_installer.py` runs perfectly well by hand. And the artifact it
+fetches belongs to a `Release artifacts` run, so that run has to have happened
+first; the workflow says which version it picked and fails cleanly if no
+installer artifact is live.
+
+### Publishing for the first time, in order
+
+The whole first run, once, on Cloudflare R2 because its egress is free and its
+API token is two clicks. Backblaze B2 is the same six values; S3 differs only in
+that its endpoint is regional.
+
+**1. A bucket.** Cloudflare dashboard → **R2** → *Create bucket* → name it
+whatever you like (`buttcrack-downloads`). This is `BUTTCRACK_DELIVERY_BUCKET`.
+Nothing in it yet, and the name is not secret.
+
+**2. An API token.** On the R2 overview page → **Manage R2 API Tokens** → *Create
+API token* → permission **Object Read & Write**, scoped to that one bucket. It
+shows an **Access Key ID** and a **Secret Access Key**, once. Those are
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, and they are the only two values
+here that are actually secret. The S3 endpoint on the same page —
+`https://<account-id>.r2.cloudflarestorage.com` — is `BUTTCRACK_DELIVERY_ENDPOINT`.
+
+**3. Make the objects reachable.** A new bucket is private, and a private object
+answers `403` to the buyer clicking their link. Either:
+
+* *Quickest:* bucket → **Settings** → **Public access** → *R2.dev subdomain* →
+  Allow. The hostname it shows (`https://pub-<hash>.r2.dev`) is
+  `BUTTCRACK_DELIVERY_BASE_URL`. Cloudflare rate-limits `r2.dev` and says not to
+  use it for production, which for a download link that a handful of buyers
+  click is fine and for anything busier is not; or
+* *Better:* bucket → **Settings** → **Custom Domains** → *Connect Domain* →
+  `downloads.yourdomain`, which needs that domain on Cloudflare. Turn the proxy
+  **off** (`DNS only`) or large downloads go through Workers limits. Then
+  `BUTTCRACK_DELIVERY_BASE_URL=https://downloads.yourdomain`.
+
+Either way, check the URL shape with a file you do not mind: the installer's own
+link is
+`<base-url>/buttcrack-setup-<version>-<token>.exe`, and everything under the base
+URL is what buyers reach, so a stray folder in the middle is the difference
+between a download and a 404.
+
+**4. Six secrets.** Repository → **Settings** → **Secrets and variables** →
+**Actions** → *New repository secret*, once per name:
+
+| Secret | Value |
+| --- | --- |
+| `BUTTCRACK_DELIVERY_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
+| `BUTTCRACK_DELIVERY_BUCKET` | the bucket name |
+| `BUTTCRACK_DELIVERY_BASE_URL` | the r2.dev hostname or your custom domain |
+| `AWS_ACCESS_KEY_ID` | from step 2 |
+| `AWS_SECRET_ACCESS_KEY` | from step 2, and nowhere else ever again |
+| `BUTTCRACK_DELIVERY_PREFIX` | optional: a folder inside the bucket, else leave it unset |
+
+**5. Look before you leap.** **Actions** → **Publish installer to storage** →
+*Run workflow* with **dry_run** ticked. It needs no secrets, uploads nothing, and
+prints the exact object name and the exact URL a buyer would get. If the URL is
+not the one you want, fix the base URL and run it again.
+
+**6. Publish.** Same workflow, `dry_run` unticked. It fetches the artifact of a run
+that already passed the install test, uploads it, and prints the four values plus
+the `git diff` for `site.json` in the run summary. Commit that diff.
+
+**7. Point Stripe at the thank-you page.** The run's summary also names the page
+(`thank-you-<token>.html`, printed by `build_pages.py` on every build). Its URL
+goes into the Payment Link's *after payment* redirect. Until that is set, Stripe
+sends buyers somewhere else and the download is, again, an email.
+
+**8. Buy your own copy.** Run the flow once as a customer — pay, get redirected,
+click the button, check the SHA-256 against the value in `site.json`. It is the
+only test that covers the part of the product nobody deploys.
+
+
+### Withdrawing a publish
+
+Republishing with the same URL is what `--token` is for: pass back the token
+already in `delivery_url` and the object name, and therefore the link in buyers'
+bookmarks, stays the same. Pass a new one and the old URL stops being the one you
+advertise — but it keeps working until the object is deleted, so if a link does
+start circulating, delete the old object too. An unguessable URL is the entire
+paywall for a $39.99 download with no licence server, which is exactly why the
+remedy has to be deleting the object rather than changing the link.
 
 ### How the sale actually flows
 
@@ -427,6 +596,93 @@ administrator rights. Pass `-NoPathTask` to leave `PATH` alone.
 The `installer` job in `.github/workflows/release.yml` runs this on
 `windows-latest` for every push and pull request, so the wizard is exercised on
 every change instead of on the day someone downloads it.
+
+### What that job leaves behind, and for how long
+
+The job uploads the installer, its `.sha256` and `INSTALLER-SHA256.json` as one
+workflow artifact, and then — for any run triggered by a push or a pull request
+— deletes it again in its last step. That is not tidiness for its own sake.
+
+**A public repository's artifacts are public.** The rule above says the paid
+`.exe` never goes in the repository and never goes on the site, because both are
+public; a workflow artifact of a public repository belongs on that list. It
+needs no account: `GET /repos/<owner>/<repo>/actions/artifacts` answers
+anonymously and lists every artifact with its size, and
+`GET .../actions/artifacts/<id>/zip` answers with a redirect to a signed
+download URL. Anyone who knows the repository is called can be holding a copy of
+the product a minute later. Thirty days of retention, refreshed by every push to
+`main`, is a paid download sitting on a public shelf.
+
+So a run that is verifying a commit keeps no copy past the checks that read it.
+The copy you publish comes from a run you ask for:
+
+```powershell
+gh workflow run 'Release artifacts'          # or Actions -> Release artifacts -> Run workflow
+gh run list --workflow 'Release artifacts' --limit 5
+gh run download <run-id> --name buttcrack-installer-<version> --dir dist\installer
+```
+
+A deliberate run keeps its artifact for one day (`retention-days: 1`), which is
+the window in which it is downloaded, checked against its own digest, and
+uploaded to storage. If that window closes, dispatch another run: the build is
+reproducible, and the digest that matters is the one of the file you actually
+uploaded. `INSTALLER-SHA256.json` travels with the artifact, and the run's
+`SHA-256 the installer` step echoes it into the log.
+
+Because ordinary runs give their copy back, the newest run is usually *not* the
+one to look in — ask what exists instead of reading runs one at a time:
+
+```console
+python scripts/fetch_installer.py --list
+```
+
+```
+created           version        size  lapses           artifact
+2026-10-13 05:00  1.2.1       15.6 MB  2026-11-12 05:00 11790265857
+2026-10-12 23:57  1.2.0       15.6 MB  2026-11-11 23:57 11780675745
+
+2 live. Fetch one with --version <version> or --artifact <id>.
+```
+
+Every name that comes back is a build that passed the install, exercise and
+uninstall test, because the upload happens after it — so a live artifact is a
+verified installer, and the list is also the honest answer to "what can somebody
+download from this repository right now?". The same script fetches one, checks
+the digest, and prints the three numbers `site.json` wants:
+
+```console
+python scripts/fetch_installer.py                       # newest, into dist/installer
+python scripts/fetch_installer.py --version 1.2.0       # the version the page sells
+python scripts/fetch_installer.py --artifact 11780675745
+```
+
+It uses the anonymous artifact API, so it needs no account and no `gh`; set
+`GITHUB_TOKEN` only if a build is ever private. By hand, the same two steps are
+the run's **Artifacts** section in the browser, or:
+
+```powershell
+gh run download <run-id> --name buttcrack-installer-<version> --dir dist\installer
+```
+
+Note that there is no per-artifact web address — `/actions/runs/<run>/artifacts/<id>`
+does not exist, and a link built that way answers 404 however you are signed in.
+The run page shows the artifact with its size and downloads it on click; that is
+the only browser route.
+
+The delete step never fails the build. A pull request from a fork runs with a
+read-only token, so it cannot withdraw anything; when that happens the run says
+so with a warning and the artifact lapses on its own after a day. It says
+something either way — a notice naming the artifact it withdrew, or a warning
+naming the one it could not — so whether a build of this repository is
+downloadable at any moment can be answered from the API alone, without opening
+a log or taking anyone's word for it.
+
+The `checks` job is treated the same way, and for the same reason. Its `dist`
+artifact is `Buttcrack/` frozen by PyInstaller — both executables and the
+runtime they share — which is the application the wizard wraps, and the thing
+the price actually buys: a copy that runs without Python. It is uploaded as a
+build record and withdrawn the moment the checks are done. Rebuilding it is one
+command locally, so nothing is lost but the public copy.
 
 ---
 

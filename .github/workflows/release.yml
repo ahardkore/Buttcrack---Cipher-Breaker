@@ -18,6 +18,10 @@ jobs:
           - ubuntu-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
+    # Withdrawing the build below needs actions: write.  Contents stays read.
+    permissions:
+      contents: read
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -58,16 +62,43 @@ jobs:
           sums=$(python scripts/ci_release.py sha256 dist)
           printf '%s\n' "$sums" > dist/SHA256SUMS.json
 
+      # `dist` is the frozen application -- both executables and the runtime
+      # they share -- which is the same thing the installer wraps and the same
+      # thing the $39.99 buys: a copy that runs without Python.  It is uploaded
+      # as a build record, and it is withdrawn again below for the reason the
+      # installer job gives in full: a public repository's artefacts are
+      # public, so this must not sit here for the ninety days it used to.
       - uses: actions/upload-artifact@v4
+        id: upload-build
         with:
           name: buttcrack-${{ matrix.os }}
           path: dist
+          retention-days: 1
+
+      - name: Take the build back down
+        if: always() && github.event_name != 'workflow_dispatch' && steps.upload-build.outputs.artifact-id != ''
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $id = '${{ steps.upload-build.outputs.artifact-id }}'
+          gh api --method DELETE "repos/${{ github.repository }}/actions/artifacts/$id" | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning title=build artifact left behind::gh exited $LASTEXITCODE; artifact $id stays up for its one-day retention."
+          } else {
+            Write-Output "::notice title=build artifact withdrawn::artifact $id was deleted after the checks; dispatch the workflow to keep a copy for a day."
+          }
 
   installer:
     name: installer (build, install, uninstall)
     runs-on: windows-latest
     needs: checks
     timeout-minutes: 45
+    # Withdrawing the artifact below needs actions: write.  Contents stays read:
+    # nothing in this job has any business pushing.
+    permissions:
+      contents: read
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -225,14 +256,47 @@ jobs:
       # Kept as a workflow artefact rather than attached to a release or
       # committed: this is the paid download, and both of those places are
       # public.  See docs/windows-installer.md.
+      #
+      # A public repository's artefacts are public too.  "Kept as an artefact"
+      # is not "kept private": the API lists them and hands out a signed
+      # download URL to anyone who asks, with no account involved, so thirty
+      # days of a $39.99 build refreshed by every push is a giveaway filed
+      # under build logs.  The copy here exists to be checked and downloaded by
+      # hand, so it lives for a day, and an ordinary run gives it back below
+      # rather than leaving it on the shelf.
       - uses: actions/upload-artifact@v4
+        id: upload-installer
         with:
           name: buttcrack-installer-${{ steps.version.outputs.version }}
           path: |
             dist/installer/*.exe
             dist/installer/*.sha256
             dist/installer/INSTALLER-SHA256.json
-          retention-days: 30
+          retention-days: 1
+
+      # The counterpart to the note above.  A run triggered by a push or a
+      # pull request is verifying a commit, not publishing a product, so its
+      # copy does not outlive the checks that read it; a deliberate
+      # `gh workflow run 'Release artifacts'` keeps its own for the day above,
+      # which is what the release instructions download.
+      #
+      # `if: always()` because an artifact uploaded before a later failure is
+      # exactly the one with no reason to stay.  A failure to delete is a
+      # warning and never a red build: a pull request from a fork gets a
+      # read-only token, and the tidy-up is not worth failing the job over.
+      - name: Take the installer back down
+        if: always() && github.event_name != 'workflow_dispatch' && steps.upload-installer.outputs.artifact-id != ''
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $id = '${{ steps.upload-installer.outputs.artifact-id }}'
+          gh api --method DELETE "repos/${{ github.repository }}/actions/artifacts/$id" | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning title=installer artifact left behind::gh exited $LASTEXITCODE; artifact $id stays up for its one-day retention."
+          } else {
+            Write-Output "::notice title=installer artifact withdrawn::artifact $id was deleted after the checks; dispatch the workflow to keep a copy for a day."
+          }
 
   clean-install:
     name: clean install
