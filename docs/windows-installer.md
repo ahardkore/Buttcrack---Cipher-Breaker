@@ -116,6 +116,33 @@ Useful flags:
 .\build.ps1 -CertThumbprint ABCD...   # sign everything (see below)
 ```
 
+### Building it without a Windows machine
+
+The release workflow builds the same file on `windows-latest`, verifies it — silent
+install into a temp directory, every file and shortcut and PATH entry, the installed
+`doctor`, the installed CLI breaking a cipher, the 142-check self-test, then an
+uninstall that leaves nothing behind — and keeps it as a workflow artifact for 30
+days. That artifact is the deliverable; nothing else has to run locally.
+
+```console
+gh run list --workflow 'Release artifacts' --limit 5      # find the run for the commit
+gh run download <run-id> --name buttcrack-installer-1.2.1 --dir dist/installer
+```
+
+The download carries three things: `buttcrack-setup-<version>.exe`, the `.sha256`
+written beside it, and `INSTALLER-SHA256.json`. Check what arrived before uploading
+it anywhere:
+
+```console
+cd dist/installer && sha256sum -c <<< "$(cat buttcrack-setup-*.exe.sha256)"
+```
+
+The installer job prints the filename, the byte size and the SHA-256 as a run
+**annotation** (`installer digest`), which is where to read the two numbers
+`site.json` wants — `windows_app.size` and `windows_app.sha256` — without opening
+the job log. **Publish the digest of the build you upload**: two builds of the same
+commit are separate files, and a hash from a different build is worse than none.
+
 ### Building the pieces separately
 
 ```powershell

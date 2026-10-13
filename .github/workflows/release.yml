@@ -52,7 +52,11 @@ jobs:
 
       - name: SHA-256 artifacts
         shell: bash
-        run: python scripts/ci_release.py sha256 dist > dist/SHA256SUMS.json
+        run: |
+          # Same reason as the installer job below: written after hashing, so
+          # the file does not list itself.
+          sums=$(python scripts/ci_release.py sha256 dist)
+          printf '%s\n' "$sums" > dist/SHA256SUMS.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -195,8 +199,28 @@ jobs:
         shell: bash
         run: |
           cd dist/installer
-          python ../../scripts/ci_release.py sha256 . > INSTALLER-SHA256.json
+          # Hashed into a variable, then written: a plain redirect creates
+          # INSTALLER-SHA256.json before Python walks the directory, so the file
+          # ends up listing *itself* -- at zero bytes, since it is still empty --
+          # and the digest of an empty file inside the digest file is exactly
+          # what makes somebody verifying a download distrust the whole thing.
+          sums=$(python ../../scripts/ci_release.py sha256 .)
+          printf '%s\n' "$sums" > INSTALLER-SHA256.json
           cat INSTALLER-SHA256.json
+          # The three numbers the download page needs -- filename, size, digest
+          # -- as a notice.  Publishing the digest beside the download (D3) is
+          # part of shipping, and a notice is readable from the Checks tab and
+          # from the API alike, so nobody has to open a log archive to fill in
+          # `windows_app.sha256` and `windows_app.size` in site.json.
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name, digest in json.loads(Path("INSTALLER-SHA256.json").read_text()).items():
+              path = Path(name)
+              if path.suffix != ".exe":
+                  continue
+              print(f"::notice title=installer digest::{path.name} | {path.stat().st_size} bytes | sha256 {digest}")
+          PY
 
       # Kept as a workflow artefact rather than attached to a release or
       # committed: this is the paid download, and both of those places are
