@@ -117,12 +117,14 @@ test.describe('real Buttcrack web application', () => {
     await expect(page.locator('#footer-status')).toContainText('nothing was uploaded');
   });
 
-  test('responsive accessibility modes and print mode', async ({ page }) => {
+  test('print mode keeps the report and drops the furniture', async ({ page }) => {
+    // What the print stylesheet promises: the page that comes out of a printer
+    // is the result, not the controls that produced it.
     await page.goto('/');
     await page.emulateMedia({ media: 'print' });
     await expect(page.locator('body')).toBeVisible();
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Tab');
-    await expect(page.locator(':focus')).toBeVisible();
+    await expect(page.locator('header')).toBeHidden();
+    await expect(page.locator('.controls').first()).toBeHidden();
+    await expect(page.locator('#input')).toBeVisible();
   });
 });

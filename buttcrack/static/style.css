@@ -329,6 +329,14 @@ table.data td .clip { display: block; max-width: 420px; overflow: hidden; text-o
   outline-offset: 3px;
 }
 
+/* The hidden attribute has to win.  Several of the elements the script hides --
+ * the restore bar, the progress card, the error card -- set display for their
+ * own layout, and an author display rule beats the user-agent [hidden] rule, so
+ * the restore bar stayed on screen after the button that dismisses it. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------------------------------------------------------------- session */
 
 .restore {

@@ -364,8 +364,8 @@ jobs:
           npx playwright test --reporter=list 2>&1 | tee browser-tests.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
-            echo "::error title=browser interface failed (exit $code)::$(grep -E '^  [0-9]+\)|Error:|expect\(' browser-tests.log | tail -n 10 | tr '\n' ' ')"
-            tail -n 60 browser-tests.log | sed 's/^/::notice::/'
+            echo "::error title=browser interface failed (exit $code)::$(grep -E '^ *[0-9]+\)|Error:|Timeout|Received|Expected' browser-tests.log | tail -n 12 | tr '\n' ' ')"
+            tail -n 80 browser-tests.log | sed 's/^/::notice::/'
             exit "$code"
           fi
 
