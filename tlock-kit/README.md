@@ -14,7 +14,7 @@ verified kit that does it the moment the round exists.*
 
 You get two independent ways to open it on unlock day: a tested Node CLI
 (`unlock.mjs`) and a zero-install browser page (`web/index.html`). Both are
-validated end-to-end against real drand data (19/19 checks, §5).
+validated end-to-end against real drand data (22/22 checks, §5).
 
 Your intuition — “it works similar to bitcoin” — is half right, and the half
 that's right is the important half. drand publishes a new round every **3
@@ -73,10 +73,19 @@ run locally, and both do the same verified decryption.
 ### Option A — CLI (Node ≥ 18), from this `tlock-kit` folder
 
 ```bash
-npm install                      # once — installs tlock-js 0.9.0 (drand's own library)
+npm install                                 # once — installs tlock-js 0.9.0 (drand's own library)
 # save the BEGIN AGE ENCRYPTED FILE … END block from chat as what-is-locked.age
-node unlock.mjs what-is-locked.age
+node validate-file.mjs what-is-locked.age   # 0 = save, offline structural check (recommended)
+node unlock.mjs what-is-locked.age          #      then attempt the unlock
 ```
+
+`validate-file.mjs` needs **no network at all**: it decodes the armor, checks
+the age header MAC, compares the tlock stanza's ciphertext size against a fresh
+canary of the same scheme, and probes the decryption path. A good file locked to
+a future round prints `correctly refused — "It's too early…"` (exit 2); a
+truncated or foreign file is rejected with a precise reason (exit 1). Run it as
+soon as the file is in hand, so any copy problem surfaces now rather than on
+unlock day.
 
 Before the unlock round, that exits with a clear message and status **LOCKED**
 (plus the exact unlock timestamp). From 2026-10-31 06:59:57 UTC onward it prints
@@ -187,6 +196,9 @@ PASS  real file header: decoded stanza text matches
 PASS  real file header: grease stanza present (no key material)
 PASS  watch.mjs auto-decrypts when the round is already published (exit 0)
 PASS  watch.mjs keeps waiting on a locked file and reports the countdown
+PASS  validate-file.mjs: future-round file is valid + correctly locked (exit 2)
+PASS  validate-file.mjs: published-round file is valid + ready (exit 0)
+PASS  validate-file.mjs: truncated file is rejected (exit 1)
 
 ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
 ```
@@ -208,6 +220,7 @@ today, through no fault of the file.
 | `web/src/core.js`, `web/src/app.js` | browser logic (core is unit-tested by the suite) |
 | `web/serve.mjs` | tiny static server: `npm run serve:web` |
 | `watch.mjs` | start-and-forget watcher: polls the chain and decrypts automatically the moment the round lands |
+| `validate-file.mjs` | offline structural validation of the .age file (armor, header MAC, stanza sizes vs. a fresh canary, lock status) — tells "valid and locked" apart from "truncated/corrupt" |
 | `fixtures/target-header.b64` | the first 8 armor lines of your actual file — the parser is tested against these real bytes |
 | `unlock-reminder.ics` | calendar event with an alarm ~1 minute before 06:59:57Z |
 | `mock/drand-server.mjs` | local API replica used by the tests (serves the real captured data) |

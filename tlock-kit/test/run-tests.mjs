@@ -199,6 +199,23 @@ ok(lockedErr !== null && /too early/i.test(lockedErr), `round ${TARGET_ROUND} st
      alive ? "" : "watcher exited unexpectedly");
 }
 
+// ---------- 12. validate-file.mjs (offline structural validator) ----------
+{
+  const rFuture = await runNode([join(kit, "validate-file.mjs"), futureFile]);
+  ok(rFuture.status === 2 && /structurally valid/.test(rFuture.stdout) && /correctly refused/.test(rFuture.stdout) && /2026-10-31T06:59:57/.test(rFuture.stdout),
+     "validate-file.mjs: future-round file is valid + correctly locked (exit 2)",
+     rFuture.status === 2 ? "" : `exit ${rFuture.status}`);
+  const rPast = await runNode([join(kit, "validate-file.mjs"), pastFile]);
+  ok(rPast.status === 0 && /unlock round already emitted/.test(rPast.stdout),
+     "validate-file.mjs: published-round file is valid + ready (exit 0)",
+     rPast.status === 0 ? "" : `exit ${rPast.status}`);
+  const corrupt = join(tmp, "corrupt.age");
+  writeFileSync(corrupt, pastArmor.slice(0, Math.floor(pastArmor.length / 2)));
+  const rBad = await runNode([join(kit, "validate-file.mjs"), corrupt]);
+  ok(rBad.status === 1 && /INVALID/.test(rBad.stdout), "validate-file.mjs: truncated file is rejected (exit 1)",
+     rBad.status === 1 ? "" : `exit ${rBad.status}`);
+}
+
 server.close();
 rmSync(tmp, { recursive: true, force: true });
 console.log(failures === 0 ? "\nALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data." : `\n${failures} CHECK(S) FAILED ✘`);

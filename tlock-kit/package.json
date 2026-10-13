@@ -11,7 +11,8 @@
     "verify-beacon": "node verify-beacon.mjs",
     "mock": "node mock/drand-server.mjs",
     "build:web": "esbuild web/src/app.js --bundle --format=iife --minify --target=es2020 --outfile=web/app.bundle.js",
-    "serve:web": "node web/serve.mjs"
+    "serve:web": "node web/serve.mjs",
+    "validate": "node validate-file.mjs"
   },
   "dependencies": {
     "tlock-js": "^0.9.0"

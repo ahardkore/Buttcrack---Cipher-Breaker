@@ -1,4 +1,4 @@
-mock drand server: http://127.0.0.1:39509 (serving real quicknet info + real round 33025409 beacon)
+mock drand server: http://127.0.0.1:41811 (serving real quicknet info + real round 33025409 beacon)
 
 PASS  roundTime(33542211) == 2026-10-31T06:59:57Z  — library says 2026-10-31T06:59:57.000Z
 PASS  real beacon 33025409 verifies against quicknet public key
@@ -22,5 +22,8 @@ PASS  real file header: decoded stanza text matches
 PASS  real file header: grease stanza present (no key material)
 PASS  watch.mjs auto-decrypts when the round is already published (exit 0)
 PASS  watch.mjs keeps waiting on a locked file and reports the countdown
+PASS  validate-file.mjs: future-round file is valid + correctly locked (exit 2)
+PASS  validate-file.mjs: published-round file is valid + ready (exit 0)
+PASS  validate-file.mjs: truncated file is rejected (exit 1)
 
 ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.
