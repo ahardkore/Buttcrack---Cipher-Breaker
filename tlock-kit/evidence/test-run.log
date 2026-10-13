@@ -1,0 +1,16 @@
+mock drand server: http://127.0.0.1:39913 (serving real quicknet info + real round 33025409 beacon)
+
+PASS  roundTime(33542211) == 2026-10-31T06:59:57Z  — library says 2026-10-31T06:59:57.000Z
+PASS  real beacon 33025409 verifies against quicknet public key
+randomness did not match the signature
+PASS  tampered beacon is rejected
+beacon received: {"round":33025409,"randomness":"e9dc96fa8eb786e56ed1a101438c2fc1665867884ab22e22b140859a8b8c239d","signature":"8870a4c828812c380d2ef94177d155b13517468d8b1434beee45e64508d1665ddd27dcbf5b917921b84a9cbf45f7fda4"}
+PASS  encrypt→decrypt round trip on real published round 33025409
+PASS  round 33542211 still locked  — It's too early to decrypt the ciphertext - decryptable at round 33542211
+PASS  unlock.mjs decrypts the canary (exit 0)
+PASS  unlock.mjs correctly reports LOCKED with the unlock date (exit 2)
+PASS  offline.mjs decrypts from beacon JSON alone (exit 0)
+PASS  verify-beacon.mjs accepts the real beacon
+PASS  verify-beacon.mjs rejects the tampered beacon
+
+ALL CHECKS PASSED ✔  — kit validated end-to-end against real drand data.

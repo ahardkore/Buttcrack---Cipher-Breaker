@@ -1,0 +1,47 @@
+TARGET ANALYSIS — "what-is-locked.age"  (drand tlock timelock file)
+====================================================================
+
+Decoded age header of the file as pasted in chat (the armor is base64 of the
+whole age payload, so the stanza only appears after decoding the first lines):
+
+    age-encryption.org/v1
+    -> tlock 33542211 52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971
+    pW785uBPLzqhyPHMb4LLlowr5sViQtA7X95Bsp7CN8mJm2vxzrvmXoH1GBrfc4KR
+    D9+1Xrz7mWrkAHvj2cwxC2WahqNL74EIoCE/sI7q0kd1cA+qtC7QzYJF7JVcskom
+    drZRl...
+    -> ,6p*m.7-grease  !+naI krm 8G
+    xj8Z/yIExjxg p2dw
+    --- dpAND2PRpK6fVM68Ou9IAoNH8iWIX2HIFUHNz5uLHJc
+
+* `-> tlock <round> <chain-hash>` = the recipient stanza. There is no X25519,
+  ssh, or scrypt/passphrase recipient. The only way in is the tlock key.
+* The grease stanza (type contains "grease") is an age spec requirement and
+  carries no key material.
+
+Chain  : 52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971
+         = drand mainnet "quicknet" (League of Entropy)
+         scheme      bls-unchained-g1-rfc9380 (BLS12-381, G1 signatures)
+         period      3 seconds
+         genesis     1692803367 = 2023-08-23T15:09:27Z
+         public key  83cf0f28...e45a (see quicknet-info.json)
+         API         https://api.drand.sh/<chain>
+
+Round  : 33542211
+
+UNLOCK TIME = genesis + (33542211 - 1) * 3 s
+            = 1793429997 (unix) = 2026-10-31T06:59:57Z (UTC)
+            verified independently by tlock-js `roundTime()` in test/run-tests.mjs.
+
+Observed live state on 2026-10-13: latest round 33025409
+(https://api.drand.sh/<chain>/public/latest), i.e. 516,802 rounds
+(~17.94 days) before the target round. Before round 33542211 is published
+the decryption key (its threshold BLS signature) does not exist anywhere,
+so the file cannot be opened by any means. There is no password to brute
+force and no faster-than-time shortcut.
+
+Real beacon sampled for validation: round 33025409
+  randomness e9dc96fa8eb786e56ed1a101438c2fc1665867884ab22e22b140859a8b8c239d
+  signature  8870a4c828812c380d2ef94177d155b13517468d8b1434beee45e64508d1665ddd27dcbf5b917921b84a9cbf45f7fda4
+  (stored in beacon-33025409.json; verified VALID by verify-beacon.mjs and by
+   the test suite, which reproduced a full timelock encrypt→decrypt round trip
+   against it.)
