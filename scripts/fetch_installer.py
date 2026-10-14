@@ -113,7 +113,13 @@ def choose(artifacts: list[dict], version: str | None, artifact_id: int | None) 
         matches = [artifact for artifact in artifacts if version_of(artifact) == version]
         if not matches:
             live = ", ".join(sorted({version_of(artifact) for artifact in artifacts})) or "none"
-            raise SystemExit(f"no live installer for version {version} (live: {live})")
+            raise SystemExit(
+                f"no live installer for version {version} (live: {live}).\n"
+                "An ordinary push or pull-request run withdraws its own artifact, so the newest\n"
+                f"live build is whatever the last manual dispatch produced. Ask for a build of\n"
+                f"{version} and try again in about twenty minutes:\n"
+                "  gh workflow run 'Release artifacts' --ref main"
+            )
         return matches[0]
     if not artifacts:
         raise SystemExit(
@@ -208,9 +214,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--version", help="fetch this version instead of the newest")
     parser.add_argument("--artifact", type=int, help="fetch this artifact id instead of the newest")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help=f"where to write it (default {DEFAULT_OUT})")
+    parser.add_argument(
+        "--print-id",
+        action="store_true",
+        help="print the chosen artifact's id and download nothing; the publish workflow uses this",
+    )
     args = parser.parse_args(argv)
 
     artifacts = live_installers()
+
+    # Handled before --list so the two never compete: this answers "which one
+    # would you pick", which is what the publish workflow needs in order to pass
+    # an explicit id onward rather than trusting whatever sorts first.
+    if args.print_id:
+        print(choose(artifacts, args.version, args.artifact)["id"])
+        return 0
+
     if args.list:
         if args.json:
             print(as_json(artifacts))

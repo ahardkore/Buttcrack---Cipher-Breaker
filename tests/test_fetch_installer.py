@@ -15,9 +15,12 @@ downloads anything.
 
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -83,6 +86,57 @@ class Choosing(unittest.TestCase):
             fetch_installer.choose([], None, None)
         message = str(caught.exception)
         self.assertIn("gh workflow run 'Release artifacts'", message)
+
+    def test_an_unknown_version_names_the_dispatch_that_produces_one(self):
+        # The usual cause is not a typo in the version but a build that was never
+        # kept: an ordinary push or pull-request run withdraws its own artifact,
+        # so "no installer for 1.2.2" almost always means "nobody dispatched one".
+        with self.assertRaises(SystemExit) as caught:
+            fetch_installer.choose(LIVE, "9.9.9", None)
+        message = str(caught.exception)
+        self.assertIn("gh workflow run 'Release artifacts'", message)
+        self.assertIn("withdraws its own artifact", message)
+
+
+class PrintId(unittest.TestCase):
+    """`--print-id` is how the publish workflow asks which artifact to fetch.
+
+    It replaced a step that took the first row of the artifact list, which is the
+    newest *live* build rather than the newest build -- the difference that let a
+    stale 1.2.1 be published from a 1.2.2 checkout.
+    """
+
+    def _main(self, *args: str) -> tuple[int, str]:
+        buffer = io.StringIO()
+        with mock.patch.object(fetch_installer, "live_installers", return_value=LIVE), contextlib.redirect_stdout(
+            buffer
+        ):
+            code = fetch_installer.main(list(args))
+        return code, buffer.getvalue().strip()
+
+    def test_it_prints_the_bare_id_of_the_version_asked_for(self):
+        code, printed = self._main("--version", "1.2.0", "--print-id")
+        self.assertEqual(code, 0)
+        self.assertEqual(printed, "2", "the workflow reads this straight into a variable")
+
+    def test_without_a_version_it_still_picks_the_newest_live(self):
+        self.assertEqual(self._main("--print-id"), (0, "3"))
+
+    def test_an_explicit_id_is_passed_through(self):
+        self.assertEqual(self._main("--artifact", "1", "--print-id"), (0, "1"))
+
+    def test_it_downloads_nothing(self):
+        with mock.patch.object(fetch_installer, "live_installers", return_value=LIVE), mock.patch.object(
+            fetch_installer, "download"
+        ) as download, contextlib.redirect_stdout(io.StringIO()):
+            fetch_installer.main(["--version", "1.2.1", "--print-id"])
+        download.assert_not_called()
+
+    def test_a_version_nobody_built_fails_rather_than_substituting(self):
+        with mock.patch.object(fetch_installer, "live_installers", return_value=LIVE), contextlib.redirect_stdout(
+            io.StringIO()
+        ), self.assertRaises(SystemExit):
+            fetch_installer.main(["--version", "9.9.9", "--print-id"])
 
 
 class Formatting(unittest.TestCase):

@@ -87,22 +87,27 @@ jobs:
       # fetch_installer.py's own docstring assumes a human's browser or a
       # sandbox, not a shared CI IP that dozens of unrelated jobs are also
       # calling anonymously in the same hour.
+      # Selects by *version*, not by recency.  "The newest live artifact" is not
+      # "the newest build": an ordinary push or pull-request run withdraws its own
+      # installer, so the newest live one is whatever the last manual dispatch
+      # produced -- which can be a whole version behind the checkout this job runs
+      # from.  Publishing that succeeds quietly and advertises yesterday's build as
+      # today's release, which is exactly what happened the first time this ran
+      # after a version bump.  publish_installer.py refuses the same mismatch again
+      # at the point of upload; this fails earlier, and names the command that
+      # fixes it.
       - name: Which build?
         id: which
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -o pipefail
+          version=$(python -c "import sys; sys.path.insert(0, 'scripts'); from publish_installer import repo_version; print(repo_version())")
+          echo "This checkout is buttcrack $version"
           id="${{ inputs.artifact_id }}"
           if [ -z "$id" ]; then
-            id=$(python scripts/fetch_installer.py --list --json | python -c "
-          import json, sys
-          rows = json.load(sys.stdin)
-          if not rows:
-              raise SystemExit('no installer artifact is live -- run the Release artifacts workflow first')
-          print(rows[0]['id'])
-          ")
-            echo "Chose the newest live installer artifact: $id"
+            id=$(python scripts/fetch_installer.py --version "$version" --print-id)
+            echo "Chose the newest live $version installer artifact: $id"
           fi
           echo "artifact-id=$id" >> "$GITHUB_OUTPUT"
           python scripts/fetch_installer.py --list | grep -E "version|$id" || true
