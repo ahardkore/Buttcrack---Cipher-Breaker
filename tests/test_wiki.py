@@ -22,9 +22,11 @@ rest of this suite) and reads ``site.json``; it does not write anything.
 
 from __future__ import annotations
 
+import collections
 import contextlib
 import importlib.util
 import io
+import random
 import sys
 import unittest
 from pathlib import Path
@@ -129,6 +131,191 @@ class TestUnsolvedArchive(unittest.TestCase):
         self.assertIn("Verification boundary", spec["body"])
         self.assertIn("D’Agapeyeff Cipher", spec["body"])
         self.assertIn("Phaistos Disc", spec["body"])
+
+    def test_findings_are_measured_not_asserted(self):
+        """A findings block may only quote a number the shipped script reproduces."""
+        entry = next(i for i in bp.UNSOLVED_ARCHIVE if "findings" in i)
+        self.assertIn("dagapeyeff_alignment.py", " ".join(entry["findings"]))
+        align = _load(
+            "dagapeyeff_alignment_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_alignment.py",
+        )
+        result = align.analyse(align.digits(align.CANONICAL), align.random.Random(1))
+        self.assertEqual(result["violations"], 0)
+        self.assertEqual(result["shuffle_passes"], 0)
+        self.assertEqual(result["cells_used"], 19)
+        self.assertEqual(result["leftover"], "0")
+        self.assertEqual(result["firsts"], ["0", "6", "7", "8", "9"])
+        self.assertEqual(result["seconds"], ["0", "1", "2", "3", "4", "5"])
+        # The card's frequency claim, straight from the script.
+        counts = dict(result["frequencies"])
+        self.assertEqual(counts["81"], 20)
+        self.assertEqual(result["distinct"], 19)
+
+    def test_detect_harness_streams_match_the_attack_they_document(self):
+        """The card quotes a ceiling/null/CT comparison; keep the inputs honest."""
+        detect = _load(
+            "dagapeyeff_detect_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        ct = detect.ciphertext_stream()
+        self.assertEqual(len(ct), 197)
+        self.assertEqual(sorted(set(ct)), list(range(detect.NS)))
+        for profile in (detect.CT_PROFILE, detect.ENGLISH_PROFILE):
+            self.assertEqual(sum(profile), 197, "a null of another length is not a control")
+        # the control must be a permutation of the cipher's own counts, else
+        # "same profile" is a claim the code does not actually honour
+        null = detect.profile_stream(detect.CT_PROFILE, 197, random.Random(1))
+        self.assertEqual(sorted(collections.Counter(null).values()),
+                         sorted(collections.Counter(ct).values()))
+        self.assertEqual(sorted(detect.CT_PROFILE, reverse=True),
+                         sorted(collections.Counter(ct).values(), reverse=True))
+        with self.assertRaises(ValueError):
+            detect.profile_stream([1, 2, 3], 197, random.Random(1))
+        table = detect.quad_table()
+        self.assertEqual(len(table), 26**4)
+        def slot(word):
+            return sum((ord(c) - 65) * 26**k for k, c in enumerate(reversed(word)))
+        self.assertGreater(table[slot("TION")], table[slot("QZJX")])
+        # the python fallback has to run and stay in the sane range
+        score = detect.anneal_py(ct[:60], table, 2, 2000, 3)
+        self.assertTrue(-8.0 <= score <= -2.5, f"fallback scorer out of range: {score}")
+
+    def test_no_doubling_rejection_is_a_proof_not_a_p_value(self):
+        """The Playfair-family test must stay a hard logical test."""
+        detect = _load(
+            "dagapeyeff_detect_hard_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        # a real no-doubling plaintext through an injective code: zero repeats
+        playfair_like = list("ATBUCV.DWEFXGY.HZJ.QKWLRI.MNSOTP")
+        self.assertGreater(len(set(playfair_like)), 20, "test string must exercise real repeats")
+        self.assertEqual([a for a, b in zip(playfair_like, playfair_like[1:]) if a == b], [])
+        adj, longest, verdict = detect.doubled_letter_cipher_rejected(playfair_like)
+        self.assertEqual(adj, 0)
+        self.assertEqual(longest, 1)          # no run longer than one: the pass is earned
+        self.assertTrue(verdict.startswith("consistent"))
+        # and one doubled letter anywhere is enough to reject the family
+        adj2, longest, verdict2 = detect.doubled_letter_cipher_rejected(
+            list("ABBCDEF"))
+        self.assertEqual(adj2, 1)
+        self.assertEqual(longest, 2)
+        self.assertTrue(verdict2.startswith("REJECTED"))
+        # the actual cipher: the family is gone, and it is a counted fact, not a model
+        adj3, longest3, verdict3 = detect.doubled_letter_cipher_rejected(
+            detect.ciphertext_stream())
+        self.assertEqual(adj3, 17)
+        self.assertEqual(longest3, 3)
+        self.assertIn("REJECTED", verdict3)
+
+    def test_predictive_gap_and_source_bound_do_their_jobs(self):
+        """The two newest controls must be able to fail, not just agree."""
+        detect = _load(
+            "dagapeyeff_detect_gap_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        import random
+        import statistics
+
+        ct = detect.ciphertext_stream()
+        # positive control: a chain with real memory has to score far higher,
+        # otherwise "the cipher looks like a shuffle" means nothing
+        rnd = random.Random(4)
+
+        def sticky():
+            seq = [rnd.randrange(detect.NS)]
+            for _ in range(196):
+                seq.append(seq[-1] if rnd.random() < 0.8 else rnd.randrange(detect.NS))
+            return seq
+
+        memory = statistics.mean(detect.predictive_gap(sticky()) for _ in range(40))
+        nulls = [detect.predictive_gap(detect.profile_stream(detect.CT_PROFILE, 197, rnd))
+                 for _ in range(40)]
+        gap = detect.predictive_gap(ct)
+        self.assertGreater(memory, gap + 50, "test lost its positive control")
+        self.assertLess(abs(gap - statistics.mean(nulls)),
+                        2 * statistics.stdev(nulls), "cipher no longer tracks the shuffle")
+        self.assertGreater(statistics.mean(detect.predictive_gap(s)
+                                           for s in detect.english_letter_streams()), gap)
+        # the counting bound: it must reject 19 and NOT reject a legal 10-pair map
+        codes = detect.stream_pairs()
+        distinct, bound, verdict = detect.pair_cardinality_rejected(codes)
+        self.assertEqual((distinct, bound), (19, 10))
+        self.assertTrue(verdict.startswith("REJECTED"))
+        # a genuine per-digit image: ten source digits, each -> exactly one pair
+        f = {d: (6 + d % 5, d % 6) for d in range(10)}
+        legal = [f"{f[d % 10][0]}{f[d % 10][1]}" for d in range(197)]
+        d2, b2, v2 = detect.pair_cardinality_rejected(legal)
+        self.assertEqual(d2, 10, "an image of ten digits must have ten pairs")
+        self.assertTrue(v2.startswith("not excluded"), "the bound test is vacuous")
+        # and an eleven-pair stream trips it -- so the bound bites exactly at 10
+        eleven = legal + ["4" + legal[0][1:]]
+        d3, _, v3 = detect.pair_cardinality_rejected(eleven)
+        self.assertEqual(d3, 11)
+        self.assertTrue(v3.startswith("REJECTED"))
+
+    def test_profile_fit_has_no_discriminating_power(self):
+        """The frequency-shape test is pinned to be uninformative, on purpose.
+
+        If this ever fails, someone has started quoting a profile chi-square as
+        evidence again.  The card says frequency shape cannot convict anything at
+        this length; these are the four numbers that make that true.
+        """
+        detect = _load(
+            "dagapeyeff_detect_profile_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        import random
+        import re
+        from collections import Counter
+        from pathlib import Path
+
+        ref = detect.ENGLISH_PROFILE
+        rnd = random.Random(3)
+        # the two nulls must be far apart, or the instrument reads nothing
+        eng_null = detect.profile_fit(
+            detect.profile_stream(ref, 197, rnd), ref)[0]
+        ct_null = detect.profile_fit(
+            detect.profile_stream(detect.CT_PROFILE, 197, rnd), ref)[0]
+        # the english null is ~1e-30, not exactly zero: a multinomial draw from
+        # a profile does not reproduce that profile digit for digit
+        self.assertLess(eng_null, 1.0, "english-shaped noise stopped fitting english")
+        self.assertGreater(ct_null, 10.0, "profile nulls collapsed together")
+        # the cipher is indistinguishable from a profile-matched shuffle...
+        self.assertAlmostEqual(detect.profile_fit(detect.ciphertext_stream(), ref)[0],
+                               ct_null, places=1)
+        # ...while genuine english of the same length fits the reference BETTER
+        # than the cipher does, yet still nowhere near cleanly.  Both statements
+        # hold at once, which is precisely why neither is a result.
+        eng = re.sub("[^A-Za-z]", "", (Path("examples") / "english_samples.txt")
+                     .read_text(encoding="utf-8")).upper()[:395]
+        letters = sorted(ch for ch, _ in Counter(eng).most_common(19))
+        keep = set(letters)
+        seq = [letters.index(c) for c in eng if c in keep]
+        real, real_labelled = detect.profile_fit(seq, ref)
+        self.assertLess(real, ct_null, "english stopped beating the flat null")
+        self.assertGreater(real, eng_null, "english profile fit became too easy")
+        # the labelled score is the other half of the argument, and the only half
+        # a careless edit can delete silently: same text, same profile, ranks
+        # permuted -- if this stops blowing up, "labels decide the answer" is gone
+        self.assertGreater(real_labelled, 10 * real,
+                           "labelled score no longer disagrees with the free one")
+        c_free, c_labelled = detect.profile_fit(detect.ciphertext_stream(), ref)
+        self.assertGreater(c_labelled, 5 * c_free,
+                           "cipher labelled score collapsed too")
+
+    def test_findings_render_as_balanced_markup(self):
+        markup = bp.unsolved_archive_html()
+        self.assertIn("unsolved-findings", markup)
+        self.assertIn("What holds up", markup)
+        self.assertEqual(markup.count("<ul>"), markup.count("</ul>"))
+        self.assertEqual(markup.count("<li>"), markup.count("</li>"))
+        self.assertEqual(markup.count("<section"), markup.count("</section>"))
+        # Only entries that actually carry findings grow the box.
+        for item in bp.UNSOLVED_ARCHIVE:
+            title = f"<h3>{item['title']}</h3>"
+            block = markup.split(title, 1)[1].split("</section>", 1)[0]
+            self.assertEqual("unsolved-findings" in block, bool(item.get("findings")), item["title"])
 
 
 class TestTableOfContents(unittest.TestCase):
