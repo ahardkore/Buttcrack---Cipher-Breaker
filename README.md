@@ -67,7 +67,7 @@ This repository houses the complete, publication-grade cryptanalytic research, p
 
 ## Install
 
-Python 3.9 or newer. **Zero runtime dependencies** — the language model ships inside the package and the web interface is `http.server` plus three static files.
+Python 3.9 or newer. **Zero runtime dependencies for the core solver** — the language model ships inside the package and the web interface is `http.server` plus local static files. AES known-key operations use the optional `modern` extra, bundled in the Windows installer.
 
 ```console
 $ git clone https://github.com/ahardkore/buttcrack && cd buttcrack
@@ -98,6 +98,13 @@ language model included) and prints its SHA-256. It is an ordinary static file:
 host it on any web server and the people who download it never touch GitHub,
 `git` or `pip`. See [docs/windows-installer.md](docs/windows-installer.md) for
 the build, code signing, and hosting options.
+
+**Desktop updates:** use **Check for updates** in the control window or Help
+menu. It contacts the site only when clicked and notifies you if a newer
+published version exists. The popup lists that release's improvements and fixes;
+no cipher text is sent. Updates are installed manually
+by downloading and running the latest installer from your original download page.
+There are no background checks or automatic installations.
 
 To check the installer rather than the executables — silent install, the
 shortcuts, the `PATH` entry, a cipher broken by the installed program, then a
@@ -315,11 +322,112 @@ PK9 construction:
 
 ---
 
+## Comparing candidate decryptions
+
+The local results panel shows **Top 5 / Top 10** actual candidate readings,
+including the leader, with full plaintext, cipher family, reported key and
+parameters. Each has ranking explanations, language measurements, dictionary
+hits (or “not assessed”), close-score competitors, caveats and a separate
+verification status. **Statistically strong** is not **proven**; a passing
+re-encryption does not establish the intended plaintext.
+
+The browser defaults to comparison mode, continuing past a high language score
+within your budget. Uncheck **compare alternatives** for fast mode. Shortlists
+may contain fewer than five readings; exact canonical archive matches return one
+record rather than fabricated alternatives. API and CLI keep their legacy score
+fields and add structured evidence. See [docs/candidate-results.md](docs/candidate-results.md)
+for the exact ranking rules and verification boundaries.
+
+## Public website: simple solving and optional local investigations
+
+The homepage stays **solver-first**, with a compact mobile input/solve area and
+primary Solver / Wiki / Kryptos navigation. **Advanced settings & examples**
+expands method selection, supplied keys, encoding depth and broader-family
+comparison. Results put the candidate reading first; key/method evidence,
+Top 5/10 returned rankings, statistics and diagnostics open independently.
+
+Every registered cipher's wiki article links **Try this cipher** to the solver
+with its full generated example and actual method preselected—without starting
+an automatic search. Supported operations run live. Other methods show only an
+explicit worked-example reference for the unchanged example; unrelated input
+never silently falls back to another cipher.
+
+**Optional local investigations** lets you explicitly save named investigations,
+append/compare attempts, restore text/settings/results without another solve,
+and export/import device-local backups. Nothing is saved automatically. Saved
+snapshots preserve the submitted input, not a subsequently edited draft; keys
+and plaintext are included, so browser storage is not encrypted. See
+[docs/public-solver-experience.md](docs/public-solver-experience.md) for coverage,
+storage limits and privacy boundaries. This is the standalone public website,
+not a rebuilt desktop installer.
+
+## Kryptos Research Mode
+
+The site's dedicated [Kryptos app](https://ciphersolverpro.com/kryptos/) now opens
+in **Research Mode**, separate from the general-purpose solver. Its shared,
+generated PK1–PK10 reference catalog sits beside custom input, alphabet tools,
+editable decryption pipelines and candidate plaintexts. Documented templates
+reproduce all ten PK constructions, including the 21-stage PK10 pipeline.
+
+Save named hypotheses with keys, alphabets, ordered transformations, evidence
+and objections. Compare families, re-encryption agreement, plaintext metrics,
+K4 clue constraints and shared repeated sequences. Export/import research
+reports with original/normalized texts, every intermediate output, exact method
+conventions and derived verification; back up the browser-local notebook.
+Imported claims are always recomputed, never trusted.
+
+**Verified corpus match** verifies a reference association; **Reproduced
+decryption** verifies arithmetic reproducibility; **Research hypothesis** remains
+unconfirmed. None establishes an intended message by language score alone.
+See [docs/kryptos-research-mode.md](docs/kryptos-research-mode.md) for conventions,
+privacy boundaries, report format and supported operations. This experience is
+part of the standalone website, not a new Windows installer build.
+
+## Interactive analysis workspace
+
+Beside the local solver results, **Analyze this candidate** opens comparative
+ciphertext/plaintext letter-frequency charts, index of coincidence, letter and
+character entropy, repeated-pattern spacings, period/lag diagnostics, and
+Vigenère key-length hypotheses. Switch candidates without another solve, or
+choose **Analyze current input only** before solving.
+
+The side-by-side ciphertext/plaintext/key view supports editable key hypotheses,
+phase offsets and display windows. It checks equations only for supported direct
+repeated-key conventions; other constructions remain positional unless you
+explicitly choose a separate hypothesis. Sampling limits, short samples, period
+multiples and assumptions are visible. These diagnostics explain plausibility;
+they do **not** establish correctness or change a result's verification status.
+See [docs/analysis-workspace.md](docs/analysis-workspace.md) for the methods and
+bounds. Everything uses the local server, without plotting dependencies or new
+session persistence.
+
+## Crypto Labs — explicit inputs, honest prerequisites
+
+The desktop **Crypto Labs** button / Labs menu and the local browser's **Crypto
+Labs** tab provide four separate tools, in this order:
+
+1. **RSA weaknesses:** shared factors, bounded close-factor search, Wiener small-d,
+   unwrapped low-exponent messages and same-message broadcast recovery.
+2. **Reused keystream:** pairwise XOR relations and crib-derived plaintext
+   fragments, explicitly labelled as hypotheses under a reuse/alignment assumption.
+3. **AES:** repeated-block analysis and supplied-key ECB/CBC/CTR/GCM operations
+   through the maintained `cryptography` provider; failed GCM authentication never
+   returns plaintext. No AES key recovery is claimed.
+4. **Enigma I:** known-configuration simulation and bounded initial-position crib
+   search with double stepping. Historical, not modern encryption.
+
+These are **not automatic modern-cipher breakers** and do not inflate the cipher
+registry count. Use your own data or authorized exercises. Examples, exact input
+formats, evidence boundaries and limits: [docs/crypto-labs.md](docs/crypto-labs.md).
+Run `buttcrack modern rsa --input rsa.json` for the same backend on the CLI.
+For source-based AES operations, install `pip install ".[modern]"`; Windows
+installers bundle the provider and require no end-user dependency installation.
+
 ## Limits — read this before you trust an answer
 
 buttcrack is a cryptanalysis tool for **classical and puzzle-grade cryptography**. Being straight about the boundaries:
 
-* **It cannot break modern cryptography.** AES, RSA, ChaCha20, Ed25519 and anything else with a proper key schedule and a real key length are out of reach for *any* tool of this kind — that is a statement about mathematics, not about this code. If your ciphertext came from a real cipher with a real key, no amount of quadgram scoring will help.
+* **It cannot break modern cryptography.** Securely configured AES, RSA and ChaCha20 are not realistically breakable from ciphertext alone by this tool. The explicit Crypto Labs target weak RSA parameters, keystream reuse, or known-key operations—not secure-key recovery. Ed25519 is a signature scheme, not an encryption cipher. If your ciphertext came from a real cipher with a real key, no amount of quadgram scoring will help.
 * **Four-square and trifid need the key.** Four-square has *two* keyed grids — fifty cells against Playfair's twenty-five — and trifid has a 27-cell cube and an unknown period, so neither from-scratch search finishes inside a sane budget. Both encrypt, decrypt and identify correctly, and `--hint key=...` recovers the plaintext exactly; the self-test grades them on precisely that contract rather than pretending otherwise.
 * **Playfair and Bifid are partial.** A 5×5 grid has 25! arrangements and one misplaced cell costs ~0.9 log10 per character of fitness — five times what a wrong substitution alphabet costs — so the truth's basin is only a few swaps wide. A pure-Python genetic algorithm recovers roughly nine letters in ten from ~1,500 letters of ciphertext in 90 seconds; whether the last few cells fall into place depends on the seed. The report tells you which case you got. With `--hint key=MONARCHY` both are exact immediately.
 * **Short text is weak evidence, and the tool says so.** Below ~50 letters the chi-squared distributions of "English under a shift" and "Vigenère" overlap almost completely (measured: English at n = 35 reaches 1.47 at p99 while Vigenère starts at 0.90). `identify` then reports several plausible families with low likelihoods instead of inventing certainty, and confidence is capped accordingly. The solver still attacks all of them.

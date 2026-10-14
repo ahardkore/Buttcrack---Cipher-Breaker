@@ -423,6 +423,7 @@ def cmd_crack(args: argparse.Namespace) -> int:
         "hints": build_hints(args),
         "progress": progress if not args.json else None,
         "exhaustive": args.exhaustive,
+        "compare": args.compare,
     }
     if args.language == "auto":
         report = solve_auto(ciphertext, **options)
@@ -449,6 +450,28 @@ def cmd_crack(args: argparse.Namespace) -> int:
 # --------------------------------------------------------------------------- #
 # identify
 # --------------------------------------------------------------------------- #
+
+
+def cmd_modern(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .modern import run
+
+    try:
+        if args.input:
+            with Path(args.input).open(encoding="utf-8") as source:
+                raw = source.read(100001)
+        else:
+            raw = args.options or "{}"
+        if len(raw) > 100000:
+            raise ValueError("Lab input exceeds 100 KB")
+        options = json.loads(raw)
+        result = run(args.lab, options)
+    except (ValueError, OSError) as error:
+        print(f"{PROGRAM}: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps(result, indent=2, ensure_ascii=True))
+    return 0
 
 
 def cmd_assistant(args: argparse.Namespace) -> int:
@@ -917,6 +940,7 @@ def build_parser() -> argparse.ArgumentParser:
             metavar="NAME=VALUE",
             help="hint for the search, repeatable: key=LEMON, key=hex:ff10, period=7, rails=4, width=6, seed=1",
         )
+        target.add_argument("--compare", action="store_true", help="continue past high language scores to collect alternatives within the budget")
         target.add_argument(
             "--candidates", "-n", type=int, default=5, help="how many alternative readings to show (default: 5)"
         )
@@ -947,6 +971,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     add_crack_options(crack)
     crack.set_defaults(func=cmd_crack)
+
+    modern = sub.add_parser("modern", help="explicit offline RSA, keystream, AES and Enigma labs")
+    modern.add_argument("lab", choices=("rsa", "keystream", "aes", "enigma"))
+    modern.add_argument("options", nargs="?", help="JSON options object (or use --input)")
+    modern.add_argument("--input", help="JSON input file; lab inputs and keys are not persisted")
+    modern.set_defaults(func=cmd_modern)
 
     # -- identify ----------------------------------------------------------- #
     assistant = sub.add_parser("assistant", help="get explainable local attack recommendations")
@@ -1083,6 +1113,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 SUBCOMMANDS = (
+    "modern",
     "crack",
     "assistant",
     "project",

@@ -1,11 +1,12 @@
 # The Windows installer
 
 Short answer to the question that produced this document: **yes.** `buttcrack`
-is pure Python with no runtime dependencies and its language model is already
-inside the package, which makes it close to the easiest kind of program there
-is to freeze into an `.exe`. The result is one file, around 25 MB, that anyone
-can download from any web server and double-click. No Python, no `git`, no
-package manager, no GitHub account, no command line.
+has a dependency-free Python core and its language model is already inside the
+package, making it straightforward to freeze into an `.exe`. The AES lab adds a
+maintained provider bundled in the installer. The result is one downloadable
+installer: no Python, `git`, package manager, GitHub account or command line for
+the end user. Earlier builds were around 25 MB; measure the new artifact rather
+than assuming the provider has no size cost.
 
 This page covers how to build it and where to put it.
 
@@ -58,13 +59,58 @@ different contents and that the shortcut's target is the one it claims to be.
 3. Start menu → **Buttcrack**. A small window appears saying it is running, and
    the browser opens on the solver.
 4. Everything is local. The server binds loopback only; no text leaves the
-   machine, and the app never calls home.
+   machine. The only optional network request is a version check when the user
+   clicks **Check for updates**; no cipher text is sent.
 5. Add/Remove Programs → Buttcrack → Uninstall removes all of it, including
    the `PATH` entry if they took it.
 
 Optional during install: a desktop shortcut, and putting the CLI on `PATH` so
 `buttcrack "Wkh txlfn eurzq ira"` works in any terminal. Both are off by
 default except the desktop shortcut.
+
+---
+
+## Checking for updates
+
+The desktop control window has a **Check for updates** button and the same action
+in **Help**. Checks run only when clicked, in a worker thread so the window stays
+responsive. A newer release produces an in-window notice, a dialog and a Windows
+tray notification when the tray is available. The popup includes a **What's new**
+list of the published release's improvements and fixes before asking whether to open
+the update information page. Offline/service failures are reported and can be
+retried; they do not affect the solver.
+
+The check reads `https://ciphersolverpro.com/desktop-version.json` over HTTPS
+with an eight-second socket timeout and a 4 KB response limit. It sends no cipher
+text or user data (the web host necessarily sees the request's IP address).
+There are no startup checks, automatic downloads or automatic installations.
+Existing customers reopen their original post-payment download page, download
+the newest installer, and run it to upgrade the existing application.
+
+### Publishing a version that users can discover
+
+1. Bump `buttcrack.__version__` and `pyproject.toml` together, build and verify the
+   Windows installer, then publish it to storage using the existing workflow.
+2. Apply the publisher's `windows_app` changes to
+   `ventures/cipher-solver-web/site.json` (version, delivery URL, size and digest).
+   Add that version's improvements and fixes under `desktop_release_notes`, keyed
+   by the same version. Use at most eight plain-text bullets, 180 characters each.
+   Keep `delivery_salt` unchanged so existing customers' download pages still work.
+3. Deploy the site. `scripts/build_site.py` generates `desktop-version.json`
+   from **the published installer version in `site.json`**, not the source-code
+   version. It includes `version` and that version's `release_notes`; no paid
+   installer URL or pending release's notes are exposed. Version-keyed notes prevent
+   old improvements from accidentally being shown for a different installer.
+
+For example, the pending 1.2.2 notes are already prepared in `site.json`. They
+will not be published in the manifest until `windows_app.version` becomes 1.2.2.
+Older manifests without notes still work; the dialog explains that release notes
+were not provided rather than inventing improvements.
+
+Do not advertise a release before its installer is uploaded and verified.
+Previously installed builds without this button need a manual installer upgrade
+once to gain the feature. The source is now 1.2.2, but the published version stays
+1.2.1 until a new installer is actually published.
 
 ---
 
@@ -103,9 +149,11 @@ below.)
 or double-click `packaging\windows\build.bat`.
 
 It will, in order: find a usable Python, refuse to continue if that Python has
-no `tkinter`, make `.venv-build\`, install PyInstaller, freeze both
-executables, **run the frozen CLI against a Caesar sample and check it comes
-back solved**, build the installer, and print the SHA-256.
+no `tkinter`, make `.venv-build\`, install PyInstaller and the maintained AES
+provider, freeze both executables, **run the frozen CLI against a Caesar sample
+and an AES known-answer test**, build the installer, and print the SHA-256. The
+installed-CLI test repeats the AES check. See [crypto-labs.md](crypto-labs.md) for
+what each lab supports and its limitations.
 
 That smoke test matters more than it looks. The failure mode of a frozen
 Python app is almost never "it does not start" — it is "it starts, and then

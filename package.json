@@ -1,5 +1,5 @@
 {
   "private": true,
-  "scripts": {"test:browser": "playwright test"},
+  "scripts": {"test:browser": "playwright test", "test:research": "node --test tests/js/kryptos-research.test.cjs", "test:web": "node --test tests/js/browser-experience.test.cjs"},
   "devDependencies": {"@playwright/test": "^1.48.0"}
 }

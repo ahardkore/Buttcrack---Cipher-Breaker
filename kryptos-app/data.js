@@ -1,189 +1,63 @@
-// Kryptos & Paradigm Kryptos Master Data Store
+/* PK records come from the shared generated catalog, not hand-maintained copies.
+ * CIA entries are separately labelled; incomplete legacy excerpts cannot earn
+ * an exact PK corpus match or a reproduced-decryption badge. */
 const KRYPTOS_ALPHABET = "KRYPTOSABCDEFGHIJLMNQUVWXZ";
 const STANDARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-const CIPHERS_DATA = {
-  PK1: {
-    id: "PK1",
-    title: "PK1 — The Accession Log",
-    length: 192,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk1",
-    mechanism: "Quagmire III over Kryptos Alphabet",
-    key: "PROVENANCE (Period 10)",
-    ciphertext: "MQRALWVSJIMSXGJSVWQPHJMDINKXGIMHNKYUTXTTQMGZVRUSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJTTMQGZVMSVOVRUMXQVWXQVUJT",
-    plaintext: "INVESTIGATIONLOGITEMEIGHTKNOTTIGHTLYWOUNDITSTHREADINSCRIBEDWITHLETTERSTHEACCESSIONLOGSAYSONCEUNRAVELEDITREVEALSTHEROUTETOTHELOSTARCHIVEOFPELLEGRINTWELVEPRIORARCHIVISTSTRIEDTOUNRAVELITALLFAILED",
-    notes: "Narrative opening: The apprentice uncovers the ancient knot inscribed with letters leading to the lost archive of Pellegrin."
+const CIPHERS_DATA = Object.fromEntries(PARADIGM_KRYPTOS.map(record => [record.id, {
+  ...record, category: "Paradigm Kryptos", status: "DOCUMENTED REFERENCE",
+  length: record.ciphertext_length, method: record.verification,
+  challengeUrl: `https://paradigm.xyz/kryptos-ctf/${record.id.toLowerCase()}`,
+  notes: "Exact normalized reference from the shared PK catalog. Lookup alone does not reproduce a proposed decryption; use Research Mode to execute the method.",
+}]));
+Object.assign(CIPHERS_DATA, {
+  "K1": {
+    "id": "K1",
+    "title": "K1 — Palimpsest",
+    "length": 63,
+    "status": "REFERENCE",
+    "category": "CIA Sculpture",
+    "mechanism": "Vigenère on Keyed Kryptos Alphabet",
+    "key": "PALIMPSEST / KRYPTOS",
+    "ciphertext": "EMUFPHZLRFAXYUSDJKZLDKRNSHGNFIVJYQTQUXQBQVYUVLLTREVJYQTMKYRDMFD",
+    "plaintext": "BETWEENSUBTLESHADINGANDTHEABSENCEOFLIGHTLIESTHENUANCEOFIQLUSION",
+    "notes": "Local K1 transcription from kryptos/kryptos_solve.py. Reproduction can be tested with PALIMPSEST in the KRYPTOS alphabet; not part of the PK corpus matcher."
   },
-  PK2: {
-    id: "PK2",
-    title: "PK2 — Pellegrin's Treatise",
-    length: 350,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk2",
-    mechanism: "Complete Columnar Transposition (50x7)",
-    key: "MARGINS (Order: [1, 3, 4, 0, 5, 2, 6])",
-    ciphertext: "HNETIOCOIOISNNENEELOWYTTLQUBDBTHTEOTRRASVNEUIRORSRTHTNFEIHNIEGSOEOEOEIECRNROSEAEENAGHCTEEIOGTIETTTTIHREEMTRHTENEAORNNTRTIELNNNDHTDREOAAHTEEIAEAAELAEIETNE",
-    plaintext: "IHAVEFOUNDREFERENCESTOTHEKNOTINSEVENOTHERRECORDSINOURARCHIVETHEMOSTINTRIGUINGISAPASSINGCOMMENTINATREATISEONTEXTILESWRITTENINPELLEGRINSOWNHANDWHICHSAYSUNAGOTANTOSOTTILEDALEGGEREQUALUNQUENODOIBELIEVEDTHISTOBEJUSTATURNOFPHRASEBUTTHEOTHERMENTIONSSCATTEREDTHROUGHMARGINALIAINBOOKSTHATSHARENOOTHERTOPICHAVELEDMETOSUSPECTTHEPASSAGEREFERSTOAREALOBJECTANEEDLE",
-    notes: "Pellegrin's treatise: 'un ago tanto sottile da leggere qualunque nodo' (a needle so fine as to read any knot!)."
+  "K2": {
+    "id": "K2",
+    "title": "K2 — Abscissa",
+    "length": 367,
+    "status": "INCOMPLETE REFERENCE",
+    "category": "CIA Sculpture",
+    "mechanism": "Vigenère on Keyed Kryptos Alphabet",
+    "key": "ABSCISSA / KRYPTOS",
+    "ciphertext": "VFPJUDEEHZWETZYVGWHKKQETGFQJNCEGGWHKK?DQMCPFQZDQDuplicate...[truncated]",
+    "plaintext": "IT WAS TOTALLY INVISIBLE HOWS THAT POSSIBLE THEY USED THE EARTHS MAGNETIC FIELD X THE INFORMATION WAS GATHERED AND TRANSMITTED UNDERGRUUND TO AN UNKNOWN LOCATION X DOES LANGLEY KNOW ABOUT THIS THEY SHOULD ITS BURIED OUT THERE SOMEWHERE X WHO KNOWS THE EXACT LOCATION ONLY WW THIS WAS HIS LAST MESSAGE X THIRTY EIGHT DEGREES FIFTY SEVEN MINUTES SIX POINT FIVE SECONDS NORTH SEVENTY SEVEN DEGREES EIGHT MINUTES FORTY FOUR SECONDS WEST LAYER TWO",
+    "notes": "Legacy incomplete excerpt, not a complete published transcription. Do not use it to verify a proposed solution. Paste an authoritative complete transcription into Research Mode as custom input.",
+    "reference_complete": false
   },
-  PK3: {
-    id: "PK3",
-    title: "PK3 — The Viennese Anatomist",
-    length: 280,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk3",
-    mechanism: "Quagmire III (Sum-Clock p10 + p8, period 40)",
-    key: "PENTIMENTO (10) + ORDINATE (8)",
-    ciphertext: "HWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQHWZTRPPVHZLHRBQBQOMZBACNOTHLYGBATBTKHERQ",
-    plaintext: "SEVENTHMONTHIWROTETOFIFTEENCORRESPONDENTSINSIXCOUNTRIESSEEKINGANYWORDOFTHEITEMMOSTKNEWNOTHINGAFEWHADHEARDLEGENDSOFANEEDLEFINEENOUGHTOSPLITAHAIRORPIERCEGLASSATLASTAVIENNESEANATOMISTSAIDHESAWSUCHANINSTRUMENTUSEDATASURGICALDEMONSTRATIONINBERNIWROTETOHISADDRESSNOANSWERCAMEIWROTEAGAIN",
-    notes: "The search in Bern: Viennese anatomist recalls the ultra-fine needle used in surgical demonstrations."
+  "K3": {
+    "id": "K3",
+    "title": "K3 — Howard Carter's Tomb",
+    "length": 337,
+    "status": "INCOMPLETE REFERENCE",
+    "category": "CIA Sculpture",
+    "mechanism": "Columnar Transposition (Width 7 & 4)",
+    "key": "KRYPTOS / CARTER",
+    "ciphertext": "ENDYAHROHNLSRHEOCPTEOIBIDYSHNAIACHTNREYULDSLLSLLNOHSNOSMRWXMNETPRNGATIHNRARPESLNNELEBLRMIHRSETOHO...[truncated]",
+    "plaintext": "SLOWLY DESPARATLY SLOWLY THE REMAINS OF PASSAGE DEBRIS THAT ENCUMBERED THE LOWER PART OF THE DOORWAY WAS REMOVED WITH TREMBLING HANDS I MADE A TINY BREACH IN THE UPPER LEFT HAND CORNER AND THEN WIDENING THE HOLE A LITTLE I INSERTED THE CANDLE AND PEERED IN THE HOT AIR ESCAPING FROM THE CHAMBER CAUSED THE FLAME TO FLICKER BUT PRESENTLY DETAILS OF THE ROOM WITHIN EMERGED FROM THE MIST X CAN YOU SEE ANYTHING Q",
+    "notes": "Legacy incomplete excerpt, not a complete published transcription. Do not use it to verify a proposed solution. Paste an authoritative complete transcription into Research Mode as custom input.",
+    "reference_complete": false
   },
-  PK4: {
-    id: "PK4",
-    title: "PK4 — Two Years In",
-    length: 224,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk4",
-    mechanism: "Columnar Transposition T(8) + Quagmire III Q(5) + Q(9)",
-    key: "UNDERLAY + OCHRE + VERDIGRIS",
-    ciphertext: "YOVISYUAFKUQNRJQLZTAZTMQOUKELJKCYUWIDSPSWRJRUEZNIFPUMUHQFFVBGOBEPWNTZGKVUTOVFSADUJUAYGWKQYOGNKHZVQMEWHSJGJFOBPHXKAPEXPWRJTSPSIJLCSXYTLDFBNZNPUAZNBZPKRFCUZDDZHZULZVPVWCXSIUVSCCFATGSJPNIGCJVTMUPTCGRTOFRXWCYKOMXOJKCECRUCKBDCIYJ",
-    plaintext: "TWOYEARSINTHENEEDLESTRAILLEDMETOACRAFTSMANNAMEDTHEWHITESMITHONTHEROADTOHISALPINEWORKSHOPIREREADHISPERFUNCTORYLETTERSHEMETMEATTHEGATESANDLEDMETOASTONEBARNSTACKEDWITHWINTERFODDERONEOFHISNEEDLESISHIDDENINTHEBARNIHAVEBEGUNTOWORK",
-    notes: "The needle's trail reaches the Whitesmith's Alpine workshop; the search moves to a stone barn."
-  },
-  PK5: {
-    id: "PK5",
-    title: "PK5 — Fourteen Days in the Barn",
-    length: 272,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk5",
-    mechanism: "Columnar Transposition T(8) + Quagmire III Q(224)",
-    key: "TWOYEARS (T8) + the entire PK4 plaintext (Q224)",
-    ciphertext: "IJQUVJJINKWMJBNJHKZZMTVTUBFHXZJIUHOVONZNXKFUALEMYWTNNNILTRNVSXIXIQCLOSFZVZGTHQKZFJJHJMJTSEPAMKNMTGPVFWSWSBSIHOJWNFXDIJPJNOVBWWXJYUVVAFTIDZISJNCIGHXKLNFEQRDVYIXUXQIZFNXAKYXIUEVGRBMHWRFDZSMMDPMKIZNUQUJNXVZTGHCNAUVIYZCLRAVMJKAOIBOPZTJUPACSTFFLERTGBFFNCYTAVIRXXYOXHCDWHWWKAMQO",
-    plaintext: "FOURTEENDAYSINTHEBARNIWORKEDINTHEMANNEROFANARCHIVISTLIFTINGEACHBALEONTOACLOTHANDEXAMININGTHESTRAWSINROWSTHEWHITESMITHBROUGHTFOODANDWATERBUTNOCOUNSELTHISMORNINGIFELTTHENEEDLEPRICKMYFINGERSOFINETHATITDREWNOBLOODICARRIEDITTOTHEWHITESMITHANDHETOOKITFROMMEANDOPENEDTHEINNERDOOR",
-    notes: "Fourteen days of bale-lifting end with the needle pricking a finger; the Whitesmith opens the inner door."
-  },
-  PK6: {
-    id: "PK6",
-    title: "PK6 — The Whitesmith's Workshop",
-    length: 315,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk6",
-    mechanism: "Double Columnar Transposition (9x35, 9x35) + Quagmire III (p6)",
-    key: "PORTAL (Period 6); Col 1: [1, 3, 0, 4, 8, 2, 6, 7, 5]; Col 2: [4, 2, 8, 1, 6, 7, 0, 3, 5]",
-    ciphertext: "BXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVRBXFIVOAJFNMLKEVEHDFJQCMVLMGNVOHCJNBOAEVR",
-    plaintext: "THEWHITESMITHSWORKSHOPISFILLEDWITHTHEOLDTOOLSOFHISTRADEMYEYESAREDRAWNTOTHEGUTTERALONGTHEWALLWHICHISSTREWNWITHEXQUISITENEEDLESTHEWHITESMITHSAYSHEMAKESONEEVERYDAYANDLOSTCOUNTLONGAGOIASKWHATHEDOESWITHTHEMANDHESAYSTHEYAREONLYTHERESIDUEOFHISPRACTICEHETELLSMETHATIFISTUDYUNDERHIMFORTENYEARSHEWILLLETMETAKEONEOFMYOWNMAKING",
-    notes: "The master whitesmith: 'They are only the residue of my practice... study for ten years to make your own.'"
-  },
-  PK7: {
-    id: "PK7",
-    title: "PK7 — Three Weeks In",
-    length: 279,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk7",
-    mechanism: "Quagmire III Q(6) + Hill Cipher 3x3 (KRYPTOS alphabet)",
-    key: "ANNEAL (Q6) + ALCHEMIST (Hill 3x3)",
-    ciphertext: "FNRHTKRHSEDEJMBOWBDSCSDDXLICXULMBYQXWTGUIVNDYZBEQLVHFFFIDAKDCCJKWGOOUESCYELYMRAKIUJCUSEAXUQTYKOBVYDYMRBYWOTQEESCQSMDYDQJNPSWRSUOFMFJDYXSHCXNHVJVBYMZOZOATHTEOVLOQWZITHTEAFMKGLASTBZRDMFRJPKWJOXZXPJCBOVAZEPKAEJPPSIUJODXTXERWTLTTYMRENBJGTNMLBDJMYJDDLRCXCQCHYMJMHBEOLXEUFNJKBPRSHTEYXB",
-    plaintext: "THREEWEEKSINWERISEBEFORETHESUNANDEACHNEEDLEISDONEBYNOONTHEWHITESMITHSHOWSMEHISTECHNIQUEFORPURIFYINGHISMETALBEFOREDRAWINGITINTOAFINEWIREHEHASMEREPEATTHESAMESTEPFOURTIMESWITHSLIGHTVARIATIONSSTILLMYHANDFALTERSIAMPATIENTBUTIKNOWTHISISNOTMYCALLINGIHAVEMADEPEACEWITHITANDWILLGOHOMESOON",
-    notes: "Rise before the sun; purify the metal and draw the wire. The apprentice accepts this is not his calling."
-  },
-  PK8: {
-    id: "PK8",
-    title: "PK8 — Leaving the Whitesmith",
-    length: 153,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk8",
-    mechanism: "Four sequential Quagmire III layers over the KRYPTOS alphabet",
-    key: "METE → METER → METIER → MASTERY (periods 4, 5, 6, and 7)",
-    ciphertext: "COPVEJJVSVURTVIPYOTPLHGBTMAUCCPESIWIGZBWSJPKTRPUEKQFIFCLHMXTHIMHWOYIGURBOMPARCVXVKBDDVBVHDRHGCVNWWVLBMYWMWHICFIXZWBVZYCQGNOGJGUMLNPUTHQCXNWPQZOIRJZGSWVPY",
-    plaintext: "ILEAVEATMIDNIGHTBEFOREGOINGIPICKUPONENEEDLEFROMTHEGUTTERIAMGRATEFULTOMYTEACHERBUTTHEARCHIVEISMYTRUECALLINGANDTHEKNOTAWAITSILEAVETHEWHITESMITHASHORTLETTER",
-    method: "Verification: decrypt in reverse order (MASTERY, METIER, METER, METE), or encrypt in the displayed order; both reproduce all 153 letters exactly. Retrospective ciphertext-only recovery: enumerate dictionary insertion ladders Q4 → Q5 → Q6, fit the remaining period-7 wheel independently by monogram likelihood, then rank complete decryptions with English quadgrams. The winning chain is METE → METER → METIER, and the fitted Q7 wheel spells MASTERY.",
-    verification: "SHA-256(plaintext): 4c144cd2bd54b4cfac0c493d21a3a52d635844017070e19662b5f9ab9c447e7c",
-    notes: "Public PK8 solution, independently reproduced locally by kryptos/verify_pk8_solution.py. Source implementation: TTFH/KRYPTOS commit 3d60736f."
-  },
-  PK9: {
-    id: "PK9",
-    title: "PK9 — The Sealed Testament",
-    length: 144,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk9",
-    mechanism: "Quagmire III over the KRYPTOS alphabet, followed by Spiral(12), followed by complete Columnar Transposition T(8)",
-    key: "CLEPSYDRA (Q3) → Spiral(12) → BEAMWORK (T8)",
-    ciphertext: "KSYAWFEYYOISZGEUFBLYATAIBYFAQBQYYVDWJKLJXMYIEPIFVHPQNHZGSUHUUDXLEHRHUMALHEGLHXSJMUXGNUIVBXGUJHZRZGUSVHMLSCTSUQXHSUMQQIFUQGKHJGUQGLHDKEWSKAMHIJXD",
-    plaintext: "ISPENTTHEPASTMONTHWITHTHENEEDLEANDKNOTANDATLASTPELLEGRINSFINALMESSAGEHASBEENREVEALEDTOMEIWILLNOWSEALITFORYOUUNDEREVERYCIPHERIUSEDINTHISTESTAMENT",
-    frontier: "Exact 144/144 forward encryption and reverse decryption now reproduce the official PK9 ciphertext. The recovered plaintext is the narrator's sealed testament to the Whitesmith.",
-    method: "Independent verifier: kryptos/verify_pk9_solution.py. Encode Q3(CLEPSYDRA) → Spiral(12) → T(BEAMWORK); decode in reverse. The Q3 operation uses the KRYPTOS keyed alphabet for both top and replacement alphabets.",
-    notes: "Recovered construction independently reimplemented from TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK9.h. Plaintext SHA-256: c8e1b8907795acf780cbab42ec23191051dfb2fdccbfb1adbe875fe8dc03f1d8."
-  },
-  PK10: {
-    id: "PK10",
-    title: "PK10 — The Archive's Successor",
-    length: 504,
-    status: "SOLVED",
-    category: "Paradigm Kryptos",
-    challengeUrl: "https://paradigm.xyz/kryptos-ctf/pk10",
-    mechanism: "Cumulative Quagmire III, columnar, Hill, spiral, and columnar layers over the KRYPTOS alphabet",
-    key: "PROVENANCE → MARGINS → ORDINATE → PENTIMENTO → UNDERLAY → OCHRE → VERDIGRIS → TWOYEARS → PK4 plaintext → HANDIWORK → SMITHWORK → PORTAL → ANNEAL → ALCHEMIST → METE → METER → METIER → MASTERY → CLEPSYDRA → Spiral(12) → BEAMWORK",
-    ciphertext: "UBINFYJSFQXQVRLJJAJDGBXIWKDMAREZTGSHQWRXCHEPCLYSDNGYRRBTCVOZJYVLYWREJTCDOYVEYCJJVZKRMKTRPGVHRWMJSRCSHXZMJEVQKJYJJAYZKDFQBGRSWXATJMEXKFXAXKSIZXOERFESNVCGCNRHEOBCNCBUPXTJJRCIMDMRUVZWRDRRFXAPGPIGSPLILFIZSTDZYOVQGGDFUFZPUOJPJVWREUVRQIYPCEHGYUZUKWTFXELUNOKBANZFTFRMXZSXXQSBGPCWGXPFSCANSVUYLMTZIRCCCJJPBQAEPWVCDIMLOPOXQEGJKVQIVHEFAPQMVCYSQAFKCTYTPAOOJZCWIPGDPAFTINBFFHVXYEQXCEIDJJOUABBAHSWKHGMLJBXDSQEFBBDLTLJPLZPIPPTRGDRZIZPUPYJODOCSOYCZZWTKYWMBQTFMFEQZWVPQYLJTMEYKYBNOPEPUMHCFJSLFWOISWLKFFABTYFQDTEQBDELIEOZQ",
-    plaintext: "IHAVENOTREADTHESTRANDTHENEEDLEWASASFINEASPROMISEDBUTMYHANDWASNOTFITTOWIELDITANDTHEKNOTREFUSEDTOYIELDPELLEGRINANDTHEWHITESMITHTRIEDTOTEACHMEBUTWHENTHETESTCAMEIFAILEDTHEMBOTHHADISTAYEDWITHTHEWHITESMITHANDLEARNEDTHEDISCIPLINEHETAUGHTTHOSEYEARSWOULDHAVESHAPEDMYHANDSINTOINSTRUMENTSWORTHYOFTHENEEDLEANDTHEKNOTANDATLASTGIVENMETHELOCATIONOFTHEARCHIVEPELLEGRINHIDITFORONLYSUCHASUCCESSORTHROUGHPATIENCEDISCIPLINEANDTRUECRAFTTOYOUWHOHAVEUNRAVELEDMYMESSAGESYOURHANDISTHENEEDLEIHAVEFINALLYFORGEDANDILEAVETHEKNOTTOYOU",
-    method: "Exact 504/504 encode and decode round-trip in kryptos/verify_pk10_solution.py. Q3 uses the KRYPTOS keyed alphabet; the complete cumulative pipeline is listed in the verifier.",
-    notes: "Recovered construction independently reimplemented from TTFH/KRYPTOS commit 496976ebe008f9a5eaef8c52bb8ad06c3a4917f5, src/ctf/PK10.h. Plaintext SHA-256: a2db145f258ec21fbeab7afb4031e624d3184b93a3eb834d54026ba9b792e1d9."
-  },
-  K1: {
-    id: "K1",
-    title: "K1 — Palimpsest",
-    length: 63,
-    status: "SOLVED",
-    category: "CIA Sculpture",
-    mechanism: "Vigenère on Keyed Kryptos Alphabet",
-    key: "PALIMPSEST / KRYPTOS",
-    ciphertext: "EMUFPHZLRFAXYUSDJKZLDKRNSHGXAALVTJSGQAKFGKFCNVWWVAGKZERKVROZALJAYUMVDRYHMLKJUSYWUGAZGKYK",
-    plaintext: "BETWEEN SUBTLE SHADING AND THE ABSENCE OF LIGHT LIES THE NUANCE OF IQLUSION",
-    notes: "Contains intentional misspelling IQLUSION."
-  },
-  K2: {
-    id: "K2",
-    title: "K2 — Abscissa",
-    length: 367,
-    status: "SOLVED",
-    category: "CIA Sculpture",
-    mechanism: "Vigenère on Keyed Kryptos Alphabet",
-    key: "ABSCISSA / KRYPTOS",
-    ciphertext: "VFPJUDEEHZWETZYVGWHKKQETGFQJNCEGGWHKK?DQMCPFQZDQDuplicate...[truncated]",
-    plaintext: "IT WAS TOTALLY INVISIBLE HOWS THAT POSSIBLE THEY USED THE EARTHS MAGNETIC FIELD X THE INFORMATION WAS GATHERED AND TRANSMITTED UNDERGRUUND TO AN UNKNOWN LOCATION X DOES LANGLEY KNOW ABOUT THIS THEY SHOULD ITS BURIED OUT THERE SOMEWHERE X WHO KNOWS THE EXACT LOCATION ONLY WW THIS WAS HIS LAST MESSAGE X THIRTY EIGHT DEGREES FIFTY SEVEN MINUTES SIX POINT FIVE SECONDS NORTH SEVENTY SEVEN DEGREES EIGHT MINUTES FORTY FOUR SECONDS WEST LAYER TWO",
-    notes: "Contains UNDERGRUUND, ID BY BROWSING, and exact GPS coordinates: 38° 57' 6.5'' N, 77° 8' 44'' W."
-  },
-  K3: {
-    id: "K3",
-    title: "K3 — Howard Carter's Tomb",
-    length: 337,
-    status: "SOLVED",
-    category: "CIA Sculpture",
-    mechanism: "Columnar Transposition (Width 7 & 4)",
-    key: "KRYPTOS / CARTER",
-    ciphertext: "ENDYAHROHNLSRHEOCPTEOIBIDYSHNAIACHTNREYULDSLLSLLNOHSNOSMRWXMNETPRNGATIHNRARPESLNNELEBLRMIHRSETOHO...[truncated]",
-    plaintext: "SLOWLY DESPARATLY SLOWLY THE REMAINS OF PASSAGE DEBRIS THAT ENCUMBERED THE LOWER PART OF THE DOORWAY WAS REMOVED WITH TREMBLING HANDS I MADE A TINY BREACH IN THE UPPER LEFT HAND CORNER AND THEN WIDENING THE HOLE A LITTLE I INSERTED THE CANDLE AND PEERED IN THE HOT AIR ESCAPING FROM THE CHAMBER CAUSED THE FLAME TO FLICKER BUT PRESENTLY DETAILS OF THE ROOM WITHIN EMERGED FROM THE MIST X CAN YOU SEE ANYTHING Q",
-    notes: "Contains DESPARATLY and closing question CAN YOU SEE ANYTHING Q."
-  },
-  K4: {
-    id: "K4",
-    title: "K4 — The Unsolved 97 Letters",
-    length: 97,
-    status: "UNSOLVED",
-    category: "CIA Sculpture",
-    mechanism: "Aperiodic Physical Masking on Tableau / Hand Stencil",
-    key: "Confirmed Anchors: EAST, NORTHEAST, BERLIN, CLOCK",
-    ciphertext: "OBKRUOXOGHULBSOLIFBBWFLRVQQPRNGKSSOTWTQSJQSSEKZZWATJKLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR",
-    plaintext: "??...[EAST]...[NORTHEAST]...[BERLIN]...[CLOCK]...??",
-    notes: "Artist-confirmed anchors: EAST (22-25), NORTHEAST (26-34), BERLIN (64-69), CLOCK (70-74). Two self-encryption fixed points at pos 33 (S->S) and pos 74 (K->K). Quagmire I-IV, autokeys, 2D turning grilles, and straddling checkerboards are mathematically refuted. Plaintext archive sealed in Smithsonian until 2075; verifiable via Paradigm hash oracle."
+  "K4": {
+    "id": "K4",
+    "title": "K4 — 97-letter research ciphertext",
+    "length": 97,
+    "status": "RESEARCH",
+    "category": "CIA Sculpture",
+    "mechanism": "Unknown; competing methods are research hypotheses",
+    "key": "Confirmed Anchors: EAST, NORTHEAST, BERLIN, CLOCK",
+    "ciphertext": "OBKRUOXOGHULBSOLIFBBWFLRVQQPRNGKSSOTWTQSJQSSEKZZWATJKLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR",
+    "plaintext": "",
+    "notes": "Clue placements recorded in this repository (one-based): EAST 22–25, NORTHEAST 26–34, BERLIN 64–69, CLOCK 70–74. Clues are constraints, not a full recovered plaintext or a cipher-family proof. No claim about current private recovery, custody or disclosure is made here."
   }
-};
+});

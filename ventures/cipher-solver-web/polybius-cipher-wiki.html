@@ -25,7 +25,7 @@
       <span>buttcrack<span class="brand-dot">.</span></span>
     </a>
     <a class="wiki-wordmark" href="cipher-wiki.html">Cipher&nbsp;Wiki</a>
-    <nav class="tools"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="history-of-codebreaking.html">History</a><a href="windows-app.html">Windows app</a><a href="downloads.html">Puzzle books</a><a href="book.html">Kryptos book</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a><a href="kryptos/">Kryptos</a></nav>
+    <nav class="tools" aria-label="Site navigation"><a href="index.html">Solver</a><a href="cipher-wiki.html">Cipher wiki</a><a href="kryptos/">Kryptos</a><details class="more-tools"><summary>More tools</summary><div><a href="history-of-codebreaking.html">History</a><a href="windows-app.html">Windows app</a><a href="downloads.html">Puzzle books</a><a href="book.html">Kryptos book</a><a href="caesar-cipher-decoder.html">Caesar</a><a href="vigenere-cipher-solver.html">Vigenère</a><a href="substitution-cipher-solver.html">Substitution</a><a href="morse-code-translator.html">Morse</a><a href="ctf-crypto-solver.html">CTF crypto</a></div></details></nav>
   </div>
 </header>
 
@@ -128,6 +128,7 @@
           <span class="wiki-tab is-here" aria-current="page">Article</span>
           <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
         </nav>
+        <p class="wiki-try"><a class="go" href="index.html?cipher=polybius&amp;example=polybius#solver">Try this cipher →</a> <span>Load its worked example and preselect its method.</span></p>
         <div class="study-controls" aria-label="Reading controls">
           <span>Reading tools:</span>
           <button type="button" data-study="larger">Larger text</button>
@@ -180,30 +181,48 @@
 
       <section class="wiki-solver" id="try-the-solver" aria-label="Cipher solver">
         <h2 class="wiki-solver-title">Try it live — break a real puzzle</h2>
-        <section class="solver-shell" aria-label="Cipher solver">
-    <div class="solver-heading">
-      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
-      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
-    </div>
+        <section class="solver-shell" id="solver" aria-label="Cipher solver">
+    <div class="solver-heading"><div><p class="eyebrow">Private by design</p><h2>Paste a puzzle. Explore a reading.</h2></div><span class="local-badge">Runs on this device</span></div>
     <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
-    <textarea id="ciphertext" spellcheck="false"
-      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-    <div class="controls">
-      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
-      <button class="ghost" id="clear">Clear</button>
-      <span class="samples"><span class="sample-label">Try a sample</span><button data-sample="caesar">Caesar</button><button data-sample="vigenere">Vigenère</button><button data-sample="beaufort">Beaufort</button><button data-sample="porta">Porta</button><button data-sample="autokey">Autokey</button><button data-sample="substitution">Substitution</button><button data-sample="layered">Layered</button><button data-sample="morse">Morse</button><button data-sample="pk1">PK1 verified</button></span>
-    </div>
-    <details class="solver-limits">
-      <summary>What this browser solver can—and cannot—do</summary>
-      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, KRYPTOS-alphabet Quagmire III, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution. It also recognizes the ten published Paradigm Kryptos PK1–PK10 ciphertexts by exact normalized equality and labels those results separately as verified corpus matches.</p>
-      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. A high language-model score is a lead to verify with the method, key, and source context—not a guarantee. The PK label is only emitted for an exact canonical-corpus match, never merely for similar length or style.</p>
-      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    <textarea id="ciphertext" spellcheck="false" placeholder="Paste ciphertext — you don't need to know the cipher."></textarea>
+    <p id="example-notice" class="privacy" hidden></p>
+    <div class="controls solve-actions"><button class="go" id="go" type="button">Solve cipher <span aria-hidden="true">→</span></button><button class="ghost" id="stop" type="button" hidden>Stop search</button></div>
+    <p id="solver-status" role="status" aria-live="polite" class="privacy">Paste text and press Solve. Ctrl / ⌘ + Enter works too.</p>
+    <details id="advanced-settings" class="solver-advanced"><summary>Advanced settings &amp; examples</summary>
+      <button id="show-web-improvements" class="ghost" type="button">What changed?</button>
+      <div class="advanced-grid">
+        <label for="solver-method">Method to test</label><select id="solver-method"><option value="auto">Auto-detect (browser-supported methods)</option></select>
+        <label for="solver-key">Supplied key (optional)</label><input id="solver-key" type="text" maxlength="512" autocomplete="off" spellcheck="false" placeholder="Leave blank for key recovery where supported">
+        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3" selected>Up to 3 layers</option></select>
+      </div>
+      <label class="compare-option" for="solver-compare"><input id="solver-compare" type="checkbox"> Explore more cipher families (slower; not exhaustive)</label>
+      <p class="privacy" id="method-help">Auto-detect ranks English-looking candidates, not probabilities. A selected method never silently falls back to a different cipher.</p>
+      <div class="controls"><label for="sample-select">Example</label><select id="sample-select"><option value="caesar">Caesar</option><option value="vigenere">Vigenère</option><option value="substitution">Substitution</option><option value="layered">Layered encoding</option><option value="morse">Morse</option><option value="pk1">PK1 corpus reference</option></select><button class="ghost" id="load-sample" type="button">Load example</button><button class="ghost" id="clear" type="button">Clear current input</button></div>
     </details>
-    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+    <details class="solver-limits"><summary>Limits &amp; verification boundaries</summary>
+      <p>The browser tries selected classical methods, English statistical scoring and encoding layers. It also recognizes PK1–PK10 by exact normalized corpus equality. It cannot break properly implemented AES/RSA or prove an intended plaintext by a high score. Many wiki methods are only reference demonstrations here; their key-recovery attacks require the full version.</p>
+      <p>A supplied-key reading is arithmetic under your assumption, not independent confirmation. A worked-example reference is labelled as a build-time lookup, never a newly recovered answer. Rankings show actual returned candidates from a bounded search, which may contain fewer than five.</p>
+    </details>
+    <p class="privacy">No analysis upload or account. Nothing is saved unless you choose Save below. This hosted page includes third-party advertising; use a locally served/offline copy for sensitive work.</p>
+    <dialog id="web-improvements" aria-labelledby="web-improvements-title">
+      <h2 id="web-improvements-title">Solver interface improvements</h2>
+      <ul><li>Mobile-first input and solve action, with compact navigation.</li><li>Simple by default; settings, candidate rankings, statistics and manual controls expand on demand.</li><li>Every cipher article has a Try this cipher action with its real method and full worked example.</li><li>Optional named investigations let you save, compare and restore attempts on your own device.</li><li>Explicit live-operation/reference labels, snapshot boundaries and no automatic text saving.</li></ul>
+      <button id="close-web-improvements" class="ghost" type="button" autofocus>Back to the solver</button>
+    </dialog>
   </section>
       </section>
 
-      <div id="output" aria-live="polite"></div>
+      <div id="output" tabindex="-1" aria-live="polite"></div>
+      <details class="local-history card" id="local-history"><summary>Optional local investigations — save, compare &amp; restore</summary>
+      <p>Explicit device-only storage, no account or cloud sync. Saved snapshots contain ciphertext, plaintext and keys; browser storage is not encrypted. Deleting browser data removes them. Restore does not run a new search or independently verify an old result.</p>
+      <label for="investigation-select">Investigation</label><select id="investigation-select"><option value="">New investigation</option></select>
+      <label for="investigation-name">Investigation name</label><input id="investigation-name" type="text" maxlength="100" placeholder="e.g. Archive letter, first pass">
+      <div class="controls"><button id="save-attempt" class="ghost" type="button" disabled>Save current result</button><button id="delete-investigation" class="ghost" type="button" disabled>Delete investigation</button><button id="export-investigations" class="ghost" type="button">Export local backup</button><button id="export-current-attempt" class="ghost" type="button" disabled>Export current attempt</button><label for="import-investigations">Import local backup <input id="import-investigations" type="file" accept=".json,application/json"></label><button id="clear-investigations" class="ghost" type="button">Delete all saved investigations</button></div>
+      <p id="history-status" class="privacy" role="status" aria-live="polite">No automatic text or result saving.</p>
+      <div id="investigation-attempts"></div>
+      <div class="history-compare"><label for="attempt-a">Attempt A</label><select id="attempt-a"></select><label for="attempt-b">Attempt B</label><select id="attempt-b"></select><button id="compare-attempts" class="ghost" type="button">Compare attempts</button></div>
+      <div id="attempt-comparison"></div>
+    </details>
 
       
     </div>
@@ -228,7 +247,10 @@
 
 <script src="model.js"></script>
 <script src="paradigm.js"></script>
+<script src="examples.js"></script>
 <script src="app.js"></script>
+<script src="investigation-store.js"></script>
+<script src="sessions.js"></script>
 <script src="wiki-index.js"></script>
 <script src="wiki.js"></script>
 </body>

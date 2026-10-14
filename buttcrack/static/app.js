@@ -21,6 +21,7 @@ const state = {
   poll: null,
   renderedLines: 0,
   lastReport: null,
+  lastCiphertext: "",
   showRaw: false,
   operation: "encrypt",
 };
@@ -124,6 +125,7 @@ const OPTION_IDS = [
   "depth",
   "language",
   "exhaustive",
+  "compare-candidates",
   "hint-key",
   "hint-len",
   "hint-width",
@@ -379,6 +381,9 @@ function activateTab(name) {
 /* -------------------------------------------------------------------- break */
 
 function wireBreak() {
+  $("candidate-count").addEventListener("change", () => {
+    if (state.lastReport) renderAlternatives(state.lastReport.candidates || [], state.lastReport.candidate_comparison || {});
+  });
   $("crack").addEventListener("click", () => startCrack());
   $("cancel").addEventListener("click", () => cancelJob());
   $("identify").addEventListener("click", () => runIdentify());
@@ -450,6 +455,8 @@ function collectHints() {
 }
 
 function resetResult() {
+  window.dispatchEvent(new CustomEvent("buttcrack-workspace-reset"));
+  state.lastCiphertext = "";
   stopPolling();
   $("result-card").hidden = true;
   $("progress-card").hidden = true;
@@ -489,6 +496,7 @@ async function startCrack() {
   }
   hideError();
   resetResult();
+  state.lastCiphertext = text;
   saveSession();
   $("progress-card").hidden = false;
   $("progress-state").textContent = "starting…";
@@ -503,6 +511,8 @@ async function startCrack() {
     workers: parseInt($("workers").value, 10),
     depth: parseInt($("depth").value, 10),
     exhaustive: $("exhaustive").checked,
+    compare: $("compare-candidates").checked,
+    candidates: 10,
     language: $("language").value,
     hints: collectHints(),
   };
@@ -596,21 +606,27 @@ function renderReport(report) {
   const confidence = report.confidence || 0;
 
   const verdict = $("verdict");
-  verdict.textContent = report.solved ? "solved" : confidence >= 0.35 ? "probable" : "no answer";
-  verdict.className = `verdict ${report.solved ? "solved" : confidence >= 0.35 ? "probable" : "failed"}`;
+  const corpusVerified = best.verification && best.verification.status === "corpus_match";
+  verdict.textContent = corpusVerified ? "canonical corpus match" : !report.best ? "no candidate" : confidence >= 0.62 ? "statistically strong — not proven" : confidence >= 0.35 ? "plausible — not proven" : "weak statistical evidence";
+  verdict.className = `verdict ${corpusVerified ? "solved" : confidence >= 0.35 ? "probable" : "failed"}`;
+  $("result-evidence-warning").textContent = best.verification ? best.verification.detail : "Language statistics do not establish the correct key, cipher or intended plaintext. No independent verification was reported.";
 
   const bar = $("confidence-bar");
   bar.style.width = `${Math.max(2, confidence * 100).toFixed(1)}%`;
-  bar.className = `meter-fill ${report.solved ? "good" : confidence >= 0.35 ? "" : "bad"}`;
-  $("confidence-value").textContent = confidence.toFixed(3);
+  bar.className = `meter-fill ${corpusVerified ? "good" : confidence >= 0.35 ? "" : "bad"}`;
+  $("confidence-value").textContent = `Rank score ${confidence.toFixed(3)}`;
+  $("confidence-value").title = "Heuristic rank score, not the probability this plaintext is correct";
   $("elapsed").textContent = `${report.elapsed.toFixed(2)}s of ${report.budget}s · ${report.workers} worker${report.workers === 1 ? "" : "s"}`;
 
   renderPlaintext(report);
   renderMeta(report, best, notes);
   renderHypotheses(report.hypotheses || [], report.stats || {});
   renderStats(report.stats || {});
-  renderAlternatives(report.candidates || []);
+  renderAlternatives(report.candidates || [], report.candidate_comparison || {});
   renderAttacks(report.attacks || []);
+  window.dispatchEvent(new CustomEvent("buttcrack-report", {detail: {
+    report, ciphertext: state.lastCiphertext || $("input").value,
+  }}));
 }
 
 function renderPlaintext(report) {
@@ -631,12 +647,13 @@ function renderMeta(report, best, notes) {
   clear(meta);
   const rows = [
     ["decode chain", notes.decode_chain || best.cipher || "none", true],
+    ["family", best.family || "", false],
     ["cipher", best.cipher === "none" ? "plain / encoding layer" : best.cipher || "—", false],
     ["key", best.key || "—", true],
     ["also known as", notes.also_known_as || "", false],
     ["language note", notes.language || "", false],
     ["method", notes.method || "", false],
-    ["verification", notes.verification_status || "", false],
+    ["verification", best.verification ? best.verification.label : "Not verified", false],
     ["corpus record", notes.corpus_match || "", true],
     ["construction", notes.mechanism || "", false],
     ["evidence", notes.evidence || "", false],
@@ -711,28 +728,72 @@ function renderHypotheses(hypotheses, stats) {
   if (stats && Object.keys(stats).length) renderStats(stats);
 }
 
-function renderAlternatives(candidates) {
+function renderAlternatives(candidates, comparison = {}) {
   const body = $("alternatives");
   clear(body);
-  const rest = candidates.slice(1);
-  $("alternatives-section").hidden = rest.length === 0;
-  rest.forEach((candidate, index) => {
-    const row = make("tr");
-    row.appendChild(make("td", "num", index + 2));
-    const conf = make("td", "num");
-    const bar = make("span", "bar");
-    bar.style.width = `${Math.max(2, candidate.confidence * 60).toFixed(0)}px`;
-    conf.appendChild(bar);
-    conf.appendChild(document.createTextNode(candidate.confidence.toFixed(3)));
-    row.appendChild(conf);
-    row.appendChild(make("td", "mono", candidate.steps && candidate.steps.length ? `${candidate.steps.join(" → ")} → ${candidate.cipher}` : candidate.cipher));
-    row.appendChild(make("td", "mono", candidate.key || "—"));
-    const text = make("td");
-    const clip = make("span", "clip", (candidate.plaintext || "").slice(0, 90));
-    clip.title = (candidate.plaintext || "").slice(0, 400);
-    text.appendChild(clip);
-    row.appendChild(text);
-    body.appendChild(row);
+  const limit = parseInt($("candidate-count").value, 10) || 10;
+  const shown = candidates.slice(0, limit);
+  $("alternatives-section").hidden = candidates.length === 0;
+  const close = comparison.close_ranks || candidates.slice(1).flatMap((candidate, index) =>
+    Math.abs((candidates[0].confidence || 0) - (candidate.confidence || 0)) <= 0.03 ? [index + 2] : []);
+  $("candidate-summary").textContent = `Showing ${shown.length} of ${candidates.length} returned candidates.`
+    + (candidates.length < 5 ? " Fewer than five distinct readings were returned; no additional answers are invented." : "")
+    + (close.length ? ` Close to the leader: ${close.map((rank) => `#${rank}`).join(", ")} (rank-score distance ≤ ${comparison.close_score_gap ?? 0.03}).` : " No returned competitor is within 0.03 rank-score points of the leader.")
+    + (comparison.corpus_shortcut ? " This was an exact canonical-corpus lookup, not a competing-key search." : comparison.search_mode === "fast" ? " Fast mode may stop at the first high language score." : " Comparison mode can continue past high scores within the selected budget.")
+    + " These are results of a bounded search, not an exhaustive list of possible plaintexts.";
+  shown.forEach((candidate, index) => {
+    const rank = candidate.ranking || {};
+    const score = candidate.score || {};
+    const verification = candidate.verification || {label: "Not verified", status: "not_checked", detail: "No verification check was reported."};
+    const card = make("article", "candidate-card");
+    card.setAttribute("aria-label", `Candidate ${index + 1}: ${candidate.cipher}`);
+    const heading = make("div", "card-head");
+    heading.appendChild(make("h4", null, `#${index + 1} · ${candidate.cipher_title || candidate.cipher || "unclassified"}`));
+    const badge = make("span", `candidate-badge ${verification.status === "corpus_match" ? "verified" : "unproven"}`, verification.label);
+    heading.appendChild(badge);
+    card.appendChild(heading);
+    const analyzeButton = make("button", "ghost small", "Analyze this candidate");
+    analyzeButton.type = "button";
+    analyzeButton.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("buttcrack-analyze-candidate", {detail: {index}}));
+      $("analysis-workspace").scrollIntoView({behavior: "smooth", block: "start"});
+    });
+    card.appendChild(analyzeButton);
+    card.appendChild(make("p", "hint", `Family: ${candidate.family || (state.byName.get(candidate.cipher) || {}).family || "unclassified"} · Decode chain: ${[...(candidate.steps || []), ...(candidate.cipher === "none" ? [] : [candidate.cipher])].join(" → ") || "none"}`));
+    card.appendChild(make("p", "candidate-key", `Recovered / supplied key (${candidate.key_type || "see parameters"}): ${candidate.key || "—"}`));
+    card.appendChild(make("p", "candidate-metrics", `Rank score: ${fmtNumber(candidate.confidence, 4)} · Language plausibility: ${fmtNumber((candidate.statistical_plausibility || {}).language_score ?? score.confidence, 4)} · N-gram fitness: ${fmtNumber(candidate.fitness, 4)} · Dictionary coverage (if assessed): ${score.dictionary_assessed === false ? "not assessed" : score.words === undefined ? "—" : (score.words * 100).toFixed(1) + "%"} · Scored sample: ${score.sample_size ?? "—"} characters`));
+    const peers = rank.close_peers || candidates.flatMap((other, j) => j !== index && Math.abs((other.confidence || 0) - (candidate.confidence || 0)) <= 0.03 ? [j + 1] : []);
+    if (peers.length) card.appendChild(make("p", "close-candidates", `Close-score competitors: ${peers.map((n) => `#${n}`).join(", ")}. Similar scores are not proof that any reading is right.`));
+    if (rank.gap_to_leader !== undefined) card.appendChild(make("p", "hint", `Rank-score gap to displayed leader: ${fmtNumber(rank.gap_to_leader, 4)} (a negative gap means attribution/naming changed the presentation order).`));
+    card.appendChild(make("pre", "candidate-plaintext", candidate.plaintext || "(empty reading)"));
+    card.appendChild(make("h5", null, "Why ranked here"));
+    const reasons = make("ul", "candidate-reasons");
+    for (const reason of rank.reasons || ["Ranked by rounded language/evidence score, then n-gram fitness, opening quality, fewer layers, key simplicity and equivalent-cipher preference. A high rank is not verification."]) reasons.appendChild(make("li", null, reason));
+    card.appendChild(reasons);
+    card.appendChild(make("p", "candidate-verification", verification.detail));
+    const detail = make("details");
+    detail.appendChild(make("summary", null, "Parameters, word hits and diagnostic evidence"));
+    const diagnostics = make("dl", "meta");
+    for (const [label, value] of [
+      ["parameters", candidate.parameters || {}],
+      ["word hits / recovered segmentation", score.words_found && score.words_found.length ? score.words_found.join(" · ") : "No word hits reported; this model/attack may not use a dictionary."],
+      ["opening-word quality (tie-break)", score.start_quality],
+      ["index of coincidence (diagnostic)", score.ic],
+      ["chi-squared per character (diagnostic)", score.chi_squared],
+      ["segmentation fitness (diagnostic)", score.segmentation],
+      ["round-trip comparison", verification.normalization || verification.round_trip],
+      ["independent verification in this run", verification.independent_verification === true ? "reported" : "not performed"],
+      ["attack notes", candidate.notes || {}],
+    ]) {
+      if (value === undefined || value === null) continue;
+      const row = make("div");
+      row.appendChild(make("dt", null, label));
+      row.appendChild(make("dd", null, fmtKey(value)));
+      diagnostics.appendChild(row);
+    }
+    detail.appendChild(diagnostics);
+    card.appendChild(detail);
+    body.appendChild(card);
   });
 }
 

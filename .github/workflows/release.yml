@@ -30,7 +30,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install package and build tools
-        run: python -m pip install --upgrade pip pyinstaller .
+        run: python -m pip install --upgrade pip pyinstaller ".[modern]"
 
       - name: Unit and offline release checks
         env:

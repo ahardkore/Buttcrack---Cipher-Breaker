@@ -11,8 +11,9 @@ sits inside an encoding (``base64`` -> ``caesar`` -> English).
     >>> r.formatted[:19]                   # case and punctuation come back too
     'Hello, world! This '
 
-Everything runs on the Python standard library; no network access, no external
-services, no dependencies. See :mod:`buttcrack.engine` for the search,
+Solving runs on the Python standard library; no network access, no external
+services, no dependencies. The desktop update check is optional and user-triggered.
+See :mod:`buttcrack.engine` for the search,
 :mod:`buttcrack.detect` for identification, and :mod:`buttcrack.ciphers` for
 the algorithms themselves.
 """
@@ -89,4 +90,4 @@ __all__ = [
     "try_get",
 ]
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

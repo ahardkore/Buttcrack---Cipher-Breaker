@@ -43,6 +43,31 @@ bp = _load("build_pages", VENTURE / "build_pages.py")
 wc = _load("wiki_ciphers_test_module", VENTURE / "wiki_ciphers.py")
 
 
+class TestPublicSolverExperience(unittest.TestCase):
+    def test_simple_shell_advanced_controls_and_optional_history(self):
+        shell = bp.solver_html()
+        self.assertIn('id="solver"', shell)
+        self.assertIn('id="go"', shell)
+        self.assertIn('id="advanced-settings"', shell)
+        self.assertNotIn('<details open', shell)
+        self.assertIn('id="solver-method"', shell)
+        self.assertIn('id="solver-key"', shell)
+        self.assertIn('Nothing is saved unless', shell)
+        self.assertIn('id="save-attempt"', bp.session_html())
+
+    def test_query_links_still_validate_their_real_target_and_fragment(self):
+        bp.check_internal_links({"index.html": '<section id="solver"></section>', "wiki.html": '<a href="index.html?cipher=caesar&amp;example=caesar#solver">Try</a>'})
+        with self.assertRaises(SystemExit):
+            bp.check_internal_links({"index.html": '<section id="solver"></section>', "wiki.html": '<a href="index.html?cipher=caesar#missing">Try</a>'})
+
+    def test_navigation_keeps_primary_destinations_and_folds_secondary_tools(self):
+        markup = bp.nav("index.html")
+        self.assertIn('class="more-tools"', markup)
+        self.assertIn('href="cipher-wiki.html"', markup)
+        self.assertIn('href="kryptos/"', markup)
+        self.assertIn('aria-current="page"', markup)
+
+
 class TestSpecCoversRegistry(unittest.TestCase):
     def test_every_cipher_has_a_spec(self):
         specs = wc.cipher_page_specs()

@@ -256,7 +256,7 @@ function periodicDecrypt(text, key, dec) {
   return out;
 }
 
-function periodic(text, maxLen = 20) {
+function periodic(text, maxLen = 20, selectedMethod = null) {
   const t = lettersOnly(text);
   if (t.length < 20) return null;
   const n = Math.min(t.length, 2000);
@@ -304,6 +304,7 @@ function periodic(text, maxLen = 20) {
   for (const { len, cosets } of admissible) {
     for (let v = 0; v < PERIODIC.length; v++) {
       const variant = PERIODIC[v];
+      if (selectedMethod && variant.name !== selectedMethod) continue;
       const key = [];
       for (const coset of cosets) {
         let bestK = 0, bestScore = -Infinity;
@@ -912,7 +913,7 @@ function xorSingle(bytes) {
 // substitution climb.
 const FAST_ANSWER_CONFIDENCE = 0.58;
 
-function solve(text, depth = 3, chain = []) {
+function solve(text, depth = 3, chain = [], options = {}) {
   // A recovered PK record is proven by exact normalized equality, not by this
   // small browser language model.  Keep this lookup before statistical attacks
   // so an already solved canonical challenge gets its construction evidence,
@@ -920,6 +921,7 @@ function solve(text, depth = 3, chain = []) {
   const known = P.knownParadigmResult && P.knownParadigmResult(text);
   if (known) {
     known.chain = chain.slice();
+    if (options.collect) options.collect([known]);
     return known;
   }
   const results = [];
@@ -945,7 +947,7 @@ function solve(text, depth = 3, chain = []) {
   // mixed-alphabet climb.  Autokey's chain search costs about the same.
   // Do not pay for either when a deterministic attack already explains
   // the input.
-  if (bestConfidence() < FAST_ANSWER_CONFIDENCE) {
+  if (options.compare || bestConfidence() < FAST_ANSWER_CONFIDENCE) {
     push(periodic(text));
     push(quagmire3(text));
     push(autokey(text));
@@ -990,7 +992,7 @@ function solve(text, depth = 3, chain = []) {
   // The mixed-alphabet climber is the expensive last resort.  It cannot improve
   // a convincing direct or decoded answer, and skipping it in those cases keeps
   // the browser responsive for the overwhelmingly common Caesar/base64 inputs.
-  if (lettersOnly(text).length >= 60 && bestConfidence() < FAST_ANSWER_CONFIDENCE) {
+  if (lettersOnly(text).length >= 60 && (options.compare || bestConfidence() < FAST_ANSWER_CONFIDENCE)) {
     push(substitution(text));
   }
 
@@ -1022,6 +1024,14 @@ function solve(text, depth = 3, chain = []) {
   const PRIOR = { substitution: 0.80, railfence: 0.88, affine: 0.95, xor_single: 0.95 };
   for (const r of results) r.ranked = r.confidence * (PRIOR[r.cipher] || 1);
   results.sort((a, b) => b.ranked - a.ranked);
+  if (options.collect) {
+    const seen = new Set();
+    options.collect(results.filter(r => {
+      const signature = JSON.stringify([r.cipher, r.key, r.plaintext, r.chain]);
+      if (seen.has(signature)) return false;
+      seen.add(signature); return true;
+    }).slice(0, 10));
+  }
   return results[0];
 }
 
@@ -1187,5 +1197,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     solve, identify, diagnose, plausibility, score, wordRate, indexOfCoincidence, entropy, quagmire3,
     TENTATIVE_CANDIDATE_SCORE, HIGH_CONFIDENCE_CANDIDATE_SCORE,
+    periodic, PERIODIC, shiftText, caesar, atbash, rot13, affine, trithemius, railfence, xorSingle, autokey, substitution,
+    periodicDecrypt, autokeyDecryptStream, quagmire3Decrypt, DECODERS,
   };
 }

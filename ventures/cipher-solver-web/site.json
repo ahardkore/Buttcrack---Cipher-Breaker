@@ -29,6 +29,19 @@
     "sha256": "4390c4a2c4bab4a021d52a3848e454e618a4cc6d0007f0894a169e48330c1680",
     "signed": false
   },
+  "_desktop_release_notes_note": "Plain-text improvements keyed by installer version. Only the entry matching windows_app.version is published in desktop-version.json and shown in the desktop update dialog. Pending version entries may be prepared before release without announcing an unavailable installer. Maximum eight bullets, 180 characters each; total manifest must fit 4 KB.",
+  "desktop_release_notes": {
+    "1.2.2": [
+      "Added user-triggered update checks and version notifications in the desktop window, Help menu and tray, with no ciphertext sent or automatic downloads/installs.",
+      "Update dialogs now show the published release's improvements and fixes before you choose whether to open update information.",
+      "Added an explicit RSA weakness lab for shared factors, close primes, small private exponents and unpadded low-exponent messages.",
+      "Added reused-keystream analysis with pairwise XOR relationships and clearly labelled crib-derived plaintext hypotheses.",
+      "Added AES block analysis and supplied-key ECB/CBC/CTR/GCM operations through a maintained provider, with GCM authentication checks.",
+      "Added a historical Enigma I simulator with double stepping and bounded initial-position crib search.",
+      "Expanded cipher-breaker results with top 5–10 candidates, ranking explanations, close-score comparisons and separate statistical/verification evidence.",
+      "Added interactive frequency, IC/entropy and repeat/period analysis, Vigenère key-length hypotheses and ciphertext/plaintext/key alignment beside results."
+    ]
+  },
   "_stripe_note": "Create each product as a Stripe Payment Link, set its post-payment redirect to the delivery_url printed by build_pages.py, then paste the link URL into payment_link below. Change delivery_salt ONCE before your first sale; changing it later breaks existing customers' download links.",
   "stripe": {
     "tip_jar_url": "https://buy.stripe.com/9B6fZa0n5fhz5SFe8Vbsc04",

@@ -99,8 +99,11 @@ class Candidate:
         )
 
     def as_dict(self, *, plaintext_limit: int | None = None) -> dict:
+        from .candidate_details import profile
+
         pt = self.plaintext if plaintext_limit is None else self.plaintext[:plaintext_limit]
         return {
+            **profile(self),
             "plaintext": pt,
             "cipher": self.cipher,
             "key": self.key_repr,
@@ -300,6 +303,7 @@ class CrackReport:
     elapsed: float = 0.0
     budget: float = 0.0
     workers: int = 1
+    comparison_mode: bool = False
     language: str = "english"
     """Which language model judged the candidates (``--language``)."""
     language_detected: str | None = None
@@ -388,11 +392,12 @@ class CrackReport:
         return str(self.notes.get("respaced") or self.plaintext)
 
     def as_dict(self, *, plaintext_limit: int | None = None, max_candidates: int = 12) -> dict:
+        from .candidate_details import describe_report
+
         return {
+            **describe_report(self, max_candidates, plaintext_limit),
             "solved": self.solved,
             "confidence": round(self.confidence, 4),
-            "best": self.best.as_dict(plaintext_limit=plaintext_limit) if self.best else None,
-            "candidates": [c.as_dict(plaintext_limit=plaintext_limit) for c in self.candidates[:max_candidates]],
             "hypotheses": [h.as_dict() for h in self.hypotheses],
             "attacks": [a.as_dict() for a in self.attacks],
             "elapsed": round(self.elapsed, 3),

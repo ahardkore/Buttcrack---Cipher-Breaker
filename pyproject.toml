@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "buttcrack"
-version = "1.2.1"
+version = "1.2.2"
 description = "Automatic cipher breaker: identifies the cipher, recovers the key, reads the plaintext — including layered puzzles."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -47,6 +47,8 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+# Maintained AES provider; core solving and other labs remain dependency-free.
+modern = ["cryptography>=46"]
 # Lint only; the package itself still has zero runtime dependencies.
 # `ruff format` is NOT enforced: the tree predates it and is `ruff check`-clean.
 dev = ["ruff>=0.16"]

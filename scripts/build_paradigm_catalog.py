@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "kryptos" / "pk_submission_manifest.json"
 PYTHON_DATA = ROOT / "buttcrack" / "data" / "paradigm_kryptos.json"
 BROWSER_ASSETS = (
+    ROOT / "kryptos-app" / "paradigm.js",
     ROOT / "buttcrack" / "static" / "paradigm.js",
     ROOT / "ventures" / "cipher-solver-web" / "paradigm.js",
 )

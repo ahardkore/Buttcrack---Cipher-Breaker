@@ -88,8 +88,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # No install step: the package has zero runtime dependencies and the
-      # language model ships in the repository, so the suite runs from a checkout.
+      - name: Install optional AES provider for known-answer tests
+        run: python -m pip install ".[modern]"
+
+      # Core solving still has zero runtime dependencies; the optional AES provider
+      # is installed here so its tests cannot silently skip in CI.
       #
       # Failures are re-emitted as workflow annotations: the log archive lives on
       # a host that is not always reachable from a sandbox, and annotations are
@@ -357,6 +360,9 @@ jobs:
           python -m pip install --upgrade pip .
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
+
+      - name: Check deterministic Kryptos research methods
+        run: npm run test:research && npm run test:web
 
       # The html report is uploaded below; the annotations are what make a red
       # run readable from the API alone, which is how this repository reads CI.

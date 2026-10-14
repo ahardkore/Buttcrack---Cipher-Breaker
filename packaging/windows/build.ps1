@@ -182,8 +182,8 @@ try {
     & $VenvPython -m pip install --quiet --upgrade pip
     # Pinned to a major series: this spec is written against PyInstaller 6
     # (contents_directory, Analysis(optimize=...)).
-    & $VenvPython -m pip install --quiet --upgrade 'pyinstaller~=6.10'
-    if ($LASTEXITCODE -ne 0) { Fail 'pip could not install PyInstaller.' }
+    & $VenvPython -m pip install --quiet --upgrade 'pyinstaller~=6.10' 'cryptography>=46'
+    if ($LASTEXITCODE -ne 0) { Fail 'pip could not install PyInstaller and the AES provider.' }
     Write-Note "PyInstaller $((& $VenvPython -m PyInstaller --version).Trim())"
 
     $AppVersion = (& $VenvPython -c "import sys; sys.path.insert(0, sys.argv[1]); import buttcrack; print(buttcrack.__version__)" $Root).Trim()
@@ -232,8 +232,17 @@ try {
     }
     Write-Note "solved: $($report.best.cipher), key $($report.best.key) -- $($report.best.notes.formatted)"
 
+    $aesInput = Join-Path (Join-Path $Root 'build') 'aes-smoke.json'
+    '{"operation":"decrypt","mode":"ECB","key":"00000000000000000000000000000000","data":"66e94bd4ef8a2c3b884cfa59ca342b2e"}' | Set-Content -Encoding ASCII $aesInput
+    $aesReport = (& $CliExe 'modern' 'aes' '--input' $aesInput | Out-String) | ConvertFrom-Json
+    if ($LASTEXITCODE -ne 0 -or $aesReport.output.hex -ne '00000000000000000000000000000000') {
+        Fail 'The frozen AES provider failed its known-answer test.'
+    }
+    Write-Note 'AES provider: known-answer test passed'
+
     # And that the web UI the shortcut opens is actually in there.
     foreach ($asset in @('_internal\buttcrack\static\index.html',
+                         '_internal\buttcrack\static\modern.js',
                          '_internal\buttcrack\data\english_quadgrams.txt.gz')) {
         if (-not (Test-Path (Join-Path $AppDir $asset))) { Fail "Missing from the bundle: $asset" }
     }
