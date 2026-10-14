@@ -443,16 +443,46 @@ prints the exact object name and the exact URL a buyer would get, in the clear,
 because none of those three values are secrets anymore. If the URL is not the
 one you want, fix the base URL and run it again.
 
-**6. Publish.** Same workflow, `dry_run` unticked. It fetches the artifact of a run
+**6. Ask for a build that will still be there.** The publish workflow does not
+build anything; it fetches an artifact a previous run left behind. An ordinary
+push or pull-request run *withdraws its own installer* as its last step, because a
+public repository's artifacts are public and the paid file must not sit on a shelf
+for ninety days. So the newest live artifact is not the newest build — it is
+whatever the last **manually dispatched** run produced, which can be a whole
+version behind the tree you are publishing from.
+
+```bash
+gh workflow run "Release artifacts" --ref main
+gh run list --workflow release.yml --limit 3      # wait for the dispatch run: success
+python scripts/fetch_installer.py --list          # the version you want must appear
+```
+
+Give it about twenty minutes: the installer job builds, silently installs,
+breaks a cipher with the *installed* executable, runs the self-test, and
+uninstalls before it uploads.
+
+Skipping this step is not a harmless shortcut. It published a 1.2.1 installer
+from a 1.2.2 checkout, uploaded it under a fresh unguessable name, printed a
+perfect-looking SHA-256, and reported success — the only symptom was that the
+download was the previous release. Both ends now refuse it: the workflow selects
+an artifact *by version* and fails naming this step, and `publish_installer.py`
+refuses an installer whose version is not the checkout's, with the same remedy in
+the message. `--allow-version-mismatch` is the escape hatch for deliberately
+republishing an older build.
+
+**7. Publish.** Same workflow, `dry_run` unticked. It fetches the artifact of a run
 that already passed the install test, uploads it, and prints the four values plus
 the `git diff` for `site.json` in the run summary. Commit that diff.
 
-**7. Point Stripe at the thank-you page.** The run's summary also names the page
+**8. Point Stripe at the thank-you page.** The run's summary also names the page
 (`thank-you-<token>.html`, printed by `build_pages.py` on every build). Its URL
 goes into the Payment Link's *after payment* redirect. Until that is set, Stripe
-sends buyers somewhere else and the download is, again, an email.
+sends buyers somewhere else and the download is, again, an email. Set once, it
+survives every later version: the page is named from the SKU and the delivery
+salt, not from the version, so a new installer changes the button on the page and
+nothing in Stripe.
 
-**8. Buy your own copy.** Run the flow once as a customer — pay, get redirected,
+**9. Buy your own copy.** Run the flow once as a customer — pay, get redirected,
 click the button, check the SHA-256 against the value in `site.json`. It is the
 only test that covers the part of the product nobody deploys.
 

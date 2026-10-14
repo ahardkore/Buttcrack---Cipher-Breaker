@@ -160,6 +160,14 @@ class MainBehaviour(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.installer = Path(self.tmp.name) / "buttcrack-setup-1.2.0.exe"
         self.installer.write_bytes(INSTALLER_BYTES)
+        # The fixture is deliberately a fixed 1.2.0 so these tests do not churn
+        # on every release. main() now compares the installer's version against
+        # the checkout's, so pin the checkout to the fixture rather than let the
+        # comparison depend on whatever version the repository happens to be at.
+        # VersionGuard below tests the comparison itself, unpinned.
+        patcher = mock.patch.object(publish, "repo_version", return_value="1.2.0")
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def _main(self, *args: str) -> tuple[int, str]:
         """Run `main` with the upload mocked; return its code and its stdout."""
@@ -275,6 +283,74 @@ class MainBehaviour(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(site.read_text(encoding="utf-8"), original)
         self.assertIn("site.json", out.getvalue())
+
+
+class VersionGuard(unittest.TestCase):
+    """A stale installer must not be publishable as the current release.
+
+    The workflow picks "the newest live artifact", and an ordinary push or
+    pull-request run withdraws its own installer, so the newest live one is
+    routinely the last *manually dispatched* build -- which can be a version
+    behind the checkout doing the publishing. That published a 1.2.1 installer
+    from a 1.2.2 tree and reported success, so the check now lives here, at the
+    one point that touches production storage.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.installer = Path(self.tmp.name) / "buttcrack-setup-1.2.0.exe"
+        self.installer.write_bytes(INSTALLER_BYTES)
+
+    def _main(self, *args: str, checkout_version: str = "9.9.9") -> tuple[int, str]:
+        with mock.patch.object(publish, "repo_version", return_value=checkout_version), mock.patch.object(
+            publish.subprocess, "run", fake_upload()
+        ), mock.patch.object(publish.shutil, "which", return_value="/usr/bin/aws"), captured_stdout() as out:
+            code = publish.main([str(self.installer), *args])
+        return code, out.getvalue()
+
+    def test_repo_version_reads_the_checkout(self):
+        version = publish.repo_version()
+        self.assertRegex(version, r"^\d+(\.\d+)+$", "pyproject.toml has no usable version")
+
+    def test_a_missing_pyproject_skips_the_check_rather_than_guessing(self):
+        self.assertEqual(publish.repo_version(Path(self.tmp.name)), "")
+
+    def test_a_stale_installer_is_refused(self):
+        with self.assertRaises(SystemExit) as caught:
+            self._main(*STORAGE_FLAGS)
+        message = str(caught.exception)
+        self.assertIn("1.2.0", message)
+        self.assertIn("9.9.9", message)
+        # The remedy has to be in the message: the cause is a build that was
+        # never kept, and the fix is a dispatch, not an edit.
+        self.assertIn("gh workflow run 'Release artifacts'", message)
+
+    def test_the_refusal_happens_before_anything_is_uploaded(self):
+        run = fake_upload()
+        with mock.patch.object(publish, "repo_version", return_value="9.9.9"), mock.patch.object(
+            publish.subprocess, "run", run
+        ), mock.patch.object(publish.shutil, "which", return_value="/usr/bin/aws"), captured_stdout(), self.assertRaises(
+            SystemExit
+        ):
+            publish.main([str(self.installer), *STORAGE_FLAGS])
+        run.assert_not_called()
+
+    def test_a_dry_run_is_refused_too(self):
+        # A dry run that would publish the wrong version should say so now, not
+        # after the real one has already put the file on the shelf.
+        with self.assertRaises(SystemExit):
+            self._main("--dry-run", *STORAGE_FLAGS)
+
+    def test_the_override_still_publishes_an_older_version(self):
+        code, output = self._main("--allow-version-mismatch", "--token", "7f3a9c2e51b04d88", *STORAGE_FLAGS)
+        self.assertEqual(code, 0)
+        self.assertIn("buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe", output)
+
+    def test_a_matching_version_needs_no_override(self):
+        code, output = self._main("--token", "7f3a9c2e51b04d88", *STORAGE_FLAGS, checkout_version="1.2.0")
+        self.assertEqual(code, 0)
+        self.assertIn("published https://downloads.example.com/buttcrack-setup-1.2.0-7f3a9c2e51b04d88.exe", output)
 
 
 class SiteJsonEditing(unittest.TestCase):

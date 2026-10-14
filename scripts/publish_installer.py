@@ -44,10 +44,32 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from fetch_installer import human_megabytes, sha256_of  # noqa: E402  (path set up above)
 
+#: The checkout this script is publishing from.
+ROOT = Path(__file__).resolve().parents[1]
+
 #: The object name: an unguessable URL *is* the paywall for a $39.99 download
 #: with no licence server, so the token is the product's lock and 64 bits of it
 #: is the number the docs have published from the start.
 TOKEN_BYTES = 8
+
+
+def repo_version(root: Path = ROOT) -> str:
+    """The version this checkout says it is, or ``""`` if it cannot be read.
+
+    Read from ``pyproject.toml`` rather than by importing ``buttcrack``: this
+    script runs in a job that installs nothing, and the two are pinned equal by
+    ``tests/test_windows_bundle.py`` anyway.  An unreadable value returns empty
+    and the caller skips the comparison rather than guessing.
+    """
+    try:
+        text = (root / "pyproject.toml").read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    for line in text.splitlines():
+        if line.startswith("version"):
+            return line.split("=", 1)[1].strip().strip('"').strip("'")
+    return ""
+
 
 ENV = {
     "endpoint": "BUTTCRACK_DELIVERY_ENDPOINT",
@@ -207,6 +229,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base-url", default=os.environ.get(ENV["base_url"], ""))
     parser.add_argument("--dry-run", action="store_true", help="print what would happen; upload nothing")
     parser.add_argument(
+        "--allow-version-mismatch",
+        action="store_true",
+        help="publish an installer whose version is not this checkout's version",
+    )
+    parser.add_argument(
         "--update-site-json",
         type=Path,
         metavar="PATH",
@@ -230,6 +257,31 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(
             f"{path.name} hashes {digest} but its .sha256 says {recorded}.\n"
             f"These are not the same build; publish the pair that belongs together."
+        )
+
+    # The check that was missing when a stale 1.2.1 was published from a 1.2.2
+    # checkout and the run still reported success.  The workflow picks "the
+    # newest live artifact", and an ordinary push or pull-request run *withdraws*
+    # its own installer, so the newest live one is routinely the last manually
+    # dispatched build -- which is whatever version main happened to be at that
+    # day.  Nothing downstream compares it to the code being published from, so
+    # the upload succeeds, the digest is printed, and the download page ends up
+    # advertising yesterday's build as today's.  Refuse here, at the one point
+    # that touches production storage, whatever selected the file.
+    checkout_version = repo_version()
+    if checkout_version and version != checkout_version and not args.allow_version_mismatch:
+        raise SystemExit(
+            f"{path.name} is version {version}, but this checkout is {checkout_version}.\n"
+            f"Publishing it would advertise {version} as the current release.\n"
+            f"\n"
+            f"The usual cause is that no build of {checkout_version} was ever kept: an\n"
+            f"ordinary push or pull-request run withdraws its own installer artifact, so\n"
+            f"only a manually dispatched one survives to be fetched. Ask for one and try\n"
+            f"again in about twenty minutes:\n"
+            f"  gh workflow run 'Release artifacts' --ref main\n"
+            f"\n"
+            f"Live artifacts:  python scripts/fetch_installer.py --list\n"
+            f"If you really mean to republish an older version, pass --allow-version-mismatch."
         )
 
     token = args.token.strip() or new_token()
