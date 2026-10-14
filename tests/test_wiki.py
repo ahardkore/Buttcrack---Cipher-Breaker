@@ -188,9 +188,11 @@ class TestUnsolvedArchive(unittest.TestCase):
         )
         # a real no-doubling plaintext through an injective code: zero repeats
         playfair_like = list("ATBUCV.DWEFXGY.HZJ.QKWLRI.MNSOTP")
+        self.assertGreater(len(set(playfair_like)), 20, "test string must exercise real repeats")
         self.assertEqual([a for a, b in zip(playfair_like, playfair_like[1:]) if a == b], [])
-        adj, _, verdict = detect.doubled_letter_cipher_rejected(playfair_like)
+        adj, longest, verdict = detect.doubled_letter_cipher_rejected(playfair_like)
         self.assertEqual(adj, 0)
+        self.assertEqual(longest, 1)          # no run longer than one: the pass is earned
         self.assertTrue(verdict.startswith("consistent"))
         # and one doubled letter anywhere is enough to reject the family
         adj2, longest, verdict2 = detect.doubled_letter_cipher_rejected(
