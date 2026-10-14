@@ -21,6 +21,7 @@ had already bought a book would lose their download link.
 | ------- | ----- | ------------------------- |
 | Volume One (60 puzzles) | $5 | `https://ciphersolverpro.com/thank-you-830991499d0d70f90abd.html` |
 | Volume Two (90 puzzles) | $7 | `https://ciphersolverpro.com/thank-you-bc1474305b0ba8208121.html` |
+| Buttcrack for Windows (installer) | $39.99 | `https://ciphersolverpro.com/thank-you-5e5e0b57e21b06f4e762.html` |
 
 Print them again at any time:
 
@@ -67,6 +68,32 @@ On the product page: **Create payment link** (or **Payment links → New**).
 
 Do it for both volumes.
 
+### 3b. The Windows app — same redirect, easier to miss
+
+The $39.99 desktop build already has its Payment Link in `site.json`
+(`windows_app.payment_link`), so it is tempting to skip this step. Do not: the
+link existing and the link *delivering* are two separate settings, and the
+second one lives only in Stripe.
+
+Open that link in the dashboard and confirm **After payment** is set to
+**"Don't show confirmation page" → Redirect customers to your website**, with
+
+```
+https://ciphersolverpro.com/thank-you-5e5e0b57e21b06f4e762.html
+```
+
+Left on Stripe's default confirmation page, the buyer pays, sees a generic
+"thanks, we've emailed your receipt", and gets no download button — a completed
+sale with nothing delivered, which is indistinguishable from a working one in
+the dashboard. Print the current value at any time with:
+
+```bash
+python3 ventures/cipher-solver-web/set_payment_links.py --show
+```
+
+Unlike the books, the Windows app's redirect cannot be checked by looking at
+the site: the delivery page is `noindex` and unlinked by design.
+
 ## 4. Create the tip jar link
 
 **Payment links → New → Customers choose what to pay**.
@@ -82,9 +109,10 @@ Copy that link too.
 
 ```bash
 python3 ventures/cipher-solver-web/set_payment_links.py \
-    --vol1 https://buy.stripe.com/XXXXXXXX \
-    --vol2 https://buy.stripe.com/YYYYYYYY \
-    --tip  https://buy.stripe.com/ZZZZZZZZ
+    --vol1   https://buy.stripe.com/XXXXXXXX \
+    --vol2   https://buy.stripe.com/YYYYYYYY \
+    --winapp https://buy.stripe.com/WWWWWWWW \
+    --tip    https://buy.stripe.com/ZZZZZZZZ
 ```
 
 It validates each URL, writes `site.json`, rebuilds the pages, and prints the
@@ -113,6 +141,16 @@ Use a real card for the $5 volume. Confirm that:
 - checkout completes and Stripe emails a receipt,
 - you land on the delivery page and the PDF downloads,
 - the payment appears in the Stripe dashboard.
+
+Then do the same for the $39.99 Windows app, which is the purchase that most
+needs it: it is the only product whose delivery page nothing else can reach, and
+the only one where "the button is there" and "the button works" come apart. On
+that one also confirm the file downloads rather than opening an error page, and
+that its SHA-256 matches `windows_app.sha256` in `site.json`:
+
+```powershell
+certutil -hashfile buttcrack-setup-1.2.1-347eb70aac291eec.exe SHA256
+```
 
 Then refund yourself from the dashboard (Stripe keeps nothing on a refunded
 payment within 90 days on most accounts). This is the only test that proves the
@@ -152,3 +190,11 @@ entitlement checks here.
 | Customer pays, sees Stripe's generic thank-you, gets no book | The link's "After payment" redirect is unset. Fix it on the link in Stripe; no rebuild needed. |
 | Redirect goes to a 404 | The redirect URL does not match the table above — usually an old one from before the salt was rotated. |
 | Money never arrives | Test-mode link. Recreate it in live mode. |
+| Windows buyer pays and never sees a download button | The `winapp` link's "After payment" redirect is unset — see 3b. Fix it in Stripe; no rebuild needed. |
+| Windows buyer reaches the delivery page but the download fails | `windows_app.delivery_url` no longer resolves. Check the object still exists and that the bucket's public access is still on for the hostname in that URL; if it is an `r2.dev` address it may also be rate-limited or ISP-blocked, which is why the build warns about it. |
+| Delivery page says the link "is being sent by email" instead of showing a button | `windows_app.delivery_url` is empty, so the installer was never published. Run the **Publish installer to storage** workflow and commit the `site.json` diff it prints. |
+
+The two symptoms above that end in a *successful* payment are the expensive
+ones, because Stripe reports them as ordinary completed sales. After changing
+anything in this table's neighbourhood, buy the product yourself once — step 7 —
+rather than reasoning about it.

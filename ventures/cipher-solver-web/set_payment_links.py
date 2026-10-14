@@ -7,13 +7,22 @@ and the post-payment redirect URL for each product is printed so you can
 check it against what you set in Stripe.
 
     python3 ventures/cipher-solver-web/set_payment_links.py \\
-        --vol1 https://buy.stripe.com/xxxxxxxx \\
-        --vol2 https://buy.stripe.com/yyyyyyyy \\
-        --tip  https://buy.stripe.com/zzzzzzzz
+        --vol1   https://buy.stripe.com/xxxxxxxx \\
+        --vol2   https://buy.stripe.com/yyyyyyyy \\
+        --winapp https://buy.stripe.com/wwwwwwww \\
+        --tip    https://buy.stripe.com/zzzzzzzz
 
 Any subset works — pass only what you have, run it again later for the rest.
 Use --show to print the current state and the redirect URLs without changing
 anything.
+
+Every paid product is listed, the Windows app included. It is the one sold for
+real money rather than pocket money, and the one whose delivery depends on a
+redirect that nothing else in this repository can verify: a $39.99 sale that
+lands the buyer on Stripe's own confirmation page looks, in the dashboard,
+exactly like a sale that delivered the installer. The only difference is on the
+customer's screen, which is why the redirect URL is printed here rather than
+left to be reconstructed from the salt by hand.
 """
 
 from __future__ import annotations
@@ -37,6 +46,11 @@ def delivery_url(cfg: dict, sku: str) -> str:
     return f"{cfg['base_url']}/thank-you-{token}.html"
 
 
+def windows_app(cfg: dict) -> dict:
+    """The Windows product, or ``{}`` when site.json has no ``windows_app``."""
+    return cfg.get("windows_app") or {}
+
+
 def report(cfg: dict) -> None:
     print("\nProducts")
     for product in cfg["stripe"]["products"]:
@@ -45,6 +59,24 @@ def report(cfg: dict) -> None:
         print(f"  {product['sku']:5} {product['price']:>3}  [{state}]")
         print(f"        payment link : {link}")
         print(f"        redirect to  : {delivery_url(cfg, product['sku'])}")
+
+    app = windows_app(cfg)
+    if app:
+        sku = app.get("sku", "winapp")
+        link = app.get("payment_link") or "— not set —"
+        state = "LIVE" if app.get("payment_link") else "no checkout"
+        print("\nWindows app")
+        print(f"  {sku:5} {app.get('price', ''):>3}  [{state}]")
+        print(f"        payment link : {link}")
+        print(f"        redirect to  : {delivery_url(cfg, sku)}")
+        installer = app.get("delivery_url") or "— not set —"
+        print(f"        installer at : {installer}")
+        if app.get("payment_link") and not app.get("delivery_url"):
+            print(
+                "        !! selling with no installer uploaded: buyers get a page\n"
+                "           promising the file by email instead of a download button"
+            )
+
     tip = cfg["stripe"].get("tip_jar_url") or "— not set —"
     print(f"\n  tip jar: {tip}")
 
@@ -53,6 +85,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--vol1", help="Payment Link URL for volume one")
     parser.add_argument("--vol2", help="Payment Link URL for volume two")
+    parser.add_argument("--winapp", help="Payment Link URL for the paid Windows desktop app")
     parser.add_argument("--tip", help="Payment Link URL for the tip jar")
     parser.add_argument("--show", action="store_true", help="print current state and exit")
     parser.add_argument("--no-build", action="store_true", help="write site.json but do not rebuild")
@@ -60,10 +93,10 @@ def main(argv: list[str] | None = None) -> int:
 
     cfg = json.loads(SITE_JSON.read_text())
 
-    if args.show or not any((args.vol1, args.vol2, args.tip)):
+    if args.show or not any((args.vol1, args.vol2, args.winapp, args.tip)):
         report(cfg)
         if not args.show:
-            print("\nNothing to set. Pass --vol1/--vol2/--tip with the URLs from Stripe.")
+            print("\nNothing to set. Pass --vol1/--vol2/--winapp/--tip with the URLs from Stripe.")
         return 0
 
     # Validate everything before writing anything: a half-applied config that
@@ -72,6 +105,7 @@ def main(argv: list[str] | None = None) -> int:
 
     updates = {"vol1": args.vol1, "vol2": args.vol2}
     checked = {sku: payment_url(url, f"--{sku}") for sku, url in updates.items() if url is not None}
+    winapp = payment_url(args.winapp, "--winapp") if args.winapp is not None else None
     tip = payment_url(args.tip, "--tip") if args.tip is not None else None
 
     known = {p["sku"] for p in cfg["stripe"]["products"]}
@@ -79,10 +113,19 @@ def main(argv: list[str] | None = None) -> int:
         if sku not in known:
             raise SystemExit(f"no product with sku {sku!r} in site.json (have: {sorted(known)})")
 
+    if winapp is not None and not windows_app(cfg):
+        raise SystemExit(
+            "site.json has no windows_app section, so there is no Windows product to attach\n"
+            "this payment link to. Add windows_app (sku/title/price/delivery_url) first."
+        )
+
     for product in cfg["stripe"]["products"]:
         if product["sku"] in checked:
             product["payment_link"] = checked[product["sku"]]
             print(f"set {product['sku']} payment_link")
+    if winapp is not None:
+        cfg.setdefault("windows_app", {})["payment_link"] = winapp
+        print("set windows_app payment_link")
     if tip is not None:
         cfg["stripe"]["tip_jar_url"] = tip
         print("set tip_jar_url")
