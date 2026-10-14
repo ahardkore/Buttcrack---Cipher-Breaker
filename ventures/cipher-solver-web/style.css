@@ -633,6 +633,37 @@ input:focus-visible, .wiki-tab:focus-visible, .wiki-card:focus-visible {
 .unsolved-boundary strong { color: #87501a; }
 .unsolved-source { margin: 11px 0 0; font-size: 13px !important; }
 .unsolved-source a { font-weight: 700; }
+/* Measured results for the entries where we have run them ourselves. Distinct
+   from the boundary callout above it: a boundary says what would count as a
+   solution, findings say what the ciphertext itself has been shown to do. */
+.unsolved-findings {
+  margin: 12px 0 0;
+  padding: 10px 11px 4px;
+  border-left: 3px solid #3d6b52;
+  border-radius: 0 6px 6px 0;
+  background: #f0f5f1;
+}
+.unsolved-findings-label {
+  margin: 0 0 6px;
+  color: #2f5540;
+  font: 700 10.5px/1.2 var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.unsolved-findings ul { margin: 0; padding-left: 17px; }
+.unsolved-findings li {
+  margin: 0 0 7px;
+  color: #46564d;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.unsolved-findings code {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: #e2ebe4;
+  font: 12px/1.5 var(--mono);
+  white-space: nowrap;
+}
 
 @media (max-width: 640px) {
   .unsolved-grid { grid-template-columns: 1fr; }

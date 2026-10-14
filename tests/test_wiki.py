@@ -130,6 +130,39 @@ class TestUnsolvedArchive(unittest.TestCase):
         self.assertIn("D’Agapeyeff Cipher", spec["body"])
         self.assertIn("Phaistos Disc", spec["body"])
 
+    def test_findings_are_measured_not_asserted(self):
+        """A findings block may only quote a number the shipped script reproduces."""
+        entry = next(i for i in bp.UNSOLVED_ARCHIVE if "findings" in i)
+        self.assertIn("dagapeyeff_alignment.py", " ".join(entry["findings"]))
+        align = _load(
+            "dagapeyeff_alignment_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_alignment.py",
+        )
+        result = align.analyse(align.digits(align.CANONICAL), align.random.Random(1))
+        self.assertEqual(result["violations"], 0)
+        self.assertEqual(result["shuffle_passes"], 0)
+        self.assertEqual(result["cells_used"], 19)
+        self.assertEqual(result["leftover"], "0")
+        self.assertEqual(result["firsts"], ["0", "6", "7", "8", "9"])
+        self.assertEqual(result["seconds"], ["0", "1", "2", "3", "4", "5"])
+        # The card's frequency claim, straight from the script.
+        counts = dict(result["frequencies"])
+        self.assertEqual(counts["81"], 20)
+        self.assertEqual(result["distinct"], 19)
+
+    def test_findings_render_as_balanced_markup(self):
+        markup = bp.unsolved_archive_html()
+        self.assertIn("unsolved-findings", markup)
+        self.assertIn("What holds up", markup)
+        self.assertEqual(markup.count("<ul>"), markup.count("</ul>"))
+        self.assertEqual(markup.count("<li>"), markup.count("</li>"))
+        self.assertEqual(markup.count("<section"), markup.count("</section>"))
+        # Only entries that actually carry findings grow the box.
+        for item in bp.UNSOLVED_ARCHIVE:
+            title = f"<h3>{item['title']}</h3>"
+            block = markup.split(title, 1)[1].split("</section>", 1)[0]
+            self.assertEqual("unsolved-findings" in block, bool(item.get("findings")), item["title"])
+
 
 class TestTableOfContents(unittest.TestCase):
     def test_anchors_exist_and_nest(self):

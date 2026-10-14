@@ -1861,6 +1861,14 @@ UNSOLVED_ARCHIVE = [
         "kind": "Challenge ciphertext",
         "summary": "Alexander D’Agapeyeff published this 395-digit exercise in the first edition of <em>Codes and Ciphers</em>. No plaintext or method has been verified; a construction or transcription error remains possible.",
         "boundary": "An English-looking fragment is not a solution without an exact, reproducible construction for the published digits.",
+        "findings": [
+            "Cut as consecutive pairs, all 395 digits fall into place: the first digit of every pair lies in {6,7,8,9,0}, the second in {0,1,2,3,4,5} — zero exceptions, leaving 197 pairs and one trailing <code>0</code>. Cutting one digit later scores 390 violations, so the split is real and positioned.",
+            "It is not the digit mix talking. Of 2000 shuffles of the same digits, none matched the alignment; treating the two seats as independent would land roughly 202 of 395 by chance.",
+            "So the text is a 5×6 coordinate grid in which only 19 of the 30 cells are ever visited — <code>01 02 03 05 60 61 70 73 80 90 95</code> stay empty. A 5×5 Polybius square with one row and one column renumbered cannot produce a six-value second digit, which is what kills the most-cited explanation. The one wrinkle: <code>0</code> serves both seats (<code>04</code> and <code>90</code>), so the seats overlap by exactly that digit.",
+            "The pairs are not a normal alphabet: <code>81</code>×20, then <code>75 62 82 85</code>×17, <code>64</code>×16, <code>83</code>×15, <code>74</code>×14, <code>91 63</code>×12, <code>84 65</code>×11, <code>72</code>×9, then a cliff to <code>92</code>×3, <code>93</code>×2 and <code>04 94 71 00</code>×1. Thirteen codes carry 95% of the message at 8–10% each — a flat profile, unlike English, where E alone exceeds 12%.",
+            "Read as a 19-symbol substitution and solved as one, the stream matches no language: annealed quadgram search over the 197 symbols scored −5.79 log<sub>10</sub>/char at best, against −5.96 for real English prose of the same length, with no better result for Latin, French, German, Italian or Spanish, and no code behaving as a word break.",
+            "Reproduce or extend this with <code>python3 scripts/dagapeyeff_alignment.py</code>; the frequency table and the null test are its output. A solver will report a confident key for this text — that is the failure mode the boundary below exists to catch.",
+        ],
         "source_label": "MysteryTwister’s challenge transcript",
         "source_url": "https://mysterytwister.org/media/challenges/pdf/mtc3-schmeh-02-agapeyeff-en.pdf",
     },
@@ -1925,12 +1933,21 @@ def unsolved_archive_html() -> str:
     """Render the curated archive with sources and a verification boundary."""
     cards = []
     for item in UNSOLVED_ARCHIVE:
+        findings = ""
+        if item.get("findings"):
+            notes = "\n".join(f"        <li>{note}</li>" for note in item["findings"])
+            findings = (
+                '\n      <div class="unsolved-findings">\n'
+                '        <p class="unsolved-findings-label">What holds up</p>\n'
+                f"        <ul>\n{notes}\n        </ul>\n"
+                "      </div>"
+            )
         cards.append(
             f"""    <section class="unsolved-entry">
       <div class="unsolved-meta"><span>{item["kind"]}</span><span class="status status-unsolved">unresolved</span></div>
       <h3>{item["title"]}</h3>
       <p class="unsolved-date">{item["when"]}</p>
-      <p>{item["summary"]}</p>
+      <p>{item["summary"]}</p>{findings}
       <p class="unsolved-boundary"><strong>Verification boundary:</strong> {item["boundary"]}</p>
       <p class="unsolved-source"><a href="{item["source_url"]}" target="_blank" rel="noopener noreferrer">{item["source_label"]} ↗</a></p>
     </section>"""
