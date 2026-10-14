@@ -22,9 +22,11 @@ rest of this suite) and reads ``site.json``; it does not write anything.
 
 from __future__ import annotations
 
+import collections
 import contextlib
 import importlib.util
 import io
+import random
 import sys
 import unittest
 from pathlib import Path
@@ -149,6 +151,34 @@ class TestUnsolvedArchive(unittest.TestCase):
         counts = dict(result["frequencies"])
         self.assertEqual(counts["81"], 20)
         self.assertEqual(result["distinct"], 19)
+
+    def test_detect_harness_streams_match_the_attack_they_document(self):
+        """The card quotes a ceiling/null/CT comparison; keep the inputs honest."""
+        detect = _load(
+            "dagapeyeff_detect_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        ct = detect.ciphertext_stream()
+        self.assertEqual(len(ct), 197)
+        self.assertEqual(sorted(set(ct)), list(range(detect.NS)))
+        for profile in (detect.CT_PROFILE, detect.ENGLISH_PROFILE):
+            self.assertEqual(sum(profile), 197, "a null of another length is not a control")
+        # the control must be a permutation of the cipher's own counts, else
+        # "same profile" is a claim the code does not actually honour
+        null = detect.profile_stream(detect.CT_PROFILE, 197, random.Random(1))
+        self.assertEqual(sorted(collections.Counter(null).values()),
+                         sorted(collections.Counter(ct).values()))
+        self.assertEqual(sorted(detect.CT_PROFILE, reverse=True),
+                         sorted(collections.Counter(ct).values(), reverse=True))
+        with self.assertRaises(ValueError):
+            detect.profile_stream([1, 2, 3], 197, random.Random(1))
+        table = detect.quad_table()
+        self.assertEqual(len(table), 26**4)
+        slot = lambda w: sum((ord(c) - 65) * 26**k for k, c in enumerate(reversed(w)))
+        self.assertGreater(table[slot("TION")], table[slot("QZJX")])
+        # the python fallback has to run and stay in the sane range
+        score = detect.anneal_py(ct[:60], table, 2, 2000, 3)
+        self.assertTrue(-8.0 <= score <= -2.5, f"fallback scorer out of range: {score}")
 
     def test_findings_render_as_balanced_markup(self):
         markup = bp.unsolved_archive_html()
