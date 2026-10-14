@@ -195,6 +195,21 @@ def ad_slot() -> str:
 #: that *do* fail are the ones that mean "this button takes no money".
 _STRIPE_HOSTS = ("buy.stripe.com", "pay.stripe.com", "checkout.stripe.com")
 
+#: Cloudflare R2's *development* hostname. docs/windows-installer.md says why a
+#: paid installer must not ship on it: Cloudflare rate-limits it, Access and
+#: Cache are unavailable on it, some ISPs block it outright, and — the part that
+#: matters for a product whose only paywall is an unguessable object name — it is
+#: a second public URL for the same file. It is the right hostname for a dry run
+#: and the wrong one for a sale, so it warns rather than fails: the documented
+#: first-run path goes through it.
+_R2_DEV_HOSTNAME = "r2.dev"
+
+#: Warnings collected while validating site.json, printed once by ``main()``.
+#: Validating at call time means the same URL is checked several times per build
+#: (``windows_app_config`` is called by both the storefront and the delivery
+#: page), so they are gathered here instead of printed where they are found.
+CONFIG_WARNINGS: list[str] = []
+
 
 def payment_url(raw: str, field: str) -> str:
     """Validate a pasted Stripe URL. Returns "" when the field is unset.
@@ -1199,6 +1214,17 @@ def delivery_url(raw: str, field: str) -> str:
             f"The installer is the paid product and this site is public — serving it from\n"
             f"here means anyone can download it without paying. Put it on storage you\n"
             f"control (Cloudflare R2, Backblaze B2, S3) and paste that URL instead."
+        )
+    host = url[len("https://") :].split("/", 1)[0].split("?", 1)[0].lower()
+    if host == _R2_DEV_HOSTNAME or host.endswith("." + _R2_DEV_HOSTNAME):
+        CONFIG_WARNINGS.append(
+            f"windows_app.{field} is on Cloudflare R2's development hostname ({host}).\n"
+            "  r2.dev is rate-limited, cannot use Access or Cache, is blocked by some ISPs,\n"
+            "  and is a second public URL for the same object — so the unguessable name that\n"
+            "  is this product's entire paywall protects nothing. Attach a custom domain\n"
+            "  (R2 -> bucket -> Settings -> Public access -> Connect domain), republish with\n"
+            "  the same --token so buyers' existing links keep working, put that URL here,\n"
+            "  then turn the r2.dev hostname back off. See docs/windows-installer.md."
         )
     if not url.lower().endswith(".exe"):
         print(f"  note: windows_app.{field} does not end in .exe ({url}) — assuming a redirect")
@@ -2884,6 +2910,11 @@ def main() -> None:
             "  control — Cloudflare R2, Backblaze B2, S3 — and paste the URL into site.json.\n"
             "  Do not put it in this repository: the repo and the site are both public."
         )
+
+    # Collected by the site.json validators above. Deduplicated because the same
+    # field is validated once per page that renders it.
+    for warning in dict.fromkeys(CONFIG_WARNINGS):
+        print(f"\n  WARNING: {warning}")
 
 
 if __name__ == "__main__":

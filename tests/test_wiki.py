@@ -22,7 +22,9 @@ rest of this suite) and reads ``site.json``; it does not write anything.
 
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import sys
 import unittest
 from pathlib import Path
@@ -201,6 +203,107 @@ class TestPaymentUrls(unittest.TestCase):
         # A non-Stripe checkout host is allowed but flagged in the build log;
         # only misconfigured *Stripe* states are hard failures.
         self.assertEqual(bp.payment_url("https://example.com/pay", "payment_link"), "https://example.com/pay")
+
+
+class TestDeliveryUrls(unittest.TestCase):
+    """The installer URL a buyer has just paid $39.99 to reach.
+
+    ``payment_url`` protects the *sale*; these protect the *delivery*. A sale
+    that completes and delivers nothing is the worse failure of the two, because
+    Stripe reports it as an ordinary successful payment and the only evidence is
+    a customer who cannot find their download.
+    """
+
+    def setUp(self):
+        bp.CONFIG_WARNINGS.clear()
+
+    def test_https_passes_unchanged(self):
+        url = "https://downloads.example.com/buttcrack-setup-1.2.1-abc.exe"
+        self.assertEqual(bp.delivery_url(url, "delivery_url"), url)
+        self.assertEqual(bp.CONFIG_WARNINGS, [])
+
+    def test_empty_is_allowed(self):
+        # An empty URL is legal — the delivery page falls back to promising the
+        # file by email rather than rendering a dead button.
+        self.assertEqual(bp.delivery_url("", "delivery_url"), "")
+
+    def test_plain_http_refused(self):
+        with self.assertRaises(SystemExit):
+            bp.delivery_url("http://downloads.example.com/app.exe", "delivery_url")
+
+    def test_not_a_url_refused(self):
+        with self.assertRaises(SystemExit):
+            bp.delivery_url("downloads.example.com/app.exe", "delivery_url")
+
+    def test_self_hosting_refused(self):
+        # Serving the paid installer from the public site hands it to everyone.
+        with self.assertRaises(SystemExit):
+            bp.delivery_url(f"{bp.CFG['base_url']}/files/buttcrack-setup.exe", "delivery_url")
+
+    def test_r2_dev_hostname_warns_but_is_not_a_gate(self):
+        # docs/windows-installer.md allows r2.dev as the quickest first-run path,
+        # so it warns rather than fails — but a live sale on it must be loud,
+        # because it is rate-limited, ISP-blockable, and a second public URL for
+        # an object whose unguessable name is the entire paywall.
+        url = "https://pub-067dfa932fcd43178eed7d93d56634f7.r2.dev/buttcrack-setup-1.2.1-abc.exe"
+        self.assertEqual(bp.delivery_url(url, "delivery_url"), url)
+        self.assertEqual(len(bp.CONFIG_WARNINGS), 1)
+        self.assertIn("r2.dev", bp.CONFIG_WARNINGS[0])
+        self.assertIn("custom domain", bp.CONFIG_WARNINGS[0])
+
+    def test_custom_domain_on_r2_is_clean(self):
+        url = "https://downloads.example.com/buttcrack-setup-1.2.1-abc.exe"
+        self.assertEqual(bp.delivery_url(url, "delivery_url"), url)
+        self.assertEqual(bp.CONFIG_WARNINGS, [])
+
+    def test_warnings_are_deduplicated_when_printed(self):
+        # windows_app_config() runs once per page that renders the product, so
+        # the same URL is validated several times per build.
+        for _ in range(3):
+            bp.delivery_url("https://pub-abc123.r2.dev/app.exe", "delivery_url")
+        self.assertEqual(len(list(dict.fromkeys(bp.CONFIG_WARNINGS))), 1)
+
+
+class TestWindowsDeliveryPage(unittest.TestCase):
+    """The committed post-payment page must match site.json and the salt.
+
+    The page is ``noindex`` and linked from nowhere, so no link checker and no
+    search console ever looks at it. These assertions are the only thing that
+    notices if the button on it points at a file that is no longer the one
+    ``site.json`` advertises.
+    """
+
+    def test_page_name_is_derived_from_sku_and_salt(self):
+        cfg = bp.windows_app_config()
+        expected = bp.CFG["base_url"] + "/" + cfg["delivery_page"]
+        self.assertRegex(cfg["delivery_page"], r"^thank-you-[0-9a-f]{20}\.html$")
+        # set_payment_links.py must derive the same URL it tells the author to
+        # paste into Stripe, or the two tools disagree about where buyers land.
+        spl = _load("set_payment_links_test_module", VENTURE / "set_payment_links.py")
+        self.assertEqual(spl.delivery_url(bp.CFG, cfg.get("sku", "winapp")), expected)
+
+    def test_committed_page_carries_the_configured_installer(self):
+        cfg = bp.windows_app_config()
+        page = VENTURE / cfg["delivery_page"]
+        self.assertTrue(page.exists(), f"{cfg['delivery_page']} is not committed; run build_pages.py")
+        body = page.read_text(encoding="utf-8")
+        self.assertIn('name="robots" content="noindex, nofollow"', body)
+        if cfg["delivery_url"]:
+            self.assertIn(f'href="{cfg["delivery_url"]}"', body)
+        else:
+            self.assertNotIn("Download the installer", body)
+
+    def test_report_lists_the_windows_app(self):
+        # --show is the documented way to reprint the redirect URLs. Omitting the
+        # most expensive product from it is how its redirect goes unchecked.
+        spl = _load("set_payment_links_test_module", VENTURE / "set_payment_links.py")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            spl.report(bp.CFG)
+        text = out.getvalue()
+        cfg = bp.windows_app_config()
+        self.assertIn("Windows app", text)
+        self.assertIn(f"{bp.CFG['base_url']}/{cfg['delivery_page']}", text)
 
 
 class TestAdSense(unittest.TestCase):
