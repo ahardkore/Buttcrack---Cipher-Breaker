@@ -124,7 +124,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     args = ap.parse_args(argv)
 
-    text = open(args.file, encoding="utf-8").read() if args.file else CANONICAL
+    if args.file:
+        with open(args.file, encoding="utf-8") as fh:
+            text = fh.read()
+    else:
+        text = CANONICAL
     stream = digits(text)
     if len(stream) < 40:
         print(f"error: only {len(stream)} digits found", file=sys.stderr)

@@ -174,7 +174,8 @@ class TestUnsolvedArchive(unittest.TestCase):
             detect.profile_stream([1, 2, 3], 197, random.Random(1))
         table = detect.quad_table()
         self.assertEqual(len(table), 26**4)
-        slot = lambda w: sum((ord(c) - 65) * 26**k for k, c in enumerate(reversed(w)))
+        def slot(word):
+            return sum((ord(c) - 65) * 26**k for k, c in enumerate(reversed(word)))
         self.assertGreater(table[slot("TION")], table[slot("QZJX")])
         # the python fallback has to run and stay in the sane range
         score = detect.anneal_py(ct[:60], table, 2, 2000, 3)
@@ -288,7 +289,7 @@ class TestUnsolvedArchive(unittest.TestCase):
         # hold at once, which is precisely why neither is a result.
         eng = re.sub("[^A-Za-z]", "", (Path("examples") / "english_samples.txt")
                      .read_text(encoding="utf-8")).upper()[:395]
-        letters = sorted(l for l, _ in Counter(eng).most_common(19))
+        letters = sorted(ch for ch, _ in Counter(eng).most_common(19))
         keep = set(letters)
         seq = [letters.index(c) for c in eng if c in keep]
         real, real_labelled = detect.profile_fit(seq, ref)

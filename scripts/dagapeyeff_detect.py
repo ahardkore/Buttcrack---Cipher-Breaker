@@ -264,14 +264,12 @@ def predictive_gap(seq: list, alpha: float = 9.5) -> float:
     """
     seen: collections.Counter = collections.Counter()
     trans: collections.Counter = collections.Counter()
-    total = 0
     gap = 0.0
-    for prev, nxt in zip(seq, seq[1:]):
+    for total, (prev, nxt) in enumerate(zip(seq, seq[1:])):
         prior = (seen[nxt] + alpha / NS) / (total + alpha)
         cond = (trans[(prev, nxt)] + alpha / NS) / (seen[prev] + alpha)
         gap += math.log(cond) - math.log(prior)
         seen[nxt] += 1
-        total += 1
         trans[(prev, nxt)] += 1
     return gap
 
@@ -291,7 +289,6 @@ def pair_cardinality_rejected(codes: list) -> tuple[int, int, str]:
     Champernowne, at any stride, under any renumbering) in one stroke, because
     decimating or renumbering a digit stream cannot enlarge an image.
     """
-    digits = len({c[0] for c in codes} | {c[1] for c in codes})
     distinct = len(set(codes))
     bound = 10
     verdict = ("REJECTED: a per-digit rule over decimal digits emits at most "
@@ -398,7 +395,7 @@ def english_letter_streams(count: int = 0) -> list[list[int]]:
     """
     out: list[list[int]] = []
     for seg in corpus_segments():
-        keep = sorted(l for l, _ in collections.Counter(seg).most_common(NS))
+        keep = sorted(ch for ch, _ in collections.Counter(seg).most_common(NS))
         if len(keep) < NS:
             continue
         cut = "".join(ch for ch in seg if ch in set(keep))
@@ -440,15 +437,16 @@ def anneal_py(seq: list[int], table: list[float], restarts: int, iters: int, see
         letters = rnd.sample(range(ALPHA), NS)
         buf = [0] * n
 
-        def total() -> float:
+        def total(assignment: list[int]) -> float:
             s = 0.0
             for i in range(n - 3):
-                s += table[buf[i] * 17576 + buf[i + 1] * 676 + buf[i + 2] * 26 + buf[i + 3]]
+                s += table[assignment[i] * 17576 + assignment[i + 1] * 676
+                           + assignment[i + 2] * 26 + assignment[i + 3]]
             return s
 
         for i, sym in enumerate(seq):
             buf[i] = letters[sym]
-        cur = total()
+        cur = total(buf)
         local = cur
         for it in range(iters):
             temp = 8.0 * (0.04 / 8.0) ** (it / iters)
@@ -458,7 +456,7 @@ def anneal_py(seq: list[int], table: list[float], restarts: int, iters: int, see
             letters[a], letters[b] = letters[b], letters[a]
             for i, sym in enumerate(seq):
                 buf[i] = letters[sym]
-            nxt = total()
+            nxt = total(buf)
             if nxt >= cur or rnd.random() < math.exp((nxt - cur) / max(temp, 1e-9)):
                 cur = nxt
                 local = max(local, cur)
@@ -582,7 +580,7 @@ def main_mapfree(samples: int = 12) -> int:
     segs = [text[i:i + 197] for i in range(0, len(text) - 197, 197)]
     english = []
     for seg in segs[:samples * 2]:
-        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
+        keep = {letter for letter, _ in collections.Counter(seg).most_common(NS)}
         cut = "".join(ch for ch in seg if ch in keep)
         if len(cut) >= 190:
             english.append(mapping_invariant(list(cut[:197])))
@@ -645,8 +643,6 @@ def main_mapfree(samples: int = 12) -> int:
     z, mu = runs_z(stream)
     znull = [runs_z(profile_stream(CT_PROFILE, 197, rnd))[0] for _ in range(600)]
     zeng = [runs_z(seq)[0] for seq in english_letter_streams()]
-    # the shuffle's own spread, not the normal approximation, is the honest yardstick
-    zs = statistics.stdev(znull)
     tail = sum(1 for x in znull if x <= z) / len(znull)
     print(f"  run-test on the 13 busiest codes: {z:+.2f} shuffle-sd vs the null "
           f"(english {statistics.mean(zeng):+.2f});\n    "
@@ -655,7 +651,6 @@ def main_mapfree(samples: int = 12) -> int:
           f"Corroborating, not decisive.")
     # out-of-sample Markov-vs-iid gap, swept over the smoothing prior so the
     # verdict cannot be an artefact of one choice of alpha
-    from collections import namedtuple
     print("\n  leave-one-out predictive gap, markov minus iid (positive = the past "
           "predicts\n  the next symbol, which is what language does and a shuffle "
           "cannot):")
