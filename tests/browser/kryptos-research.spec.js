@@ -85,6 +85,16 @@ test('custom K4 input uses clue constraints without a corpus or full-solution cl
   await expect(page.locator('#research-verdict')).toHaveText('Research hypothesis');
   await expect(page.locator('#research-corpus')).toContainText('No verified corpus match');
   await expect(page.locator('#research-constraints')).toContainText('does not agree / missing');
-  expect(await page.locator('#research-source option[value="K2"]').isDisabled()).toBe(true);
-  expect(await page.locator('#research-source option[value="K3"]').isDisabled()).toBe(true);
+  // isDisabled() follows this option's enclosing label to its enabled select;
+  // inspect the option's native flag, then test the application guard as well.
+  const original=await page.locator('#research-original').inputValue();
+  for(const id of ['K2','K3']){
+    await expect(page.locator(`#research-source option[value="${id}"]`)).toHaveJSProperty('disabled',true);
+    await page.locator('#research-source').evaluate((select,value)=>{
+      select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));
+    },id);
+    await expect(page.locator('#research-source')).toHaveValue('K4');
+    await expect(page.locator('#research-original')).toHaveValue(original);
+    await expect(page.locator('#research-status')).toContainText('incomplete legacy excerpt');
+  }
 });
