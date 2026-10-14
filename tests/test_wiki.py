@@ -207,6 +207,52 @@ class TestUnsolvedArchive(unittest.TestCase):
         self.assertEqual(longest3, 3)
         self.assertIn("REJECTED", verdict3)
 
+    def test_predictive_gap_and_source_bound_do_their_jobs(self):
+        """The two newest controls must be able to fail, not just agree."""
+        detect = _load(
+            "dagapeyeff_detect_gap_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        import random
+        import statistics
+
+        ct = detect.ciphertext_stream()
+        # positive control: a chain with real memory has to score far higher,
+        # otherwise "the cipher looks like a shuffle" means nothing
+        rnd = random.Random(4)
+
+        def sticky():
+            seq = [rnd.randrange(detect.NS)]
+            for _ in range(196):
+                seq.append(seq[-1] if rnd.random() < 0.8 else rnd.randrange(detect.NS))
+            return seq
+
+        memory = statistics.mean(detect.predictive_gap(sticky()) for _ in range(40))
+        nulls = [detect.predictive_gap(detect.profile_stream(detect.CT_PROFILE, 197, rnd))
+                 for _ in range(40)]
+        gap = detect.predictive_gap(ct)
+        self.assertGreater(memory, gap + 50, "test lost its positive control")
+        self.assertLess(abs(gap - statistics.mean(nulls)),
+                        2 * statistics.stdev(nulls), "cipher no longer tracks the shuffle")
+        self.assertGreater(statistics.mean(detect.predictive_gap(s)
+                                           for s in detect.english_letter_streams()), gap)
+        # the counting bound: it must reject 19 and NOT reject a legal 10-pair map
+        codes = detect.stream_pairs()
+        distinct, bound, verdict = detect.pair_cardinality_rejected(codes)
+        self.assertEqual((distinct, bound), (19, 10))
+        self.assertTrue(verdict.startswith("REJECTED"))
+        # a genuine per-digit image: ten source digits, each -> exactly one pair
+        f = {d: (6 + d % 5, d % 6) for d in range(10)}
+        legal = [f"{f[d % 10][0]}{f[d % 10][1]}" for d in range(197)]
+        d2, b2, v2 = detect.pair_cardinality_rejected(legal)
+        self.assertEqual(d2, 10, "an image of ten digits must have ten pairs")
+        self.assertTrue(v2.startswith("not excluded"), "the bound test is vacuous")
+        # and an eleven-pair stream trips it -- so the bound bites exactly at 10
+        eleven = legal + ["4" + legal[0][1:]]
+        d3, _, v3 = detect.pair_cardinality_rejected(eleven)
+        self.assertEqual(d3, 11)
+        self.assertTrue(v3.startswith("REJECTED"))
+
     def test_findings_render_as_balanced_markup(self):
         markup = bp.unsolved_archive_html()
         self.assertIn("unsolved-findings", markup)

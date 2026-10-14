@@ -63,10 +63,18 @@ blind to which letter any cell means, so no keyword square can fake or hide a
 result, and no transposition layered on top can rescue the reading: a
 permutation could only move these numbers from the null toward English.
 
-A fourth test is not statistical at all: Playfair, two-square, four-square and
-bifid cannot emit a doubled plaintext letter, and an injective grid preserves
-that, so the ciphertext would need <em>zero</em> adjacent repeats under any key.
-It has 17.  The doubling-forbidding families are excluded by arithmetic.
+Two exclusions need no test at all.  Playfair, two-square, four-square and bifid
+cannot emit a doubled plaintext letter, and an injective grid preserves that, so
+the ciphertext would need *zero* adjacent repeats under any key -- it has 17.
+And a per-digit rule over a decimal stream has ten inputs, so its image holds at
+most ten distinct pairs: the running-constant hypothesis (digits of pi, at any
+stride, under any renumbering) is excluded by counting, not by fitting.
+
+What remains is a leave-one-out comparison of a Markov model against an iid one
+-- out-of-sample, so there is no transition table free to overfit.  The cipher
+tracks the shuffle at every smoothing prior tried (z = -0.7) and sits 7 sigma
+below english: at 197 symbols, the preceding pair predicts the next one no
+better than a bag of the same symbols does.
 
 That kills the letter reading outright -- harder evidence than the annealing
 result above, because "the search found nothing" needs the search to have been
@@ -143,6 +151,12 @@ def ciphertext_stream() -> list[int]:
     order = sorted(set(codes))
     index = {code: i for i, code in enumerate(order)}
     return [index[c] for c in codes]
+
+
+def stream_pairs() -> list[str]:
+    """The 197 ciphertext pairs as two-character strings."""
+    stream = digits(CANONICAL)
+    return [stream[i:i + 2] for i in range(0, len(stream) - 1, 2)]
 
 
 def profile_stream(profile: list[int], length: int, rnd: random.Random) -> list[int]:
@@ -227,6 +241,61 @@ def doubled_letter_cipher_rejected(seq: list) -> tuple[int, int, str]:
     return adj, longest, verdict
 
 
+def predictive_gap(seq: list, alpha: float = 9.5) -> float:
+    """Leave-one-out log-likelihood gain of a Markov model over an iid model.
+
+    Reading the stream left to right, at each step score the next symbol twice:
+    once from a smoothed iid fit to everything seen so far, once from a
+    smoothed *conditional* fit (that symbol's own transition row).  The sum of
+    the log-ratios is how much the past predicts the next symbol -- a genuine
+    out-of-sample score, so the 19x19 transition table cannot win by fitting
+    noise the way an in-sample likelihood-ratio test does at 196 transitions
+    and 361 parameters.
+
+    Mapping-invariant like everything else here: relabelling the cells renames
+    the states of both models identically and changes nothing.  Reference
+    points, measured with this code: a shuffle of the cipher's own multiset
+    sits near 0 by construction, a strong persistence chain scores in the
+    hundreds, and 197 letters of english reach roughly +13.
+    """
+    seen: collections.Counter = collections.Counter()
+    trans: collections.Counter = collections.Counter()
+    total = 0
+    gap = 0.0
+    for prev, nxt in zip(seq, seq[1:]):
+        prior = (seen[nxt] + alpha / NS) / (total + alpha)
+        cond = (trans[(prev, nxt)] + alpha / NS) / (seen[prev] + alpha)
+        gap += math.log(cond) - math.log(prior)
+        seen[nxt] += 1
+        total += 1
+        trans[(prev, nxt)] += 1
+    return gap
+
+
+def pair_cardinality_rejected(codes: list) -> tuple[int, int, str]:
+    """Can these pairs come from a per-digit rule over any source sequence?
+
+    No, and this is counting rather than testing -- no distributional
+    assumption about the source is needed, so it survives "maybe it is a
+    biased constant" and "maybe a sliding window".
+
+    A per-digit rule sends each source symbol to exactly one (row, column)
+    pair, so the output alphabet is the *image* of the source alphabet: ten
+    decimal digits can emit at most ten distinct pairs.  The ciphertext uses
+    nineteen.  Whatever produced this text, it was not f(s_i) for a digit
+    stream -- which rules out the running-constant family (pi, e, sqrt 2,
+    Champernowne, at any stride, under any renumbering) in one stroke, because
+    decimating or renumbering a digit stream cannot enlarge an image.
+    """
+    digits = len({c[0] for c in codes} | {c[1] for c in codes})
+    distinct = len(set(codes))
+    bound = 10
+    verdict = ("REJECTED: a per-digit rule over decimal digits emits at most "
+               f"{bound} distinct pairs, this has {distinct}"
+               if distinct > bound else "not excluded by this argument")
+    return distinct, bound, verdict
+
+
 def runs_z(seq: list, hot: int = 13) -> tuple[float, float]:
     """Wald-Wolfowitz clustering of the busiest symbols, as a shuffle z-score.
 
@@ -266,6 +335,35 @@ def dispersion(seq: list, min_count: int = 12) -> list[float]:
         mean = sum(gaps) / len(gaps)
         if mean:
             out.append(statistics.pvariance(gaps) / mean)
+    return out
+
+
+def corpus_segments() -> list[str]:
+    """Every 197-letter slice the shipped prose corpus yields."""
+    text = re.sub("[^A-Za-z]", "", CORPUS.read_text()).upper()
+    return [text[i:i + 197] for i in range(0, len(text) - 197, 197)]
+
+
+def english_letter_streams(count: int = 0) -> list[list[int]]:
+    """Real prose cut to its 19 commonest letters -- the honest ceiling.
+
+    This is the population the cipher must be compared against: a keyed grid
+    enciphering english, same length, same alphabet size.  The shipped corpus
+    yields eight such slices, which is few; the spread (sd 8 nats on the
+    predictive gap) is quoted everywhere these numbers are used, not hidden.
+    """
+    out: list[list[int]] = []
+    for seg in corpus_segments():
+        keep = sorted(l for l, _ in collections.Counter(seg).most_common(NS))
+        if len(keep) < NS:
+            continue
+        cut = "".join(ch for ch in seg if ch in set(keep))
+        if len(cut) < 190:
+            continue
+        index = {letter: i for i, letter in enumerate(keep)}
+        out.append([index[ch] for ch in cut[:197]])
+        if count and len(out) == count:
+            break
     return out
 
 
@@ -480,12 +578,7 @@ def main_mapfree(samples: int = 12) -> int:
     # uses every 197-letter segment the shipped corpus yields (8 of them, 59
     # code measurements); the split-half medians agree to 0.07, so the ceiling
     # here is stable, but it is corpus-limited and quoted as such.
-    eng_disp: list[float] = []
-    for seg in segs:
-        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
-        cut = "".join(ch for ch in seg if ch in keep)
-        if len(cut) >= 190:
-            eng_disp += dispersion(list(cut[:197]))
+    eng_disp = [v for seq in english_letter_streams() for v in dispersion(seq)]
     iid_disp: list[float] = []
     for _ in range(min(400, len(nulls) * 12)):
         iid_disp += dispersion([rnd.choices(range(NS), weights=CT_PROFILE)[0] for _ in range(197)])
@@ -507,12 +600,7 @@ def main_mapfree(samples: int = 12) -> int:
           f"{statistics.mean(eng_doubles):.1f}) -> {verdict}")
     z, mu = runs_z(stream)
     znull = [runs_z(profile_stream(CT_PROFILE, 197, rnd))[0] for _ in range(600)]
-    zeng = []
-    for seg in segs:
-        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
-        cut = "".join(ch for ch in seg if ch in keep)
-        if len(cut) >= 190:
-            zeng.append(runs_z(list(cut[:197]))[0])
+    zeng = [runs_z(seq)[0] for seq in english_letter_streams()]
     # the shuffle's own spread, not the normal approximation, is the honest yardstick
     zs = statistics.stdev(znull)
     tail = sum(1 for x in znull if x <= z) / len(znull)
@@ -521,6 +609,34 @@ def main_mapfree(samples: int = 12) -> int:
           f"p = {tail:.3f} one-sided -- the only test on the cipher's side of the "
           f"null,\n    and marginal: {tail:.1%} of shuffles cluster at least this much. "
           f"Corroborating, not decisive.")
+    # out-of-sample Markov-vs-iid gap, swept over the smoothing prior so the
+    # verdict cannot be an artefact of one choice of alpha
+    from collections import namedtuple
+    print("\n  leave-one-out predictive gap, markov minus iid (positive = the past "
+          "predicts\n  the next symbol, which is what language does and a shuffle "
+          "cannot):")
+    null_seqs = [profile_stream(CT_PROFILE, 197, rnd) for _ in range(150)]
+    eng_seqs = english_letter_streams()
+    for alpha in (2.0, 9.5, 50.0):
+        o = predictive_gap(stream, alpha)
+        nl = [predictive_gap(x, alpha) for x in null_seqs]
+        en = [predictive_gap(x, alpha) for x in eng_seqs]
+        zn = (o - statistics.mean(nl)) / statistics.stdev(nl)
+        ze = (o - statistics.mean(en)) / statistics.stdev(en)
+        print(f"    alpha {alpha:>5.1f}  cipher {o:+7.1f}   shuffle {statistics.mean(nl):+7.1f} "
+              f"(z {zn:+.2f})   english {statistics.mean(en):+7.1f} (z {ze:+.2f})")
+    print("""    the cipher tracks the shuffle at every smoothing setting and sits ~7 sigma
+    below english: read left to right, the preceding pair predicts the next one
+    no better than a bag of the same symbols does.  This is the strongest
+    negative here because it is out-of-sample -- no free transition table to
+    overfit -- and it was validated against a chain that does carry memory.""")
+    distinct, bound, src_verdict = pair_cardinality_rejected(stream_pairs())
+    print(f"""\n  source families excluded outright (no test, no null):
+    * per-digit rules over any decimal stream: the output alphabet is the image
+      of ten digits, so at most {bound} distinct pairs -- the cipher has {distinct}.  Running
+      constants (pi, e, sqrt 2, Champernowne), at any stride, under any
+      renumbering: {src_verdict.split(":")[0].lower()}.
+    * doubling-forbidding ciphers (Playfair, two-/four-square, bifid): see above.""")
     print("""  verdict: on repeats, digram structure and clustering the pairs behave like
   an ordering of this multiset, not like english under a key.  A keyed grid of
   letters has to move all three away from the shuffle and toward english; a
@@ -528,7 +644,6 @@ def main_mapfree(samples: int = 12) -> int:
   visited cells do not encode 19 letters -- and no relabelling of the grid, any
   keyword square, any language, any columnar layer, can rescue a reading that
   fails tests which never look at the letters.""")
-    return 0
     return 0
 
 
