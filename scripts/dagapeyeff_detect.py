@@ -58,7 +58,8 @@ randomness would produce, whereas English produces far fewer than a shuffle
 does (English clusters its doubled letters and doubles its digram structure).
 A third test counts how burstily the busy codes arrive (index of dispersion
 of their positions: 8.85 for the cipher, 8.17 for i.i.d. draws of the same
-profile, 5.88 for English).  All three say the same thing, and all three are
+profile, 5.88 for English, from every segment the shipped corpus yields).
+All three say the same thing, and all three are
 blind to which letter any cell means, so no keyword square can fake or hide a
 result, and no transposition layered on top can rescue the reading: a
 permutation could only move these numbers from the null toward English.
@@ -418,8 +419,11 @@ def main_mapfree(samples: int = 12) -> int:
         print(f"  {name:>7}: english ceiling {statistics.mean(eng):.3f} · shuffle {statistics.mean(nul):.3f} · "
               f"cipher is {ze:+.1f} sigma from english, {zn:+.1f} sigma from the shuffle")
     # third witness: are the busy codes scattered like words, or like draws?
+    # uses every 197-letter segment the shipped corpus yields (8 of them, 59
+    # code measurements); the split-half medians agree to 0.07, so the ceiling
+    # here is stable, but it is corpus-limited and quoted as such.
     eng_disp: list[float] = []
-    for seg in segs[:samples * 3]:
+    for seg in segs:
         keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
         cut = "".join(ch for ch in seg if ch in keep)
         if len(cut) >= 190:
