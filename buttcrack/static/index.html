@@ -20,12 +20,38 @@
     <button role="tab" class="tab-button active" data-tab="break" aria-selected="true">Break</button>
     <button role="tab" class="tab-button" data-tab="playground" aria-selected="false">Playground</button>
     <button role="tab" class="tab-button" data-tab="reference" aria-selected="false">Reference</button>
+    <button role="tab" class="tab-button" data-tab="modern" aria-selected="false">Crypto Labs</button>
     <button role="tab" class="tab-button" data-tab="about" aria-selected="false">About</button>
   </nav>
   <div class="health" id="health" title="engine status">…</div>
 </header>
 
 <main>
+<section class="tab" id="tab-modern" role="tabpanel" aria-label="Explicit crypto labs">
+  <section class="card">
+    <h2>Crypto Labs</h2>
+    <p>For your own data and authorized exercises. These labs do not break securely configured modern encryption.
+    They test explicit weaknesses or use keys/configurations you supply. No inputs are sent outside this local server,
+    and the lab does not save keys or inputs.</p>
+    <label for="modern-lab">Lab (in recommended learning order)</label>
+    <select id="modern-lab">
+      <option value="rsa">1. RSA weakness lab</option>
+      <option value="keystream">2. Reused-keystream analysis</option>
+      <option value="aes">3. AES block analysis / known-key operations</option>
+      <option value="enigma">4. Enigma I simulator / crib search (historical)</option>
+    </select>
+    <p id="modern-description"></p>
+    <div class="controls" id="modern-fields"></div>
+    <div class="actions">
+      <button type="button" id="modern-run">Run lab</button>
+      <button type="button" class="ghost" id="modern-example">Load educational example</button>
+      <button type="button" class="ghost" id="modern-clear">Clear inputs and output</button>
+    </div>
+    <p class="hint" id="modern-status" role="status" aria-live="polite">Ready. Inputs must match the lab's stated prerequisites.</p>
+    <pre id="modern-result" aria-label="Lab results"></pre>
+  </section>
+</section>
+
 
 <!-- ============================== BREAK ============================== -->
 <section class="tab active" id="tab-break" role="tabpanel" aria-label="Break a cipher">
@@ -84,7 +110,8 @@
                 <option value="8">8</option>
               </select>
             </label>
-            <label class="check"><input type="checkbox" id="exhaustive"> exhaustive (ignore budget caps)</label>
+            <label class="check"><input type="checkbox" id="compare-candidates" checked> compare alternatives (continue past a high language score, within budget)</label>
+            <label class="check"><input type="checkbox" id="exhaustive"> exhaustive keyspace options (still budget-limited)</label>
           </div>
           <div class="controls hints">
             <label>Known key <input id="hint-key" type="text" placeholder="LEMON" autocomplete="off"></label>
@@ -126,7 +153,7 @@
 
         <div class="answer">
           <div class="answer-head">
-            <h3>Plaintext</h3>
+            <h3>Leading candidate plaintext</h3>
             <div class="mini-actions">
               <button class="ghost small" id="copy-plain">Copy</button>
               <button class="ghost small" id="toggle-formatted">Show raw letters</button>
@@ -137,13 +164,18 @@
 
         <dl class="meta" id="meta"></dl>
 
+        <p class="hint" id="result-evidence-warning">Plausible language is not proof. A re-encryption match alone does not establish the intended plaintext.</p>
         <div class="sub-section" id="alternatives-section" hidden>
-          <h3>Other readings</h3>
-          <p class="hint">Same ciphertext, different explanations — ranked by how well they read as English.</p>
-          <table class="data">
-            <thead><tr><th>#</th><th>Confidence</th><th>Cipher</th><th>Key</th><th>Plaintext</th></tr></thead>
-            <tbody id="alternatives"></tbody>
-          </table>
+          <div class="card-head">
+            <h3>Ranked candidate decryptions</h3>
+            <label for="candidate-count">Show
+              <select id="candidate-count"><option value="5">Top 5</option><option value="10" selected>Top 10</option></select>
+            </label>
+          </div>
+          <p class="hint" id="candidate-summary" role="status"></p>
+          <p class="hint">Rank scores are not probabilities. Close scores indicate competing readings, not confirmation.
+          Diagnostics such as IC and chi-squared are shown separately from the ranking criteria.</p>
+          <div id="alternatives" class="candidate-list"></div>
         </div>
 
         <div class="sub-section" id="attacks-section" hidden>
@@ -152,6 +184,65 @@
             <thead><tr><th>Cipher</th><th>Status</th><th>Keys tried</th><th>Best</th><th>Time</th><th>Detail</th></tr></thead>
             <tbody id="attacks"></tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="card" id="analysis-workspace" aria-labelledby="workspace-title">
+        <div class="card-head">
+          <h2 id="workspace-title">Interactive analysis workspace</h2>
+          <button class="ghost small" id="workspace-analyze" type="button">Analyze current input only</button>
+        </div>
+        <p class="hint">Compare measurements, not just convincing prose. Results are diagnostic hypotheses, never proof of a cipher, key or intended message.</p>
+        <div class="controls workspace-controls">
+          <label>Candidate
+            <select id="workspace-candidate" disabled><option value="">Ciphertext only — no candidate selected</option></select>
+          </label>
+          <label>Maximum period <input id="workspace-max-period" type="number" min="2" max="40" value="24"></label>
+          <label>Period / repeat source
+            <select id="workspace-source"><option value="ciphertext">Ciphertext</option><option value="plaintext">Selected plaintext</option></select>
+          </label>
+        </div>
+        <p id="workspace-status" class="hint" role="status" aria-live="polite">Analyze the input now, or solve it to explore a returned candidate.</p>
+        <div id="workspace-data" hidden>
+          <p class="hint" id="workspace-normalization"></p>
+          <ul id="workspace-warnings" class="workspace-warnings"></ul>
+          <div class="workspace-pair" id="workspace-metrics"></div>
+          <h3>Letter frequencies: ciphertext vs selected candidate</h3>
+          <p class="hint">A–Z letter proportions, on the same scale. Cyan = ciphertext; gold = plaintext. Counts are included for accessible comparison.</p>
+          <div id="workspace-frequency" class="frequency-chart"></div>
+          <h3>Repeated patterns (Kasiski view)</h3>
+          <p class="hint">Positions are zero-based normalized letter positions. Only adjacent distances among the first 20 positions per 3–5-letter pattern are examined; overlaps are not independent evidence.</p>
+          <div class="workspace-scroll"><table class="data"><caption class="sr-only">Repeated patterns in the selected analysis source</caption>
+            <thead><tr><th>Pattern</th><th>Occurrences</th><th>Positions</th><th>Adjacent distances</th><th>Period factors</th></tr></thead><tbody id="workspace-repeats"></tbody>
+          </table></div>
+          <h3>Vigenère key-length hypotheses</h3>
+          <p class="hint" id="workspace-estimate-note"></p>
+          <div class="workspace-scroll"><table class="data"><caption class="sr-only">Top key-length hypotheses, not verified keys</caption>
+            <thead><tr><th>Length</th><th>Support*</th><th>Weighted column IC</th><th>Kasiski votes</th><th>Shortest column</th><th>Caveat</th></tr></thead><tbody id="workspace-estimates"></tbody>
+          </table></div>
+          <details><summary>All tested periods and lag-match rates</summary>
+            <div class="workspace-scroll"><table class="data"><caption class="sr-only">Period diagnostics</caption>
+              <thead><tr><th>Period</th><th>Weighted IC</th><th>Mean column IC</th><th>Lag match rate</th><th>Compared pairs</th><th>Kasiski votes</th></tr></thead><tbody id="workspace-periods"></tbody>
+            </table></div>
+          </details>
+          <p class="hint" id="workspace-method"></p>
+          <h3>Ciphertext / plaintext / key alignment</h3>
+          <p class="hint" id="workspace-reported-key"></p>
+          <p class="hint">Edit a key, convention, phase or display offset, then press Apply to test that hypothesis. Dots indicate missing plaintext/key letters; underlined red ciphertext letters disagree with the chosen equation.</p>
+          <div class="controls workspace-controls">
+            <label>Alignment convention
+              <select id="workspace-alignment-model"><option value="auto">Reported cipher (when supported)</option><option value="none">Positions only; no key equations</option><option value="vigenere">Vigenère hypothesis</option><option value="beaufort">Beaufort hypothesis</option><option value="variant_beaufort">Variant Beaufort hypothesis</option><option value="gronsfeld">Gronsfeld hypothesis</option><option value="caesar">Caesar hypothesis</option></select>
+            </label>
+            <label>Key hypothesis <input id="workspace-key" type="text" maxlength="128" autocomplete="off" spellcheck="false" placeholder="A–Z word, Gronsfeld digits, or Caesar shift"></label>
+            <label>Key phase offset <input id="workspace-key-offset" type="number" min="0" max="127" value="0"></label>
+            <label>First displayed letter <input id="workspace-start" type="number" min="0" max="8000" value="0"></label>
+            <button id="workspace-apply" type="button">Apply alignment settings</button>
+          </div>
+          <p id="workspace-alignment-note" class="hint"></p>
+          <div class="workspace-scroll"><table class="data workspace-alignment"><caption class="sr-only">Side-by-side normalized ciphertext, plaintext and repeated key letters</caption>
+            <thead><tr><th>Letter positions</th><th>Ciphertext</th><th>Candidate plaintext</th><th>Key sequence (A=0)</th></tr></thead><tbody id="workspace-alignment"></tbody>
+          </table></div>
+          <p class="hint" id="workspace-caveat"></p>
         </div>
       </section>
 
@@ -244,7 +335,7 @@
       <section class="card">
         <h2>Reading a report</h2>
         <dl class="stats glossary">
-          <dt>confidence</dt><dd>How strongly the recovered text reads as the selected language, tempered by how much evidence the ciphertext actually provided. ≥ 0.62 is reported as solved; ≥ 0.86 stops the search.</dd>
+          <dt>confidence</dt><dd>A heuristic language/evidence rank score, not a probability of correctness. ≥ 0.62 crosses the engine's historical “solved” threshold; the panel calls that statistically strong, not verified. ≥ 0.86 stops fast mode; comparison mode continues within budget.</dd>
           <dt>path</dt><dd>The decode chain, outermost layer first: <code>base64 -&gt; base16 -&gt; xor_repeating</code>.</dd>
           <dt>index of coincidence</dt><dd>Probability that two random letters match. English ≈ 0.066, random ≈ 0.038, a transposition keeps it, a polyalphabetic cipher flattens it.</dd>
           <dt>quadgram fitness</dt><dd>Log-probability per letter under the selected language's quadgram model — 258k quadgrams for English. Around −4.3 reads as language; below −6 does not.</dd>
@@ -311,8 +402,9 @@
 
         <h2>How it is built</h2>
         <p>
-          Pure Python standard library. No numpy, no requests, no build step, no network access at runtime.
-          The web interface you are looking at is <code>http.server</code> and three static files; the search is
+          The core solver uses the Python standard library. No numpy, no requests, and no network access for solving.
+          AES known-key operations use the optional maintained cryptography provider, bundled in the Windows installer.
+          The web interface you are looking at is <code>http.server</code> and local static files; the search is
           the same engine the CLI runs, so <code>python3 -m buttcrack "…"</code> and this page give identical answers.
           Source and releases live on
           <a href="https://github.com/ahardkore/Buttcrack---Cipher-Breaker" target="_blank" rel="noopener">GitHub</a>;
@@ -337,5 +429,7 @@
 </footer>
 
 <script src="app.js"></script>
+<script src="modern.js"></script>
+<script src="analysis-workspace.js"></script>
 </body>
 </html>

@@ -37,6 +37,7 @@ Windows-specific.
 
 import os
 import sys
+from importlib.metadata import PackageNotFoundError, distribution
 from pathlib import Path
 
 # SPECPATH is injected by PyInstaller; __file__ is not defined when a spec runs.
@@ -65,6 +66,17 @@ DATAS = [
     (str(ROOT / "LICENSE"), "."),
     (str(ROOT / "NOTICE"), "."),
 ]
+# Preserve license texts for the maintained provider and its wheel dependencies.
+# A core-only build may omit these; the Windows AES smoke test may not.
+for provider_name in ("cryptography", "cffi", "pycparser"):
+    try:
+        provider = distribution(provider_name)
+    except PackageNotFoundError:
+        continue
+    for resource in provider.files or []:
+        if "licenses" in resource.parts and resource.name.upper().startswith(("LICENSE", "COPYING")):
+            DATAS.append((str(provider.locate_file(resource)), f"licenses/{provider_name}"))
+
 if ICON:
     # desktop.py looks for this next to the executable, for the Tk window icon.
     DATAS.append((ICON, "."))
@@ -84,12 +96,14 @@ if ICON:
 # `buttcrack app` that behaves identically to the shortcut.
 HIDDEN = [
     "buttcrack.desktop",
+    "buttcrack.modern",
     "buttcrack._wintray",
     "tkinter",
     "tkinter.ttk",
 ]
 
-# The package has zero dependencies, so the only weight to trim is the standard
+# The core solver has zero dependencies; the AES provider is bundled separately.
+# The only weight to trim here is the standard
 # library's own baggage.  Everything here is both large and unreachable from
 # the solver.  Note what is *not* excluded:
 #

@@ -420,6 +420,14 @@ Assert-True ($report.best.notes.formatted -eq 'The quick brown fox jumps over th
 Assert-True ($report.stats.quadgram_fitness -lt 0) 'the bundled language model scored the result'
 Write-Note "confidence $($report.confidence); $($report.attacks.Count) attack(s) tried in $($report.elapsed)s"
 
+Write-Step 'Checking AES in the installed CLI'
+$aesInput = Join-Path $Script:WorkDir 'aes-smoke.json'
+'{"operation":"decrypt","mode":"ECB","key":"00000000000000000000000000000000","data":"66e94bd4ef8a2c3b884cfa59ca342b2e"}' | Set-Content -Encoding ASCII $aesInput
+$aesRun = Invoke-InstalledCli -Exe (Join-Path $InstallDir 'buttcrack.exe') -Arguments @('modern', 'aes', '--input', $aesInput)
+Assert-True ($aesRun.ExitCode -eq 0) 'installed AES provider ran' $aesRun.Error
+$aesReport = $aesRun.Output | ConvertFrom-Json
+Assert-True ($aesReport.output.hex -eq '00000000000000000000000000000000') 'AES known-answer output matches'
+
 Write-Step 'Booting the windowed executable'
 # The desktop program is a different binary from buttcrack.exe and fails
 # it has no console, so anything printing to a stream PyInstaller left as None

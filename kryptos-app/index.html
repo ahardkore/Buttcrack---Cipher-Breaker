@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kryptos &amp; Paradigm Kryptos — Master Cryptanalytic Suite</title>
-  <meta name="description" content="Kryptos research explorer: the K1–K4 ciphertexts, verified solutions with reproducible methods, and an interactive cryptanalytic workbench.">
+  <title>Kryptos Research Mode — Cipher Solver Pro</title>
+  <meta name="description" content="Kryptos Research Mode: save hypotheses, compare cipher methods, reproduce PK1–PK10 decryptions, and export evidence with clear verification labels.">
   <!-- Published at <base_url>/kryptos/ by scripts/build_site.py; keep this in
        step with base_url in ventures/cipher-solver-web/site.json. -->
   <link rel="canonical" href="https://ciphersolverpro.com/kryptos/">
-  <meta property="og:title" content="Kryptos &amp; Paradigm Kryptos — Master Cryptanalytic Suite">
-  <meta property="og:description" content="The K1–K4 ciphertexts, verified solutions with reproducible methods, and an interactive cryptanalytic workbench.">
+  <meta property="og:title" content="Kryptos Research Mode — Cipher Solver Pro">
+  <meta property="og:description" content="Save Kryptos hypotheses, compare methods, reproduce decryptions and export research evidence with distinct verification labels.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ciphersolverpro.com/kryptos/">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="archive.css">
+  <link rel="stylesheet" href="research.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
 </head>
 <body>
@@ -32,11 +33,12 @@
       <div class="logo-badge">KRYPTOS</div>
       <div class="logo-title">
         <h1><span class="title-wide">PARADIGM &amp; CIA KRYPTOS RESEARCH SUITE</span><span class="title-compact">Kryptos Research</span></h1>
-        <p>Verified Solutions, Reproducible Methods &amp; Open Research</p>
+        <p>Corpus References, Reproduced Decryptions &amp; Research Hypotheses</p>
       </div>
     </div>
     <nav>
-      <button class="nav-tab active" data-target="cipher-explorer"><span class="nav-label-wide">Ciphers (PK1–10 &amp; K1–4)</span><span class="nav-label-compact">Ciphers</span></button>
+      <button class="nav-tab active" data-target="research-mode">Research Mode</button>
+      <button class="nav-tab" data-target="cipher-explorer"><span class="nav-label-wide">Ciphers (PK1–10 &amp; K1–4)</span><span class="nav-label-compact">Ciphers</span></button>
       <button class="nav-tab" data-target="sculpture-visualizer"><span class="nav-label-wide">Sculpture Architecture</span><span class="nav-label-compact">Map</span></button>
       <button class="nav-tab" data-target="book-reader"><span class="nav-label-wide">Manuscript Reader</span><span class="nav-label-compact">Reader</span></button>
       <button class="nav-tab" data-target="workbench"><span class="nav-label-wide">Cryptanalytic Workbench</span><span class="nav-label-compact">Workbench</span></button>
@@ -54,8 +56,74 @@
   <!-- Main Content Area -->
   <main>
 
+    <div id="research-mode" class="tab-pane active">
+      <div class="research-intro">
+        <h2>Kryptos Research Mode</h2>
+        <button id="research-whats-new" type="button" class="research-open">What changed?</button>
+        <p>A notebook for testable methods, competing readings and reproducible evidence—not another automatic “solution.” Everything in this workspace runs in your browser.</p>
+        <p><strong>Verified corpus match</strong>: normalized ciphertext equals a documented PK1–PK10 reference. <strong>Reproduced decryption</strong>: the supplied method regenerates the proposal and its inverse regenerates the ciphertext. <strong>Research hypothesis</strong>: a proposal not independently verified. Reproduction alone never proves an intended message.</p>
+      </div>
+      <p id="research-status" role="status" aria-live="polite"></p>
+      <div class="research-layout">
+        <section class="research-panel" aria-labelledby="research-source-heading">
+          <h3 id="research-source-heading">01 / Source &amp; alphabets</h3>
+          <label for="research-source">Published reference or custom text <select id="research-source"><option value="custom">Custom ciphertext</option></select></label>
+          <label for="research-original">Original ciphertext <textarea id="research-original" rows="7" maxlength="16000" spellcheck="false"></textarea></label>
+          <div id="research-corpus"></div>
+          <p class="research-hint" id="research-source-note"></p>
+          <details><summary>Normalized text &amp; source measurements</summary><p class="research-hint" id="research-normalization"></p><pre id="research-normalized"></pre><p id="research-source-metrics" class="research-hint"></p></details>
+          <label for="research-prefix">Alphabet prefix <input id="research-prefix" value="KRYPTOS" maxlength="128" spellcheck="false"></label>
+          <div class="research-actions"><button id="research-build-alphabet" type="button">Build keyed alphabet</button><button id="research-standard-alphabet" type="button">Standard A–Z</button></div>
+          <label for="research-alphabet">Default alphabet (permutation of all 26 letters) <input id="research-alphabet" value="KRYPTOSABCDEFGHIJLMNQUVWXZ" maxlength="26" spellcheck="false"></label>
+          <div id="research-alphabet-view" class="research-alphabet" aria-label="Selected alphabet and zero-based indices"></div>
+          <p class="research-hint">Each step can override the default alphabet. Spaces, punctuation and non-ASCII letters do not consume key positions. Text is never silently truncated; methods work on at most 8,000 normalized letters.</p>
+        </section>
+        <section class="research-panel" aria-labelledby="research-hypothesis-heading">
+          <h3 id="research-hypothesis-heading">02 / Hypothesis notebook</h3>
+          <label for="research-name">Hypothesis name <input id="research-name" maxlength="120" value="Custom hypothesis"></label>
+          <label for="research-proposed">Proposed candidate plaintext <textarea id="research-proposed" rows="5" maxlength="16000" spellcheck="false"></textarea></label>
+          <h4>Decryption sequence — first to last</h4>
+          <p class="research-hint">Keys and optional per-step alphabets are recorded below. Complete columnar / spiral grids add no padding. The templates encode the documented PK constructions; other methods must be explicit.</p>
+          <div id="research-steps"></div>
+          <button id="research-add-step" type="button">+ Add transformation</button>
+          <label for="research-method-notes">Method / provenance notes <textarea id="research-method-notes" rows="2" maxlength="4000"></textarea></label>
+          <div class="research-columns">
+            <label for="research-evidence">Evidence in favor <textarea id="research-evidence" rows="3" maxlength="4000" placeholder="Clue constraints, sources, repeat spacings…"></textarea></label>
+            <label for="research-objections">Reasons it might be wrong <textarea id="research-objections" rows="3" maxlength="4000" placeholder="Unexplained characters, fitted parameters, untested assumptions…"></textarea></label>
+          </div>
+          <div class="research-actions"><button id="research-run" class="research-primary" type="button">Run &amp; check method</button><button id="research-save" type="button">Save as new hypothesis</button><button id="research-update" type="button" disabled>Update loaded hypothesis</button></div>
+          <p class="research-hint">Save/update stores only this hypothesis's inputs in this browser's local storage. Research code makes no analysis requests; there is no automatic draft saving or cloud sync. Reports contain plaintext and keys. The hosted site may include advertising scripts—use a locally served/offline copy for sensitive work. Export a backup before clearing browser data.</p>
+        </section>
+        <section class="research-panel research-wide" aria-labelledby="research-results-heading">
+          <h3 id="research-results-heading">03 / Reproduction &amp; evidence</h3>
+          <div id="research-verdict"></div><p id="research-verification-detail" class="research-hint">Run a method to inspect its evidence. No status is inferred from English-like output.</p>
+          <p id="research-agreement" class="research-hint"></p>
+          <p id="research-reference-agreement" class="research-hint"></p>
+          <p id="research-constraints" class="research-hint"></p>
+          <div class="research-columns"><div><h4>Generated candidate</h4><pre id="research-output">No method executed.</pre></div><div><h4>Re-encrypted proposed plaintext</h4><pre id="research-reconstructed">Not checked.</pre></div></div>
+          <details><summary>Intermediate outputs &amp; exact conventions</summary><div id="research-intermediates"></div></details>
+          <div class="research-actions"><button id="research-export" type="button">Export current research report (.json)</button><label for="research-import">Import report &amp; recompute <input id="research-import" type="file" accept=".json,application/json"></label></div>
+          <p class="research-hint">Exports include original and normalized text, candidate, keys, alphabets, decryption order, intermediate outputs, evidence, objections and derived verification. Imported status claims are ignored and recomputed locally.</p>
+        </section>
+        <section class="research-panel research-wide" aria-labelledby="research-saved-heading">
+          <h3 id="research-saved-heading">04 / Saved hypotheses &amp; comparison</h3>
+          <div class="research-scroll"><table class="research-table"><thead><tr><th>Name / families</th><th>Source association</th><th>Reproduction</th><th>Explained ciphertext*</th><th>Actions</th></tr></thead><tbody id="research-saved"></tbody></table></div>
+          <p class="research-hint">*Position agreements when re-encrypting the proposed plaintext under its recorded method—not a probability, language score or independent verification. Different source texts are not directly comparable.</p>
+          <div class="research-columns"><label for="research-compare-a">Hypothesis A <select id="research-compare-a"></select></label><label for="research-compare-b">Hypothesis B <select id="research-compare-b"></select></label></div>
+          <div class="research-columns"><label for="research-compare-offset">B offset relative to A (normalized letters) <input id="research-compare-offset" type="number" min="-8000" max="8000" value="0"></label><label for="research-compare-start">First displayed A position <input id="research-compare-start" type="number" min="0" max="8000" value="0"></label></div>
+          <button id="research-compare" type="button">Compare hypotheses</button>
+          <p id="research-compare-note" class="research-hint"></p>
+          <div id="research-compare-summary" class="research-columns"></div>
+          <div class="research-scroll"><table class="research-table"><thead><tr><th>A / B positions</th><th>Candidate A</th><th>Candidate B</th></tr></thead><tbody id="research-comparison"></tbody></table></div>
+          <h4>Shared repeated sequences</h4><p class="research-hint">3–5-letter patterns repeated in at least one reading, at most 20 stored positions each and 20 displayed patterns. Overlaps/chance matches are not independent evidence. Align uses each pattern's first occurrence.</p>
+          <div class="research-scroll"><table class="research-table"><thead><tr><th>Pattern</th><th>A positions</th><th>B positions</th><th>Alignment</th></tr></thead><tbody id="research-shared"></tbody></table></div>
+          <div class="research-actions"><button id="research-export-notebook" type="button">Export notebook backup</button><label for="research-import-notebook">Import notebook backup <input id="research-import-notebook" type="file" accept=".json,application/json"></label><button id="research-clear-saved" class="research-danger" type="button">Delete saved notebook</button></div>
+        </section>
+      </div>
+    </div>
+
     <!-- Tab 1: Cipher Explorer -->
-    <div id="cipher-explorer" class="tab-pane active">
+    <div id="cipher-explorer" class="tab-pane">
       <div class="cipher-explorer-layout">
         <!-- Sidebar -->
         <aside class="cipher-sidebar" id="cipher-sidebar-list">
@@ -75,6 +143,7 @@
             </div>
           </div>
 
+          <button class="research-open" id="research-open-reference" type="button">Open this reference in Research Mode</button>
           <!-- Statistical Metrics Grid -->
           <div class="stats-grid">
             <div class="stat-box">
@@ -109,7 +178,7 @@
 
           <!-- Plaintext Display -->
           <div class="text-section">
-            <h3 id="detail-pt-heading">Verified Plaintext</h3>
+            <h3 id="detail-pt-heading">Reference Plaintext</h3>
             <pre class="code-display" id="detail-pt">-</pre>
           </div>
 
@@ -143,6 +212,7 @@
 
     <!-- Tab 3: Book Reader -->
     <div id="book-reader" class="tab-pane">
+      <p class="research-hint">Historical research manuscript: some passages describe earlier hypotheses. Use the shared PK catalog and executable Research Mode reports for current source association and reproduction evidence.</p>
       <div class="book-reader-container">
         <!-- Table of Contents -->
         <aside class="book-toc">
@@ -409,7 +479,7 @@ cc -O3 -march=native -fopenmp kryptos/break_pk8_structured.c -o /tmp/pk8 -lm
           <article><span class="symbol-swatch">□</span><h3>Null or padding</h3><p>A filler used to complete a grid. It must be documented before it is removed.</p></article>
           <article><span class="symbol-swatch">→</span><h3>Transformation</h3><p>Notation showing movement from plaintext to ciphertext, not a character in the message.</p></article>
           <article><span class="symbol-swatch">◎</span><h3>Visual clue</h3><p>A feature that may guide interpretation without proving a key or plaintext.</p></article>
-          <article><span class="symbol-swatch">✓</span><h3>Verified</h3><p>An exact round-trip result independently checked. Scores alone do not earn this mark.</p></article>
+          <article><span class="symbol-swatch">✓</span><h3>Reproduced decryption</h3><p>The documented method regenerates a candidate and its inverse regenerates the source. Reproduction alone is not independent verification or proof of intent.</p></article>
         </div>
         <div class="symbol-workflow"><strong>Hand workflow:</strong> inventory marks → record positions → compare with the machine transcription → test hypotheses → document confidence.</div>
         <section class="guided-demo" aria-labelledby="guided-demo-title">
@@ -477,13 +547,31 @@ git push -u origin main</pre>
 
   </main>
 
+  <dialog id="research-update-dialog" class="research-update-dialog" aria-labelledby="research-update-title">
+    <h2 id="research-update-title">Kryptos Research Mode — improvements</h2>
+    <p>A dedicated experience for research, not another automatic solution claim.</p>
+    <ul>
+      <li>Unified reference/custom ciphertexts, alphabet tools, candidate plaintexts and ordered methods.</li>
+      <li>Saved hypotheses with keys, alphabets, evidence and reasons a proposal might be wrong.</li>
+      <li>Cross-family comparisons, repeated-sequence alignment and fixed-position K4 clue checks.</li>
+      <li>Executable PK1–PK10 templates, including the full 21-stage PK10 pipeline.</li>
+      <li>Reproducible reports and notebook backups; imported status claims are recomputed.</li>
+      <li>Separate corpus-match, reproduced-decryption and research-hypothesis labels, plus corrected PK catalog data.</li>
+    </ul>
+    <p>Reproducibility is not proof of the intended plaintext. This notice stores only its version in session storage, never your research text or keys.</p>
+    <button id="research-close-updates" type="button" class="research-open" autofocus>Continue to research</button>
+  </dialog>
+
   <!-- Global Footer -->
   <footer>
     <p>Kryptos & Paradigm Kryptos Master Cryptanalytic Suite &copy; 2026. Cryptanalytic research, proofs, and verified solution catalog.</p>
   </footer>
 
+  <script src="paradigm.js"></script>
   <script src="data.js"></script>
+  <script src="research-engine.js"></script>
   <script src="unsolved-archive.js"></script>
   <script src="app.js"></script>
+  <script src="research.js"></script>
 </body>
 </html>

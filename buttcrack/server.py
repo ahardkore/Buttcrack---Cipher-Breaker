@@ -9,6 +9,8 @@ API
 ``GET  /api/health``           version, model provenance, CPU count
 ``GET  /api/ciphers``          the registry, for the reference panel
 ``GET  /api/paradigm``         verified Paradigm Kryptos PK1–PK10 catalog (local)
+``POST /api/analysis-workspace`` bounded frequency, period and key-alignment diagnostics
+``POST /api/modern``          ``{"lab", "options"}`` -> explicit offline crypto lab result
 ``POST /api/assistant``        ``{"text": ...}`` -> explainable local plan / exact-match status
 ``POST /api/identify``         ``{"text": ...}`` -> characterisation + hypotheses
 ``POST /api/transform``        ``{"cipher","key","text","operation"}`` -> output
@@ -47,6 +49,7 @@ from .lang import LANGUAGES, get_model, resolve_language
 from .paradigm import RECORDS, catalog
 
 STATIC_DIR = Path(__file__).parent / "static"
+LAB_SLOTS = threading.BoundedSemaphore(2)
 MAX_BODY_BYTES = 4 * 1024 * 1024
 #: Finished jobs are kept for a while so a slow poller can still collect them.
 JOB_TTL_SECONDS = 600
@@ -294,6 +297,7 @@ class JobStore:
                 hints=options.get("hints") or None,
                 progress=progress,
                 exhaustive=bool(options.get("exhaustive", False)),
+                compare=bool(options.get("compare", False)),
                 **extra,
             )
             payload = report.as_dict(max_candidates=int(options.get("candidates", 8)))
@@ -485,6 +489,7 @@ class Handler(BaseHTTPRequestHandler):
                     "depth": int(_clamp(float(body.get("depth", 6)), 0, 8)),
                     "candidates": int(_clamp(float(body.get("candidates", 8)), 1, 24)),
                     "exhaustive": bool(body.get("exhaustive", False)),
+                    "compare": bool(body.get("compare", False)),
                     "language": _clean_language(body.get("language", "english")),
                     "hints": _clean_hints(body.get("hints")),
                 }
@@ -498,6 +503,22 @@ class Handler(BaseHTTPRequestHandler):
                 if not JOBS.cancel(job_id):
                     return self._error(404, "no such job")
                 return self._json({"job": job_id, "cancel_requested": True})
+            if path == "/api/modern":
+                from .modern import run
+
+                slots = LAB_SLOTS
+                if not slots.acquire(blocking=False):
+                    return self._error(429, "Two lab operations are already running; try again shortly")
+                try:
+                    try:
+                        result = run(body.get("lab"), body.get("options", {}))
+                    finally:
+                        # Release before replying: the next request may arrive as
+                        # soon as the client reads its response.
+                        slots.release()
+                except ValueError as error:
+                    return self._error(400, str(error))
+                return self._json(result)
             if path == "/api/assistant":
                 text = str(body.get("text") or "")
                 if not text.strip():
@@ -505,6 +526,20 @@ class Handler(BaseHTTPRequestHandler):
                 from .assistant import analysis
 
                 return self._json(analysis(text))
+            if path == "/api/analysis-workspace":
+                from .analysis_workspace import analyze
+
+                slots = LAB_SLOTS
+                if not slots.acquire(blocking=False):
+                    return self._error(429, "Analysis/lab slots are busy; try again shortly")
+                try:
+                    try:
+                        result = analyze(body)
+                    finally:
+                        slots.release()
+                except (ValueError, TypeError) as error:
+                    return self._error(400, str(error))
+                return self._json(result)
             if path == "/api/identify":
                 text = str(body.get("text") or "")
                 if not text.strip():

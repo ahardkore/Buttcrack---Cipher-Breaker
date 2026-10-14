@@ -77,4 +77,15 @@ written.
 Third-party runtime dependencies
 ---------------------------------------------------------------------------
 
-None. buttcrack uses only the Python standard library at runtime.
+The core solver uses only the Python standard library at runtime.
+The optional AES lab uses the maintained `cryptography` package:
+  https://github.com/pyca/cryptography
+  https://cryptography.io/
+
+cryptography is licensed under your choice of the Apache License 2.0 or BSD
+3-Clause license. Windows installers bundle the provider and its license texts
+under _internal/licenses/cryptography. Its wheels also supply the underlying
+cryptographic provider (OpenSSL); OpenSSL 3 is under the Apache License 2.0.
+The provider's wheel dependencies, cffi (MIT) and pycparser (BSD), also have
+their supplied license texts included under _internal/licenses when installed.
+No AES primitive is implemented in this project. No remote service is used.

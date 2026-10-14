@@ -115,6 +115,18 @@ class LocalServerRefusalTests(unittest.TestCase):
     def tearDownClass(cls) -> None:
         cls.app.stop()
 
+    def test_comparison_search_options_are_passed_to_the_job(self):
+        options = {"text": "Wkh dufklyh frqwdlqv pdqb ohwwhuv", "compare": True, "candidates": 10, "budget": .5}
+        with mock.patch.object(server.JOBS, "create", return_value="comparison-job") as create:
+            status, _, raw = headers_of(
+                self.app.port, "POST", "/api/crack",
+                {"Content-Type": "application/json"}, json.dumps(options).encode(),
+            )
+        self.assertEqual(status, 200)
+        self.assertTrue(create.call_args.args[0]["compare"])
+        self.assertEqual(create.call_args.args[0]["candidates"], 10)
+        self.assertTrue(json.loads(raw)["options"]["compare"])
+
     def test_a_rebound_host_header_is_refused(self):
         status, _headers, body = headers_of(self.app.port, "GET", "/api/health", {"Host": "evil.example"})
         self.assertEqual(status, 403, body)

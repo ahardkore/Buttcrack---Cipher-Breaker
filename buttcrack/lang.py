@@ -316,6 +316,9 @@ class LanguageScore:
     about message framing, not about whether the text is English.
     """
 
+    dictionary_assessed: bool = False
+    """Whether the dictionary view was actually used, rather than an empty placeholder."""
+
     @property
     def solved(self) -> bool:
         return self.confidence >= SOLVED_CONFIDENCE
@@ -335,6 +338,7 @@ class LanguageScore:
             "sample_size": self.sample_size,
             "solved": self.solved,
             "words_found": list(self.words_found),
+            "dictionary_assessed": self.dictionary_assessed,
             "start_word": self.start_word,
             "start_quality": round(self.start_quality, 3),
         }
@@ -635,6 +639,7 @@ class LanguageModel:
             words_found=tuple(words[:40]),
             start_word=words[0] if words else "",
             start_quality=self._start_quality(words[0] if words else ""),
+            dictionary_assessed=with_words,
         )
 
     def _start_quality(self, word: str) -> float:

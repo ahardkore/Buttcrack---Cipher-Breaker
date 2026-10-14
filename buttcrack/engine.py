@@ -245,9 +245,10 @@ def fingerprint(text: str) -> str:
 class CandidatePool:
     """Deduplicated, ranked collection of every candidate found so far."""
 
-    def __init__(self, model: LanguageModel, keep: int = 60):
+    def __init__(self, model: LanguageModel, keep: int = 60, *, stop_on_confidence: bool = True):
         self.model = model
         self.keep = keep
+        self.stop_on_confidence = stop_on_confidence
         self._by_text: dict[str, Candidate] = {}
         self._order: list[str] = []
         #: Cached leader, invalidated on every add (see `best`).
@@ -255,8 +256,10 @@ class CandidatePool:
 
     @staticmethod
     def _key(candidate: Candidate) -> str:
-        normalised = letters_only(candidate.plaintext)[:160]
-        return normalised or candidate.plaintext[:160]
+        # A shared opening is not an identical decryption. Retain readings that
+        # diverge later instead of discarding everything after character 160.
+        normalised = letters_only(candidate.plaintext)
+        return fingerprint(normalised or candidate.plaintext)
 
     def add(self, candidate: Candidate) -> bool:
         """Add a candidate; returns True when it is the new best."""
@@ -301,7 +304,7 @@ class CandidatePool:
 
     @property
     def certain(self) -> bool:
-        return self.best_confidence >= CERTAIN_CONFIDENCE
+        return self.stop_on_confidence and self.best_confidence >= CERTAIN_CONFIDENCE
 
     def ranked(self, limit: int | None = None) -> list[Candidate]:
         items = sorted(self._by_text.values(), key=Candidate.sort_key)
@@ -370,6 +373,7 @@ class Solver:
         hints: dict[str, Any] | None = None,
         exhaustive: bool = False,
         language: str = "english",
+        compare: bool = False,
     ):
         self.budget = float(budget)
         self.workers = max(1, int(workers))
@@ -382,6 +386,7 @@ class Solver:
         self.ciphers = list(ciphers) if ciphers is not None else attack_ciphers()
         self.hints = hints or {}
         self.exhaustive = exhaustive
+        self.compare = compare
         self._visited: set[str] = set()
         #: fingerprint -> how thoroughly that text has already been explored.
         self._explored: dict[str, int] = {}
@@ -407,6 +412,7 @@ class Solver:
             budget=self.budget,
             workers=self.workers,
             language=self.model.language,
+            comparison_mode=self.compare,
         )
         if not text:
             report.elapsed = time.time() - started
@@ -436,7 +442,7 @@ class Solver:
             max_depth=self.max_depth,
             exhaustive=self.exhaustive,
         )
-        pool = CandidatePool(self.model)
+        pool = CandidatePool(self.model, stop_on_confidence=not self.compare)
 
         # PK1–PK10 are a recovered, versioned corpus.  An exact normalized
         # ciphertext equality is different from a statistical guess: return it
@@ -882,7 +888,7 @@ class Solver:
                     for result in cipher.crack(plain, sub):
                         result.notes.setdefault("reading", f"{name} key {key}")
                         pool.add(result)
-                        if result.certain:
+                        if result.certain and not self.compare:
                             return
                 except Exception:  # a probe must never break the solve
                     if STRICT_ATTACKS:
@@ -1547,7 +1553,7 @@ class Solver:
                 pool.add(candidate)
                 if sink is not None:
                     sink.append(candidate)
-                if candidate.certain:
+                if candidate.certain and not self.compare:
                     log.status = "solved"
                     log.detail = f"key {candidate.key_repr}"
                     break
@@ -1728,6 +1734,7 @@ class Solver:
                 # wants back.
                 best.cipher = "gronsfeld"
                 best.key = {"key": digits}
+                best.__dict__.pop("_key_repr", None)
                 notes["also_known_as"] = f"Vigenere with key {_vigenere_word(digits)}"
             else:
                 # Variant Beaufort with the complementary key reads the same
@@ -1792,6 +1799,7 @@ def solve(
     model: LanguageModel | None = None,
     exhaustive: bool = False,
     language: str = "english",
+    compare: bool = False,
 ) -> CrackReport:
     """Convenience wrapper around :class:`Solver`.
 
@@ -1808,6 +1816,7 @@ def solve(
         progress=progress,
         exhaustive=exhaustive,
         language=language,
+        compare=compare,
     ).solve(ciphertext)
 
 
@@ -1820,6 +1829,7 @@ def solve_auto(
     hints: dict[str, Any] | None = None,
     progress: Callable[[str, float, dict], None] | None = None,
     exhaustive: bool = False,
+    compare: bool = False,
 ) -> CrackReport:
     """Solve under every shipped language model, picking the best fit.
 
@@ -1841,6 +1851,19 @@ def solve_auto(
     cap = budget * 0.5
     probes: dict[str, CrackReport] = {}
     say = progress or (lambda *_: None)
+
+    def finish_probe(report: CrackReport) -> CrackReport:
+        remaining = budget - (time.time() - started)
+        if compare and report.best and not report.best.cipher.startswith("paradigm_kryptos_") and remaining > 0:
+            report = solve(
+                ciphertext, budget=remaining, workers=workers, max_depth=max_depth,
+                hints=hints, progress=progress, exhaustive=exhaustive,
+                language=report.language, compare=True,
+            )
+        report.budget = budget
+        report.elapsed = time.time() - started
+        return report
+
     for language in order:
         if time.time() - started >= cap and probes:
             break
@@ -1875,11 +1898,9 @@ def solve_auto(
                     language=detected,
                 )
                 if foreign.solved:
-                    foreign.budget = budget
-                    return foreign
+                    return finish_probe(foreign)
                 report.language_detected = detected
-            report.budget = budget  # the answer stands for the whole budget
-            return report
+            return finish_probe(report)
 
     # No probe solved outright: hand the rest of the budget to whichever
     # language read the most text so far.  Rank by best confidence, then by
@@ -1892,7 +1913,7 @@ def solve_auto(
     best_language = max(probes, key=probe_rank)
     remaining = budget - (time.time() - started)
     say(f"probes favour {best_language}", (time.time() - started) / max(budget, 0.001), {})
-    return solve(
+    report = solve(
         ciphertext,
         budget=max(remaining, probe_budget),
         workers=workers,
@@ -1901,4 +1922,8 @@ def solve_auto(
         progress=progress,
         exhaustive=exhaustive,
         language=best_language,
+        compare=compare,
     )
+    report.budget = budget
+    report.elapsed = time.time() - started
+    return report

@@ -190,12 +190,34 @@ def inject_adsense(tree: Path) -> int:
     return injected
 
 
+def write_desktop_version(tree: Path) -> None:
+    """Advertise the published installer and its notes, never pending releases or paid URLs."""
+    sys.path.insert(0, str(ROOT))
+    from buttcrack.updates import MAX_MANIFEST_BYTES, release_notes, version_parts
+
+    config = site_config()
+    version = (config.get("windows_app") or {}).get("version")
+    try:
+        version_parts(version)
+        catalog = config.get("desktop_release_notes", {})
+        if not isinstance(catalog, dict):
+            raise ValueError("desktop_release_notes must map versions to lists of improvements")
+        notes = release_notes(catalog.get(version, []))
+        manifest = json.dumps({"version": version, "release_notes": notes}, ensure_ascii=False) + "\n"
+        if len(manifest.encode("utf-8")) > MAX_MANIFEST_BYTES:
+            raise ValueError("Desktop version manifest exceeds the 4 KB client limit")
+    except ValueError as exc:
+        raise SystemExit(f"Invalid desktop update metadata: {exc}") from exc
+    (tree / "desktop-version.json").write_text(manifest, encoding="utf-8")
+
+
 def build(out: Path) -> Path:
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
 
     pages = copy_tree(SOLVER, out)
+    write_desktop_version(out)
     print(f"solver site   -> {out}/ ({pages} files)")
 
     kryptos_out = out / KRYPTOS_DIR

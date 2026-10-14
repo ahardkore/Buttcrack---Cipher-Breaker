@@ -87,6 +87,7 @@ class ParadigmKryptosTests(unittest.TestCase):
         self.assertEqual(package_records, records)
         expected_js = generator.javascript(records)
         for target in (
+            ROOT / "kryptos-app" / "paradigm.js",
             ROOT / "buttcrack" / "static" / "paradigm.js",
             ROOT / "ventures" / "cipher-solver-web" / "paradigm.js",
         ):

@@ -28,12 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const verifyRun = document.getElementById("verify-run");
   if (verifyRun) verifyRun.addEventListener("click", () => {
-    const expected = document.getElementById("verify-expected").value.replace(/\\s/g, "");
-    const produced = document.getElementById("verify-produced").value.replace(/\\s/g, "");
+    const expected = document.getElementById("verify-expected").value.replace(/\s/g, "");
+    const produced = document.getElementById("verify-produced").value.replace(/\s/g, "");
     const limit = Math.min(expected.length, produced.length);
     let mismatch = -1;
     for (let i = 0; i < limit; i++) if (expected[i] !== produced[i]) { mismatch = i; break; }
-    if (mismatch < 0 && expected.length === produced.length) document.getElementById("verify-output").textContent = "VERIFIED: exact normalized round trip.";
+    if (mismatch < 0 && expected.length === produced.length) document.getElementById("verify-output").textContent = "Text equality only: these supplied strings match after removing whitespace. No cipher method was executed; this is not a reproduced decryption or independent verification.";
     else if (mismatch < 0) document.getElementById("verify-output").textContent = `FAIL: length mismatch at ${limit}; expected ${expected.length}, produced ${produced.length}.`;
     else document.getElementById("verify-output").textContent = `FAIL: first mismatch at position ${mismatch}; expected ${expected[mismatch]}, produced ${produced[mismatch]}.`;
   });
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const c of order) for (let r=0; r<rows; r++) grid[r][c] = text[q++];
     return grid.flat().join("");
   }
-  ["transpose-enc", "transpose-dec"].forEach(id => { const button = document.getElementById(id); if (button) button.addEventListener("click", () => { try { document.getElementById("transpose-output").textContent = simpleTranspose(document.getElementById("transpose-text").value.replace(/\\s/g, ""), document.getElementById("transpose-key").value, id.endsWith("dec")); } catch (e) { document.getElementById("transpose-output").textContent = `Input error: ${e.message}`; } }); });
+  ["transpose-enc", "transpose-dec"].forEach(id => { const button = document.getElementById(id); if (button) button.addEventListener("click", () => { try { document.getElementById("transpose-output").textContent = simpleTranspose(document.getElementById("transpose-text").value.replace(/\s/g, ""), document.getElementById("transpose-key").value, id.endsWith("dec")); } catch (e) { document.getElementById("transpose-output").textContent = `Input error: ${e.message}`; } }); });
 
   const assistantRun = document.getElementById("assistant-run");
   const assistantSave = document.getElementById("assistant-save");
@@ -165,7 +165,7 @@ function createSidebarItem(data) {
   div.dataset.id = data.id;
 
   let badgeClass = "badge-unsolved";
-  if (data.status === "SOLVED") badgeClass = "badge-solved";
+  if (data.category === "Paradigm Kryptos" || data.status === "SOLVED") badgeClass = "badge-solved";
   else if (data.status.includes("FRONTIER")) badgeClass = "badge-frontier";
   else if (data.status.includes("CUSTODY")) badgeClass = "badge-custody";
 
@@ -197,10 +197,10 @@ function selectCipher(id) {
 
   // Render detail view
   document.getElementById("detail-title").textContent = data.title;
-  document.getElementById("detail-subtitle").textContent = `${data.category} | ${data.mechanism} | Length: ${data.length} characters`;
+  document.getElementById("detail-subtitle").textContent = `${data.category} | ${data.mechanism} | Length: ${KryptosResearch.normalize(ct).length} normalized letters${data.reference_complete === false ? " (incomplete excerpt)" : ""}`;
 
   let badgeClass = "badge-unsolved";
-  if (data.status === "SOLVED") badgeClass = "badge-solved";
+  if (data.category === "Paradigm Kryptos" || data.status === "SOLVED") badgeClass = "badge-solved";
   else if (data.status.includes("FRONTIER")) badgeClass = "badge-frontier";
   else if (data.status.includes("CUSTODY")) badgeClass = "badge-custody";
 
@@ -208,7 +208,7 @@ function selectCipher(id) {
   statusBadge.className = `cipher-badge ${badgeClass}`;
   statusBadge.textContent = data.status;
 
-  document.getElementById("stat-len").textContent = data.length;
+  document.getElementById("stat-len").textContent = KryptosResearch.normalize(ct).length;
   document.getElementById("stat-ioc").textContent = ioc.toFixed(5);
   document.getElementById("stat-entropy").textContent = `${entropy.toFixed(3)} b`;
   document.getElementById("stat-rare").textContent = `${rareCount} (${(rareCount/ct.length*100).toFixed(1)}%)`;
@@ -227,7 +227,7 @@ function selectCipher(id) {
   const plaintextHeading = document.getElementById("detail-pt-heading");
   const plaintextDisplay = document.getElementById("detail-pt");
   if (pt) {
-    plaintextHeading.textContent = "Verified Plaintext";
+    plaintextHeading.textContent = data.category === "Paradigm Kryptos" ? "Documented corpus plaintext (lookup, not live reproduction)" : "Reference plaintext (check the method separately)";
     plaintextDisplay.classList.remove("frontier-display");
     plaintextDisplay.classList.add("plaintext-highlight");
     plaintextDisplay.textContent = formatWrapped(pt, 42);
@@ -349,6 +349,7 @@ function initWorkbench() {
     }
 
     let pt = "";
+    try {
     if (algo === "vigenere-kr") {
       pt = decryptQuagmireIII(ct, key);
     } else if (algo === "vigenere-std") {
@@ -357,6 +358,10 @@ function initWorkbench() {
       pt = decryptColumnar(ct, key);
     }
 
+    } catch (error) {
+      document.getElementById("wb-output-pt").textContent = `Method not executed: ${error.message}`;
+      return;
+    }
     document.getElementById("wb-output-pt").textContent = formatWrapped(pt, 42);
     document.getElementById("wb-res-ioc").textContent = calculateIoC(pt).toFixed(5);
     document.getElementById("wb-res-ent").textContent = `${calculateEntropy(pt).toFixed(3)} b`;
@@ -364,47 +369,15 @@ function initWorkbench() {
   });
 }
 
+// Reuse the research engine's explicit, inverse-tested conventions.
 function decryptQuagmireIII(ct, key) {
-  let pt = "";
-  for (let i = 0; i < ct.length; i++) {
-    const cIdx = KRYPTOS_ALPHABET.indexOf(ct[i]);
-    const kIdx = KRYPTOS_ALPHABET.indexOf(key[i % key.length]);
-    if (cIdx === -1 || kIdx === -1) { pt += ct[i]; continue; }
-    const pIdx = (cIdx - kIdx + 26) % 26;
-    pt += KRYPTOS_ALPHABET[pIdx];
-  }
-  return pt;
+  return KryptosResearch.transform(ct, {method: "vigenere", key, alphabet: KRYPTOS_ALPHABET});
 }
-
 function decryptVigenereStd(ct, key) {
-  let pt = "";
-  for (let i = 0; i < ct.length; i++) {
-    const cIdx = ct.charCodeAt(i) - 65;
-    const kIdx = key.charCodeAt(i % key.length) - 65;
-    const pIdx = (cIdx - kIdx + 26) % 26;
-    pt += String.fromCharCode(pIdx + 65);
-  }
-  return pt;
+  return KryptosResearch.transform(ct, {method: "vigenere", key, alphabet: STANDARD_ALPHABET});
 }
-
 function decryptColumnar(ct, key) {
-  const W = key.length;
-  const H = Math.ceil(ct.length / W);
-  // Simple order by sorting key
-  const order = key.split('').map((c, i) => ({ c, i })).sort((a, b) => a.c.localeCompare(b.c)).map(x => x.i);
-  const grid = Array.from({ length: H }, () => Array(W).fill(''));
-  let idx = 0;
-  for (let c = 0; c < W; c++) {
-    const colIdx = order.indexOf(c);
-    for (let r = 0; r < H; r++) {
-      if (idx < ct.length) grid[r][colIdx] = ct[idx++];
-    }
-  }
-  let res = "";
-  for (let r = 0; r < H; r++) {
-    for (let c = 0; c < W; c++) res += grid[r][c];
-  }
-  return res;
+  return KryptosResearch.transform(ct, {method: "columnar", key, alphabet: STANDARD_ALPHABET});
 }
 
 // Book Reader Setup

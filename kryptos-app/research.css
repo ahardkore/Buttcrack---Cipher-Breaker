@@ -1,0 +1,43 @@
+.research-intro { max-width: 1000px; margin-bottom: 22px; }
+.research-intro h2 { font-size: 1.8rem; color: var(--text-bright); }
+.research-intro p, .research-hint { color: var(--text-muted); font-size: .85rem; margin: 8px 0; }
+.research-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.research-panel { padding: 22px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; min-width: 0; }
+.research-panel h3 { color: var(--copper-glow); margin-bottom: 12px; }
+.research-panel label { display: block; font-size: .85rem; margin: 12px 0; }
+.research-panel textarea, .research-panel input, .research-panel select { display: block; width: 100%; margin-top: 5px; padding: 9px 10px; color: var(--text-main); background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 5px; font: inherit; }
+.research-panel textarea { font-family: var(--font-mono); resize: vertical; }
+.research-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.research-panel button, .research-open { padding: 8px 12px; cursor: pointer; color: var(--text-bright); background: var(--bg-card-hover); border: 1px solid var(--border-color); border-radius: 5px; }
+.research-panel button:hover, .research-open:hover { border-color: var(--copper-glow); }
+.research-primary { background: #57301d !important; border-color: var(--copper-primary) !important; }
+.research-badge { display: inline-block; padding: 4px 9px; margin: 6px 6px 6px 0; border: 1px solid var(--border-color); border-radius: 5px; font-size: .8rem; }
+.research-badge.corpus { color: var(--green); }
+.research-badge.reproduced { color: var(--cyan); }
+.research-badge.hypothesis { color: var(--gold); }
+.research-wide { grid-column: 1 / -1; }
+.research-step { border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin: 10px 0; }
+.research-step-fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(60px, 1fr); gap: 8px; }
+.research-step-fields label { margin: 0; }
+.research-scroll { overflow: auto; max-height: 440px; }
+.research-table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+.research-table th, .research-table td { padding: 9px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border-color); overflow-wrap: anywhere; }
+.research-panel pre { font-family: var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg-dark); padding: 12px; max-height: 360px; overflow: auto; }
+.research-alphabet { font-family: var(--font-mono); display: flex; flex-wrap: wrap; gap: 3px; }
+.research-alphabet span { display: inline-grid; text-align: center; padding: 4px 6px; border: 1px solid var(--border-color); }
+.research-alphabet small { color: var(--text-muted); }
+.research-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.research-danger { color: var(--red); }
+.research-align { font-family: var(--font-mono); white-space: nowrap !important; }
+.research-align span { display: inline-block; width: 1ch; }
+.research-disagree { color: var(--red); text-decoration: underline; }
+#research-status { min-height: 1.5em; color: var(--gold); }
+@media (max-width: 850px) { .research-layout, .research-columns { grid-template-columns: 1fr; } .research-step-fields { grid-template-columns: 1fr; } }
+@media print { .research-actions, #research-steps button { display: none; } .research-scroll, .research-panel pre { max-height: none; overflow: visible; } }
+#research-steps { max-height: 640px; overflow: auto; padding-right: 6px; }
+.research-update-dialog { max-width: 620px; width: calc(100vw - 36px); max-height: calc(100vh - 36px); overflow: auto; margin: auto; padding: 26px; color: var(--text-main); background: var(--bg-card); border: 1px solid var(--copper-primary); border-radius: 10px; }
+.research-update-dialog::backdrop { background: #000b; }
+.research-update-dialog h2 { color: var(--copper-glow); margin-bottom: 12px; }
+.research-update-dialog ul { padding-left: 22px; margin: 16px 0; }
+.research-update-dialog li { margin: 8px 0; }
+.research-update-dialog p { margin: 10px 0; font-size: .9rem; }

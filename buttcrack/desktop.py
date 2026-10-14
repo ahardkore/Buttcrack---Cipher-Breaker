@@ -1446,6 +1446,69 @@ def run_window(app: LocalApp) -> bool:
 
     root.protocol("WM_DELETE_WINDOW", hide if tray.active else shutdown)
 
+    from .updates import UPDATES_URL, UpdateChecker, UpdateError, update_dialog_text
+
+    update_checker = UpdateChecker()
+    update_status = tk.StringVar(value="Checks only when you click; no automatic updates.")
+    update_controls = ttk.Frame(frame)
+    update_controls.grid(row=24, column=0, columnspan=3, sticky="we", pady=(10, 0))
+
+    def open_update_page() -> None:
+        try:
+            opened = webbrowser.open(UPDATES_URL)
+        except Exception:
+            opened = False
+        if not opened:
+            from tkinter import messagebox
+
+            messagebox.showinfo("Update information", f"Open this address in your browser:\n{UPDATES_URL}", parent=root)
+
+    def check_updates() -> None:
+        try:
+            if not update_checker.start():
+                return
+        except UpdateError as exc:
+            update_status.set(str(exc))
+            return
+        update_status.set("Checking published version…")
+        update_button.configure(state="disabled")
+        help_menu.entryconfigure("Check for updates", state="disabled")
+        update_page_button.grid_remove()
+
+    update_button = ttk.Button(update_controls, text="Check for updates", command=check_updates)
+    update_button.grid(row=0, column=0, sticky="w")
+    update_page_button = ttk.Button(update_controls, text="Update information", command=open_update_page)
+    update_page_button.grid(row=0, column=1, sticky="w", padx=(8, 0))
+    update_page_button.grid_remove()
+    ttk.Label(update_controls, textvariable=update_status, wraplength=390).grid(
+        row=1, column=0, columnspan=2, sticky="w", pady=(4, 0)
+    )
+
+    def receive_update_result() -> None:
+        result = update_checker.poll()
+        if result is None:
+            return
+        from tkinter import messagebox
+
+        update_button.configure(state="normal")
+        help_menu.entryconfigure("Check for updates", state="normal")
+        if isinstance(result, UpdateError):
+            update_status.set(str(result))
+            messagebox.showwarning("Update check unavailable", f"{result}\n\nThe app still works offline.", parent=root)
+        elif result.newer:
+            update_status.set(f"Version {result.version} is available (installed: {__version__}).")
+            update_page_button.grid()
+            tray.notify("Buttcrack update available", f"Version {result.version} is available. Show the window for details.")
+            if messagebox.askyesno(
+                "Buttcrack update available",
+                update_dialog_text(result),
+                parent=root,
+            ):
+                open_update_page()
+        else:
+            update_status.set(f"You're up to date (installed: {__version__}; published: {result.version}).")
+            messagebox.showinfo("No update available", update_status.get(), parent=root)
+
     def show_about() -> None:
         from tkinter import messagebox
 
@@ -1455,6 +1518,8 @@ def run_window(app: LocalApp) -> bool:
             "Everything runs on this machine: the server is 127.0.0.1 and nothing\n"
             "is uploaded. The language model, the ciphers and the archive all ship\n"
             "with the program.\n\n"
+            "Check for updates contacts ciphersolverpro.com only when you click.\n"
+            "It sends no cipher text and never installs anything automatically.\n\n"
             f"Data: {userdata.data_dir()}\n"
             f"Log: {log_path()}",
         )
@@ -1489,11 +1554,20 @@ def run_window(app: LocalApp) -> bool:
         labs_menu.add_command(label=label, accelerator=f"Alt+{number}", command=opener)
     menu_bar.add_cascade(label="Labs", menu=labs_menu)
 
+    def open_crypto_labs() -> None:
+        if not webbrowser.open(app.url + "#modern"):
+            status.set("Could not open Crypto Labs in the browser.")
+
+    labs_menu.add_separator()
+    labs_menu.add_command(label="Crypto Labs (RSA, keystream, AES, Enigma)", command=open_crypto_labs)
+    ttk.Button(support, text="Crypto Labs", command=open_crypto_labs).grid(row=1, column=0, sticky="w", pady=(6, 0))
+
     help_menu = tk.Menu(menu_bar, tearoff=0)
     help_menu.add_command(label="Copy diagnostics", accelerator="Ctrl+D", command=copy_diagnostics)
     help_menu.add_command(label="Open data folder", command=open_data_folder)
     help_menu.add_command(label="Open log file", command=open_log)
     help_menu.add_separator()
+    help_menu.add_command(label="Check for updates", command=check_updates)
     help_menu.add_command(label="About Buttcrack", command=show_about)
     menu_bar.add_cascade(label="Help", menu=help_menu)
     root.config(menu=menu_bar)
@@ -1515,7 +1589,9 @@ def run_window(app: LocalApp) -> bool:
     # periodically; this also gives Ctrl-C somewhere to land.
     def tick() -> None:
         if not stopping.is_set():
-            root.after(400, tick)
+            receive_update_result()
+            if not stopping.is_set():
+                root.after(400, tick)
 
     root.after(400, tick)
 

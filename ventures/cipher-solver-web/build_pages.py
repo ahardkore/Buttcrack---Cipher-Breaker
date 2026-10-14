@@ -17,6 +17,7 @@ import hashlib
 import json
 import re
 import sys
+from html import unescape
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -268,8 +269,10 @@ def support_block() -> str:
 
 def nav(current: str) -> str:
     here = ' aria-current="page"'
-    links = "".join(f'<a href="{href}"{here if href == current else ""}>{label}</a>' for href, label in NAV)
-    return f'<nav class="tools">{links}</nav>'
+    primary = {"index.html", "cipher-wiki.html", KRYPTOS_HREF}
+    links = "".join(f'<a href="{href}"{here if href == current else ""}>{label}</a>' for href, label in NAV if href in primary)
+    more = "".join(f'<a href="{href}"{here if href == current else ""}>{label}</a>' for href, label in NAV if href not in primary)
+    return f'<nav class="tools" aria-label="Site navigation">{links}<details class="more-tools"><summary>More tools</summary><div>{more}</div></details></nav>'
 
 
 def faq_jsonld(faqs: list[tuple[str, str]]) -> str:
@@ -752,6 +755,7 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str, faq_html: str, wiki: 
           <span class="wiki-tab is-here" aria-current="page">Article</span>
           <a class="wiki-tab" href="#try-the-solver">Try the solver</a>
         </nav>
+{f'        <p class="wiki-try"><a class="go" href="index.html?cipher={wiki["cipher"]}&amp;example={wiki["cipher"]}#solver">Try this cipher →</a> <span>Load its worked example and preselect its method.</span></p>' if wiki.get("cipher") else ""}
         <div class="study-controls" aria-label="Reading controls">
           <span>Reading tools:</span>
           <button type="button" data-study="larger">Larger text</button>
@@ -774,7 +778,8 @@ def wiki_main(slug: str, h1: str, tagline: str, body: str, faq_html: str, wiki: 
         {solver_html()}
       </section>
 
-      <div id="output" aria-live="polite"></div>
+      <div id="output" tabindex="-1" aria-live="polite"></div>
+      {session_html()}
 
       {ad_slot()}
     </div>
@@ -937,8 +942,8 @@ def check_internal_links(written: dict[str, str]) -> None:
                 continue
             if href in _EXTERNAL_HREFS:
                 continue
-            target_page, _, fragment = href.partition("#")
-            target_page = target_page.strip() or slug
+            parsed = urlparse(unescape(href))
+            target_page, fragment = parsed.path.strip() or slug, parsed.fragment
             # Assets and generated files (style.css, model.js, the PDFs) are
             # not pages, but they must exist on disk or the link is dead.
             if target_page in written:
@@ -955,43 +960,70 @@ def check_internal_links(written: dict[str, str]) -> None:
         )
 
 
+def write_examples() -> None:
+    from wiki_ciphers import SAMPLE_OVERRIDES, SAMPLE_PLAINTEXT, _format_key, wiki_slug
+
+    from buttcrack.ciphers import all_ciphers
+
+    examples = {}
+    for cipher in all_ciphers():
+        name, key = cipher.name, cipher.info.example_key
+        plain = SAMPLE_OVERRIDES.get(name, SAMPLE_PLAINTEXT)
+        encrypted = cipher.encrypt(plain, key) if key not in (None, "") else cipher.encrypt(plain)
+        recovered = cipher.decrypt(encrypted, key) if key not in (None, "") else cipher.decrypt(encrypted)
+        key_input = str(key) if isinstance(key, (str, int)) else "" if key is None else _format_key(key)
+        if name == "quagmire3" and isinstance(key, dict) and key.get("alphabet") == "kryptos":
+            key_input = key["key"]
+        examples[name] = {"title": cipher.info.title, "family": cipher.info.family.value, "ciphertext": encrypted,
+                          "plaintext": recovered, "source_plaintext": plain, "key": key_input, "article": wiki_slug(name)}
+    payload = json.dumps(examples, ensure_ascii=True, separators=(",", ":"))
+    (HERE / "examples.js").write_text("/* Generated full registry examples; reference lookups are not live cryptanalysis. */\n'use strict';\nconst CIPHER_EXAMPLES = Object.freeze(" + payload + ");\nif (typeof module !== 'undefined' && module.exports) module.exports = CIPHER_EXAMPLES;\n", encoding="utf-8")
+
+
 def solver_html() -> str:
-    """The solver shell, shared by every page regardless of layout."""
-    sample_buttons = "".join(
-        f'<button data-sample="{key}">{label}</button>'
-        for key, label in [
-            ("caesar", "Caesar"),
-            ("vigenere", "Vigenère"),
-            ("beaufort", "Beaufort"),
-            ("porta", "Porta"),
-            ("autokey", "Autokey"),
-            ("substitution", "Substitution"),
-            ("layered", "Layered"),
-            ("morse", "Morse"),
-            ("pk1", "PK1 verified"),
-        ]
-    )
-    return f"""<section class="solver-shell" aria-label="Cipher solver">
-    <div class="solver-heading">
-      <div><p class="eyebrow">Private by design</p><h2>Drop in a puzzle. Leave with an answer.</h2></div>
-      <span class="local-badge"><i aria-hidden="true"></i> Runs on this device</span>
-    </div>
+    """Mobile-first shell; advanced controls and storage are explicit opt-ins."""
+    return """<section class="solver-shell" id="solver" aria-label="Cipher solver">
+    <div class="solver-heading"><div><p class="eyebrow">Private by design</p><h2>Paste a puzzle. Explore a reading.</h2></div><span class="local-badge">Runs on this device</span></div>
     <label class="sr-only" for="ciphertext">Ciphertext to solve</label>
-    <textarea id="ciphertext" spellcheck="false"
-      placeholder="Paste ciphertext here — you don't need to know which cipher it is."></textarea>
-    <div class="controls">
-      <button class="go" id="go">Solve cipher <span aria-hidden="true">→</span></button>
-      <button class="ghost" id="clear">Clear</button>
-      <span class="samples"><span class="sample-label">Try a sample</span>{sample_buttons}</span>
-    </div>
-    <details class="solver-limits">
-      <summary>What this browser solver can—and cannot—do</summary>
-      <p><strong>It tries:</strong> Caesar, Atbash, ROT13, affine, Trithemius, rail fence, single-byte XOR, periodic Vigenère-family ciphers, KRYPTOS-alphabet Quagmire III, autokey, selected encoding layers (such as Base64, hex, binary, decimal ASCII, Morse, and reverse), and—only with 60+ A–Z letters—statistical substitution. It also recognizes the ten published Paradigm Kryptos PK1–PK10 ciphertexts by exact normalized equality and labels those results separately as verified corpus matches.</p>
-      <p><strong>It does not:</strong> prove a decryption, cover every classical cipher, or break modern encryption such as AES or RSA. A high language-model score is a lead to verify with the method, key, and source context—not a guarantee. The PK label is only emitted for an exact canonical-corpus match, never merely for similar length or style.</p>
-      <p>Short text, non-English plaintext, non-Latin or symbol alphabets, missing keys, and unsupported formats can all leave no high-confidence answer. When that happens, the result includes input-specific observations and suggested next checks; those observations are not a claim to know the exact cause.</p>
+    <textarea id="ciphertext" spellcheck="false" placeholder="Paste ciphertext — you don't need to know the cipher."></textarea>
+    <p id="example-notice" class="privacy" hidden></p>
+    <div class="controls solve-actions"><button class="go" id="go" type="button">Solve cipher <span aria-hidden="true">→</span></button><button class="ghost" id="stop" type="button" hidden>Stop search</button></div>
+    <p id="solver-status" role="status" aria-live="polite" class="privacy">Paste text and press Solve. Ctrl / ⌘ + Enter works too.</p>
+    <details id="advanced-settings" class="solver-advanced"><summary>Advanced settings &amp; examples</summary>
+      <button id="show-web-improvements" class="ghost" type="button">What changed?</button>
+      <div class="advanced-grid">
+        <label for="solver-method">Method to test</label><select id="solver-method"><option value="auto">Auto-detect (browser-supported methods)</option></select>
+        <label for="solver-key">Supplied key (optional)</label><input id="solver-key" type="text" maxlength="512" autocomplete="off" spellcheck="false" placeholder="Leave blank for key recovery where supported">
+        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3" selected>Up to 3 layers</option></select>
+      </div>
+      <label class="compare-option" for="solver-compare"><input id="solver-compare" type="checkbox"> Explore more cipher families (slower; not exhaustive)</label>
+      <p class="privacy" id="method-help">Auto-detect ranks English-looking candidates, not probabilities. A selected method never silently falls back to a different cipher.</p>
+      <div class="controls"><label for="sample-select">Example</label><select id="sample-select"><option value="caesar">Caesar</option><option value="vigenere">Vigenère</option><option value="substitution">Substitution</option><option value="layered">Layered encoding</option><option value="morse">Morse</option><option value="pk1">PK1 corpus reference</option></select><button class="ghost" id="load-sample" type="button">Load example</button><button class="ghost" id="clear" type="button">Clear current input</button></div>
     </details>
-    <p class="privacy">No account. No upload. No stored text. The complete solver runs in your browser.</p>
+    <details class="solver-limits"><summary>Limits &amp; verification boundaries</summary>
+      <p>The browser tries selected classical methods, English statistical scoring and encoding layers. It also recognizes PK1–PK10 by exact normalized corpus equality. It cannot break properly implemented AES/RSA or prove an intended plaintext by a high score. Many wiki methods are only reference demonstrations here; their key-recovery attacks require the full version.</p>
+      <p>A supplied-key reading is arithmetic under your assumption, not independent confirmation. A worked-example reference is labelled as a build-time lookup, never a newly recovered answer. Rankings show actual returned candidates from a bounded search, which may contain fewer than five.</p>
+    </details>
+    <p class="privacy">No analysis upload or account. Nothing is saved unless you choose Save below. This hosted page includes third-party advertising; use a locally served/offline copy for sensitive work.</p>
+    <dialog id="web-improvements" aria-labelledby="web-improvements-title">
+      <h2 id="web-improvements-title">Solver interface improvements</h2>
+      <ul><li>Mobile-first input and solve action, with compact navigation.</li><li>Simple by default; settings, candidate rankings, statistics and manual controls expand on demand.</li><li>Every cipher article has a Try this cipher action with its real method and full worked example.</li><li>Optional named investigations let you save, compare and restore attempts on your own device.</li><li>Explicit live-operation/reference labels, snapshot boundaries and no automatic text saving.</li></ul>
+      <button id="close-web-improvements" class="ghost" type="button" autofocus>Back to the solver</button>
+    </dialog>
   </section>"""
+
+
+def session_html() -> str:
+    return """<details class="local-history card" id="local-history"><summary>Optional local investigations — save, compare &amp; restore</summary>
+      <p>Explicit device-only storage, no account or cloud sync. Saved snapshots contain ciphertext, plaintext and keys; browser storage is not encrypted. Deleting browser data removes them. Restore does not run a new search or independently verify an old result.</p>
+      <label for="investigation-select">Investigation</label><select id="investigation-select"><option value="">New investigation</option></select>
+      <label for="investigation-name">Investigation name</label><input id="investigation-name" type="text" maxlength="100" placeholder="e.g. Archive letter, first pass">
+      <div class="controls"><button id="save-attempt" class="ghost" type="button" disabled>Save current result</button><button id="delete-investigation" class="ghost" type="button" disabled>Delete investigation</button><button id="export-investigations" class="ghost" type="button">Export local backup</button><button id="export-current-attempt" class="ghost" type="button" disabled>Export current attempt</button><label for="import-investigations">Import local backup <input id="import-investigations" type="file" accept=".json,application/json"></label><button id="clear-investigations" class="ghost" type="button">Delete all saved investigations</button></div>
+      <p id="history-status" class="privacy" role="status" aria-live="polite">No automatic text or result saving.</p>
+      <div id="investigation-attempts"></div>
+      <div class="history-compare"><label for="attempt-a">Attempt A</label><select id="attempt-a"></select><label for="attempt-b">Attempt B</label><select id="attempt-b"></select><button id="compare-attempts" class="ghost" type="button">Compare attempts</button></div>
+      <div id="attempt-comparison"></div>
+    </details>"""
 
 
 def page(
@@ -1043,7 +1075,8 @@ def page(
         main = f"""<main class="wrap" id="main-content">
   {solver_html()}
 
-  <div id="output" aria-live="polite"></div>
+  <div id="output" tabindex="-1" aria-live="polite"></div>
+      {session_html()}
 
   {ad_slot()}
 
@@ -1091,7 +1124,10 @@ def page(
 
 <script src="model.js"></script>
 <script src="paradigm.js"></script>
+<script src="examples.js"></script>
 <script src="app.js"></script>
+<script src="investigation-store.js"></script>
+<script src="sessions.js"></script>
 {extra_scripts}
 </body>
 </html>
@@ -1353,7 +1389,18 @@ def windows_app_html() -> str:
     </ul>
     <p>It installs per-user into <code>%LOCALAPPDATA%</code>, so there is <strong>no
     administrator prompt</strong>, and it uninstalls from Add/Remove Programs like anything
-    else. No account, no licence server, no telemetry, no update checks, no expiry.</p>
+    else. No account, no licence server, no telemetry, no automatic update checks, no expiry.</p>
+
+    <h2 id="updates">Updates for existing customers</h2>
+    <p>In the desktop control window, click <strong>Check for updates</strong> (also in
+    the Help menu). Only that click contacts this site for the published version number;
+    no cipher text is sent. If a newer version is available, a popup lists its
+    improvements and fixes before you choose whether to open update information.
+    There are no startup checks or automatic installations.</p>
+    <p>Already purchased? Reopen your original post-payment download page for the latest
+    published installer — you do not need to buy again. Download and run it to upgrade
+    the existing installation, then reopen Buttcrack. If you have lost that page,
+    visit the <a href="{CFG["repo_url"]}">project page</a> for help.</p>
 
     <h2>Nothing leaves your machine</h2>
     <p>The desktop build is a local web server, not a web service. The address it opens is bound
@@ -1382,7 +1429,7 @@ def windows_app_html() -> str:
 
     <h2>Requirements</h2>
     <p>Windows 10 or 11, 64-bit. Roughly 60 MB of disk once installed. No internet connection is
-    required at any point after the download, and none is used. There is no macOS or Linux
+    required for solving. The optional update check needs a connection. There is no macOS or Linux
     installer.</p>"""
 
 
@@ -1760,7 +1807,7 @@ PAGES = [
             WINDOWS_PUBLISHER_FAQ,
             (
                 "Does it send my ciphertext anywhere?",
-                "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no update check and no account. Disconnect from the network entirely and every feature still works.",
+                "No. The desktop build runs a web server bound to 127.0.0.1, which is your own machine and is not reachable from your network or the internet. There is no analytics, no automatic update check and no account. The optional Check for updates button contacts this site for a version number only, never cipher text. Disconnect from the network and every solving feature still works.",
             ),
             (
                 "How is this different from the free solver on this page?",
@@ -2678,6 +2725,12 @@ def main() -> None:
     print(f"generated {len(generated)} cipher wiki pages from the registry")
 
     meta = verification_meta()
+    from buttcrack.ciphers import all_ciphers
+    by_slug = {wiki_slug(cipher.name): cipher.name for cipher in all_ciphers()}
+    for spec in WIKI_PAGES + generated:
+        if spec["slug"] in by_slug:
+            spec["wiki"]["cipher"] = by_slug[spec["slug"]]
+    write_examples()
     urls: list[str] = []
     written: dict[str, str] = {}
     # The storefront is appended above because its body depends on generated

@@ -408,11 +408,10 @@ class TestVersionAgreement(unittest.TestCase):
         self.assertGreaterEqual(len(parts), 3, buttcrack.__version__)
         self.assertTrue(all(part.isdigit() for part in parts[:3]), buttcrack.__version__)
 
-    def test_the_download_page_advertises_the_version_being_built(self):
-        # The storefront is a separate artefact from the installer and drifts
-        # quietly.  A buyer told they are getting 1.1.0 while the file is named
-        # 1.2.0 cannot tell whether they downloaded the right thing, and the
-        # SHA-256 published beside the link stops matching the name beside it.
+    def test_the_download_page_does_not_advertise_unbuilt_versions(self):
+        # The update manifest advertises the uploaded installer, not unreleased
+        # source. Source may advance before publishing; never announce a future
+        # version just to keep it equal to the working tree.
         import json
 
         import buttcrack
@@ -423,11 +422,13 @@ class TestVersionAgreement(unittest.TestCase):
         advisory = (json.loads(site.read_text(encoding="utf-8")).get("windows_app") or {}).get("version")
         if not advisory:
             self.skipTest("the storefront does not advertise a Windows version")
-        self.assertEqual(
-            advisory,
-            buttcrack.__version__,
-            "site.json advertises a different Windows version than the package "
-            "builds; bump both together and regenerate the pages",
+        from buttcrack.updates import version_parts
+
+        self.assertLessEqual(
+            version_parts(advisory),
+            version_parts(buttcrack.__version__),
+            "site.json advertises a version newer than the available source; "
+            "update published metadata only after building and uploading the installer",
         )
 
 

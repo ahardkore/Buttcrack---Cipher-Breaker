@@ -58,7 +58,9 @@ python scripts\publish_installer.py dist\installer\buttcrack-setup-<version>.exe
 artifact of a run that already passed the test above. See
 `docs/windows-installer.md` for the five environment variables.
 
-Nothing here is a dependency of the project. `buttcrack` itself still installs
-with `pip install .` and still has an empty `dependencies` list; PyInstaller is
-fetched into a throwaway virtualenv (`.venv-build/`) that the build makes and
-`.gitignore` ignores.
+The core still installs with `pip install .` and has an empty `dependencies`
+list. The optional `modern` extra supplies the maintained `cryptography` provider
+for AES known-key operations. Windows builds fetch and bundle that provider along
+with its license texts; PyInstaller and the provider are installed into the
+throwaway `.venv-build/` environment. Both the frozen and installed CLIs must pass
+an AES known-answer check. End users do not fetch or install dependencies.

@@ -19,8 +19,9 @@ Method: static reading of the above, plus a live probe — the server was starte
 not an inference. Effort tags: **XS** ≤30 min, **S** half a day, **M** a day or more.
 
 **Status.** 1.2.1 implements A1–A6, B1–B6, C1–C3, D1–D3, D5, E1–E2, F1, F2 and
-F3's version record; the sections below describe the code as it was audited, and
-the table at the end says which finding shipped and which did not. Deliberately
+F3's version record. Source version 1.2.2 adds E3: user-clicked update checks
+and notifications, with no startup checks or automatic installs. The table at
+the end says which finding is implemented and which is not. Deliberately
 still open:
 
 * **B7** (`msedge --app=`) — a chromeless window is a nicer shape than a browser
@@ -30,9 +31,6 @@ still open:
   repository secrets; the manual route in `docs/windows-installer.md` is what
   this release uses. D5 (Bot Fight Mode versus real downloads) is written up
   beside it and needs the same domain to verify.
-* **E3** — the update story. The storefront still promises no update check; the
-  minimum that keeps that promise is a user-clicked "Check for updates" against
-  a `version.json` on the Cloudflare host.
 * **F3's manifest** — DPI awareness is set at runtime, which is what the window
   needs. A custom manifest would replace PyInstaller's (and `*.manifest` is
   deliberately git-ignored), so it wants a Windows build to try it on.
@@ -388,18 +386,21 @@ pieces:
   menu; users delete `pk9-results.sqlite3` often enough that finding it should not
   require knowing the Windows convention.
 
-### E3. Decide about updates — **M, a decision more than a build**
+### E3. Optional update checks — implemented
 
-There is no update check anywhere (verified), and the storefront FAQ promises "no
-analytics, no update check and no account"
-(`ventures/cipher-solver-web/build_pages.py:1706`). That promise is worth keeping —
-but for a paid, Cloudflare-hosted, unsigned build, the only fix path for a bad 1.2.0
-is "download again". The minimum that keeps the promise: an optional, user-clicked
-**Check for updates** in the window's About area that fetches a small
-`version.json` from the Cloudflare host (`{"version": "1.2.1", "url": …}`) and
-compares strings — never on startup, never automatic, ideally off by default with a
-checkbox. If that is not wanted, make the storefront say how fixes are delivered
-("the download page always serves the newest build") so nobody expects an updater.
+The desktop control window and Help menu now offer **Check for updates**. A
+worker fetches a bounded HTTPS manifest only on a user click. Numeric stable
+versions are compared; a newer release produces a dialog, persistent in-window
+notice and tray notification where available. The dialog lists the published
+release's improvements and fixes before the user chooses whether to open update
+information, but nothing is downloaded or installed automatically.
+
+The site assembly generates `desktop-version.json` from the published installer
+version in `windows_app.version`, not unreleased source. Release notes are selected
+by that same version from `desktop_release_notes`. Paid delivery URLs are
+not exposed in the manifest. The storefront now accurately describes this
+opt-in network access. See [windows-installer.md](windows-installer.md#checking-for-updates)
+for publication steps and the one-time manual upgrade required for older builds.
 
 ---
 
@@ -520,7 +521,7 @@ slow checks that look like failures, that is the number to explain.
 | D5 | Verify downloads behind Bot Fight Mode | XS | Low | done (guide) |
 | E1 | `_NullStream` → log file on disk | S | High | done |
 | E2 | Diagnostics button + `buttcrack doctor` | S | High | done |
-| E3 | Decide on updates (or document the absence) | M | Medium | open (decision) |
+| E3 | Optional user-clicked update checks and notifications | M | Medium | implemented |
 | F1 | Real browser test | S | High | done (new CI job) |
 | F2 | Frozen-build behaviours in the installer test | S | Medium | done |
 | F3 | Packaging nits (manifest, Inno pin) | XS | Low | version recorded; manifest open |
