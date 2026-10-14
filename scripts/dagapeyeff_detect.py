@@ -52,10 +52,9 @@ An English mapping would have to look like English under all three.  It does not
     ciphertext                       repeats 1.264            digrams 0.064
 
 The cipher is 4.5 sigma from English on repeats and 2.7 sigma on digram
-structure, and inside one sigma of the shuffle both times.  Stronger still, it
-is on the *far* side of the shuffle: adjacent repeats are more common than
-randomness would produce, whereas English produces far fewer than a shuffle
-does (English clusters its doubled letters and doubles its digram structure).
+structure, and within one sigma of the shuffle both times.  English has fewer
+adjacent repeats than a shuffle of the same letter counts and far more digram
+structure; the cipher has slightly more of the first and none of the second.
 A third test counts how burstily the busy codes arrive (index of dispersion
 of their positions: 8.85 for the cipher, 8.17 for i.i.d. draws of the same
 profile, 5.88 for English, from every segment the shipped corpus yields).
@@ -63,6 +62,11 @@ All three say the same thing, and all three are
 blind to which letter any cell means, so no keyword square can fake or hide a
 result, and no transposition layered on top can rescue the reading: a
 permutation could only move these numbers from the null toward English.
+
+A fourth test is not statistical at all: Playfair, two-square, four-square and
+bifid cannot emit a doubled plaintext letter, and an injective grid preserves
+that, so the ciphertext would need <em>zero</em> adjacent repeats under any key.
+It has 17.  The doubling-forbidding families are excluded by arithmetic.
 
 That kills the letter reading outright -- harder evidence than the annealing
 result above, because "the search found nothing" needs the search to have been
@@ -165,9 +169,13 @@ def mapping_invariant(seq: list) -> tuple[float, float]:
     """Two ordering statistics that no relabelling of the alphabet can change.
 
     ``repeats``
-        P(neighbours are equal) / P(a random pair is equal).  1.00 for a
-        shuffle; English is ~0.50 because doubled letters are common; above
-        1.00 means the stream *avoids* repeats harder than chance does.
+        P(neighbours are equal) / P(a random pair is equal), i.e. observed
+        adjacent repeats over what a shuffle of the same multiset gives.
+        1.00 for a shuffle.  English sits near 0.50: restricting prose to 19
+        letters still leaves fewer doublings than spreading those same counts
+        at random.  Above 1.00 -- where the cipher sits, at 1.26 -- means
+        repeats are *more* common than a shuffle produces, and a cipher that
+        forbids doubling outright would drive the count to exactly zero.
     ``igram``
         the digram index of coincidence over the unigram one.  English is
         ~0.13, a shuffle of this profile ~0.07, the cipher 0.064 -- so the
@@ -188,6 +196,54 @@ def mapping_invariant(seq: list) -> tuple[float, float]:
     _, psingles = coincidence_counts(pairs)
     digram_ic = psingles / ((n - 1) * (n - 2))
     return repeat, (digram_ic / unigram_ic if unigram_ic else float("nan"))
+
+
+def doubled_letter_cipher_rejected(seq: list) -> tuple[int, int, str]:
+    """Hard test for the family that forbids doubled plaintext letters.
+
+    Playfair, two-square, four-square and their variants *cannot* emit the same
+    letter twice in a row -- the rule is structural, not statistical.  A
+    keyed grid maps each plaintext letter to one fixed code, so that guarantee
+    transfers to the ciphertext unchanged: such a cipher would show *exactly
+    zero* adjacent identical codes, whatever the key.  One observed repeat is
+    enough to reject the whole family, with no null model and no p-value
+    needed -- the only escape hatches are a non-injective code (two letters
+    sharing a cell, which the grid's structure forbids) or an inserted letter
+    after encipherment.
+    """
+    adj = sum(1 for i in range(len(seq) - 1) if seq[i] == seq[i + 1])
+    runs: list[int] = []
+    i = 0
+    while i < len(seq):
+        j = i
+        while j + 1 < len(seq) and seq[j + 1] == seq[i]:
+            j += 1
+        if j > i:
+            runs.append(j - i + 1)
+        i = j + 1
+    longest = max(runs) if runs else 1
+    verdict = ("REJECTED: a no-doubling cipher cannot produce a single adjacent "
+               "repeat" if adj else "consistent: zero adjacent repeats observed")
+    return adj, longest, verdict
+
+
+def runs_z(seq: list, hot: int = 13) -> tuple[float, float]:
+    """Wald-Wolfowitz clustering of the busiest symbols, as a shuffle z-score.
+
+    Language sends a frequent letter in bursts (a plural, a repeated morpheme)
+    separated by stretches where it cannot appear; a shuffle has no such
+    constraint.  Correlated with ``repeats`` rather than independent of it, so
+    read it as corroboration, never as a fourth opinion.
+    """
+    counts = collections.Counter(seq)
+    top = {sym for sym, _ in counts.most_common(hot)}
+    label = [1 if sym in top else 0 for sym in seq]
+    n1 = sum(label)
+    n0 = len(label) - n1
+    runs = sum(1 for i in range(1, len(label)) if label[i] != label[i - 1]) + 1
+    mu = 2 * n1 * n0 / len(label) + 1
+    var = (mu - 1) * (mu - 2) / (len(label) - 1)
+    return (runs - mu) / math.sqrt(var), mu
 
 
 def dispersion(seq: list, min_count: int = 12) -> list[float]:
@@ -394,8 +450,10 @@ def main_mapfree(samples: int = 12) -> int:
     nulls = [mapping_invariant(profile_stream(CT_PROFILE, 197, rnd))
               for _ in range(max(60, samples * 8))]
 
-    print("mapping-invariant ordering statistics (1.00 = a shuffle of the cipher's")
-    print("own profile).  English clusters repeats; this cipher does not.\n")
+    print("mapping-invariant ordering statistics, normalised so 1.00 = a shuffle of")
+    print("the cipher's own profile.  English sits clearly off that anchor on two of")
+    print("the three; the cipher sits essentially on it, and on the third it is more")
+    print("clustered than a shuffle rather than less.\n")
 
     def stats_of(rows, k):
         return [r[k] for r in rows]
@@ -437,14 +495,40 @@ def main_mapfree(samples: int = 12) -> int:
     print(f"  {lab2}      median {statistics.median(ct_disp):6.2f}   "
           f"(english {e_med:.2f}, iid draws {i_med:.2f})")
     print("-" * 86)
-    print(f"""  verdict: the pairs are ordered like independent draws from a skewed
-  alphabet, on all three tests -- repeats, digram structure, and clustering.
-  A keyed grid of English letters has to move all three away from the shuffle
-  and toward english; a transposition on top of it could only help.  None of
-  them moved.  The 19 visited cells do not encode 19 letters, and no
-  relabelling of the grid -- any keyword square, in any language, under any
-  columnar transposition -- can rescue a reading that fails tests which do
-  not look at the letters at all.""")
+
+    # ---- the two tests that actually pay: a hard one and a soft one ----
+    adj, longest, verdict = doubled_letter_cipher_rejected(stream)
+    eng_doubles = [sum(1 for i in range(len(s) - 1) if s[i] == s[i + 1])
+                   for s in segs[:len(segs)]]
+    print(f"  no-doubling families (Playfair, two-/four-square, "
+          f"bifid-digraph):\n    these CANNOT emit a repeated plaintext letter, so a keyed grid\n"
+          f"    must show zero adjacent repeats.  observed: {adj} "
+          f"(longest run {longest}, english samples average "
+          f"{statistics.mean(eng_doubles):.1f}) -> {verdict}")
+    z, mu = runs_z(stream)
+    znull = [runs_z(profile_stream(CT_PROFILE, 197, rnd))[0] for _ in range(600)]
+    zeng = []
+    for seg in segs:
+        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
+        cut = "".join(ch for ch in seg if ch in keep)
+        if len(cut) >= 190:
+            zeng.append(runs_z(list(cut[:197]))[0])
+    # the shuffle's own spread, not the normal approximation, is the honest yardstick
+    zs = statistics.stdev(znull)
+    tail = sum(1 for x in znull if x <= z) / len(znull)
+    print(f"  run-test on the 13 busiest codes: {z:+.2f} shuffle-sd vs the null "
+          f"(english {statistics.mean(zeng):+.2f});\n    "
+          f"p = {tail:.3f} one-sided -- the only test on the cipher's side of the "
+          f"null,\n    and marginal: {tail:.1%} of shuffles cluster at least this much. "
+          f"Corroborating, not decisive.")
+    print("""  verdict: on repeats, digram structure and clustering the pairs behave like
+  an ordering of this multiset, not like english under a key.  A keyed grid of
+  letters has to move all three away from the shuffle and toward english; a
+  transposition on top of it could only help.  None of them moved, so the 19
+  visited cells do not encode 19 letters -- and no relabelling of the grid, any
+  keyword square, any language, any columnar layer, can rescue a reading that
+  fails tests which never look at the letters.""")
+    return 0
     return 0
 
 

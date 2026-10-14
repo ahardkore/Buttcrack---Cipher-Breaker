@@ -180,6 +180,31 @@ class TestUnsolvedArchive(unittest.TestCase):
         score = detect.anneal_py(ct[:60], table, 2, 2000, 3)
         self.assertTrue(-8.0 <= score <= -2.5, f"fallback scorer out of range: {score}")
 
+    def test_no_doubling_rejection_is_a_proof_not_a_p_value(self):
+        """The Playfair-family test must stay a hard logical test."""
+        detect = _load(
+            "dagapeyeff_detect_hard_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        # a real no-doubling plaintext through an injective code: zero repeats
+        playfair_like = list("ATBUCV.DWEFXGY.HZJ.QKWLRI.MNSOTP")
+        self.assertEqual([a for a, b in zip(playfair_like, playfair_like[1:]) if a == b], [])
+        adj, _, verdict = detect.doubled_letter_cipher_rejected(playfair_like)
+        self.assertEqual(adj, 0)
+        self.assertTrue(verdict.startswith("consistent"))
+        # and one doubled letter anywhere is enough to reject the family
+        adj2, longest, verdict2 = detect.doubled_letter_cipher_rejected(
+            list("ABBCDEF"))
+        self.assertEqual(adj2, 1)
+        self.assertEqual(longest, 2)
+        self.assertTrue(verdict2.startswith("REJECTED"))
+        # the actual cipher: the family is gone, and it is a counted fact, not a model
+        adj3, longest3, verdict3 = detect.doubled_letter_cipher_rejected(
+            detect.ciphertext_stream())
+        self.assertEqual(adj3, 17)
+        self.assertEqual(longest3, 3)
+        self.assertIn("REJECTED", verdict3)
+
     def test_findings_render_as_balanced_markup(self):
         markup = bp.unsolved_archive_html()
         self.assertIn("unsolved-findings", markup)
