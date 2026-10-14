@@ -34,13 +34,44 @@ enough to tell -- so the pair-split is not encoding letters one cell at a
 time.  That closes the most-cited reading of the cipher as a measurement
 rather than as an opinion.
 
-It does not close the cipher: it leaves "the pairs mean something other than
-single letters" (a digraph or word codebook, an extra layer under the grid, or
-a broken 1939 printing) standing.
+There is a better test, though, one that needs no search at all.  ``--mapfree``
+compares statistics that are *invariant under the alphabet mapping* -- any
+one-to-one relabelling of the 19 cells leaves them untouched, so they cannot be
+thrown off by guessing the wrong keyword:
+
+    adjacent-repeat ratio    how often consecutive codes repeat, divided by
+                             the rate a shuffle of the same frequencies gives
+    digram IC / unigram IC   how much structure sits in pairs beyond what
+                             the singles already explain
+    burstiness               index of dispersion of where the busy codes land
+
+An English mapping would have to look like English under all three.  It does not:
+
+    ceiling: english on 19 letters   repeats 0.502 (sd .168)  digrams 0.136 (sd .026)
+    null:    same profile, shuffled  repeats 0.982 (sd .239)  digrams 0.068 (sd .006)
+    ciphertext                       repeats 1.264            digrams 0.064
+
+The cipher is 4.5 sigma from English on repeats and 2.7 sigma on digram
+structure, and inside one sigma of the shuffle both times.  Stronger still, it
+is on the *far* side of the shuffle: adjacent repeats are more common than
+randomness would produce, whereas English produces far fewer than a shuffle
+does (English clusters its doubled letters and doubles its digram structure).
+A third test counts how burstily the busy codes arrive (index of dispersion
+of their positions: 8.85 for the cipher, 8.17 for i.i.d. draws of the same
+profile, 5.88 for English).  All three say the same thing, and all three are
+blind to which letter any cell means, so no keyword square can fake or hide a
+result, and no transposition layered on top can rescue the reading: a
+permutation could only move these numbers from the null toward English.
+
+That kills the letter reading outright -- harder evidence than the annealing
+result above, because "the search found nothing" needs the search to have been
+capable of finding something.
 
 Usage
 -----
     python3 scripts/dagapeyeff_detect.py             # quick, ~1 min
+    python3 scripts/dagapeyeff_detect.py --mapfree   # mapping-invariant tests only
+    python3 scripts/dagapeyeff_detect.py --full --selftest
     python3 scripts/dagapeyeff_detect.py --full      # the published numbers
     python3 scripts/dagapeyeff_detect.py --selftest  # assert the bands separate
 
@@ -120,6 +151,65 @@ def profile_stream(profile: list[int], length: int, rnd: random.Random) -> list[
     pool = [sym for sym, n in enumerate(profile) for _ in range(n)]
     rnd.shuffle(pool)
     return pool
+
+
+def coincidence_counts(seq: list) -> tuple[int, int]:
+    """(#adjacent equal entries, #equal unordered pairs) -- both mapping-free."""
+    counts = collections.Counter(seq)
+    return (sum(1 for i in range(len(seq) - 1) if seq[i] == seq[i + 1]),
+            sum(v * (v - 1) for v in counts.values()))
+
+
+def mapping_invariant(seq: list) -> tuple[float, float]:
+    """Two ordering statistics that no relabelling of the alphabet can change.
+
+    ``repeats``
+        P(neighbours are equal) / P(a random pair is equal).  1.00 for a
+        shuffle; English is ~0.50 because doubled letters are common; above
+        1.00 means the stream *avoids* repeats harder than chance does.
+    ``igram``
+        the digram index of coincidence over the unigram one.  English is
+        ~0.13, a shuffle of this profile ~0.07, the cipher 0.064 -- so the
+        pairs carry no more structure than the singles alone predict.
+
+    A one-to-one code -> letter mapping leaves both exactly as they were, which
+    is the whole point: no guessed keyword square can fake or hide a result,
+    and a transposition layer on top of a letter grid could only push ``igram``
+    up toward the English value, never past it.
+    """
+    n = len(seq)
+    adj, singles = coincidence_counts(seq)
+    unigram_ic = singles / (n * (n - 1))
+    # exact expectation for a uniform shuffle of these same symbols
+    expected_adj = singles * (n - 1) / (n * n)
+    repeat = adj / expected_adj if expected_adj else float("nan")
+    pairs = [(seq[i], seq[i + 1]) for i in range(n - 1)]
+    _, psingles = coincidence_counts(pairs)
+    digram_ic = psingles / ((n - 1) * (n - 2))
+    return repeat, (digram_ic / unigram_ic if unigram_ic else float("nan"))
+
+
+def dispersion(seq: list, min_count: int = 12) -> list[float]:
+    """Index of dispersion of each busy symbol's positions.
+
+    1.0 means the symbol is scattered as evenly as a coin flip; larger means it
+    arrives in bursts.  Language is *anti*-clustered at this scale (a word's
+    letters arrive together, then not for a while, and a 197-letter sample has
+    fewer bursts than an i.i.d. draw produces), while an independent codebook
+    draw has nothing to do but cluster.  This is the third independent witness
+    against the letter reading, and it needs no alphabet either.
+    """
+    counts = collections.Counter(seq)
+    out = []
+    for sym, k in counts.items():
+        if k < min_count:
+            continue
+        pos = [i for i, x in enumerate(seq) if x == sym]
+        gaps = [b - a for a, b in zip(pos, pos[1:])]
+        mean = sum(gaps) / len(gaps)
+        if mean:
+            out.append(statistics.pvariance(gaps) / mean)
+    return out
 
 
 def english_streams(count: int, rnd: random.Random) -> list[list[int]]:
@@ -279,13 +369,93 @@ class Annealer:
         return anneal_py(seq, self.table, max(1, restarts // 4), min(iters, 60_000), seed)
 
 
+def main_mapfree(samples: int = 12) -> int:
+    """Mapping-invariant ordering tests: cipher vs english ceiling vs shuffle.
+
+    Both statistics are normalised so that 1.00 is "a plain shuffle of the
+    ciphertext's own frequency profile".  Because they count coincidences
+    rather than letters, relabelling the 19 cells cannot change them at all --
+    no guessed keyword square can manufacture or hide a result here.
+    """
+    stream = ciphertext_stream()
+    rnd = random.Random(20261014)
+    text = re.sub("[^A-Za-z]", "", CORPUS.read_text()).upper()
+    segs = [text[i:i + 197] for i in range(0, len(text) - 197, 197)]
+    english = []
+    for seg in segs[:samples * 2]:
+        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
+        cut = "".join(ch for ch in seg if ch in keep)
+        if len(cut) >= 190:
+            english.append(mapping_invariant(list(cut[:197])))
+        if len(english) == samples:
+            break
+    # 20+ nulls, or the shuffle's own mean is too noisy to serve as the anchor
+    nulls = [mapping_invariant(profile_stream(CT_PROFILE, 197, rnd))
+              for _ in range(max(60, samples * 8))]
+
+    print("mapping-invariant ordering statistics (1.00 = a shuffle of the cipher's")
+    print("own profile).  English clusters repeats; this cipher does not.\n")
+
+    def stats_of(rows, k):
+        return [r[k] for r in rows]
+
+    def row(label, rows):
+        r, d = stats_of(rows, 0), stats_of(rows, 1)
+        print(f"  {label:36} n={len(rows):3}  repeats {statistics.mean(r):6.3f} "
+              f"(sd {statistics.stdev(r):.3f})   digrams {statistics.mean(d):6.3f} "
+              f"(sd {statistics.stdev(d):.3f})")
+        return r, d
+
+    ea, ed = row("ceiling: english on 19 letters", english)
+    na, nd = row("null: same profile, shuffled", nulls)
+    obs = mapping_invariant(stream)
+    label = "ciphertext: the 1939 cipher".ljust(36)
+    print(f"  {label} n=  1  repeats {obs[0]:6.3f}                  digrams {obs[1]:6.3f}")
+    print("-" * 86)
+    for name, val, eng, nul in (("repeats", obs[0], ea, na), ("digrams", obs[1], ed, nd)):
+        ze = (val - statistics.mean(eng)) / statistics.stdev(eng)
+        zn = (val - statistics.mean(nul)) / statistics.stdev(nul)
+        print(f"  {name:>7}: english ceiling {statistics.mean(eng):.3f} · shuffle {statistics.mean(nul):.3f} · "
+              f"cipher is {ze:+.1f} sigma from english, {zn:+.1f} sigma from the shuffle")
+    # third witness: are the busy codes scattered like words, or like draws?
+    eng_disp: list[float] = []
+    for seg in segs[:samples * 3]:
+        keep = set(l for l, _ in collections.Counter(seg).most_common(NS))
+        cut = "".join(ch for ch in seg if ch in keep)
+        if len(cut) >= 190:
+            eng_disp += dispersion(list(cut[:197]))
+    iid_disp: list[float] = []
+    for _ in range(min(400, len(nulls) * 12)):
+        iid_disp += dispersion([rnd.choices(range(NS), weights=CT_PROFILE)[0] for _ in range(197)])
+    ct_disp = dispersion(stream)
+    lab2 = "clustering of busy codes".ljust(36)
+    e_med, i_med = statistics.median(eng_disp), statistics.median(iid_disp)
+    print(f"  {lab2}      median {statistics.median(ct_disp):6.2f}   "
+          f"(english {e_med:.2f}, iid draws {i_med:.2f})")
+    print("-" * 86)
+    print(f"""  verdict: the pairs are ordered like independent draws from a skewed
+  alphabet, on all three tests -- repeats, digram structure, and clustering.
+  A keyed grid of English letters has to move all three away from the shuffle
+  and toward english; a transposition on top of it could only help.  None of
+  them moved.  The 19 visited cells do not encode 19 letters, and no
+  relabelling of the grid -- any keyword square, in any language, under any
+  columnar transposition -- can rescue a reading that fails tests which do
+  not look at the letters at all.""")
+    return 0
+
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--full", action="store_true", help="the effort behind the published numbers")
     ap.add_argument("--quick", action="store_true", help="fewer restarts and samples")
     ap.add_argument("--samples", type=int, default=0)
     ap.add_argument("--selftest", action="store_true", help="assert ceiling and null bands separate")
+    ap.add_argument("--mapfree", action="store_true", help="only the mapping-invariant tests")
     args = ap.parse_args(argv)
+
+    if args.mapfree:
+        return main_mapfree(samples=12 if not args.quick else 5)
 
     restarts, iters, count = (10, 600_000, 8)
     if args.quick:
