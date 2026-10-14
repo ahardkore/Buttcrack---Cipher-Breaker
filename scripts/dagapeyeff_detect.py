@@ -15,9 +15,13 @@ meaningful against *two* control distributions:
   hypothesis is *true*.
 * **null** -- random streams carrying the ciphertext's own frequency profile,
   attacked identically.  The best score reachable when it is *false*.  Profile
-  matching matters: the cipher uses 13 codes at 8-10% each, far flatter than
-  English, and a flatter alphabet is intrinsically harder to detect, so an
-  uncontrolled comparison would flatter the null and overstate the result.
+  matching matters because a detection score depends on how peaked the alphabet
+  is, and an uncontrolled comparison would flatter one side or the other.  It is
+  a fairness control, not a finding: the two profiles are close (normalised
+  entropy 0.913 for the cipher's 19 codes against 0.957 for the English top-19,
+  top symbol 10.2% against 12.7%), so no argument here may rest on the shape of
+  the counts.  An earlier draft called the cipher "far flatter than English";
+  profile_fit() is the instrument that showed that was not measurable.
 
 Published scores, log10 per symbol under an English quadgram model (higher is
 more English-like; ``--full``, 14 restarts, 900k annealing steps):
@@ -294,6 +298,46 @@ def pair_cardinality_rejected(codes: list) -> tuple[int, int, str]:
                f"{bound} distinct pairs, this has {distinct}"
                if distinct > bound else "not excluded by this argument")
     return distinct, bound, verdict
+
+
+def profile_fit(seq: list, reference: list[float]) -> tuple[float, float]:
+    """chi-square of a symbol profile against a reference frequency shape.
+
+    Returns (free score, labelled score).  The free score sorts the observed
+    counts and matches them largest-to-largest, which hands the attack the key
+    it is trying to discover; the labelled score fixes ranks against E T A O I
+    and charges for disagreeing.
+
+    Calibrated against its own nulls, in nats of nothing:
+
+        stream drawn from the english profile      free score  ~0   (1e-30)
+        stream drawn from the cipher's own profile free score  29.6
+        the ciphertext itself                      free score  29.6
+        382 letters of genuine english text        free score  19.2
+
+    So the cipher is indistinguishable from a stream with no language in it --
+    but genuine english at this length sits between the two nulls, and real
+    prose scores *better* than the cipher does on no test that matters.  That is
+    why this card carries no frequency argument: the shape is compatible with
+    English and equally compatible with nothing.  An earlier draft asserted the
+    opposite ("a flat profile, unlike English, where E alone exceeds 12%").  The
+    number it leaned on, 29.6, is what this cipher's profile always scores against
+    its own null -- and genuine english prose at the same length scores 19.2,
+    between the nulls rather than outside them.  A test that real english cannot
+    pass cleanly is not a test.  Only ordering statistics bind here.  The labelled score is kept to show that the sign of a
+    profile fit depends on labels nobody can look up.
+    """
+    n = len(seq)
+    counts = collections.Counter(seq)
+    expected = [v / sum(reference) * n for v in reference]
+    observed = sorted(counts.values(), reverse=True)
+
+    def chi(pairs):
+        return sum((o - e) ** 2 / e for o, e in pairs if e > 0)
+
+    best = chi(zip(observed[:len(expected)], expected))
+    honest = chi((counts.get(chr(65 + k), 0), e) for k, e in enumerate(expected))
+    return best, honest
 
 
 def runs_z(seq: list, hot: int = 13) -> tuple[float, float]:

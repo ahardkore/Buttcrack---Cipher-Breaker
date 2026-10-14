@@ -253,6 +253,56 @@ class TestUnsolvedArchive(unittest.TestCase):
         self.assertEqual(d3, 11)
         self.assertTrue(v3.startswith("REJECTED"))
 
+    def test_profile_fit_has_no_discriminating_power(self):
+        """The frequency-shape test is pinned to be uninformative, on purpose.
+
+        If this ever fails, someone has started quoting a profile chi-square as
+        evidence again.  The card says frequency shape cannot convict anything at
+        this length; these are the four numbers that make that true.
+        """
+        detect = _load(
+            "dagapeyeff_detect_profile_test",
+            VENTURE.parents[1] / "scripts" / "dagapeyeff_detect.py",
+        )
+        import random
+        import re
+        from collections import Counter
+        from pathlib import Path
+
+        ref = detect.ENGLISH_PROFILE
+        rnd = random.Random(3)
+        # the two nulls must be far apart, or the instrument reads nothing
+        eng_null = detect.profile_fit(
+            detect.profile_stream(ref, 197, rnd), ref)[0]
+        ct_null = detect.profile_fit(
+            detect.profile_stream(detect.CT_PROFILE, 197, rnd), ref)[0]
+        # the english null is ~1e-30, not exactly zero: a multinomial draw from
+        # a profile does not reproduce that profile digit for digit
+        self.assertLess(eng_null, 1.0, "english-shaped noise stopped fitting english")
+        self.assertGreater(ct_null, 10.0, "profile nulls collapsed together")
+        # the cipher is indistinguishable from a profile-matched shuffle...
+        self.assertAlmostEqual(detect.profile_fit(detect.ciphertext_stream(), ref)[0],
+                               ct_null, places=1)
+        # ...while genuine english of the same length fits the reference BETTER
+        # than the cipher does, yet still nowhere near cleanly.  Both statements
+        # hold at once, which is precisely why neither is a result.
+        eng = re.sub("[^A-Za-z]", "", (Path("examples") / "english_samples.txt")
+                     .read_text(encoding="utf-8")).upper()[:395]
+        letters = sorted(l for l, _ in Counter(eng).most_common(19))
+        keep = set(letters)
+        seq = [letters.index(c) for c in eng if c in keep]
+        real, real_labelled = detect.profile_fit(seq, ref)
+        self.assertLess(real, ct_null, "english stopped beating the flat null")
+        self.assertGreater(real, eng_null, "english profile fit became too easy")
+        # the labelled score is the other half of the argument, and the only half
+        # a careless edit can delete silently: same text, same profile, ranks
+        # permuted -- if this stops blowing up, "labels decide the answer" is gone
+        self.assertGreater(real_labelled, 10 * real,
+                           "labelled score no longer disagrees with the free one")
+        c_free, c_labelled = detect.profile_fit(detect.ciphertext_stream(), ref)
+        self.assertGreater(c_labelled, 5 * c_free,
+                           "cipher labelled score collapsed too")
+
     def test_findings_render_as_balanced_markup(self):
         markup = bp.unsolved_archive_html()
         self.assertIn("unsolved-findings", markup)
