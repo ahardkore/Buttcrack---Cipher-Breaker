@@ -21,8 +21,8 @@ def analyze(options: dict) -> dict:
         from cryptography.exceptions import InvalidTag
         from cryptography.hazmat.primitives import padding
         from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-    except ImportError:
-        raise ValueError('AES operations require the optional provider: pip install "buttcrack[modern]". The Windows build bundles it.') from None
+    except ImportError as exc:
+        raise ValueError('AES operations require the optional provider: pip install "buttcrack[modern]". The Windows build bundles it. ' + f"Provider import failed: {exc}") from None
     key = hex_bytes(options.get("key", ""), "key", limit=32)
     if len(key) not in (16, 24, 32):
         raise ValueError("AES key must be 16, 24 or 32 bytes")

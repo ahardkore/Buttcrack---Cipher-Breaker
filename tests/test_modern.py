@@ -133,6 +133,10 @@ class AESAnalysisTests(unittest.TestCase):
         with mock.patch.dict(sys.modules, {"cryptography": None}), self.assertRaisesRegex(ValueError, "optional provider"):
             run("aes", {"operation": "decrypt"})
 
+    def test_provider_import_failure_preserves_the_diagnostic(self):
+        with mock.patch("builtins.__import__", side_effect=ImportError("missing AES binding")), self.assertRaisesRegex(ValueError, "Provider import failed: missing AES binding"):
+            run("aes", {"operation": "decrypt"})
+
 
 @unittest.skipUnless(HAS_CRYPTO, "optional cryptography provider not installed")
 class AESProviderTests(unittest.TestCase):

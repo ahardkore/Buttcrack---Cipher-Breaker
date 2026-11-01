@@ -21,7 +21,9 @@ import contextlib
 import io
 import re
 import unittest
+from importlib.metadata import PackageNotFoundError
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGING = ROOT / "packaging" / "windows"
@@ -172,6 +174,24 @@ class TestSpecPayload(unittest.TestCase):
             # name still has to resolve.
             missing = [name for name in missing if not name.startswith("tkinter")]
         self.assertEqual(missing, [], f"buttcrack.spec HIDDEN names modules that do not exist: {missing}")
+
+    def test_installed_aes_provider_is_retained_for_both_entry_points(self):
+        provider = mock.Mock(files=[])
+        with mock.patch("importlib.metadata.distribution", return_value=provider):
+            _namespace, calls = execute_spec()
+        required = {"cryptography.exceptions", "cryptography.hazmat.primitives.padding",
+                    "cryptography.hazmat.primitives.ciphers", "cryptography.hazmat.bindings._rust",
+                    "_cffi_backend"}
+        analyses = [call for call in calls if call.kind == "Analysis"]
+        self.assertEqual(len(analyses), 2)
+        for analysis in analyses:
+            self.assertTrue(required.issubset(analysis.kwargs["hiddenimports"]))
+
+    def test_core_only_build_does_not_require_the_optional_provider(self):
+        with mock.patch("importlib.metadata.distribution", side_effect=PackageNotFoundError):
+            namespace, _calls = execute_spec()
+        self.assertFalse(any(name.startswith("cryptography") or name == "_cffi_backend"
+                             for name in namespace["HIDDEN"]))
 
     def test_tkinter_is_declared_because_the_desktop_window_needs_it(self):
         # A silently missing Tk downgrades the app to a console loop with no
