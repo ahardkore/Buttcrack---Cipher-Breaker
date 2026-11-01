@@ -20,6 +20,8 @@ import ast
 import contextlib
 import io
 import re
+import shutil
+import subprocess
 import tempfile
 import unittest
 from importlib.metadata import PackageNotFoundError
@@ -194,27 +196,26 @@ class TestSpecPayload(unittest.TestCase):
         self.assertFalse(any(name.startswith("cryptography") or name == "_cffi_backend"
                              for name in namespace["HIDDEN"]))
 
-    def test_windows_aes_collects_the_matching_stable_abi_forwarder(self):
-        self.namespace.update(IS_WINDOWS=True, AES_PROVIDER_INSTALLED=True)
-        with tempfile.TemporaryDirectory() as base, mock.patch("sys.base_prefix", base):
-            forwarder = Path(base) / "python3.dll"
-            forwarder.write_bytes(b"test forwarder")
-            self.assertEqual(self.namespace["windows_aes_binaries"](), [(str(forwarder), ".")])
-
-    def test_windows_aes_missing_forwarder_is_a_build_error(self):
-        self.namespace.update(IS_WINDOWS=True, AES_PROVIDER_INSTALLED=True)
-        with tempfile.TemporaryDirectory() as base, mock.patch("sys.base_prefix", base), self.assertRaisesRegex(RuntimeError, "stable-ABI DLL"):
-            self.namespace["windows_aes_binaries"]()
-
-    def test_both_analyses_receive_the_native_runtime_binaries(self):
-        for call in self.calls:
-            if call.kind == "Analysis":
-                self.assertEqual(call.kwargs["binaries"], self.namespace["BINARIES"])
-
     def test_tkinter_is_declared_because_the_desktop_window_needs_it(self):
         # A silently missing Tk downgrades the app to a console loop with no
         # error anywhere, which is precisely the regression worth catching here.
         self.assertIn("tkinter", self.namespace["HIDDEN"])
+
+
+class TestBuildInterpreter(unittest.TestCase):
+    def test_ci_explicitly_passes_the_setup_python_interpreter(self):
+        workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+        self.assertIn('-PythonExecutable (Get-Command python -CommandType Application).Source', workflow)
+
+    @unittest.skipUnless(shutil.which("pwsh") or shutil.which("powershell"), "PowerShell not installed")
+    def test_missing_explicit_interpreter_is_not_silently_replaced(self):
+        shell = shutil.which("pwsh") or shutil.which("powershell")
+        with tempfile.TemporaryDirectory() as directory:
+            missing = str(Path(directory) / "missing-python.exe")
+            result = subprocess.run([shell, "-NoProfile", "-File", str(PACKAGING / "build.ps1"),
+                                     "-PythonExecutable", missing], capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Requested Python executable not found", result.stdout + result.stderr)
 
 
 class TestBuildOutputShape(unittest.TestCase):

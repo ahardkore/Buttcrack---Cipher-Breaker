@@ -15,6 +15,11 @@
     The output is self-contained: the person who runs the installer needs no
     Python, no git and no GitHub account.
 
+.PARAMETER PythonExecutable
+    Use this interpreter instead of searching with the Windows launcher. CI
+    passes the Python selected by actions/setup-python so the build and tests
+    use the same version, not an unrelated newer system installation.
+
 .PARAMETER SkipInstaller
     Stop after PyInstaller. Useful when you only want dist\Buttcrack\ to poke at.
 
@@ -38,6 +43,7 @@
 #>
 [CmdletBinding()]
 param(
+    [string]$PythonExecutable = '',
     [switch]$SkipInstaller,
     [switch]$Clean,
     [string]$CertThumbprint = '',
@@ -144,12 +150,20 @@ try {
     # the Microsoft Store stub, which "succeeds" by opening the Store.
     $pythonExe = $null
     $pythonArgs = @()
-    foreach ($candidate in @(@('py', '-3'), @('python'), @('python3'))) {
-        $cmd = Get-Command $candidate[0] -ErrorAction SilentlyContinue
-        if ($cmd -and $cmd.Source -notmatch 'WindowsApps') {
-            $pythonExe = $cmd.Source
-            $pythonArgs = @($candidate | Select-Object -Skip 1)
-            break
+    if ($PythonExecutable) {
+        $cmd = Get-Command $PythonExecutable -CommandType Application -ErrorAction SilentlyContinue
+        if (-not $cmd -or $cmd.Source -match 'WindowsApps') {
+            Fail "Requested Python executable not found (or is a Store stub): $PythonExecutable"
+        }
+        $pythonExe = $cmd.Source
+    } else {
+        foreach ($candidate in @(@('py', '-3'), @('python'), @('python3'))) {
+            $cmd = Get-Command $candidate[0] -ErrorAction SilentlyContinue
+            if ($cmd -and $cmd.Source -notmatch 'WindowsApps') {
+                $pythonExe = $cmd.Source
+                $pythonArgs = @($candidate | Select-Object -Skip 1)
+                break
+            }
         }
     }
     if (-not $pythonExe) {

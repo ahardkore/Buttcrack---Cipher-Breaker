@@ -153,7 +153,7 @@ jobs:
           # archive, just like the installer verification step below.
           $PSNativeCommandUseErrorActionPreference = $false
           $transcript = Join-Path $env:RUNNER_TEMP 'installer-build-output.log'
-          pwsh -NoProfile -File ./packaging/windows/build.ps1 2>&1 |
+          pwsh -NoProfile -File ./packaging/windows/build.ps1 -PythonExecutable (Get-Command python -CommandType Application).Source 2>&1 |
             Tee-Object -FilePath $transcript
           $code = $LASTEXITCODE
           if ($code -ne 0) {
