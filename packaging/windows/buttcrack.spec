@@ -108,8 +108,9 @@ HIDDEN = [
 try:
     distribution("cryptography")
 except PackageNotFoundError:
-    pass  # Core-only builds remain possible without installing the AES extra.
+    AES_PROVIDER_INSTALLED = False
 else:
+    AES_PROVIDER_INSTALLED = True
     HIDDEN += [
         "cryptography.exceptions",
         "cryptography.hazmat.primitives.padding",
@@ -117,6 +118,22 @@ else:
         "cryptography.hazmat.bindings._rust",
         "_cffi_backend",
     ]
+
+def windows_aes_binaries() -> list:
+    """Keep the stable-ABI forwarder beside the frozen Python runtime.
+
+    The Windows cryptography wheel's _rust.pyd imports python3.dll, not just
+    python3XY.dll. Resolve it from this interpreter, never another Python on PATH.
+    """
+    if not IS_WINDOWS or not AES_PROVIDER_INSTALLED:
+        return []
+    forwarder = Path(sys.base_prefix) / "python3.dll"
+    if not forwarder.is_file():
+        raise RuntimeError(f"AES build requires this interpreter's stable-ABI DLL: {forwarder}")
+    return [(str(forwarder), ".")]
+
+
+BINARIES = windows_aes_binaries()
 
 # The core solver has zero dependencies; the AES provider is bundled separately.
 # The only weight to trim here is the standard
@@ -153,7 +170,7 @@ def analysis(script: str) -> Analysis:  # noqa: F821
     return Analysis(  # noqa: F821
         [str(HERE / script)],
         pathex=[str(ROOT)],
-        binaries=[],
+        binaries=BINARIES,
         datas=DATAS,
         hiddenimports=HIDDEN,
         hookspath=[],

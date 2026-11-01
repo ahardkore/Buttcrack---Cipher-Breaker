@@ -236,6 +236,12 @@ try {
     '{"operation":"decrypt","mode":"ECB","key":"00000000000000000000000000000000","data":"66e94bd4ef8a2c3b884cfa59ca342b2e"}' | Set-Content -Encoding ASCII $aesInput
     $aesReport = (& $CliExe 'modern' 'aes' '--input' $aesInput | Out-String) | ConvertFrom-Json
     if ($LASTEXITCODE -ne 0 -or $aesReport.output.hex -ne '00000000000000000000000000000000') {
+        # Inventory the interpreter and native runtime in the readable failure
+        # annotation; the extension's loader error alone cannot name a missing DLL.
+        & $VenvPython -c "import sys; print('Build Python:', sys.version, 'base:', sys.base_prefix)"
+        Get-ChildItem (Join-Path $AppDir '_internal') -Filter '*.dll' | ForEach-Object {
+            Write-Note ("bundled DLL: " + $_.Name)
+        }
         Fail 'The frozen AES provider failed its known-answer test.'
     }
     Write-Note 'AES provider: known-answer test passed'

@@ -20,6 +20,7 @@ import ast
 import contextlib
 import io
 import re
+import tempfile
 import unittest
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
@@ -192,6 +193,23 @@ class TestSpecPayload(unittest.TestCase):
             namespace, _calls = execute_spec()
         self.assertFalse(any(name.startswith("cryptography") or name == "_cffi_backend"
                              for name in namespace["HIDDEN"]))
+
+    def test_windows_aes_collects_the_matching_stable_abi_forwarder(self):
+        self.namespace.update(IS_WINDOWS=True, AES_PROVIDER_INSTALLED=True)
+        with tempfile.TemporaryDirectory() as base, mock.patch("sys.base_prefix", base):
+            forwarder = Path(base) / "python3.dll"
+            forwarder.write_bytes(b"test forwarder")
+            self.assertEqual(self.namespace["windows_aes_binaries"](), [(str(forwarder), ".")])
+
+    def test_windows_aes_missing_forwarder_is_a_build_error(self):
+        self.namespace.update(IS_WINDOWS=True, AES_PROVIDER_INSTALLED=True)
+        with tempfile.TemporaryDirectory() as base, mock.patch("sys.base_prefix", base), self.assertRaisesRegex(RuntimeError, "stable-ABI DLL"):
+            self.namespace["windows_aes_binaries"]()
+
+    def test_both_analyses_receive_the_native_runtime_binaries(self):
+        for call in self.calls:
+            if call.kind == "Analysis":
+                self.assertEqual(call.kwargs["binaries"], self.namespace["BINARIES"])
 
     def test_tkinter_is_declared_because_the_desktop_window_needs_it(self):
         # A silently missing Tk downgrades the app to a console loop with no
