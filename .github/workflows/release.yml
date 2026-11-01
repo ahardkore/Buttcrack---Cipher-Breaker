@@ -148,7 +148,22 @@ jobs:
       # one go, so CI runs the same command a maintainer runs by hand.
       - name: Build executables and installer
         shell: pwsh
-        run: ./packaging/windows/build.ps1
+        run: |
+          # Surface build failures through the Checks API as well as the log
+          # archive, just like the installer verification step below.
+          $PSNativeCommandUseErrorActionPreference = $false
+          $transcript = Join-Path $env:RUNNER_TEMP 'installer-build-output.log'
+          pwsh -NoProfile -File ./packaging/windows/build.ps1 2>&1 |
+            Tee-Object -FilePath $transcript
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+            $lines = @(Get-Content $transcript | Where-Object { $_.ToString().Trim() } | Select-Object -Last 20)
+            $summary = ($lines | ForEach-Object { $_.ToString().Trim() }) -join ' || '
+            if ($summary.Length -gt 3500) { $summary = $summary.Substring($summary.Length - 3500) }
+            $summary = $summary.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+            Write-Output "::error title=Windows build failed::$summary"
+          }
+          exit $code
 
       - name: Note the version
         id: version
