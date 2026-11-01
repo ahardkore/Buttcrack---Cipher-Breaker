@@ -1,0 +1,56 @@
+{
+  "specification": {
+    "seeds": [
+      "BLOOM",
+      "BLPNM",
+      "NACHTLORN",
+      "Nachtlorn",
+      "nachtlorn"
+    ],
+    "widths": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      10,
+      12,
+      20,
+      26,
+      30,
+      60,
+      3660,
+      5076,
+      8736
+    ],
+    "methods": [
+      "randrange",
+      "bits-mod",
+      "float-scaled",
+      "rational53"
+    ],
+    "orders": [
+      "big",
+      "little"
+    ],
+    "raw_word_offsets": [
+      0,
+      1024
+    ],
+    "unaltered_prefix": 120,
+    "training_letters": 3000,
+    "independent_phase_alphabets": 5,
+    "float_width_limit": 217,
+    "last_block": "full draw then clip"
+  },
+  "letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "cases": 543250,
+  "prefix_matches": 0,
+  "training_fits": 0,
+  "prediction_records": [],
+  "prediction_record_limit": 32,
+  "caution": "Requires an unaltered prefix; tests only the listed seeds, block APIs, offsets and five fixed phase alphabets.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "elapsed_seconds": 56.18383698299999
+}

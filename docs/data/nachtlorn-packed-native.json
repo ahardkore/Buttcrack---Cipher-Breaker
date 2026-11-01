@@ -1,0 +1,129 @@
+{
+  "specification": {
+    "seeds": [
+      4300
+    ],
+    "widths": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      10,
+      12,
+      20,
+      26,
+      30,
+      60,
+      3660,
+      5076,
+      8736
+    ],
+    "methods": [
+      "randrange",
+      "bits-mod",
+      "float-scaled",
+      "rational53"
+    ],
+    "orders": [
+      "big",
+      "little"
+    ],
+    "raw_word_offsets": [
+      0,
+      1024
+    ],
+    "unaltered_prefix": 120,
+    "training_letters": 3000,
+    "independent_phase_alphabets": 5,
+    "float_width_limit": 217,
+    "last_block": "full draw then clip"
+  },
+  "letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "cases": 108650,
+  "prefix_matches": 0,
+  "training_fits": 0,
+  "prediction_records": [],
+  "prediction_record_limit": 32,
+  "caution": "Requires an unaltered prefix; tests only the listed seeds, block APIs, offsets and five fixed phase alphabets.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "synthetic_controls": [
+    {
+      "synthetic": true,
+      "width": 60,
+      "method": "randrange",
+      "order": "big",
+      "raw_word_offset": 17,
+      "marker": "FINDTHEODDOBJECT",
+      "marker_start": 5000,
+      "heldout_letters": 5736,
+      "expected_mismatches": 16,
+      "search_cases": 1056,
+      "training_fits": 3,
+      "training_prediction_classes": 1,
+      "compatible_raw_word_offsets": [
+        8,
+        17,
+        26
+      ],
+      "passed": true
+    },
+    {
+      "synthetic": true,
+      "width": 5,
+      "method": "bits-mod",
+      "order": "little",
+      "raw_word_offset": 23,
+      "marker": "FINDTHEODDOBJECT",
+      "marker_start": 5000,
+      "heldout_letters": 5736,
+      "expected_mismatches": 15,
+      "search_cases": 1056,
+      "training_fits": 1,
+      "training_prediction_classes": 1,
+      "compatible_raw_word_offsets": [
+        23
+      ],
+      "passed": true
+    },
+    {
+      "synthetic": true,
+      "width": 26,
+      "method": "float-scaled",
+      "order": "big",
+      "raw_word_offset": 31,
+      "marker": "FINDTHEODDOBJECT",
+      "marker_start": 5000,
+      "heldout_letters": 5736,
+      "expected_mismatches": 15,
+      "search_cases": 1056,
+      "training_fits": 1,
+      "training_prediction_classes": 1,
+      "compatible_raw_word_offsets": [
+        31
+      ],
+      "passed": true
+    },
+    {
+      "synthetic": true,
+      "width": 12,
+      "method": "rational53",
+      "order": "little",
+      "raw_word_offset": 7,
+      "marker": "FINDTHEODDOBJECT",
+      "marker_start": 5000,
+      "heldout_letters": 5736,
+      "expected_mismatches": 16,
+      "search_cases": 1056,
+      "training_fits": 1,
+      "training_prediction_classes": 1,
+      "compatible_raw_word_offsets": [
+        7
+      ],
+      "passed": true
+    }
+  ],
+  "elapsed_seconds": 11.370937957000024,
+  "control_note": "Controls revalidated using a unique training-compatible prediction class, allowing initial rejection offset aliases. Actual scan unchanged."
+}

@@ -1,0 +1,94 @@
+{
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "replayed_header_records": 121,
+  "signature_counts": {
+    "bzip2": 56,
+    "gzip": 57,
+    "jpeg": 8
+  },
+  "replayed_recognitions": 0,
+  "jpeg_header_checks": [
+    {
+      "result_file": "nachtlorn-binary-key-route.json",
+      "record": 45,
+      "offset": 382,
+      "remaining_bytes": 4751,
+      "prefix16_hex": "ffd8fff76a07008b91048eacaf6dd56d",
+      "next_marker": 247,
+      "declared_segment_bytes": 27143,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-key-route.json",
+      "record": 46,
+      "offset": 4748,
+      "remaining_bytes": 385,
+      "prefix16_hex": "ffd8ffc73e8a6c644815b84e58dc06a1",
+      "next_marker": 199,
+      "declared_segment_bytes": 16010,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 28,
+      "offset": 1901,
+      "remaining_bytes": 3232,
+      "prefix16_hex": "ffd8ff8ad3cb5c39ee3ffc000b05d2a8",
+      "next_marker": 138,
+      "declared_segment_bytes": 54219,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 29,
+      "offset": 3229,
+      "remaining_bytes": 1904,
+      "prefix16_hex": "ffd8ff07bb1d41f5e0506481eb8de1bb",
+      "next_marker": 7,
+      "declared_segment_bytes": 47901,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 39,
+      "offset": 1332,
+      "remaining_bytes": 3801,
+      "prefix16_hex": "ffd8ff7a283782c1e88ea94519ad38b5",
+      "next_marker": 122,
+      "declared_segment_bytes": 10295,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 40,
+      "offset": 3798,
+      "remaining_bytes": 1335,
+      "prefix16_hex": "ffd8ff8796235d27bdd55bcb47b90a84",
+      "next_marker": 135,
+      "declared_segment_bytes": 38435,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 53,
+      "offset": 4641,
+      "remaining_bytes": 492,
+      "prefix16_hex": "ffd8ffbc05643f12a4a24e9d03868894",
+      "next_marker": 188,
+      "declared_segment_bytes": 1380,
+      "first_segment_possible": false
+    },
+    {
+      "result_file": "nachtlorn-binary-route-key.json",
+      "record": 54,
+      "offset": 489,
+      "remaining_bytes": 4644,
+      "prefix16_hex": "ffd8fffcfc898df39ff4bac9cef77562",
+      "next_marker": 252,
+      "declared_segment_bytes": 64649,
+      "first_segment_possible": false
+    }
+  ],
+  "note": "All recorded header buffers were reconstructed and hash-checked. All 8 JPEG coincidences fail the first segment test; none was repaired or opened as an image.",
+  "validation_test": "tests/test_nachtlorn_binary_research.py::NachtlornBinaryResearchTests::test_all_recorded_actual_header_buffers_replay_without_scratch_inputs"
+}

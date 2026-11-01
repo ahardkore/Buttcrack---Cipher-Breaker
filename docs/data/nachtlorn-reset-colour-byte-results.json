@@ -1,0 +1,109 @@
+{
+  "hypothesis": "R10",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "representation_configurations": 64,
+  "unique_buffers": 64,
+  "key_specification": [
+    {
+      "password": "GLOOM",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "GLOOM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "gloom",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "gloom",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Gloom",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "Gloom",
+      "derivation": "sha256"
+    },
+    {
+      "password": "WLOOM",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "WLOOM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "wloom",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "wloom",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Wloom",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "Wloom",
+      "derivation": "sha256"
+    },
+    {
+      "password": "GLPNM",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "GLPNM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "glpnm",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "glpnm",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Glpnm",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "Glpnm",
+      "derivation": "sha256"
+    },
+    {
+      "password": "WLPNM",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "WLPNM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "wlpnm",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "wlpnm",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Wlpnm",
+      "derivation": "raw-ascii"
+    },
+    {
+      "password": "Wlpnm",
+      "derivation": "sha256"
+    }
+  ],
+  "byte_xor_trials": 1536,
+  "findings": [],
+  "caution": "Only raw-body byte XOR at phase0; no prior letter cipher. Complete objects, printable candidates and unvalidated signatures are distinguished. A byte roundtrip or magic header is not a recovered population or outlier.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

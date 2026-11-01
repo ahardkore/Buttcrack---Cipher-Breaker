@@ -1,0 +1,184 @@
+{
+  "hypothesis": "R5",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "proposal": {
+    "original_poem": [
+      "blue at the bottom of the bowl.",
+      "laughter, somewhere on the stairs.",
+      "one given.",
+      "one taken.",
+      "morning. neither be right."
+    ],
+    "proposed_poem": [
+      "green at the bottom of the bowl.",
+      "laughter, somewhere on the stairs.",
+      "one given.",
+      "one taken.",
+      "morning. neither be right."
+    ],
+    "derived_acrostic": "GLOOM",
+    "book_passage": "A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting.",
+    "content_colour": "green",
+    "vessel_colour": "white",
+    "status": "User-motivated interpretation, not a confirmed source correction."
+  },
+  "key": "GLOOM",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "literal_key_test": {
+    "letter_paths": 6,
+    "representation_configurations": 192,
+    "unique_buffers": 192,
+    "roundtrips": [
+      {
+        "drop_final_i": false,
+        "operation": "minus",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": false,
+        "operation": "plus",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": false,
+        "operation": "beaufort",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "minus",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "plus",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "beaufort",
+        "key": "GLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      }
+    ],
+    "accepted_records": []
+  },
+  "standalone_password_test": {
+    "status": "tested",
+    "crypto_version": "3.23.0",
+    "password_cases": [
+      "GLOOM",
+      "gloom",
+      "Gloom"
+    ],
+    "key_specification": [
+      {
+        "password": "GLOOM",
+        "derivation": "sha256"
+      },
+      {
+        "password": "GLOOM",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "GLOOM",
+        "derivation": "md5"
+      },
+      {
+        "password": "GLOOM",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "GLOOM",
+        "derivation": "nul-pad32"
+      },
+      {
+        "password": "gloom",
+        "derivation": "sha256"
+      },
+      {
+        "password": "gloom",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "gloom",
+        "derivation": "md5"
+      },
+      {
+        "password": "gloom",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "gloom",
+        "derivation": "nul-pad32"
+      },
+      {
+        "password": "Gloom",
+        "derivation": "sha256"
+      },
+      {
+        "password": "Gloom",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "Gloom",
+        "derivation": "md5"
+      },
+      {
+        "password": "Gloom",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "Gloom",
+        "derivation": "nul-pad32"
+      }
+    ],
+    "modes": [
+      [
+        "AES-GCM",
+        12
+      ],
+      [
+        "AES-GCM",
+        16
+      ],
+      [
+        "AES-EAX",
+        16
+      ],
+      [
+        "ChaCha20-Poly1305",
+        12
+      ],
+      [
+        "ChaCha20-Poly1305",
+        24
+      ]
+    ],
+    "tag_bytes": 16,
+    "associated_data": "empty",
+    "representation_configurations": 64,
+    "unique_buffers": 64,
+    "authentication_attempts": 7296,
+    "attempts_by_mode": {
+      "AES-GCM": 3840,
+      "AES-EAX": 1920,
+      "ChaCha20-Poly1305": 1536
+    },
+    "accepted": []
+  },
+  "caution": "Only registered R5 alternatives. No routes, changed O initials, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+}

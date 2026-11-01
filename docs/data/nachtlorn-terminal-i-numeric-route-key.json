@@ -1,0 +1,262 @@
+{
+  "mode": "route-then-periodic",
+  "path_configurations": 2688,
+  "unique_letter_variants": 2400,
+  "binary_profiles": 14400,
+  "flagged": 0,
+  "best_profiles": [
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "reverse"
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "binary_sha256": "863af6c8eec310ba32ecbb2e10eba735d322898eed418c60ee7ccf0e51ad5e94",
+      "score": 5.815230125149881,
+      "period": 72,
+      "phase": 43,
+      "bit": 0,
+      "parity_mask": 1,
+      "ones": 60,
+      "observations": 71
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      "alphabet": "I0",
+      "binary_sha256": "2b293ba5f6d6fc0ba40a5ecd34dcb7354b4f5536970084a7649aed062400c23e",
+      "score": 5.525359265747009,
+      "period": 8,
+      "phase": 2,
+      "bit": 6,
+      "parity_mask": 64,
+      "ones": 391,
+      "observations": 642
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "binary_sha256": "27695700cd952b38396606c816a3665f672bd7688c4d2cf599a96d755a0eba8e",
+      "score": 5.375,
+      "period": 20,
+      "phase": 16,
+      "bit": 0,
+      "parity_mask": 1,
+      "ones": 171,
+      "observations": 256
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 3
+      },
+      "alphabet": "A1-bijective",
+      "binary_sha256": "c199425383487edc0756ed0e8e103050849785aeec741d1c6f7e9a193dd293e8",
+      "score": 5.34051746187234,
+      "period": 72,
+      "phase": 24,
+      "bit": 1,
+      "parity_mask": 2,
+      "ones": 58,
+      "observations": 71
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      "alphabet": "A1-bijective",
+      "binary_sha256": "545f49efe77e9a5d57a54050096aaff7a3560b6e80989899f6c53ff57374a750",
+      "score": 5.202924421439472,
+      "period": 36,
+      "phase": 29,
+      "bit": 7,
+      "parity_mask": 128,
+      "ones": 40,
+      "observations": 142
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "A1-bijective",
+      "binary_sha256": "11e81d7c5dbcdda52a975b6d97369591850c38b3c61d65fcf01d971ad51d7ccd",
+      "score": 5.164858172074635,
+      "period": 4,
+      "phase": 1,
+      "bit": null,
+      "parity_mask": 96,
+      "ones": 549,
+      "observations": 1283
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "A0",
+      "binary_sha256": "f10d9060f70299821b78aa8e44ec23d0d67a3105061fbd57383af5200be760da",
+      "score": 5.1306907467650795,
+      "period": 8,
+      "phase": 1,
+      "bit": 7,
+      "parity_mask": 128,
+      "ones": 386,
+      "observations": 642
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "I0",
+      "binary_sha256": "b235abe942d3a5e5706a06a96f1e69480c0632657a81f05d75fbb373596189dd",
+      "score": 5.126524163602469,
+      "period": 40,
+      "phase": 13,
+      "bit": 4,
+      "parity_mask": 16,
+      "ones": 35,
+      "observations": 128
+    }
+  ],
+  "flagged_records": [],
+  "periods": [
+    2,
+    4,
+    8,
+    20,
+    36,
+    40,
+    72
+  ],
+  "threshold": 8,
+  "parity_masks": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    96
+  ],
+  "letter_sha256": "e074d149a7af43a4ea796b410e52646a380a5e82f7b0e0efedcb3f887ab51c6f",
+  "caution": "Structural screen only; unknown masking can erase bit bias. Threshold is not a p-value.",
+  "source_extraction": {
+    "original_body_letters": 8736,
+    "retained_body_letters": 8735,
+    "removed_terminal": "I"
+  },
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "controls": [
+    {
+      "synthetic": true,
+      "index": 0,
+      "profile": {
+        "score": 25.258785214843467,
+        "period": 8,
+        "phase": 4,
+        "bit": null,
+        "parity_mask": 96,
+        "ones": 641,
+        "observations": 642
+      }
+    },
+    {
+      "synthetic": true,
+      "index": 1,
+      "profile": {
+        "score": 25.258785214843467,
+        "period": 8,
+        "phase": 4,
+        "bit": null,
+        "parity_mask": 96,
+        "ones": 1,
+        "observations": 642
+      }
+    },
+    {
+      "synthetic": true,
+      "index": 2,
+      "profile": {
+        "score": 25.27857236553942,
+        "period": 4,
+        "phase": 1,
+        "bit": null,
+        "parity_mask": 96,
+        "ones": 1,
+        "observations": 643
+      }
+    },
+    {
+      "synthetic": true,
+      "index": 3,
+      "profile": {
+        "score": 11.958260743101398,
+        "period": 36,
+        "phase": 1,
+        "bit": 0,
+        "parity_mask": 1,
+        "ones": 143,
+        "observations": 143
+      }
+    }
+  ]
+}

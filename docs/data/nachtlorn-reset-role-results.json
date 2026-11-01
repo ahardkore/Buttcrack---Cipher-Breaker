@@ -1,0 +1,76 @@
+{
+  "status": "Role assessment only; no recovered answer.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "reference": {
+    "reference_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+    "reference_bytes": 1580890,
+    "title": "Ulysses",
+    "author": "James Joyce",
+    "gutenberg_id": 4300,
+    "episode": 1,
+    "ascii_word_tokens": 7342,
+    "fixed_query_token_positions": {
+      "blue": [],
+      "bowl": [
+        10,
+        39,
+        170,
+        382,
+        1089,
+        2544
+      ],
+      "stairs": [
+        7,
+        54,
+        130,
+        2411,
+        2447,
+        2476,
+        2862,
+        3016
+      ],
+      "laughter": [
+        346,
+        445,
+        1339,
+        1348,
+        1440,
+        1718,
+        2646,
+        4869,
+        5528,
+        5981,
+        5993
+      ],
+      "morning": [
+        34,
+        2397,
+        2472,
+        2962,
+        3895,
+        3985,
+        4070,
+        4601,
+        5552
+      ]
+    },
+    "literal_poem_line_matches_in_episode": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "opening_excerpt": "Stately, plump Buck Mulligan came from the stairhead, bearing a bowl of lather on which a mirror and a razor lay crossed. A yellow dressinggown, ungirdled, was sustained gently behind him on the mild morning air. He held the bowl aloft and intoned:",
+    "caution": "Exploratory consistency audit, not a held-out or significance test. Neither literary populations nor a body cipher follow from these facts."
+  },
+  "named_construction": {
+    "representation_configurations": 64,
+    "unique_buffers": 64,
+    "candidates": [],
+    "filter_header_bytes": 40,
+    "scalable_header_bytes": 28,
+    "schema_checks_per_buffer": 2,
+    "caution": "Only unmasked whole-base26 A0/A1, both byte orders, optional terminal I, and 0..7 lost zero bytes. No cipher or password is assumed."
+  }
+}

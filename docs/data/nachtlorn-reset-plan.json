@@ -1,0 +1,501 @@
+{
+  "version": 1,
+  "status": "reset_literal_words_keyword_digits_and_anchored_book_checks_completed_no_solution",
+  "date": "2026-11-01",
+  "facts_file": "docs/data/nachtlorn-reset-facts.json",
+  "historical_quarantine": {
+    "policy": "Old fragment matches, proposed keys, rosters, repaired phrases and answer-specific extraction choices are not active targets or validation criteria.",
+    "ledger_archive": "docs/nachtlorn-pre-reset-ledger.md",
+    "ledger_archive_sha256": "e6a565a16e895f0dc5c35ab03595610374fe3ff6226c7bc57c9ccdcf3bdf4339",
+    "legacy_audit": "scripts/nachtlorn_clue_ledger.py",
+    "reuse_condition": "Only reconsider an old result if an independently specified construction and selection rule reproduces it. Do not choose parameters to recover it."
+  },
+  "acceptance_requirements": [
+    "Record clue basis and parameter choices before running a proposed body extraction.",
+    "Define the recovered object type and population; it need not be English prose.",
+    "Specify what makes one object the outlier before reading its candidate answer.",
+    "Check the claimed construction forward, including reversibility where applicable.",
+    "Validate nontrivial predictions or structure beyond a short recognizable word.",
+    "Keep exploratory hypotheses distinct from author statements and literal source observations."
+  ],
+  "hypotheses": [
+    {
+      "id": "R0",
+      "name": "Forward layout model",
+      "status": "exact_source_fit_layout_only",
+      "parameters": {
+        "seed": 4300,
+        "row_letters": 60,
+        "group_letters": 5,
+        "indent_choices": 8,
+        "line_ending": "LF"
+      },
+      "prediction": "Reconstruct all body whitespace and line endings from the unmodified letter stream without adding or removing letters.",
+      "result": "Exact byte match. Does not identify the letter generator or final answer."
+    },
+    {
+      "id": "R1",
+      "name": "Role of the acrostic and seed",
+      "status": "reference_association_supported_recovery_role_unassigned",
+      "alternatives": [
+        "literal key or instruction",
+        "reference or identifier",
+        "named construction or data structure"
+      ],
+      "next_action": "Compare the literal poem readings. Admit a recovery model only after it predicts an object type or structural property not chosen from an old fragment.",
+      "forbidden_shortcut": "Do not assume either a book population or a cipher family from the token alone.",
+      "roles_may_coexist": true,
+      "tests": [
+        {
+          "id": "R1-reference",
+          "kind": "exploratory_reference_check",
+          "basis": "The literal acrostic and the previously verified seed; no old decoded fragment.",
+          "prediction": "A candidate reference should actually identify the book/number and be consistent with the poem imagery.",
+          "scope": "Pinned Gutenberg4300 metadata and episode1; fixed token queries blue, bowl*, stair*, laugh*, morning; exact poem-line matches.",
+          "caveat": "The reference and some source text were already seen, so this is not held-out validation or a significance test.",
+          "cannot_establish": [
+            "a cipher family",
+            "a body password",
+            "the recovered population",
+            "an answer class"
+          ]
+        },
+        {
+          "id": "R1-container",
+          "kind": "registered_bounded_binary_schema_check",
+          "basis": "BLOOM can name a construction rather than a password; no dictionary or target-word queries.",
+          "input_encoding": "Unmodified body or explicit final-I removal; whole-number base26 A0 and bijective A1; big/little bytes; 0..7 lost zero bytes restored at the appropriate end.",
+          "prohibited": "No Vigenere, keyed alphabets, transpositions, arbitrary offsets, passwords or favorite-word membership probes.",
+          "formats": [
+            "pybloom BloomFilter <dQQQQ with exact constructor dimensions and whole-packet bit-array size",
+            "pybloom ScalableBloomFilter <idQd plus count/size table and complete validated children"
+          ],
+          "bounds": {
+            "max_slices": 64,
+            "max_bits": 8388608,
+            "max_children": 64,
+            "tag": "structural container only"
+          },
+          "success_prediction": "A complete self-consistent container, not printable bytes, a bare word, or an appealing bit density.",
+          "failure_meaning": "Only these raw representations/formats are unsupported; it does not disprove Bloom-related constructions.",
+          "outlier_gate": "Even a valid container is not the final answer. Its object universe and outlier rule must be independently justified before querying membership."
+        }
+      ],
+      "assessment": "Pinned metadata connects 4300 to Ulysses. Episode1 contains bowl/stair/morning imagery, but no literal poem lines and no token blue. Named-construction raw-schema test yields no container. These do not assign a cipher or answer class."
+    },
+    {
+      "id": "R2",
+      "name": "Original-row visual extraction",
+      "status": "open_requires_independent_anchor",
+      "user_model": "One original ciphertext row becomes one vertical strip; count its actual letters on either side of a justified zero.",
+      "next_action": "Derive the zero/anchor and measurement from clues before testing a strip population.",
+      "forbidden_shortcut": "No pooled-page substitute, free guide search for an old answer, or assumption that different ranges force an outlier."
+    },
+    {
+      "id": "R3",
+      "name": "Pinned book text as a running key",
+      "status": "tested_no_structured_endpoint",
+      "clue_basis": "Test the supported reference as key material, rather than assuming the acrostic is a repeating cipher key or the answer belongs to a literary roster.",
+      "key_domains": [
+        "all ASCII letters in pinned raw file",
+        "ASCII letters between exact Gutenberg START/END markers",
+        "ASCII letters from Stately opening to exact Gutenberg END marker"
+      ],
+      "normalization": "Keep ASCII A..Z/a..z only, uppercase, zero-based values. Start at normalized position0; no offset search, key repetition or row reset.",
+      "operations": [
+        "C-K",
+        "C+K",
+        "K-C"
+      ],
+      "input_extractions": [
+        "full body",
+        "explicit terminal-I removal"
+      ],
+      "binary_representation": "Whole-base26 A0/A1, both byte orders, restoring 0..7 lost zero bytes at the appropriate end.",
+      "accepted_endpoints": [
+        "complete origin-zero JSON",
+        "checksum-valid origin-zero gzip/zlib/bzip2/XZ consuming the packet",
+        "complete validated origin-zero pybloom filter/scalable container"
+      ],
+      "excluded": "No embedded-offset acceptance, static-pickle acceptance, dictionary words, names, spelling repair, transposition or phase search.",
+      "success_prediction": "Recover a complete structured object with exact letter-stage roundtrip; do not claim an answer until a population and outlier rule are justified.",
+      "failure_meaning": "Reject only these running-key/representation/endpoint combinations, not the reference itself or all book-based constructions.",
+      "result": {
+        "letter_paths": 18,
+        "representation_configurations": 576,
+        "accepted_records": 0,
+        "note": "All letter-stage roundtrips pass; reversibility alone is not plaintext evidence."
+      }
+    },
+    {
+      "id": "R4",
+      "name": "Give/take operand and operation",
+      "status": "open_no_operand_assigned",
+      "basis": "The two literal poem lines may describe construction, recovery or interpretation rather than two cipher layers.",
+      "next_action": "Identify what is given or taken and state a forward structural prediction before applying a change to the body.",
+      "not_assumed": [
+        "changes to the two initials",
+        "insertion or deletion of a marker",
+        "a particular numeric origin",
+        "two extra encryption algorithms"
+      ],
+      "success_gate": "The operand and operation must be justified without a historical candidate or an extra layer added merely after a failed test."
+    },
+    {
+      "id": "R5",
+      "name": "User-proposed colour replacement in the poem",
+      "status": "contextual_replacement_supported_bounded_key_roles_no_endpoint",
+      "origin": "User suggests that blue is the outlier and should be replaced using the book.",
+      "book_evidence": "The pinned first episode describes a bowl of white china holding green sluggish bile.",
+      "primary_reading": {
+        "replacement": "green",
+        "reason": "Contents of the bowl",
+        "derived_acrostic": "GLOOM"
+      },
+      "alternative_reading": {
+        "replacement": "white",
+        "reason": "Material/colour of the vessel",
+        "derived_acrostic": "WLOOM",
+        "body_test": "not included in this primary test"
+      },
+      "limits": "The colour mismatch is a hypothesis, not an author-confirmed error. The original poem remains unchanged. No previous candidate word is used.",
+      "test_roles": [
+        {
+          "role": "literal repeating key",
+          "key": "GLOOM",
+          "operations": [
+            "C-K",
+            "C+K",
+            "K-C"
+          ],
+          "phase": 0,
+          "endpoint": "Complete origin-zero JSON/checksummed compressed packet or validated Bloom container, after whole-base26 A0/A1 in either byte order with 0..7 restored zero bytes."
+        },
+        {
+          "role": "standalone authenticated-encryption password",
+          "password_cases": [
+            "GLOOM",
+            "gloom",
+            "Gloom"
+          ],
+          "endpoint": "Valid 16-byte authentication tag in the already bounded AES-GCM/AES-EAX/ChaCha20-Poly1305 packet formats and key derivations."
+        }
+      ],
+      "shared_input_extractions": [
+        "full literal body",
+        "explicit final-I removal"
+      ],
+      "excluded": "No repeating-key plus AEAD stack, extra routes, changed O initials, key-phase search, dictionary lookup or preferred-word acceptance.",
+      "success_gate": "First recover an independently validated object; the object population and its outlier must still be explained.",
+      "results": "docs/data/nachtlorn-reset-colour-results.json",
+      "outcome": {
+        "literal_key_letter_paths": 6,
+        "structured_representation_configurations": 192,
+        "structured_objects": 0,
+        "standalone_aead_authentication_attempts": 7296,
+        "valid_authentication_tags": 0,
+        "all_letter_roundtrips_exact": true
+      },
+      "interpretation": "Green remains a book-grounded candidate replacement. Neither tested key role recovers an object. No population or outlier solution has been established."
+    },
+    {
+      "id": "R6",
+      "name": "Vessel-colour alternative to green",
+      "status": "tested_no_structured_endpoint_context_not_unique",
+      "basis": "The same episode1 passage calls the bowl white china. A meaningful GLOOM word is not grounds to exclude WLOOM.",
+      "replacement": "white",
+      "derived_acrostic": "WLOOM",
+      "protocol": "Exactly the R5 repeating-key and standalone-password roles, replacing only the key and its three case variants. No stacks or extra cipher family.",
+      "reference_audit": "Enumerate all exact bowl/bowls tokens in the whole story, episode and \u00b140 ASCII word-token context; fixed blue/green/white/yellow/black queries. Exploratory, not held-out. Nearby colours need not modify bowls.",
+      "results": "docs/data/nachtlorn-reset-white-results.json",
+      "outcome": {
+        "letter_paths": 6,
+        "byte_configurations": 192,
+        "structured_objects": 0,
+        "authentication_attempts": 7296,
+        "valid_tags": 0,
+        "whole_story_bowl_token_hits": 17,
+        "exact_blue_tokens_in_registered_windows": 0
+      },
+      "important_new_alternative": "Episode5 cold black marble bowl is followed closely by I\u2019m in mourning myself. Blue -> black retains BLOOM. Yellow soup is a further bowl-content colour in episode10; no new yellow-key search was run."
+    },
+    {
+      "id": "R7",
+      "name": "Signed-cell preflight for an invertible Bloom lookup table",
+      "status": "tested_no_signed_count_stripe_in_registered_models",
+      "basis": [
+        "Literal BLOOM",
+        "One given / one taken can mean insertions and deletions, rather than shifts of O initials.",
+        "User-author clarification allows construction and interpretation layers."
+      ],
+      "reference": "gavinandresen/IBLT_Cplusplus logical entry fields count:int32, keySum:uint64, keyCheck:uint32, valueSum:variable bytes; 4 hash partitions; MurmurHash3 checksum seed11.",
+      "important_limit": "The reference has no wire serializer. Packed field widths below are an explicit hypothetical representation, not an attributed official format.",
+      "letter_paths": {
+        "inputs": [
+          "full",
+          "drop final I"
+        ],
+        "operations": [
+          "identity",
+          "GLOOM C-K",
+          "GLOOM C+K",
+          "GLOOM K-C",
+          "WLOOM C-K",
+          "WLOOM C+K",
+          "WLOOM K-C"
+        ],
+        "phase": 0
+      },
+      "bytes": "Whole-base26 A0/A1, both orders, 0..7 restored zero bytes; no additional cipher, route, offset-key or hash generator.",
+      "preflight": {
+        "count_bytes": 4,
+        "count_orders": [
+          "little",
+          "big"
+        ],
+        "maximum_absolute_count": 1000000,
+        "minimum_consecutive_cells": 32,
+        "strides": [
+          16,
+          20,
+          24,
+          32,
+          48
+        ],
+        "alignment": "Every byte residue within a stride; longest consecutive run, allowing unknown framing without selecting an answer."
+      },
+      "prediction": "At least one representation of a small ordinary packed IBLT should contain a long periodic stripe of bounded signed counts.",
+      "gate": "A stripe is only a structural lead, not an accepted object. Any flag must next satisfy checksum, bucket placement, complete peeling and forward reconstruction before identifying items or an outlier.",
+      "excluded": "Not every IBLT variant, integer width, value size, compressed counter encoding, encryption, or serialization is covered.",
+      "results": "docs/data/nachtlorn-reset-signed-cells-results.json",
+      "reference_provenance": "docs/data/nachtlorn-iblt-reference-source.json",
+      "outcome": {
+        "letter_paths": 14,
+        "unique_buffers": 448,
+        "flagged_buffers": 0,
+        "longest_run": 2,
+        "required_run": 32
+      },
+      "interpretation": "Preflight negative only, not an accepted-object decoder or a universal IBLT exclusion. No checksum/peeling implementation was used to claim recovered objects.",
+      "representation_followup": {
+        "hypothesis": "R8",
+        "status": "fieldwise rule tested separately, required field constraints fail"
+      }
+    },
+    {
+      "id": "R8",
+      "name": "Per-field base26 encoding of a key-only IBLT",
+      "status": "tested_field_constraints_failed",
+      "basis": "R7 does not cover fieldwise integer encoding. The pinned reference independently supplies signed count32, key64 and checksum32, four hash partitions and checksum seed11. Zero-length valueSum is a supported key-only case.",
+      "wire_hypothesis": "Each unsigned bit pattern is A0 positional base26, most-significant letter first, padded with A to ceil(bits/log2(26)) letters: count7, key14, checksum7. Counts use signed32 two\u2019s complement. No official serializer is attributed to the reference.",
+      "layouts": [
+        "row-major interleaved count/key/checksum",
+        "field-major count array, key array, checksum array"
+      ],
+      "letter_paths": {
+        "keys": [
+          "BLOOM",
+          "GLOOM",
+          "WLOOM"
+        ],
+        "operations": [
+          "identity",
+          "C-K",
+          "C+K",
+          "K-C"
+        ],
+        "phase": 0,
+        "inputs": [
+          "full",
+          "explicit final-I removal"
+        ],
+        "reason_for_BLOOM": "Literal source acrostic, preserved by the independently recorded black-bowl reading."
+      },
+      "predictions": [
+        "Exact cell count, no padding repairs; nonzero cell count divisible by four.",
+        "All count/check fields fit uint32 and key fields fit uint64; absolute signed counts at most1,000,000.",
+        "Pure cells have count +/-1, the seed11 MurmurHash3 checksum and correct four-partition bucket positions.",
+        "Complete peeling leaves every cell empty; re-insertion exactly reconstructs all input fields."
+      ],
+      "gate": "No population/outlier claim from divisibility or bounds alone. Recover numeric keys only after complete checksum/bucket/peeling/forward validation. Numeric-key interpretation and an outlier rule would still remain separate.",
+      "excluded": "No A1 fixed-width zero convention, shifted field starts, headers, bit truncation, variable values, extra cipher, extra key phase, transposition, changed O initials or dictionary targets.",
+      "results": "docs/data/nachtlorn-reset-fieldwise-iblt-results.json",
+      "outcome": {
+        "configurations": 40,
+        "field_constraints_failed": 20,
+        "incompatible_dimensions": 20,
+        "validated_tables": 0,
+        "full_body_candidate_cells": 312
+      },
+      "interpretation": "Divisibility fits but the required bit widths and signed count bounds fail. No population recovered.",
+      "independent_controls": "docs/data/nachtlorn-fieldwise-iblt-oracle.json"
+    },
+    {
+      "id": "R9",
+      "name": "Colour replacement followed by literal unit shifts of the two O initials",
+      "status": "tested_no_structured_endpoint",
+      "basis": "User-proposed replacement is combined with one given / one taken as +1 / -1 applied to those lines\u2019 own O initials. Unchanged B/L/M positions are an explicit hypothesis; no cipher operation or last-line role is confirmed.",
+      "key_derivation": {
+        "green": "BLOOM -> GLOOM -> GLPNM",
+        "white": "BLOOM -> WLOOM -> WLPNM",
+        "unchanged_control": "BLOOM -> BLPNM"
+      },
+      "reset_boundary": "BLPNM is a historical proposed key; here it is only a source-derived baseline under the declared rule. No old fragments, desired words or previous purported answers can validate a result.",
+      "protocol": "Same bounded literal repeating-key and standalone authenticated-password alternatives as R5/R6; only explicit derived keys and their upper/lower/title case variants change. Not a GLOOM-then-GLPNM encryption stack.",
+      "success_gate": "Complete registered structured object or valid authentication tag. No dictionary scores or preferred words. A recovered object would still require independent interpretation and an outlier rule.",
+      "excluded": "No inverse order, arbitrary letter changes, extra key phase, new cipher family, transposition, added plaintext layer or field repair.",
+      "results": "docs/data/nachtlorn-reset-poem-key-results.json",
+      "outcome": {
+        "candidate_keys": [
+          "GLPNM",
+          "WLPNM",
+          "BLPNM"
+        ],
+        "letter_paths": 18,
+        "byte_configurations": 576,
+        "structured_objects": 0,
+        "authentication_attempts": 21888,
+        "valid_tags": 0
+      }
+    },
+    {
+      "id": "R10",
+      "name": "The new colour-derived strings as byte-XOR keys, not letter keys",
+      "status": "tested_no_packet_or_diagnostic_candidate",
+      "basis": "The acrostic/derived-string role remains unassigned. Repeating ASCII bytes or a SHA256-derived byte key is a direct reversible alternative to letterwise arithmetic or an authenticated-encryption password. This is not applied after another decryption.",
+      "keys": [
+        "GLOOM",
+        "WLOOM",
+        "GLPNM",
+        "WLPNM"
+      ],
+      "cases": [
+        "upper",
+        "lower",
+        "title"
+      ],
+      "key_material": [
+        "raw ASCII",
+        "SHA256 raw digest"
+      ],
+      "operation": "Repeating byte XOR, phase0, on raw whole-base26 A0/A1; two byte orders; full/drop final I; restore0..7 zero bytes.",
+      "gate": "Complete origin-zero registered JSON/checksummed compressed/Bloom packet. Whole printable ASCII packets >=64 bytes are separately flagged for interpretation. Origin-zero NPY or SQLite signatures are diagnostics only, never accepted as complete objects.",
+      "limits": "No letterwise stage first, arbitrary byte phase, extra cipher, route, repair, word targets or unvalidated magic acceptance. Old BLOOM/BLPNM byte-key grids are not rerun.",
+      "results": "docs/data/nachtlorn-reset-colour-byte-results.json",
+      "outcome": {
+        "byte_representations": 64,
+        "key_material_variants": 24,
+        "xor_trials": 1536,
+        "structured_objects": 0,
+        "printable_candidates": 0,
+        "origin_signature_diagnostics": 0
+      }
+    },
+    {
+      "id": "R11",
+      "name": "Literal book-colour words instead of their resulting acrostics",
+      "status": "tested_no_structured_endpoint",
+      "basis": "The user requested substituting blue using the book. That does not require using the corrected initial. Black has an explicit bowl/mourning context; green and white describe contents/vessel in episode1.",
+      "words": [
+        "BLACK",
+        "GREEN",
+        "WHITE"
+      ],
+      "roles": "Same independently tested repeating-letter, standalone authenticated-password, and direct raw-byte XOR roles as earlier probes; only the literal strings change. No stacked encryption.",
+      "bounds": "Phase0; existing three letter operations, raw ASCII/SHA256 XOR material, five AEAD key derivations, upper/lower/title password cases; full/drop I, whole-base26 A0/A1, either byte order, restore0..7 zero bytes.",
+      "gate": "Complete registered packets, valid tags, or separately labelled whole-printable/NPY/SQLite diagnostics. No wordlist or favoured plaintext.",
+      "results": "docs/data/nachtlorn-reset-literal-word-results.json",
+      "outcome": {
+        "word_keys": 3,
+        "letter_paths": 18,
+        "packet_configurations": 576,
+        "structured_objects": 0,
+        "authentication_attempts": 21888,
+        "valid_tags": 0,
+        "byte_xor_trials": 1152,
+        "xor_findings": 0
+      }
+    },
+    {
+      "id": "R12",
+      "name": "Keyword alphabet as the numeric representation, colour word as the password",
+      "status": "tested_no_structured_or_authenticated_endpoint",
+      "basis": "A keyword can define the ordered digit alphabet rather than a periodic key. The literal/corrected initials and the replacement word are distinct clue roles. The primary pair is literal BLOOM digit alphabet with BLACK password, preserving the acrostic under the black/mourning reading.",
+      "alphabet_keywords": [
+        "BLOOM",
+        "GLOOM",
+        "WLOOM",
+        "BLACK",
+        "GREEN",
+        "WHITE"
+      ],
+      "alphabet_rule": "Deduplicate keyword in order; append unused A..Z. Most-significant digit first. No other alphabet permutation, Caesar offset or reversal.",
+      "password_words": [
+        "BLACK",
+        "GREEN",
+        "WHITE"
+      ],
+      "representation": "Raw original letters only, full/drop final I; whole-integer A0/A1; either byte order; restore0..7 zero bytes.",
+      "endpoints": "Inspect complete decoded packets directly, then separately test the already specified authenticated packet modes with explicit colour-word passwords. No letterwise cipher or XOR stage first.",
+      "bounds": "Upper/lower/title cases and existing five password derivations, five mode/nonce pairs, two packet framings, 16-byte tags, empty AAD.",
+      "overlap": "Direct BLOOM-keyed alphabet packet checks overlap historical baseline. The new colour-password combinations and other admitted alphabets are specified explicitly, not claimed as entirely new cipher families.",
+      "gate": "Exact glyph-map and numeric roundtrips check implementation only. Complete object/tag required; no population or outlier is inferred from keyword meaning or a header alone.",
+      "results": "docs/data/nachtlorn-reset-keyword-digit-results.json",
+      "outcome": {
+        "alphabet_keywords": 6,
+        "byte_configurations": 384,
+        "unique_buffers": 384,
+        "structured_objects": 0,
+        "diagnostic_candidates": 0,
+        "authentication_attempts": 131328,
+        "valid_tags": 0
+      }
+    },
+    {
+      "id": "R13",
+      "name": "Book passages as exact running-key addresses, not passwords",
+      "status": "tested_no_structured_endpoint",
+      "basis": "The user-proposed replacement locates actual passages. The explicit black-bowl/mourning pairing supplies a location rather than requiring a key word. R3 tested only three canonical start0 domains, not these clue-bound addresses.",
+      "anchors": [
+        "episode1 deathbed bowl start",
+        "episode1 immediately after deathbed bowl token",
+        "episode1 white",
+        "episode1 green",
+        "episode5 black in cold black marble bowl",
+        "episode5 bowl in that phrase",
+        "episode5 immediately after that bowl token",
+        "episode5 mourning in Notice because I\u2019m in mourning myself"
+      ],
+      "key_rule": "ASCII letters uppercased from exact anchor to Gutenberg END; sufficient material, no repetition, free offsets, key phases or further encryptions.",
+      "operations": [
+        "C-K",
+        "C+K",
+        "K-C"
+      ],
+      "inputs": [
+        "full",
+        "explicit final-I removal"
+      ],
+      "packet_representations": "Same whole-base26 A0/A1, two byte orders and 0..7 restored zero bytes as R3.",
+      "gate": "Complete origin-zero registered structured packet, no English-score or favourite-word gate. Letter roundtrip is implementation evidence only.",
+      "caution": "Passages were seen before this test; this is exploratory clue-based hypothesis testing, not held-out reference validation. No official instruction specifies an anchor.",
+      "results": "docs/data/nachtlorn-reset-anchored-book-results.json",
+      "outcome": {
+        "anchors": 8,
+        "letter_paths": 48,
+        "packet_configurations": 1536,
+        "structured_objects": 0,
+        "all_letter_roundtrips_exact": true
+      }
+    }
+  ],
+  "not_assumed": [
+    "four or five successive encryption algorithms",
+    "one confirmed layer per poem line",
+    "all body letters decode to prose",
+    "five-letter printed groups are necessarily semantic objects",
+    "the final singleton is necessarily padding, a delimiter, zero, or the final outlier"
+  ],
+  "historical_negatives": "Keep their documented scopes. Do not repeat unchanged searches or treat them as proof that all other constructions fail.",
+  "next_gate": "Representation-first: test numeral/packet invariants before admitting more semantic keyword guesses. A possible future check is repeated-glyph consistency against canonical binary prefixes under digit relabelling; it is not registered or executed in this pass."
+}

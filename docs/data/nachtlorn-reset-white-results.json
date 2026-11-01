@@ -1,0 +1,387 @@
+{
+  "hypothesis": "R6",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "proposal": {
+    "original_poem": [
+      "blue at the bottom of the bowl.",
+      "laughter, somewhere on the stairs.",
+      "one given.",
+      "one taken.",
+      "morning. neither be right."
+    ],
+    "proposed_poem": [
+      "white at the bottom of the bowl.",
+      "laughter, somewhere on the stairs.",
+      "one given.",
+      "one taken.",
+      "morning. neither be right."
+    ],
+    "derived_acrostic": "WLOOM",
+    "book_passage": "A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting.",
+    "content_colour": "green",
+    "vessel_colour": "white",
+    "status": "User-motivated interpretation, not a confirmed source correction."
+  },
+  "key": "WLOOM",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "literal_key_test": {
+    "letter_paths": 6,
+    "representation_configurations": 192,
+    "unique_buffers": 192,
+    "roundtrips": [
+      {
+        "drop_final_i": false,
+        "operation": "minus",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": false,
+        "operation": "plus",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": false,
+        "operation": "beaufort",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "minus",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "plus",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      },
+      {
+        "drop_final_i": true,
+        "operation": "beaufort",
+        "key": "WLOOM",
+        "phase": 0,
+        "exact_letter_roundtrip": true
+      }
+    ],
+    "accepted_records": []
+  },
+  "standalone_password_test": {
+    "status": "tested",
+    "crypto_version": "3.23.0",
+    "password_cases": [
+      "WLOOM",
+      "wloom",
+      "Wloom"
+    ],
+    "key_specification": [
+      {
+        "password": "WLOOM",
+        "derivation": "sha256"
+      },
+      {
+        "password": "WLOOM",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "WLOOM",
+        "derivation": "md5"
+      },
+      {
+        "password": "WLOOM",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "WLOOM",
+        "derivation": "nul-pad32"
+      },
+      {
+        "password": "wloom",
+        "derivation": "sha256"
+      },
+      {
+        "password": "wloom",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "wloom",
+        "derivation": "md5"
+      },
+      {
+        "password": "wloom",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "wloom",
+        "derivation": "nul-pad32"
+      },
+      {
+        "password": "Wloom",
+        "derivation": "sha256"
+      },
+      {
+        "password": "Wloom",
+        "derivation": "sha256-first16"
+      },
+      {
+        "password": "Wloom",
+        "derivation": "md5"
+      },
+      {
+        "password": "Wloom",
+        "derivation": "nul-pad16"
+      },
+      {
+        "password": "Wloom",
+        "derivation": "nul-pad32"
+      }
+    ],
+    "modes": [
+      [
+        "AES-GCM",
+        12
+      ],
+      [
+        "AES-GCM",
+        16
+      ],
+      [
+        "AES-EAX",
+        16
+      ],
+      [
+        "ChaCha20-Poly1305",
+        12
+      ],
+      [
+        "ChaCha20-Poly1305",
+        24
+      ]
+    ],
+    "tag_bytes": 16,
+    "associated_data": "empty",
+    "representation_configurations": 64,
+    "unique_buffers": 64,
+    "authentication_attempts": 7296,
+    "attempts_by_mode": {
+      "AES-GCM": 3840,
+      "AES-EAX": 1920,
+      "ChaCha20-Poly1305": 1536
+    },
+    "accepted": []
+  },
+  "caution": "Only registered R6 alternatives. No routes, changed O initials, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading.",
+  "reference_audit": {
+    "domain": "Stately through Gutenberg END",
+    "ascii_word_tokens": 268838,
+    "window_tokens_each_side": 40,
+    "colour_queries": [
+      "blue",
+      "green",
+      "white",
+      "yellow",
+      "black"
+    ],
+    "bowl_token_hits": 17,
+    "records": [
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 10,
+        "story_character_offset": 64,
+        "nearby_colour_tokens": [
+          {
+            "token": "yellow",
+            "relative_token": 13
+          }
+        ],
+        "context": "Stately, plump Buck Mulligan came from the stairhead, bearing a bowl of lather on which a mirror and a razor lay crossed. A yellow dressinggown, ungirdled, was sustained gently behind him on the mild morning air. He held the bowl aloft and intoned: \u2014Introibo ad altare Dei. Halted, he peered down"
+      },
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 39,
+        "story_character_offset": 225,
+        "nearby_colour_tokens": [
+          {
+            "token": "yellow",
+            "relative_token": -16
+          }
+        ],
+        "context": "Stately, plump Buck Mulligan came from the stairhead, bearing a bowl of lather on which a mirror and a razor lay crossed. A yellow dressinggown, ungirdled, was sustained gently behind him on the mild morning air. He held the bowl aloft and intoned: \u2014Introibo ad altare Dei. Halted, he peered down the dark winding stairs and called out coarsely: \u2014Come up, Kinch! Come up, you fearful jesuit! Solemnly he came forward and mounted the round gunrest. He faced about and"
+      },
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 170,
+        "story_character_offset": 1002,
+        "nearby_colour_tokens": [],
+        "context": "staircase and looked coldly at the shaking gurgling face that blessed him, equine in its length, and at the light untonsured hair, grained and hued like pale oak. Buck Mulligan peeped an instant under the mirror and then covered the bowl smartly. \u2014Back to barracks! he said sternly. He added in a preacher\u2019s tone: \u2014For this, O dearly beloved, is the genuine Christine: body and soul and blood and ouns. Slow music, please. Shut your eyes, gents. One moment. A"
+      },
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 382,
+        "story_character_offset": 2224,
+        "nearby_colour_tokens": [],
+        "context": "over to the parapet, laughing to himself. Stephen Dedalus stepped up, followed him wearily halfway and sat down on the edge of the gunrest, watching him still as he propped his mirror on the parapet, dipped the brush in the bowl and lathered cheeks and neck. Buck Mulligan\u2019s gay voice went on. \u2014My name is absurd too: Malachi Mulligan, two dactyls. But it has a Hellenic ring, hasn\u2019t it? Tripping and sunny like the buck himself. We must go"
+      },
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 1089,
+        "story_character_offset": 6100,
+        "nearby_colour_tokens": [
+          {
+            "token": "green",
+            "relative_token": -5
+          },
+          {
+            "token": "white",
+            "relative_token": 2
+          },
+          {
+            "token": "green",
+            "relative_token": 11
+          }
+        ],
+        "context": "a faint odour of wetted ashes. Across the threadbare cuffedge he saw the sea hailed as a great sweet mother by the wellfed voice beside him. The ring of bay and skyline held a dull green mass of liquid. A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting. Buck Mulligan wiped again his razorblade. \u2014Ah, poor dogsbody! he said in"
+      },
+      {
+        "episode": 1,
+        "token": "bowl",
+        "story_token_index": 2544,
+        "story_character_offset": 13997,
+        "nearby_colour_tokens": [
+          {
+            "token": "green",
+            "relative_token": -6
+          }
+        ],
+        "context": "two by two. A hand plucking the harpstrings, merging their twining chords. Wavewhite wedded words shimmering on the dim tide. A cloud began to cover the sun slowly, wholly, shadowing the bay in deeper green. It lay beneath him, a bowl of bitter waters. Fergus\u2019 song: I sang it alone in the house, holding down the long dark chords. Her door was open: she wanted to hear my music. Silent with awe and pity I went to her bedside. She was"
+      },
+      {
+        "episode": 5,
+        "token": "bowl",
+        "story_token_index": 23874,
+        "story_character_offset": 132899,
+        "nearby_colour_tokens": [],
+        "context": "hand with slow grace over his brow and hair. Very warm morning. Under their dropped lids his eyes found the tiny bow of the leather headband inside his high grade ha. Just there. His right hand came down into the bowl of his hat. His fingers found quickly a card behind the headband and transferred it to his waistcoat pocket. So warm. His right hand once more more slowly went over his brow and hair. Then he put on his hat"
+      },
+      {
+        "episode": 5,
+        "token": "bowl",
+        "story_token_index": 28864,
+        "story_character_offset": 159915,
+        "nearby_colour_tokens": [
+          {
+            "token": "black",
+            "relative_token": -2
+          }
+        ],
+        "context": "me before. Still like you better untidy. Good job it wasn\u2019t farther south. He passed, discreetly buttoning, down the aisle and out through the main door into the light. He stood a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams: a car of Prescott\u2019s dyeworks: a widow in her weeds. Notice because I\u2019m in mourning myself. He covered himself. How"
+      },
+      {
+        "episode": 6,
+        "token": "bowls",
+        "story_token_index": 37371,
+        "story_character_offset": 207112,
+        "nearby_colour_tokens": [],
+        "context": "in Roundtown. And a good armful she was. He looked behind through the others. \u2014What is he? he asked. What does he do? Wasn\u2019t he in the stationery line? I fell foul of him one evening, I remember, at bowls. Ned Lambert smiled. \u2014Yes, he was, he said, in Wisdom Hely\u2019s. A traveller for blottingpaper. \u2014In God\u2019s name, John Henry Menton said, what did she marry a coon like that for? She had plenty of game in her"
+      },
+      {
+        "episode": 10,
+        "token": "bowl",
+        "story_token_index": 79087,
+        "story_character_offset": 440307,
+        "nearby_colour_tokens": [
+          {
+            "token": "yellow",
+            "relative_token": -8
+          },
+          {
+            "token": "yellow",
+            "relative_token": 40
+          }
+        ],
+        "context": "did you get it? Katey asked. \u2014Sister Mary Patrick, Maggy said. The lacquey rang his bell. \u2014Barang! Boody sat down at the table and said hungrily: \u2014Give us it here. Maggy poured yellow thick soup from the kettle into a bowl. Katey, sitting opposite Boody, said quietly, as her fingertip lifted to her mouth random crumbs: \u2014A good job we have that much. Where\u2019s Dilly? \u2014Gone to meet father, Maggy said. Boody, breaking big chunks of bread into the yellow"
+      },
+      {
+        "episode": 10,
+        "token": "bowl",
+        "story_token_index": 79144,
+        "story_character_offset": 440633,
+        "nearby_colour_tokens": [
+          {
+            "token": "yellow",
+            "relative_token": -17
+          },
+          {
+            "token": "yellow",
+            "relative_token": -5
+          }
+        ],
+        "context": "good job we have that much. Where\u2019s Dilly? \u2014Gone to meet father, Maggy said. Boody, breaking big chunks of bread into the yellow soup, added: \u2014Our father who art not in heaven. Maggy, pouring yellow soup in Katey\u2019s bowl, exclaimed: \u2014Boody! For shame! A skiff, a crumpled throwaway, Elijah is coming, rode lightly down the Liffey, under Loopline bridge, shooting the rapids where water chafed around the bridgepiers, sailing eastward past hulls and anchorchains, between the Customhouse old dock"
+      },
+      {
+        "episode": 10,
+        "token": "Bowls",
+        "story_token_index": 83522,
+        "story_character_offset": 464979,
+        "nearby_colour_tokens": [],
+        "context": "that true? That\u2019s a fact. Graft, my dear sir. Well, of course, where there\u2019s money going there\u2019s always someone to pick it up. Saw him looking at my frockcoat. Dress does it. Nothing like a dressy appearance. Bowls them over. \u2014Hello, Simon, Father Cowley said. How are things? \u2014Hello, Bob, old man, Mr Dedalus answered, stopping. Mr Kernan halted and preened himself before the sloping mirror of Peter Kennedy, hairdresser. Stylish coat, beyond a doubt. Scott of Dawson"
+      },
+      {
+        "episode": 11,
+        "token": "bowl",
+        "story_token_index": 90830,
+        "story_character_offset": 507130,
+        "nearby_colour_tokens": [],
+        "context": "wanted to see the Mourne mountains. Must be a great tonic in the air down there. But a long threatening comes at last, they say. Yes. Yes. Yes. He fingered shreds of hair, her maidenhair, her mermaid\u2019s, into the bowl. Chips. Shreds. Musing. Mute. None nought said nothing. Yes. Gaily miss Douce polished a tumbler, trilling: \u2014O, Idolores, queen of the eastern seas! \u2014Was Mr Lidwell in today? In came Lenehan. Round him peered Lenehan. Mr Bloom reached Essex bridge"
+      },
+      {
+        "episode": 14,
+        "token": "bowl",
+        "story_token_index": 146831,
+        "story_character_offset": 813238,
+        "nearby_colour_tokens": [],
+        "context": "for a change and Mistress Purefoy there, that got in through pleading her belly, and now on the stools, poor body, two days past her term, the midwives sore put to it and can\u2019t deliver, she queasy for a bowl of riceslop that is a shrewd drier up of the insides and her breath very heavy more than good and should be a bullyboy from the knocks, they say, but God give her soon issue. \u2019Tis her ninth chick to"
+      },
+      {
+        "episode": 14,
+        "token": "bowls",
+        "story_token_index": 158030,
+        "story_character_offset": 875672,
+        "nearby_colour_tokens": [],
+        "context": "from an ear, bringing out the foreign warmth of the skin so daintily against the cool ardent fruit. A lad of four or five in linseywoolsey (blossomtime but there will be cheer in the kindly hearth when ere long the bowls are gathered and hutched) is standing on the urn secured by that circle of girlish fond hands. He frowns a little just as this young man does now with a perhaps too conscious enjoyment of the danger but must needs"
+      },
+      {
+        "episode": 15,
+        "token": "bowl",
+        "story_token_index": 180932,
+        "story_character_offset": 1011543,
+        "nearby_colour_tokens": [],
+        "context": "From left upper entrance with two gliding steps Henry Flower comes forward to left front centre. He wears a dark mantle and drooping plumed sombrero. He carries a silverstringed inlaid dulcimer and a longstemmed bamboo Jacob\u2019s pipe, its clay bowl fashioned as a female head. He wears dark velvet hose and silverbuckled pumps. He has the romantic Saviour\u2019s face with flowing locks, thin beard and moustache. His spindlelegs and sparrow feet are those of the tenor Mario, prince of"
+      },
+      {
+        "episode": 17,
+        "token": "bowl",
+        "story_token_index": 237074,
+        "story_character_offset": 1344412,
+        "nearby_colour_tokens": [],
+        "context": "affixed, 1 sittingroom, 4 bedrooms, 2 servants\u2019 rooms, tiled kitchen with close range and scullery, lounge hall fitted with linen wallpresses, fumed oak sectional bookcase containing the Encyclopaedia Britannica and New Century Dictionary, transverse obsolete medieval and oriental weapons, dinner gong, alabaster lamp, bowl pendant, vulcanite automatic telephone receiver with adjacent directory, handtufted Axminster carpet with cream ground and trellis border, loo table with pillar and claw legs, hearth with massive firebrasses and ormolu mantel chronometer clock, guaranteed timekeeper with cathedral chime, barometer with"
+      }
+    ],
+    "caution": "Exploratory context audit. Exact bowl/bowls tokens include other senses. Proximity does not establish a colour modifies a bowl; blue absence is not proof of an intentional error."
+  }
+}

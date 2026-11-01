@@ -1,0 +1,589 @@
+{
+  "hypothesis": "R11",
+  "literal_word_reports": [
+    {
+      "key": "BLACK",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "BLACK",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "BLACK",
+          "black",
+          "Black"
+        ],
+        "key_specification": [
+          {
+            "password": "BLACK",
+            "derivation": "sha256"
+          },
+          {
+            "password": "BLACK",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "BLACK",
+            "derivation": "md5"
+          },
+          {
+            "password": "BLACK",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "BLACK",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "black",
+            "derivation": "sha256"
+          },
+          {
+            "password": "black",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "black",
+            "derivation": "md5"
+          },
+          {
+            "password": "black",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "black",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "Black",
+            "derivation": "sha256"
+          },
+          {
+            "password": "Black",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "Black",
+            "derivation": "md5"
+          },
+          {
+            "password": "Black",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "Black",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R11 alternatives. No routes, changed O initials, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    },
+    {
+      "key": "GREEN",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "GREEN",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "GREEN",
+          "green",
+          "Green"
+        ],
+        "key_specification": [
+          {
+            "password": "GREEN",
+            "derivation": "sha256"
+          },
+          {
+            "password": "GREEN",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "GREEN",
+            "derivation": "md5"
+          },
+          {
+            "password": "GREEN",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "GREEN",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "green",
+            "derivation": "sha256"
+          },
+          {
+            "password": "green",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "green",
+            "derivation": "md5"
+          },
+          {
+            "password": "green",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "green",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "Green",
+            "derivation": "sha256"
+          },
+          {
+            "password": "Green",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "Green",
+            "derivation": "md5"
+          },
+          {
+            "password": "Green",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "Green",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R11 alternatives. No routes, changed O initials, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    },
+    {
+      "key": "WHITE",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "WHITE",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "WHITE",
+          "white",
+          "White"
+        ],
+        "key_specification": [
+          {
+            "password": "WHITE",
+            "derivation": "sha256"
+          },
+          {
+            "password": "WHITE",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "WHITE",
+            "derivation": "md5"
+          },
+          {
+            "password": "WHITE",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "WHITE",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "white",
+            "derivation": "sha256"
+          },
+          {
+            "password": "white",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "white",
+            "derivation": "md5"
+          },
+          {
+            "password": "white",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "white",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "White",
+            "derivation": "sha256"
+          },
+          {
+            "password": "White",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "White",
+            "derivation": "md5"
+          },
+          {
+            "password": "White",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "White",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R11 alternatives. No routes, changed O initials, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    }
+  ],
+  "direct_byte_xor": {
+    "hypothesis": "R11",
+    "source_letters": 8736,
+    "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+    "representation_configurations": 64,
+    "unique_buffers": 64,
+    "key_specification": [
+      {
+        "password": "BLACK",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "BLACK",
+        "derivation": "sha256"
+      },
+      {
+        "password": "black",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "black",
+        "derivation": "sha256"
+      },
+      {
+        "password": "Black",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "Black",
+        "derivation": "sha256"
+      },
+      {
+        "password": "GREEN",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "GREEN",
+        "derivation": "sha256"
+      },
+      {
+        "password": "green",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "green",
+        "derivation": "sha256"
+      },
+      {
+        "password": "Green",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "Green",
+        "derivation": "sha256"
+      },
+      {
+        "password": "WHITE",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "WHITE",
+        "derivation": "sha256"
+      },
+      {
+        "password": "white",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "white",
+        "derivation": "sha256"
+      },
+      {
+        "password": "White",
+        "derivation": "raw-ascii"
+      },
+      {
+        "password": "White",
+        "derivation": "sha256"
+      }
+    ],
+    "byte_xor_trials": 1152,
+    "findings": [],
+    "caution": "Only raw-body byte XOR at phase0; no prior letter cipher. Complete objects, printable candidates and unvalidated signatures are distinguished. A byte roundtrip or magic header is not a recovered population or outlier."
+  },
+  "caution": "Literal replacement words are candidate keys, not acrostics. Each key role is independent; no transformations are stacked.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "reference_basis": {
+    "green_white_passage": "A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting.",
+    "black_mourning_context": {
+      "episode": 5,
+      "token": "bowl",
+      "story_token_index": 28864,
+      "story_character_offset": 159915,
+      "nearby_colour_tokens": [
+        {
+          "token": "black",
+          "relative_token": -2
+        }
+      ],
+      "context": "me before. Still like you better untidy. Good job it wasn\u2019t farther south. He passed, discreetly buttoning, down the aisle and out through the main door into the light. He stood a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams: a car of Prescott\u2019s dyeworks: a widow in her weeds. Notice because I\u2019m in mourning myself. He covered himself. How"
+    },
+    "caution": "Exploratory source grounding, not author-confirmed key assignments."
+  }
+}
