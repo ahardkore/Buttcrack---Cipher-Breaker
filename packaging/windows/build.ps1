@@ -151,7 +151,7 @@ try {
     $pythonExe = $null
     $pythonArgs = @()
     if ($PythonExecutable) {
-        $cmd = Get-Command $PythonExecutable -CommandType Application -ErrorAction SilentlyContinue
+        $cmd = Get-Command $PythonExecutable -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
         if (-not $cmd -or $cmd.Source -match 'WindowsApps') {
             Fail "Requested Python executable not found (or is a Store stub): $PythonExecutable"
         }

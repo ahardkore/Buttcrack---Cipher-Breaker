@@ -205,7 +205,7 @@ class TestSpecPayload(unittest.TestCase):
 class TestBuildInterpreter(unittest.TestCase):
     def test_ci_explicitly_passes_the_setup_python_interpreter(self):
         workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
-        self.assertIn('-PythonExecutable (Get-Command python -CommandType Application).Source', workflow)
+        self.assertIn('-PythonExecutable (Get-Command python -CommandType Application | Select-Object -First 1).Source', workflow)
 
     @unittest.skipUnless(shutil.which("pwsh") or shutil.which("powershell"), "PowerShell not installed")
     def test_missing_explicit_interpreter_is_not_silently_replaced(self):
