@@ -29,9 +29,8 @@ class NachtlornClueLedgerTests(unittest.TestCase):
 
     def test_bad_key_initials_rejected(self):
         for key in ("", "BLOO", "bloom", "BLOÖM", "BLO OM"):
-            with self.subTest(key=key):
-                with self.assertRaises(ValueError):
-                    given_taken_key(key)
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                given_taken_key(key)
 
     def test_native_vigenere_known_vector_and_roundtrip(self):
         self.assertEqual(vigenere("ATTACKATDAWN", "LEMON", encrypt=True), "LXFOPVEFRNHR")
@@ -40,9 +39,8 @@ class NachtlornClueLedgerTests(unittest.TestCase):
     def test_vigenere_rejects_nonliteral_streams_and_keys(self):
         for text, key in (("", "A"), ("ABC", ""), ("a", "B"), ("A B", "C"),
                           ("É", "ABC"), ("ABC", "é")):
-            with self.subTest(text=text, key=key):
-                with self.assertRaises(ValueError):
-                    vigenere(text, key)
+            with self.subTest(text=text, key=key), self.assertRaises(ValueError):
+                vigenere(text, key)
 
     def test_source_fingerprint_and_entire_indent_trace(self):
         result = audit(SOURCE.read_bytes())
@@ -82,9 +80,8 @@ class NachtlornClueLedgerTests(unittest.TestCase):
         good = SOURCE.read_bytes()
         for raw in (b"", b"ABC", good.replace(b"blue", b"\xc3\xa9", 1),
                     good.replace(b"VXGFA", b"vxgfa", 1)):
-            with self.subTest(raw_prefix=raw[:12]):
-                with self.assertRaises((ValueError, UnicodeError)):
-                    audit(raw)
+            with self.subTest(raw_prefix=raw[:12]), self.assertRaises((ValueError, UnicodeError)):
+                audit(raw)
 
     def test_cli_is_read_only_and_leaves_global_random_state_unchanged(self):
         with tempfile.TemporaryDirectory() as directory:

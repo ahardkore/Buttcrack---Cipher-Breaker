@@ -7,7 +7,12 @@ import unittest
 from scripts.binary_envelope_probe import ALPHABETS, SIGNATURES, keyed_alphabet
 from scripts.binary_text_probe import apply_mask, mask_specs, printable_prefix, text_candidate
 from scripts.nachtlorn_binary_research import (
-    KEYS, apply_periodic, apply_route, byte_prefix_plausible, scan, single_stage_variants,
+    KEYS,
+    apply_periodic,
+    apply_route,
+    byte_prefix_plausible,
+    scan,
+    single_stage_variants,
 )
 from tests.test_binary_envelope_probe import encode_bytes
 from tests.test_nachtlorn_binary_research import has_payload

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import io
 import itertools
-import hashlib
 import json
 import random
 import tempfile
@@ -196,9 +196,8 @@ class NachtlornStatePackingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "source.txt"
             path.write_bytes(b"original")
-            with contextlib.redirect_stderr(io.StringIO()):
-                with self.assertRaises(SystemExit) as error:
-                    main([str(path), "--output", str(path)])
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                main([str(path), "--output", str(path)])
             self.assertEqual(error.exception.code, 2)
             self.assertEqual(path.read_bytes(), b"original")
 

@@ -8,11 +8,11 @@ that would not identify the meaning of its keys or the final puzzle outlier.
 from __future__ import annotations
 
 import argparse
-from collections import deque
 import hashlib
 import json
 import re
 import sys
+from collections import deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]

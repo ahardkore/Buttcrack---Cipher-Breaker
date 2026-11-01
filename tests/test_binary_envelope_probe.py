@@ -4,7 +4,6 @@ import bz2
 import gzip
 import hashlib
 import io
-import json
 import lzma
 import pickle
 import sys
@@ -14,7 +13,12 @@ import zlib
 from unittest import mock
 
 from scripts.binary_envelope_probe import (
-    A26, ALPHABETS, decode_base26, decompress_member, describe, inspect_binary,
+    A26,
+    ALPHABETS,
+    decode_base26,
+    decompress_member,
+    describe,
+    inspect_binary,
 )
 
 
@@ -101,7 +105,8 @@ class BinaryEnvelopeProbeTests(unittest.TestCase):
 
     def test_overlapping_zlib_headers_do_not_hide_a_valid_member(self):
         payload = b"overlapping header control" * 20
-        member = zlib.compress(payload, wbits=10)
+        compressor = zlib.compressobj(wbits=10)
+        member = compressor.compress(payload) + compressor.flush()
         self.assertEqual(member[0], 0x28)
         # 0x5828 is also a valid zlib header; a two-byte finditer would skip offset1.
         result = inspect_binary(b"\x58" + member)

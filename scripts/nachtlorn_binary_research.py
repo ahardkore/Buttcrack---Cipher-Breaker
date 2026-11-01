@@ -21,10 +21,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from buttcrack.ciphers.polyalphabetic import Porta  # noqa: E402
 from buttcrack.ciphers.transposition import ColumnarTransposition, Myszkowski, RailFence  # noqa: E402
-from scripts.binary_envelope_probe import (ALPHABETS, PACKINGS, SIGNATURES, ZLIB_HEADERS,
-                                           decode_base26, inspect_binary)  # noqa: E402
-from scripts.nachtlorn_state_packing import permutation, permute  # noqa: E402
+from scripts.binary_envelope_probe import (  # noqa: E402
+    ALPHABETS,
+    PACKINGS,
+    SIGNATURES,
+    ZLIB_HEADERS,
+    decode_base26,
+    inspect_binary,
+)
 from scripts.binary_text_probe import apply_mask, mask_specs, printable_prefix, text_candidate  # noqa: E402
+from scripts.nachtlorn_state_packing import permutation, permute  # noqa: E402
 
 KEYS = ("BLOOM", "BLPNM", "BLNPM", "NACHTLORN")
 

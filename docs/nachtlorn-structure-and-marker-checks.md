@@ -41,7 +41,7 @@ of width w it uses a one-hot vector with 26w coordinates: one indicator for ever
 position/letter pair. A function of the form
 
 ```text
-f0(letter0) + f1(letter1) + ... + f[w-1](letter[w-1]) mod q
+f0(letter0) + f1(letter1) + ... + f_last(letter_last) mod q
 ```
 
 is then a linear functional, even if every position has a different unknown

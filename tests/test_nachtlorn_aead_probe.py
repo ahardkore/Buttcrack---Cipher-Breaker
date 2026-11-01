@@ -62,9 +62,8 @@ class NachtlornAEADProbeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "original.txt"
             path.write_bytes(b"unchanged")
-            with contextlib.redirect_stderr(io.StringIO()) as errors:
-                with self.assertRaises(SystemExit) as failure:
-                    main([str(path), "--output", str(path)])
+            with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                main([str(path), "--output", str(path)])
             self.assertEqual(failure.exception.code, 2)
             self.assertIn("must not overwrite", errors.getvalue())
             self.assertEqual(path.read_bytes(), b"unchanged")

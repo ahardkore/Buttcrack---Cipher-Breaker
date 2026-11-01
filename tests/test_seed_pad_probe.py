@@ -59,9 +59,8 @@ class SeedPadProbeTests(unittest.TestCase):
             ("A", 0, -1, 1, "add"), ("A", 0, 0, 0, "add"),
             ("A", 0, 0, 2, "add"), ("A", 0, 0, 1, "unknown"),
         ):
-            with self.subTest(stream=stream, word=word, letter=letter, length=length):
-                with self.assertRaises(ValueError):
-                    probe_pad(stream, 4300, word, letter, length, operation)
+            with self.subTest(stream=stream, word=word, letter=letter, length=length), self.assertRaises(ValueError):
+                probe_pad(stream, 4300, word, letter, length, operation)
 
     def test_cli_is_read_only_and_preserves_the_raw_candidate(self):
         text = "BLOOM\nFind the outlier.\n\n  PWRPS YVPMB AZZI\n"
@@ -86,9 +85,8 @@ class SeedPadProbeTests(unittest.TestCase):
             with self.subTest(option=option):
                 args = ["missing.txt", "--seed", "4300", "--word-offset", "0",
                         "--length", "1", option, value]
-                with contextlib.redirect_stderr(io.StringIO()):
-                    with self.assertRaises(SystemExit) as result:
-                        main(args)
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    main(args)
                 self.assertEqual(result.exception.code, 2)
 
 
@@ -107,22 +105,19 @@ class TerminalIRestorationTests(unittest.TestCase):
     def test_invalid_source_and_letter_rejected(self):
         for source, letter in (("", "X"), ("ABCDX", "X"), ("A B I", "X"),
                                ("ABCDI", "x"), ("ABCDI", "XY"), ("ABCDI", "É")):
-            with self.subTest(source=source, letter=letter):
-                with self.assertRaises(ValueError):
-                    restore_terminal_i(source, 0, letter)
+            with self.subTest(source=source, letter=letter), self.assertRaises(ValueError):
+                restore_terminal_i(source, 0, letter)
 
     def test_invalid_boundaries_rejected(self):
         for boundary in (-1, 5):
-            with self.subTest(boundary=boundary):
-                with self.assertRaises(ValueError):
-                    restore_terminal_i("ABCDI", boundary, "X")
+            with self.subTest(boundary=boundary), self.assertRaises(ValueError):
+                restore_terminal_i("ABCDI", boundary, "X")
 
     def test_cli_restoration_flags_must_be_paired(self):
         for options in (["--restore-at", "5"], ["--restore-letter", "Y"]):
-            with contextlib.redirect_stderr(io.StringIO()):
-                with self.assertRaises(SystemExit) as result:
-                    main(["missing.txt", "--seed", "4300", "--word-offset", "2674",
-                          "--length", "14", *options])
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                main(["missing.txt", "--seed", "4300", "--word-offset", "2674",
+                      "--length", "14", *options])
             self.assertEqual(result.exception.code, 2)
 
     def test_cli_invalid_restoration_fails_before_reading_input(self):
@@ -131,11 +126,10 @@ class TerminalIRestorationTests(unittest.TestCase):
             ("0", "É", "uppercase ASCII"), ("0", "XY", "uppercase ASCII"),
         ):
             with self.subTest(boundary=boundary, letter=letter):
-                with contextlib.redirect_stderr(io.StringIO()) as error:
-                    with self.assertRaises(SystemExit) as result:
-                        main(["missing.txt", "--seed", "4300", "--word-offset", "0",
-                              "--length", "1", "--restore-at", boundary,
-                              "--restore-letter", letter])
+                with contextlib.redirect_stderr(io.StringIO()) as error, self.assertRaises(SystemExit) as result:
+                    main(["missing.txt", "--seed", "4300", "--word-offset", "0",
+                          "--length", "1", "--restore-at", boundary,
+                          "--restore-letter", letter])
                 self.assertEqual(result.exception.code, 2)
                 self.assertIn(message, error.getvalue())
                 self.assertNotIn("No such file", error.getvalue())
@@ -166,9 +160,8 @@ class TerminalIRestorationTests(unittest.TestCase):
                     "--word-offset", "0", "--length", "5",
                     "--restore-at", "2", "--restore-letter", "I"]
             path.write_text("ABCDX\n", encoding="ascii")
-            with contextlib.redirect_stderr(io.StringIO()):
-                with self.assertRaises(SystemExit) as result:
-                    main(args)
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                main(args)
             self.assertEqual(result.exception.code, 2)
             path.write_text("ABIII\n", encoding="ascii")
             with contextlib.redirect_stdout(io.StringIO()) as output:

@@ -57,9 +57,8 @@ class IndentSeedTests(unittest.TestCase):
 
     def test_empty_rows_input_invalid_width_and_leading_tabs_rejected(self):
         for body, width in (([], 8), (["ABC"], 0), (["\tABC"], 8), ([" \tABC"], 8)):
-            with self.subTest(body=body, width=width):
-                with self.assertRaises(ValueError):
-                    check_indent_seed(body, 4300, width)
+            with self.subTest(body=body, width=width), self.assertRaises(ValueError):
+                check_indent_seed(body, 4300, width)
 
     def test_cli_header_filter_and_explicit_body_start(self):
         text = "blue at the bottom.\nFind the outlier.\n\n" + "\n".join(self.body()) + "\n"
@@ -86,9 +85,8 @@ class IndentSeedTests(unittest.TestCase):
     def test_cli_bad_bounds_fail_before_reading_file(self):
         for options in (["--width", "0"], ["--body-start", "0"]):
             with self.subTest(options=options):
-                with contextlib.redirect_stderr(io.StringIO()):
-                    with self.assertRaises(SystemExit) as result:
-                        main(["nonexistent-input.txt", "--seed", "4300", *options])
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    main(["nonexistent-input.txt", "--seed", "4300", *options])
                 self.assertEqual(result.exception.code, 2)
 
 

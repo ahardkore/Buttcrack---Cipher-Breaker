@@ -14,7 +14,14 @@ from pathlib import Path
 from scripts.binary_envelope_probe import ALPHABETS, decode_base26, inspect_binary, keyed_alphabet
 from scripts.binary_text_probe import apply_mask
 from scripts.nachtlorn_binary_research import (
-    apply_periodic, apply_route, book_dictionaries, main, periodic_specs, route_specs, scan, variants,
+    apply_periodic,
+    apply_route,
+    book_dictionaries,
+    main,
+    periodic_specs,
+    route_specs,
+    scan,
+    variants,
 )
 from tests.test_binary_envelope_probe import encode_bytes
 
@@ -172,10 +179,9 @@ class NachtlornBinaryResearchTests(unittest.TestCase):
             source.write_bytes(b"source")
             dictionary.write_bytes(b"book")
             for output in (source, dictionary):
-                with contextlib.redirect_stderr(io.StringIO()) as errors:
-                    with self.assertRaises(SystemExit) as failure:
-                        main([str(source), "--dictionary", str(dictionary), "--mode",
-                              "periodic-then-route", "--output", str(output)])
+                with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                    main([str(source), "--dictionary", str(dictionary), "--mode",
+                          "periodic-then-route", "--output", str(output)])
                 self.assertEqual(failure.exception.code, 2)
                 self.assertIn("must not overwrite", errors.getvalue())
             self.assertEqual(source.read_bytes(), b"source")

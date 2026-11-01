@@ -130,9 +130,8 @@ class Scanner:
         if len(letters) < min_letters:
             return
         self.tested[channel.split()[0]] += 1
-        if not letters_only_payload:
-            if printable_ratio(text.encode("latin-1", "replace")) < 0.9:
-                return
+        if not letters_only_payload and printable_ratio(text.encode("latin-1", "replace")) < 0.9:
+            return
         score = self.model.fitness(letters)
         if len(self.best) < self.keep or score > self.best[-1][0]:
             self.best.append((score, channel, text))

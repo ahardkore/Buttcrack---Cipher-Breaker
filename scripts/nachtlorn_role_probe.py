@@ -41,7 +41,7 @@ def inspect_filter(data: bytes) -> dict | None:
         return None
     return {"format": "pybloom-filter-candidate", "error_rate": error, "slices": slices,
             "bits_per_slice": bits_per_slice, "capacity": capacity, "count": count,
-            "bits": bits, "set_bits": sum(v.bit_count() for v in payload),
+            "bits": bits, "set_bits": sum(bin(v).count("1") for v in payload),
             "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
             "scope": "Container structure only; no item set or outlier has been recovered."}
 

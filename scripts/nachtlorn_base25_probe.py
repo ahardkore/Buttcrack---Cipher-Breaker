@@ -19,8 +19,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from scripts.binary_envelope_probe import inspect_binary, keyed_alphabet  # noqa: E402
 from scripts.binary_text_probe import apply_mask, mask_specs, text_candidate  # noqa: E402
-from scripts.nachtlorn_binary_research import (KEYS, apply_periodic, book_dictionaries, byte_prefix_plausible,
-                                              periodic_specs)  # noqa: E402
+from scripts.nachtlorn_binary_research import (  # noqa: E402
+    KEYS,
+    apply_periodic,
+    book_dictionaries,
+    byte_prefix_plausible,
+    periodic_specs,
+)
 from scripts.nachtlorn_numeric_probe import bit_profile  # noqa: E402
 
 ALPHABET = "ABCDEFGHJKLMNOPQRSTUVWXYZ"

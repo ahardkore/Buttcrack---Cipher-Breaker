@@ -10,8 +10,13 @@ from types import SimpleNamespace
 
 from buttcrack.lang import LanguageModel
 from scripts.stego_channel_scan import (
-    Scanner, best_keyed_window, keyed_group_matches, main, scan_keyed_groups,
-    scan_keyed_windows, scan_whitespace,
+    Scanner,
+    best_keyed_window,
+    keyed_group_matches,
+    main,
+    scan_keyed_groups,
+    scan_keyed_windows,
+    scan_whitespace,
 )
 
 
@@ -152,9 +157,8 @@ class KeyedWindowTests(unittest.TestCase):
     def test_cli_rejects_invalid_options_before_reading_file(self):
         for options in (["--key-window-size", "3"], ["--key-window", "123!?"]):
             with self.subTest(options=options):
-                with contextlib.redirect_stderr(io.StringIO()):
-                    with self.assertRaises(SystemExit) as result:
-                        main(["nonexistent-input.txt", *options])
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    main(["nonexistent-input.txt", *options])
                 self.assertEqual(result.exception.code, 2)
 
 

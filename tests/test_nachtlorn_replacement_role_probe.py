@@ -4,13 +4,14 @@ import gzip
 import hashlib
 import io
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.binary_envelope_probe import A26, keyed_alphabet
 from scripts.nachtlorn_aead_probe import AES
-from scripts.nachtlorn_colour_byte_probe import LITERAL_WORDS, key_material, scan as byte_scan
+from scripts.nachtlorn_colour_byte_probe import LITERAL_WORDS, key_material
+from scripts.nachtlorn_colour_byte_probe import scan as byte_scan
 from scripts.nachtlorn_colour_probe import scan as colour_scan
 from scripts.nachtlorn_replacement_role_probe import literal_roles, main, reference_basis, scan_keyword
 from scripts.nachtlorn_running_book_probe import transform

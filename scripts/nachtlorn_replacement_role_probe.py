@@ -13,9 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from scripts.binary_envelope_probe import A26, keyed_alphabet  # noqa: E402
-from scripts.nachtlorn_aead_probe import AES, Crypto, MODES, derive_keys, probe_packet  # noqa: E402
-from scripts.nachtlorn_colour_probe import buffers, proposal, reference_contexts, scan as colour_scan  # noqa: E402
-from scripts.nachtlorn_colour_byte_probe import LITERAL_WORDS, inspect, scan as byte_scan  # noqa: E402
+from scripts.nachtlorn_aead_probe import AES, MODES, Crypto, derive_keys, probe_packet  # noqa: E402
+from scripts.nachtlorn_colour_byte_probe import LITERAL_WORDS, inspect  # noqa: E402
+from scripts.nachtlorn_colour_byte_probe import scan as byte_scan  # noqa: E402
+from scripts.nachtlorn_colour_probe import buffers, proposal, reference_contexts  # noqa: E402
+from scripts.nachtlorn_colour_probe import scan as colour_scan  # noqa: E402
 from scripts.nachtlorn_fieldwise_iblt_probe import encode_number  # noqa: E402
 
 ALPHABET_KEYWORDS = ("BLOOM", "GLOOM", "WLOOM", "BLACK", "GREEN", "WHITE")

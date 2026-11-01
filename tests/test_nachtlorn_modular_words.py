@@ -14,7 +14,12 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from scripts.nachtlorn_modular_words import (
-    ALPHABETS, controls, histogram, main, native_scan, projective_directions, scan,
+    ALPHABETS,
+    controls,
+    main,
+    native_scan,
+    projective_directions,
+    scan,
 )
 
 
@@ -99,10 +104,9 @@ class NachtlornModularWordsTests(unittest.TestCase):
         source.write_bytes(b"unchanged")
         for output in (source, self.worker):
             before = output.read_bytes()
-            with contextlib.redirect_stderr(io.StringIO()) as errors:
-                with self.assertRaises(SystemExit) as result:
-                    main([str(source), "--worker", str(self.worker), "--alphabet", "standard",
-                          "--output", str(output)])
+            with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as result:
+                main([str(source), "--worker", str(self.worker), "--alphabet", "standard",
+                      "--output", str(output)])
             self.assertEqual(result.exception.code, 2)
             self.assertIn("must not overwrite", errors.getvalue())
             self.assertEqual(output.read_bytes(), before)
@@ -124,7 +128,7 @@ class NachtlornModularWordsTests(unittest.TestCase):
         self.assertEqual(report["complete_groups"], 30)
         self.assertEqual(report["unconsumed_tail"], "I")
         self.assertEqual(len(report["null_results"]), 2)
-        originals = {q: rows for q, rows in calls[:2]}
+        originals = dict(calls[:2])
         for q, rows in calls[2:]:
             for j in range(5):
                 self.assertEqual(sorted(row[j] for row in rows), sorted(row[j] for row in originals[q]))
@@ -140,9 +144,8 @@ class NachtlornModularWordsTests(unittest.TestCase):
             else:
                 corrupted["version"] = 0
             with patch("scripts.nachtlorn_modular_words.subprocess.run",
-                       return_value=SimpleNamespace(stdout=json.dumps(corrupted))):
-                with self.assertRaises(ValueError):
-                    native_scan(self.worker, rows, 2)
+                       return_value=SimpleNamespace(stdout=json.dumps(corrupted))), self.assertRaises(ValueError):
+                native_scan(self.worker, rows, 2)
 
 
 if __name__ == "__main__":

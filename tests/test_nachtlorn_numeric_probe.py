@@ -6,8 +6,8 @@ import json
 import math
 import random
 import struct
-import unittest
 import tempfile
+import unittest
 from pathlib import Path
 from unittest.mock import patch
 
@@ -73,10 +73,9 @@ class NachtlornNumericProbeTests(unittest.TestCase):
             source.write_bytes(raw)
             result = {"path_configurations": 1, "binary_profiles": 1, "flagged": 0,
                       "best_profiles": [{"score": 0}]}
-            with patch("scripts.nachtlorn_numeric_probe.scan", return_value=result) as probe:
-                with contextlib.redirect_stdout(io.StringIO()):
-                    self.assertEqual(main([str(source), "--mode", "periodic-then-route",
-                                           "--drop-final-i", "--output", str(output)]), 0)
+            with patch("scripts.nachtlorn_numeric_probe.scan", return_value=result) as probe, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(main([str(source), "--mode", "periodic-then-route",
+                                       "--drop-final-i", "--output", str(output)]), 0)
             probe.assert_called_once_with("ABCDEFGH", "periodic-then-route")
             self.assertEqual(source.read_bytes(), raw)
             self.assertEqual(json.loads(output.read_text())["source_extraction"],

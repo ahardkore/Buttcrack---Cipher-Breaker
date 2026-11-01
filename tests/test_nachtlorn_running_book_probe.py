@@ -8,7 +8,16 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.nachtlorn_running_book_probe import END, OPENING, START, inspect_packet, key_domains, main, scan, transform
+from scripts.nachtlorn_running_book_probe import (
+    END,
+    OPENING,
+    START,
+    inspect_packet,
+    key_domains,
+    main,
+    scan,
+    transform,
+)
 
 
 def synthetic_book():
@@ -84,9 +93,8 @@ class NachtlornRunningBookProbeTests(unittest.TestCase):
             book.write_bytes(b"book unchanged")
             for output in (source, book):
                 original = output.read_bytes()
-                with contextlib.redirect_stderr(io.StringIO()) as errors:
-                    with self.assertRaises(SystemExit) as failure:
-                        main([str(source), "--book", str(book), "--output", str(output)])
+                with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                    main([str(source), "--book", str(book), "--output", str(output)])
                 self.assertEqual(failure.exception.code, 2)
                 self.assertIn("must not overwrite", errors.getvalue())
                 self.assertEqual(output.read_bytes(), original)

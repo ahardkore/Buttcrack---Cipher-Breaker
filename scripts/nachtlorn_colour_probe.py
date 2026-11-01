@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.nachtlorn_aead_probe import AES, Crypto, MODES, derive_keys, probe_packet  # noqa: E402
+from scripts.nachtlorn_aead_probe import AES, MODES, Crypto, derive_keys, probe_packet  # noqa: E402
 from scripts.nachtlorn_role_probe import decode26  # noqa: E402
 from scripts.nachtlorn_running_book_probe import OPERATIONS, inspect_packet, transform  # noqa: E402
 

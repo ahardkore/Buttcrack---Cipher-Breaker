@@ -91,7 +91,7 @@ class NachtlornRoleProbeTests(unittest.TestCase):
     def test_book_reference_is_a_literal_exploratory_audit(self):
         raw = ("Title: Example\nAuthor: Someone\nRelease Date: [EBook #4300]\n"
                "[ 1 ]\nStately, plump Buck Mulligan stood by a bowl on the stairhead in the morning.\n"
-               "—Introibo.\n[ 2 ]\nblue laughter beyond the selected episode\n").encode("utf-8")
+               "—Introibo.\n[ 2 ]\nblue laughter beyond the selected episode\n").encode()
         result = book_facts(raw, ["not a quote"] * 5)
         self.assertEqual((result["title"], result["gutenberg_id"]), ("Example", 4300))
         queries = result["fixed_query_token_positions"]
@@ -109,9 +109,8 @@ class NachtlornRoleProbeTests(unittest.TestCase):
             book.write_bytes(b"book unchanged")
             for output in (source, book):
                 original = output.read_bytes()
-                with contextlib.redirect_stderr(io.StringIO()) as errors:
-                    with self.assertRaises(SystemExit) as failure:
-                        main([str(source), "--book", str(book), "--output", str(output)])
+                with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                    main([str(source), "--book", str(book), "--output", str(output)])
                 self.assertEqual(failure.exception.code, 2)
                 self.assertIn("must not overwrite", errors.getvalue())
                 self.assertEqual(output.read_bytes(), original)

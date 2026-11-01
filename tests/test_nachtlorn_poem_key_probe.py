@@ -2,9 +2,9 @@
 import contextlib
 import hashlib
 import io
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.nachtlorn_colour_probe import AES, scan
 from scripts.nachtlorn_poem_key_probe import derive, main, scan_all

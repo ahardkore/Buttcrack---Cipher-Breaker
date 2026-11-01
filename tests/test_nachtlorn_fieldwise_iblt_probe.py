@@ -3,13 +3,23 @@ import contextlib
 import hashlib
 import io
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.nachtlorn_fieldwise_iblt_probe import (
-    LAYOUTS, build_table, checksum, encode_number, encode_table, inspect_fields,
-    letter_paths, main, murmur32, positions, scan, validate_table,
+    LAYOUTS,
+    build_table,
+    checksum,
+    encode_number,
+    encode_table,
+    inspect_fields,
+    letter_paths,
+    main,
+    murmur32,
+    positions,
+    scan,
+    validate_table,
 )
 from scripts.nachtlorn_running_book_probe import transform
 

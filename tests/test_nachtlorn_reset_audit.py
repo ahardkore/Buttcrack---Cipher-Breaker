@@ -91,9 +91,8 @@ class NachtlornResetAuditTests(unittest.TestCase):
             self.assertEqual(main([str(source), "--output", str(output)]), 0)
             self.assertEqual(source.read_bytes(), raw)
             self.assertTrue(json.loads(output.read_text())["forward_layout"]["exact_body_reconstruction"])
-            with contextlib.redirect_stderr(io.StringIO()) as errors:
-                with self.assertRaises(SystemExit) as failure:
-                    main([str(source), "--output", str(source)])
+            with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                main([str(source), "--output", str(source)])
             self.assertEqual(failure.exception.code, 2)
             self.assertIn("must not overwrite", errors.getvalue())
             self.assertEqual(source.read_bytes(), raw)

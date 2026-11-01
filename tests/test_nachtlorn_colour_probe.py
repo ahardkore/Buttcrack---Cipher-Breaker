@@ -44,9 +44,9 @@ class ColourProbeTests(unittest.TestCase):
             proposal(raw, BOOK, "yellow")
 
     def test_context_audit_has_explicit_domains_and_does_not_infer_modification(self):
-        book = ("Stately, plump Buck Mulligan saw a bowl. A yellow gown hung there.\n"
-                "[ 2 ]\nThere were bowls and a blue hat.\n"
-                "*** END OF THIS PROJECT GUTENBERG EBOOK ULYSSES ***\nBlue bowls.").encode()
+        book = (b"Stately, plump Buck Mulligan saw a bowl. A yellow gown hung there.\n"
+                b"[ 2 ]\nThere were bowls and a blue hat.\n"
+                b"*** END OF THIS PROJECT GUTENBERG EBOOK ULYSSES ***\nBlue bowls.")
         result = reference_contexts(book)
         self.assertEqual(result["bowl_token_hits"], 2)
         self.assertEqual([r["episode"] for r in result["records"]], [1, 2])

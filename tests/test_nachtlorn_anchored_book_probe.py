@@ -2,9 +2,9 @@
 import contextlib
 import gzip
 import io
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.nachtlorn_anchored_book_probe import anchored_domains, main, scan
 from scripts.nachtlorn_running_book_probe import END, scan_domains, transform

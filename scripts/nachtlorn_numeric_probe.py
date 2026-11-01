@@ -28,7 +28,7 @@ PERIODS = (2, 4, 8, 20, 36, 40, 72)
 # bits, even when their individual marginals are balanced. Uppercase ASCII XOR
 # preserves this parity bias (possibly complementing it).
 PARITY_MASKS = tuple(1 << bit for bit in range(8)) + (0x60,)
-TABLES = tuple(bytes((i & mask).bit_count() & 1 for i in range(256)) for mask in PARITY_MASKS)
+TABLES = tuple(bytes(bin(i & mask).count("1") & 1 for i in range(256)) for mask in PARITY_MASKS)
 
 
 def bit_profile(data: bytes) -> dict:

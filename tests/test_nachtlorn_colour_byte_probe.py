@@ -2,9 +2,9 @@
 import contextlib
 import gzip
 import io
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.nachtlorn_colour_byte_probe import inspect, key_material, main, scan, xor
 from tests.test_nachtlorn_colour_probe import encode26

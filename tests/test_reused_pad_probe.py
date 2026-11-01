@@ -71,9 +71,8 @@ class ReusedPadProbeTests(unittest.TestCase):
         for first, second, phases in (("", "", 1), ("a", "A", 1), ("É", "A", 1),
                                       ("A B", "ABC", 1), ("AA", "A", 1),
                                       ("AA", "AA", 0), ("AA", "AA", 3)):
-            with self.subTest(first=first, second=second, phases=phases):
-                with self.assertRaises(ValueError):
-                    pair_likelihoods(first, second, phases)
+            with self.subTest(first=first, second=second, phases=phases), self.assertRaises(ValueError):
+                pair_likelihoods(first, second, phases)
 
     def test_cli_is_read_only_and_matches_direct_function(self):
         text = "BLOOM\nFind the outlier.\n\n  ABCDE FGHIJ\n KLMNO PQRST\n"
@@ -95,9 +94,8 @@ class ReusedPadProbeTests(unittest.TestCase):
         for options in (["--first-start", "-1"], ["--second-start", "-1"],
                         ["--pairs", "0"], ["--phases", "11"], ["--body-start", "0"]):
             with self.subTest(options=options):
-                with contextlib.redirect_stderr(io.StringIO()) as error:
-                    with self.assertRaises(SystemExit) as result:
-                        main(["missing.txt", "--second-start", "10", "--pairs", "10", *options])
+                with contextlib.redirect_stderr(io.StringIO()) as error, self.assertRaises(SystemExit) as result:
+                    main(["missing.txt", "--second-start", "10", "--pairs", "10", *options])
                 self.assertEqual(result.exception.code, 2)
                 self.assertNotIn("No such file", error.getvalue())
 
@@ -105,18 +103,16 @@ class ReusedPadProbeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "cipher.txt"
             path.write_text("ABCDE FGHIJ\n", encoding="ascii")
-            with contextlib.redirect_stderr(io.StringIO()) as error:
-                with self.assertRaises(SystemExit):
-                    main([str(path), "--second-start", "8", "--pairs", "5"])
+            with contextlib.redirect_stderr(io.StringIO()) as error, self.assertRaises(SystemExit):
+                main([str(path), "--second-start", "8", "--pairs", "5"])
             self.assertIn("beyond the letter stream", error.getvalue())
 
     def test_cli_explicit_body_rejects_non_ciphertext(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "cipher.txt"
             path.write_text("Heading\nABCDE FGHIJ\n", encoding="ascii")
-            with contextlib.redirect_stderr(io.StringIO()) as error:
-                with self.assertRaises(SystemExit):
-                    main([str(path), "--second-start", "5", "--pairs", "5", "--body-start", "1"])
+            with contextlib.redirect_stderr(io.StringIO()) as error, self.assertRaises(SystemExit):
+                main([str(path), "--second-start", "5", "--pairs", "5", "--body-start", "1"])
             self.assertIn("non-uppercase", error.getvalue())
 
 

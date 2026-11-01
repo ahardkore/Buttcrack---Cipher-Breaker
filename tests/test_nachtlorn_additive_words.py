@@ -102,9 +102,8 @@ class NachtlornAdditiveWordsTests(unittest.TestCase):
         source.write_bytes(b"unchanged")
         for output in (source, self.worker):
             before = output.read_bytes()
-            with contextlib.redirect_stderr(io.StringIO()) as errors:
-                with self.assertRaises(SystemExit) as failure:
-                    main([str(source), "--worker", str(self.worker), "--width", "5", "--output", str(output)])
+            with contextlib.redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as failure:
+                main([str(source), "--worker", str(self.worker), "--width", "5", "--output", str(output)])
             self.assertEqual(failure.exception.code, 2)
             self.assertIn("must not overwrite", errors.getvalue())
             self.assertEqual(output.read_bytes(), before)
