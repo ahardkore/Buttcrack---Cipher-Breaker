@@ -1,0 +1,66 @@
+{
+  "status": "facts-only; no recovered answer or algorithm assignment",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129,
+  "poem": {
+    "literal_lines": [
+      "blue at the bottom of the bowl.",
+      "laughter, somewhere on the stairs.",
+      "one given.",
+      "one taken.",
+      "morning. neither be right."
+    ],
+    "literal_initials": "bloom",
+    "uppercase_initials": "BLOOM"
+  },
+  "instruction": "Find the outlier.",
+  "body": {
+    "rows": 146,
+    "letters": 8736,
+    "printed_groups": 1748,
+    "row_letter_counts": {
+      "36": 1,
+      "60": 145
+    },
+    "group_width_counts": {
+      "1": 1,
+      "5": 1747
+    },
+    "indent_counts": {
+      "0": 19,
+      "1": 20,
+      "2": 17,
+      "3": 18,
+      "4": 16,
+      "5": 16,
+      "6": 23,
+      "7": 17
+    },
+    "last_printed_group": "I",
+    "last_group_is_incomplete_at_width5": true,
+    "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d"
+  },
+  "forward_layout": {
+    "model": "layout-only-v1",
+    "seed": 4300,
+    "row_letters": 60,
+    "group_letters": 5,
+    "indent_choices": 8,
+    "line_ending": "LF",
+    "exact_body_reconstruction": true,
+    "exact_file_with_literal_preamble": true,
+    "first_body_mismatch_byte": null,
+    "reconstructed_body_sha256": "7338f1916c81b86f0fdfe5e6074ed656ff44cc03ac17a8f4a7c4a889e13c23bc",
+    "source_body_sha256": "7338f1916c81b86f0fdfe5e6074ed656ff44cc03ac17a8f4a7c4a889e13c23bc",
+    "body_letters_reused_verbatim": true,
+    "letters_added_or_removed": 0,
+    "scope": "Whitespace/line wrapping only. Not the letter generator, encryption, unique seed, or author-confirmed recipe."
+  },
+  "interpretation_limits": [
+    "The acrostic does not assign an algorithm or confirm a password.",
+    "A layout-generator fit does not establish a book reference or a body generator.",
+    "An incomplete final group follows from the supplied length under this formatter; a separate marker role is unconfirmed.",
+    "Exact layout does not rule out intentional alignment or letter-dependent visual extraction.",
+    "No population, final outlier, or English answer is selected by this audit."
+  ]
+}

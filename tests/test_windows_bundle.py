@@ -20,8 +20,13 @@ import ast
 import contextlib
 import io
 import re
+import shutil
+import subprocess
+import tempfile
 import unittest
+from importlib.metadata import PackageNotFoundError
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGING = ROOT / "packaging" / "windows"
@@ -173,10 +178,44 @@ class TestSpecPayload(unittest.TestCase):
             missing = [name for name in missing if not name.startswith("tkinter")]
         self.assertEqual(missing, [], f"buttcrack.spec HIDDEN names modules that do not exist: {missing}")
 
+    def test_installed_aes_provider_is_retained_for_both_entry_points(self):
+        provider = mock.Mock(files=[])
+        with mock.patch("importlib.metadata.distribution", return_value=provider):
+            _namespace, calls = execute_spec()
+        required = {"cryptography.exceptions", "cryptography.hazmat.primitives.padding",
+                    "cryptography.hazmat.primitives.ciphers", "cryptography.hazmat.bindings._rust",
+                    "_cffi_backend"}
+        analyses = [call for call in calls if call.kind == "Analysis"]
+        self.assertEqual(len(analyses), 2)
+        for analysis in analyses:
+            self.assertTrue(required.issubset(analysis.kwargs["hiddenimports"]))
+
+    def test_core_only_build_does_not_require_the_optional_provider(self):
+        with mock.patch("importlib.metadata.distribution", side_effect=PackageNotFoundError):
+            namespace, _calls = execute_spec()
+        self.assertFalse(any(name.startswith("cryptography") or name == "_cffi_backend"
+                             for name in namespace["HIDDEN"]))
+
     def test_tkinter_is_declared_because_the_desktop_window_needs_it(self):
         # A silently missing Tk downgrades the app to a console loop with no
         # error anywhere, which is precisely the regression worth catching here.
         self.assertIn("tkinter", self.namespace["HIDDEN"])
+
+
+class TestBuildInterpreter(unittest.TestCase):
+    def test_ci_explicitly_passes_the_setup_python_interpreter(self):
+        workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+        self.assertIn('-PythonExecutable (Get-Command python -CommandType Application | Select-Object -First 1).Source', workflow)
+
+    @unittest.skipUnless(shutil.which("pwsh") or shutil.which("powershell"), "PowerShell not installed")
+    def test_missing_explicit_interpreter_is_not_silently_replaced(self):
+        shell = shutil.which("pwsh") or shutil.which("powershell")
+        with tempfile.TemporaryDirectory() as directory:
+            missing = str(Path(directory) / "missing-python.exe")
+            result = subprocess.run([shell, "-NoProfile", "-File", str(PACKAGING / "build.ps1"),
+                                     "-PythonExecutable", missing], capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Requested Python executable not found", result.stdout + result.stderr)
 
 
 class TestBuildOutputShape(unittest.TestCase):

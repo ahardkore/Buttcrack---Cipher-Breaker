@@ -1,0 +1,35 @@
+{
+  "purpose": "Preset-zlib-dictionary probe; this is a hypothesis, not a confirmed layer.",
+  "book": "James Joyce, Ulysses; Project Gutenberg 4300",
+  "git_blob": "b2300b64c6517c83b5a367943448b1c0208d813f",
+  "source_url": "https://api.github.com/repos/GITenberg/Ulysses_4300/git/blobs/b2300b64c6517c83b5a367943448b1c0208d813f",
+  "bytes": 1580890,
+  "sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "dictionary_variants": [
+    {
+      "name": "original-utf8",
+      "bytes": 1580890,
+      "adler32": "4676cc5d",
+      "sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac"
+    },
+    {
+      "name": "original-last32768",
+      "bytes": 32768,
+      "adler32": "94cab4ce",
+      "sha256": "66bed264b429296cba0b1b57d48ce01a8292494038a1ef0177c477bfc775f81b"
+    },
+    {
+      "name": "ascii-letters-upper",
+      "bytes": 1197205,
+      "adler32": "3390d06c",
+      "sha256": "9d7e5858ff9368aacbaad74ddfca9c8e92505c98399fc156848c94999e4a7ead"
+    },
+    {
+      "name": "ascii-letters-upper-last32768",
+      "bytes": 32768,
+      "adler32": "f38efa17",
+      "sha256": "b9f2f27c9fe4d5695ec3a6e8c115f78bbf2e7da9c259d1dd05691cb6bd7e6202"
+    }
+  ],
+  "storage": "Book text is an ignored scratch input; scripts and small metadata/results are archived."
+}

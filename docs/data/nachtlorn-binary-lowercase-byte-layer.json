@@ -1,0 +1,875 @@
+{
+  "status": "Bounded byte-layer test; printability is not a verified answer.",
+  "mode": "byte-layer",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "path_configurations": 125,
+  "unique_letter_variants": 122,
+  "valid_binary_decodings": 2928,
+  "invalid_packed_decodings": 2928,
+  "unique_binary_buffers": 2928,
+  "byte_mask_configurations": 79056,
+  "prefix_selected": 113,
+  "wrapped_compression_attempts": 705,
+  "zlib_dictionary_requests": 350,
+  "preset_dictionary_id_matches": 0,
+  "verified_object_count": 0,
+  "verified_records": [],
+  "text_candidate_count": 0,
+  "text_candidates": [],
+  "header_examples": [],
+  "specification": {
+    "letter_stage": "identity or ONE periodic operation or ONE route",
+    "periodic_operations": [
+      {
+        "kind": "identity"
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 8
+      }
+    ],
+    "routes": [
+      {
+        "kind": "identity"
+      },
+      {
+        "kind": "reverse"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLOOM"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLPNM"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLNPM"
+      },
+      {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLOOM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLPNM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLNPM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "NACHTLORN"
+      },
+      {
+        "kind": "rail",
+        "rails": 2
+      },
+      {
+        "kind": "rail",
+        "rails": 3
+      },
+      {
+        "kind": "rail",
+        "rails": 4
+      },
+      {
+        "kind": "rail",
+        "rails": 5
+      },
+      {
+        "kind": "rail",
+        "rails": 6
+      },
+      {
+        "kind": "rail",
+        "rails": 7
+      },
+      {
+        "kind": "rail",
+        "rails": 8
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": true
+      }
+    ],
+    "byte_masks": [
+      {
+        "kind": "identity"
+      },
+      {
+        "kind": "xor",
+        "key": "bloom",
+        "phase": 0
+      },
+      {
+        "kind": "xor",
+        "key": "bloom",
+        "phase": 1
+      },
+      {
+        "kind": "xor",
+        "key": "bloom",
+        "phase": 2
+      },
+      {
+        "kind": "xor",
+        "key": "bloom",
+        "phase": 3
+      },
+      {
+        "kind": "xor",
+        "key": "bloom",
+        "phase": 4
+      },
+      {
+        "kind": "xor",
+        "key": "blpnm",
+        "phase": 0
+      },
+      {
+        "kind": "xor",
+        "key": "blpnm",
+        "phase": 1
+      },
+      {
+        "kind": "xor",
+        "key": "blpnm",
+        "phase": 2
+      },
+      {
+        "kind": "xor",
+        "key": "blpnm",
+        "phase": 3
+      },
+      {
+        "kind": "xor",
+        "key": "blpnm",
+        "phase": 4
+      },
+      {
+        "kind": "xor",
+        "key": "blnpm",
+        "phase": 0
+      },
+      {
+        "kind": "xor",
+        "key": "blnpm",
+        "phase": 1
+      },
+      {
+        "kind": "xor",
+        "key": "blnpm",
+        "phase": 2
+      },
+      {
+        "kind": "xor",
+        "key": "blnpm",
+        "phase": 3
+      },
+      {
+        "kind": "xor",
+        "key": "blnpm",
+        "phase": 4
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 0
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 1
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 2
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 3
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 4
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 5
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 6
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 7
+      },
+      {
+        "kind": "xor",
+        "key": "nachtlorn",
+        "phase": 8
+      },
+      {
+        "kind": "add",
+        "amount": 1
+      },
+      {
+        "kind": "add",
+        "amount": -1
+      }
+    ],
+    "alphabets": [
+      {
+        "name": "A0",
+        "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "bias": 0
+      },
+      {
+        "name": "A1-bijective",
+        "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "bias": 1
+      },
+      {
+        "name": "I0",
+        "alphabet": "IJKLMNOPQRSTUVWXYZABCDEFGH",
+        "bias": 0
+      },
+      {
+        "name": "reverse",
+        "alphabet": "ZYXWVUTSRQPONMLKJIHGFEDCBA",
+        "bias": 0
+      },
+      {
+        "name": "keyed-BLOOM",
+        "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+        "bias": 0
+      },
+      {
+        "name": "keyed-NACHTLORN",
+        "alphabet": "NACHTLORBDEFGIJKMPQSUVWXYZ",
+        "bias": 0
+      }
+    ],
+    "packings": [
+      [
+        null,
+        null
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        14,
+        8
+      ]
+    ],
+    "byteorders": [
+      "big",
+      "little"
+    ],
+    "prefilter": "first128 bytes: UTF8/90percent printable or an object header at zero",
+    "text_test": "complete UTF8, at least64 characters, at least98percent printable",
+    "preset_dictionary_ids": [
+      "4676cc5d",
+      "94cab4ce",
+      "3390d06c",
+      "f38efa17"
+    ],
+    "compression_output_limit": 1048576,
+    "lzma_memory_limit": 67108864
+  },
+  "caution": "No arbitrary byte keys, prefix offsets, or two-letter-operation-plus-byte-mask combinations tested.",
+  "dictionary_variants": [
+    {
+      "name": "original-utf8",
+      "bytes": 1580890,
+      "adler32": "4676cc5d",
+      "sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac"
+    },
+    {
+      "name": "original-last32768",
+      "bytes": 32768,
+      "adler32": "94cab4ce",
+      "sha256": "66bed264b429296cba0b1b57d48ce01a8292494038a1ef0177c477bfc775f81b"
+    },
+    {
+      "name": "ascii-letters-upper",
+      "bytes": 1197205,
+      "adler32": "3390d06c",
+      "sha256": "9d7e5858ff9368aacbaad74ddfca9c8e92505c98399fc156848c94999e4a7ead"
+    },
+    {
+      "name": "ascii-letters-upper-last32768",
+      "bytes": 32768,
+      "adler32": "f38efa17",
+      "sha256": "b9f2f27c9fe4d5695ec3a6e8c115f78bbf2e7da9c259d1dd05691cb6bd7e6202"
+    }
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "elapsed_seconds": 3.9095957080007793
+}

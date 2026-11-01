@@ -102,6 +102,22 @@ HIDDEN = [
     "tkinter.ttk",
 ]
 
+# AES is optional in a source install, but the paid Windows build installs its
+# provider. Explicitly retain its native bindings for both entry points rather
+# than relying on analysis of the application's guarded, function-local imports.
+try:
+    distribution("cryptography")
+except PackageNotFoundError:
+    pass  # Core-only builds remain possible without installing the AES extra.
+else:
+    HIDDEN += [
+        "cryptography.exceptions",
+        "cryptography.hazmat.primitives.padding",
+        "cryptography.hazmat.primitives.ciphers",
+        "cryptography.hazmat.bindings._rust",
+        "_cffi_backend",
+    ]
+
 # The core solver has zero dependencies; the AES provider is bundled separately.
 # The only weight to trim here is the standard
 # library's own baggage.  Everything here is both large and unreachable from

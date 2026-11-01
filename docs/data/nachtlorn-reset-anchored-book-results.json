@@ -1,0 +1,379 @@
+{
+  "status": "Registered eight-address running-key test; no arbitrary offset or repeated key.",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "key_domains": {
+    "deathbed-bowl": {
+      "letters": 1177252,
+      "sha256": "d413df32f55c26667fa19b127e1a404d63c6cd4fbd216d90b04c6ba26558de2a",
+      "prefix32": "BOWLOFWHITECHINAHADSTOODBESIDEHE"
+    },
+    "after-deathbed-bowl": {
+      "letters": 1177248,
+      "sha256": "ab8262980bfb4b2bc53be21b9c52c3609ba0726b860e78489b70883ddc126894",
+      "prefix32": "OFWHITECHINAHADSTOODBESIDEHERDEA"
+    },
+    "deathbed-white": {
+      "letters": 1177246,
+      "sha256": "1cf1dee65e746786086694fd35b1155295307edd913f5518c709b411c01635f0",
+      "prefix32": "WHITECHINAHADSTOODBESIDEHERDEATH"
+    },
+    "deathbed-green": {
+      "letters": 1177201,
+      "sha256": "d854b27bbf7c677d6ae1abf5d93571744bf6e1ef6afb2aea401c0ddc7e55d3bc",
+      "prefix32": "GREENSLUGGISHBILEWHICHSHEHADTORN"
+    },
+    "holy-water-black": {
+      "letters": 1058954,
+      "sha256": "e4e9cc61b367e2707977c121a1b2658b906f61105641e4e24a19ea7e9cba1918",
+      "prefix32": "BLACKMARBLEBOWLWHILEBEFOREHIMAND"
+    },
+    "holy-water-bowl": {
+      "letters": 1058943,
+      "sha256": "24dae499d53dc3051f7713892b9a9cc0e68792dd7f748d7c981b174bfb857492",
+      "prefix32": "BOWLWHILEBEFOREHIMANDBEHINDTWOWO"
+    },
+    "after-holy-water-bowl": {
+      "letters": 1058939,
+      "sha256": "db1ca4de6ea4112b815b129be6eefa52240291e0ad6d21adf76cbba3ed030cc6",
+      "prefix32": "WHILEBEFOREHIMANDBEHINDTWOWORSHI"
+    },
+    "explicit-mourning": {
+      "letters": 1058800,
+      "sha256": "7a426e565f32e7aaeaa21a313b7230a0716c25d899c64b5cf64d96f70de71a85",
+      "prefix32": "MOURNINGMYSELFHECOVEREDHIMSELFHO"
+    }
+  },
+  "letter_paths": 48,
+  "representation_configurations": 1536,
+  "unique_binary_buffers": 1536,
+  "roundtrips": [
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-white",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-white",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-white",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-green",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-green",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "deathbed-green",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-black",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-black",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-black",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "holy-water-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "explicit-mourning",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "explicit-mourning",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "explicit-mourning",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-deathbed-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-white",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-white",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-white",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-green",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-green",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "deathbed-green",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-black",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-black",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-black",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "holy-water-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "after-holy-water-bowl",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "explicit-mourning",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "explicit-mourning",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "explicit-mourning",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    }
+  ],
+  "accepted_records": [],
+  "caution": "These already-seen passages are exploratory clue anchors, not author-confirmed instructions. Only declared ASCII letter keys, start0 within each domain, signs and packet formats. Other passages, boundaries and encodings remain untested. Roundtrips are not plaintext evidence.",
+  "hypothesis": "R13",
+  "anchors": {
+    "deathbed-bowl": {
+      "normalized_story_character_offset": 6100,
+      "context": "y and skyline held a dull green mass of liquid. A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting"
+    },
+    "after-deathbed-bowl": {
+      "normalized_story_character_offset": 6104,
+      "context": "d skyline held a dull green mass of liquid. A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liv"
+    },
+    "deathbed-white": {
+      "normalized_story_character_offset": 6108,
+      "context": "yline held a dull green mass of liquid. A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver b"
+    },
+    "deathbed-green": {
+      "normalized_story_character_offset": 6162,
+      "context": "e china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting. Buck Mulligan wiped"
+    },
+    "holy-water-black": {
+      "normalized_story_character_offset": 159902,
+      "context": "the light. He stood a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams:"
+    },
+    "holy-water-bowl": {
+      "normalized_story_character_offset": 159915,
+      "context": "stood a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams: a car of Pre"
+    },
+    "after-holy-water-bowl": {
+      "normalized_story_character_offset": 159919,
+      "context": "od a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams: a car of Prescot"
+    },
+    "explicit-mourning": {
+      "normalized_story_character_offset": 160097,
+      "context": "orks: a widow in her weeds. Notice because I\u2019m in mourning myself. He covered himself. How goes the time? Quarter past. Time enough yet. Better get that lotion made up. W"
+    }
+  },
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

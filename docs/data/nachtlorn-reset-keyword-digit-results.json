@@ -1,0 +1,451 @@
+{
+  "hypothesis": "R12",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "alphabet_keywords": [
+    "BLOOM",
+    "GLOOM",
+    "WLOOM",
+    "BLACK",
+    "GREEN",
+    "WHITE"
+  ],
+  "password_words": [
+    "BLACK",
+    "GREEN",
+    "WHITE"
+  ],
+  "representation_configurations": 384,
+  "unique_buffers": 384,
+  "roundtrips": [
+    {
+      "alphabet_keyword": "BLOOM",
+      "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLOOM",
+      "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLOOM",
+      "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLOOM",
+      "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GLOOM",
+      "alphabet": "GLOMABCDEFHIJKNPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GLOOM",
+      "alphabet": "GLOMABCDEFHIJKNPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GLOOM",
+      "alphabet": "GLOMABCDEFHIJKNPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GLOOM",
+      "alphabet": "GLOMABCDEFHIJKNPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WLOOM",
+      "alphabet": "WLOMABCDEFGHIJKNPQRSTUVXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WLOOM",
+      "alphabet": "WLOMABCDEFGHIJKNPQRSTUVXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WLOOM",
+      "alphabet": "WLOMABCDEFGHIJKNPQRSTUVXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WLOOM",
+      "alphabet": "WLOMABCDEFGHIJKNPQRSTUVXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLACK",
+      "alphabet": "BLACKDEFGHIJMNOPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLACK",
+      "alphabet": "BLACKDEFGHIJMNOPQRSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLACK",
+      "alphabet": "BLACKDEFGHIJMNOPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "BLACK",
+      "alphabet": "BLACKDEFGHIJMNOPQRSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GREEN",
+      "alphabet": "GRENABCDFHIJKLMOPQSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GREEN",
+      "alphabet": "GRENABCDFHIJKLMOPQSTUVWXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GREEN",
+      "alphabet": "GRENABCDFHIJKLMOPQSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "GREEN",
+      "alphabet": "GRENABCDFHIJKLMOPQSTUVWXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WHITE",
+      "alphabet": "WHITEABCDFGJKLMNOPQRSUVXYZ",
+      "drop_final_i": false,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WHITE",
+      "alphabet": "WHITEABCDFGJKLMNOPQRSUVXYZ",
+      "drop_final_i": false,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WHITE",
+      "alphabet": "WHITEABCDFGJKLMNOPQRSUVXYZ",
+      "drop_final_i": true,
+      "bias": 0,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    },
+    {
+      "alphabet_keyword": "WHITE",
+      "alphabet": "WHITEABCDFGJKLMNOPQRSUVXYZ",
+      "drop_final_i": true,
+      "bias": 1,
+      "exact_glyph_roundtrip": true,
+      "exact_numeric_and_source_roundtrip": true
+    }
+  ],
+  "decoded_objects": [],
+  "diagnostic_candidates": [],
+  "authentication_status": "tested",
+  "crypto_version": "3.23.0",
+  "key_specification": [
+    {
+      "password": "BLACK",
+      "derivation": "sha256"
+    },
+    {
+      "password": "BLACK",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "BLACK",
+      "derivation": "md5"
+    },
+    {
+      "password": "BLACK",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "BLACK",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "black",
+      "derivation": "sha256"
+    },
+    {
+      "password": "black",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "black",
+      "derivation": "md5"
+    },
+    {
+      "password": "black",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "black",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "Black",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Black",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "Black",
+      "derivation": "md5"
+    },
+    {
+      "password": "Black",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "Black",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "GREEN",
+      "derivation": "sha256"
+    },
+    {
+      "password": "GREEN",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "GREEN",
+      "derivation": "md5"
+    },
+    {
+      "password": "GREEN",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "GREEN",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "green",
+      "derivation": "sha256"
+    },
+    {
+      "password": "green",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "green",
+      "derivation": "md5"
+    },
+    {
+      "password": "green",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "green",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "Green",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Green",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "Green",
+      "derivation": "md5"
+    },
+    {
+      "password": "Green",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "Green",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "WHITE",
+      "derivation": "sha256"
+    },
+    {
+      "password": "WHITE",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "WHITE",
+      "derivation": "md5"
+    },
+    {
+      "password": "WHITE",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "WHITE",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "white",
+      "derivation": "sha256"
+    },
+    {
+      "password": "white",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "white",
+      "derivation": "md5"
+    },
+    {
+      "password": "white",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "white",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "White",
+      "derivation": "sha256"
+    },
+    {
+      "password": "White",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "White",
+      "derivation": "md5"
+    },
+    {
+      "password": "White",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "White",
+      "derivation": "nul-pad32"
+    }
+  ],
+  "modes": [
+    [
+      "AES-GCM",
+      12
+    ],
+    [
+      "AES-GCM",
+      16
+    ],
+    [
+      "AES-EAX",
+      16
+    ],
+    [
+      "ChaCha20-Poly1305",
+      12
+    ],
+    [
+      "ChaCha20-Poly1305",
+      24
+    ]
+  ],
+  "tag_bytes": 16,
+  "associated_data": "empty",
+  "authentication_attempts": 131328,
+  "attempts_by_mode": {
+    "AES-GCM": 69120,
+    "AES-EAX": 34560,
+    "ChaCha20-Poly1305": 27648
+  },
+  "authenticated_packets": [],
+  "caution": "A declared digit-alphabet representation with at most one independent authenticated cipher, not a letterwise/XOR/encryption stack. Roundtrips do not validate plaintext. BLOOM direct decoding overlaps the historical baseline; colour-password combinations are explicit new inputs. Recovered numeric items and a final outlier are not assumed.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "reference_basis": {
+    "green_white_passage": "A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting.",
+    "black_mourning_context": {
+      "episode": 5,
+      "token": "bowl",
+      "story_token_index": 28864,
+      "story_character_offset": 159915,
+      "nearby_colour_tokens": [
+        {
+          "token": "black",
+          "relative_token": -2
+        }
+      ],
+      "context": "me before. Still like you better untidy. Good job it wasn\u2019t farther south. He passed, discreetly buttoning, down the aisle and out through the main door into the light. He stood a moment unseeing by the cold black marble bowl while before him and behind two worshippers dipped furtive hands in the low tide of holy water. Trams: a car of Prescott\u2019s dyeworks: a widow in her weeds. Notice because I\u2019m in mourning myself. He covered himself. How"
+    },
+    "caution": "Exploratory source grounding, not author-confirmed key assignments."
+  }
+}

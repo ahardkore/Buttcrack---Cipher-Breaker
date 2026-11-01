@@ -1,0 +1,282 @@
+{
+  "status": "Synthetic controls, not puzzle evidence. Independently compiled reference hashing and signed-table construction/peeling match the Python implementation.",
+  "hash_vectors": [
+    {
+      "key_uint64": 0,
+      "seed": 0,
+      "murmur32": 1669671676
+    },
+    {
+      "key_uint64": 0,
+      "seed": 1,
+      "murmur32": 3935659133
+    },
+    {
+      "key_uint64": 0,
+      "seed": 2,
+      "murmur32": 2714478798
+    },
+    {
+      "key_uint64": 0,
+      "seed": 3,
+      "murmur32": 2999850111
+    },
+    {
+      "key_uint64": 0,
+      "seed": 11,
+      "murmur32": 2016003128
+    },
+    {
+      "key_uint64": 1,
+      "seed": 0,
+      "murmur32": 1392991556
+    },
+    {
+      "key_uint64": 1,
+      "seed": 1,
+      "murmur32": 3741873941
+    },
+    {
+      "key_uint64": 1,
+      "seed": 2,
+      "murmur32": 617539533
+    },
+    {
+      "key_uint64": 1,
+      "seed": 3,
+      "murmur32": 2920077748
+    },
+    {
+      "key_uint64": 1,
+      "seed": 11,
+      "murmur32": 3259001075
+    },
+    {
+      "key_uint64": 81985529216486895,
+      "seed": 0,
+      "murmur32": 4203775010
+    },
+    {
+      "key_uint64": 81985529216486895,
+      "seed": 1,
+      "murmur32": 1091205865
+    },
+    {
+      "key_uint64": 81985529216486895,
+      "seed": 2,
+      "murmur32": 3203346742
+    },
+    {
+      "key_uint64": 81985529216486895,
+      "seed": 3,
+      "murmur32": 1524511008
+    },
+    {
+      "key_uint64": 81985529216486895,
+      "seed": 11,
+      "murmur32": 3467404649
+    },
+    {
+      "key_uint64": 18446744073709551615,
+      "seed": 0,
+      "murmur32": 1651860712
+    },
+    {
+      "key_uint64": 18446744073709551615,
+      "seed": 1,
+      "murmur32": 2540302534
+    },
+    {
+      "key_uint64": 18446744073709551615,
+      "seed": 2,
+      "murmur32": 3009968590
+    },
+    {
+      "key_uint64": 18446744073709551615,
+      "seed": 3,
+      "murmur32": 3712633418
+    },
+    {
+      "key_uint64": 18446744073709551615,
+      "seed": 11,
+      "murmur32": 2579427423
+    }
+  ],
+  "cells": [
+    {
+      "index": 0,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 1,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 2,
+      "count": 1,
+      "key_sum": 81985529216486892,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 3,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 4,
+      "count": 2,
+      "key_sum": 18446744073709551615,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 5,
+      "count": -1,
+      "key_sum": 7,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 6,
+      "count": 1,
+      "key_sum": 2,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 7,
+      "count": -1,
+      "key_sum": 81985529216486895,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 8,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 9,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 10,
+      "count": 0,
+      "key_sum": 18446744073709551608,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 11,
+      "count": 2,
+      "key_sum": 1,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 12,
+      "count": 1,
+      "key_sum": 0,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 13,
+      "count": -1,
+      "key_sum": 7,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 14,
+      "count": 1,
+      "key_sum": 2,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 15,
+      "count": 1,
+      "key_sum": 1,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 16,
+      "count": 0,
+      "key_sum": 18364758544493064720,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 17,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 18,
+      "count": -1,
+      "key_sum": 81985529216486895,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 19,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 20,
+      "count": 1,
+      "key_sum": 18446744073709551615,
+      "checksum_matches_key_sum": true
+    },
+    {
+      "index": 21,
+      "count": 0,
+      "key_sum": 7,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 22,
+      "count": 2,
+      "key_sum": 3,
+      "checksum_matches_key_sum": false
+    },
+    {
+      "index": 23,
+      "count": 0,
+      "key_sum": 0,
+      "checksum_matches_key_sum": false
+    }
+  ],
+  "signed_items": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      7,
+      -1
+    ],
+    [
+      81985529216486895,
+      -1
+    ],
+    [
+      18446744073709551615,
+      1
+    ]
+  ],
+  "cell_count": 24,
+  "reference_peeling_complete": true,
+  "oracle_source": "tests/fixtures/nachtlorn_iblt_oracle.cpp",
+  "oracle_source_sha256": "38627f4d58fcb3c8f33e7f98e49e91ace288698447dee1cf32bd34b948277c6b",
+  "reference_provenance": "docs/data/nachtlorn-iblt-reference-source.json"
+}

@@ -1,0 +1,312 @@
+{
+  "status": "Necessary-condition construction test; no English gate or semantic answer.",
+  "letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "readings": 128,
+  "capacity_cases": 5376,
+  "capacity_case_sha256": "17a7771fcc3e7c9ade38d10dd9518a4e4e32cf28adcf6843529311baaa0d3ad9",
+  "minimum_by_width": {
+    "7": 392,
+    "14": 304
+  },
+  "single_exception_candidates": 0,
+  "best_cases": [
+    {
+      "route": "inverse-shuffle",
+      "unit": 60,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": "BLOOM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 12,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        25,
+        26,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 304
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 60,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": "BLOOM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 13,
+      "order": "little",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        25,
+        26,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 304
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 5,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": null,
+      "width": 14,
+      "bits": 64,
+      "alignment": 4,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        25,
+        26,
+        26,
+        25,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 307
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 5,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": null,
+      "width": 14,
+      "bits": 64,
+      "alignment": 5,
+      "order": "little",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        25,
+        26,
+        26,
+        25,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 307
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 1,
+      "seed": 4300,
+      "indent_draws": 146,
+      "pre_key": null,
+      "width": 14,
+      "bits": 64,
+      "alignment": 3,
+      "order": "little",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        23,
+        24,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 307
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 1,
+      "seed": 4300,
+      "indent_draws": 146,
+      "pre_key": null,
+      "width": 14,
+      "bits": 64,
+      "alignment": 2,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        23,
+        24,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 308
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 5,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": "BLOOM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 4,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        25,
+        26,
+        26,
+        25,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 309
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 5,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": "BLOOM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 5,
+      "order": "little",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        25,
+        26,
+        26,
+        25,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 309
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 60,
+      "seed": 4300,
+      "indent_draws": 146,
+      "pre_key": "BLNPM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 7,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        26,
+        26,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 309
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 60,
+      "seed": 4300,
+      "indent_draws": 146,
+      "pre_key": null,
+      "width": 14,
+      "bits": 64,
+      "alignment": 7,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        26,
+        26,
+        25
+      ],
+      "minimum_leading_symbol_replacements": 310
+    },
+    {
+      "route": "inverse-shuffle",
+      "unit": 1,
+      "seed": 4300,
+      "indent_draws": 146,
+      "pre_key": "BLOOM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 8,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        25,
+        26,
+        26,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 310
+    },
+    {
+      "route": "shuffle",
+      "unit": 60,
+      "seed": 4300,
+      "indent_draws": 145,
+      "pre_key": "BLPNM",
+      "width": 14,
+      "bits": 64,
+      "alignment": 5,
+      "order": "big",
+      "complete_blocks": 623,
+      "permitted_leading_symbols": 8,
+      "distinct_symbols_by_phase": [
+        26,
+        26,
+        26,
+        26,
+        26
+      ],
+      "minimum_leading_symbol_replacements": 310
+    }
+  ],
+  "specification": {
+    "packed_objects": [
+      {
+        "width": 7,
+        "bits": 32
+      },
+      {
+        "width": 14,
+        "bits": 64
+      }
+    ],
+    "phase_alphabets": 5,
+    "all_block_alignments": true,
+    "digit_orders": [
+      "big",
+      "little"
+    ],
+    "pre_keys": [
+      null,
+      "BLOOM",
+      "BLPNM",
+      "BLNPM"
+    ],
+    "routes": [
+      "identity",
+      "reverse",
+      "shuffle",
+      "inverse-shuffle"
+    ],
+    "shuffle_seed": 4300,
+    "shuffle_units": [
+      1,
+      5,
+      7,
+      14,
+      60
+    ],
+    "shuffle_after_indent_draws": [
+      0,
+      145,
+      146
+    ]
+  },
+  "caution": "Unknown transpositions, longer/changing alphabets, other integer encodings and insertion/deletion shifts remain outside this test.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

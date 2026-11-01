@@ -1,0 +1,404 @@
+{
+  "status": "Bounded AEAD test; tag verification is required for every acceptance.",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "paths": 26,
+  "unique_binary_buffers": 312,
+  "authentication_attempts": 213408,
+  "attempts_by_mode": {
+    "AES-GCM": 112320,
+    "AES-EAX": 56160,
+    "ChaCha20-Poly1305": 44928
+  },
+  "accepted": [],
+  "key_specification": [
+    {
+      "password": "BLOOM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "BLOOM",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "BLOOM",
+      "derivation": "md5"
+    },
+    {
+      "password": "BLOOM",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "BLOOM",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "bloom",
+      "derivation": "sha256"
+    },
+    {
+      "password": "bloom",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "bloom",
+      "derivation": "md5"
+    },
+    {
+      "password": "bloom",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "bloom",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "BLPNM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "BLPNM",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "BLPNM",
+      "derivation": "md5"
+    },
+    {
+      "password": "BLPNM",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "BLPNM",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "blpnm",
+      "derivation": "sha256"
+    },
+    {
+      "password": "blpnm",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "blpnm",
+      "derivation": "md5"
+    },
+    {
+      "password": "blpnm",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "blpnm",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "BLNPM",
+      "derivation": "sha256"
+    },
+    {
+      "password": "BLNPM",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "BLNPM",
+      "derivation": "md5"
+    },
+    {
+      "password": "BLNPM",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "BLNPM",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "blnpm",
+      "derivation": "sha256"
+    },
+    {
+      "password": "blnpm",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "blnpm",
+      "derivation": "md5"
+    },
+    {
+      "password": "blnpm",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "blnpm",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "NACHTLORN",
+      "derivation": "sha256"
+    },
+    {
+      "password": "NACHTLORN",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "NACHTLORN",
+      "derivation": "md5"
+    },
+    {
+      "password": "NACHTLORN",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "NACHTLORN",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "Nachtlorn",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Nachtlorn",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "Nachtlorn",
+      "derivation": "md5"
+    },
+    {
+      "password": "Nachtlorn",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "Nachtlorn",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "nachtlorn",
+      "derivation": "sha256"
+    },
+    {
+      "password": "nachtlorn",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "nachtlorn",
+      "derivation": "md5"
+    },
+    {
+      "password": "nachtlorn",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "nachtlorn",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "4300",
+      "derivation": "sha256"
+    },
+    {
+      "password": "4300",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "4300",
+      "derivation": "md5"
+    },
+    {
+      "password": "4300",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "4300",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "ULYSSES",
+      "derivation": "sha256"
+    },
+    {
+      "password": "ULYSSES",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "ULYSSES",
+      "derivation": "md5"
+    },
+    {
+      "password": "ULYSSES",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "ULYSSES",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "Ulysses",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Ulysses",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "Ulysses",
+      "derivation": "md5"
+    },
+    {
+      "password": "Ulysses",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "Ulysses",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "ulysses",
+      "derivation": "sha256"
+    },
+    {
+      "password": "ulysses",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "ulysses",
+      "derivation": "md5"
+    },
+    {
+      "password": "ulysses",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "ulysses",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "JOYCE",
+      "derivation": "sha256"
+    },
+    {
+      "password": "JOYCE",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "JOYCE",
+      "derivation": "md5"
+    },
+    {
+      "password": "JOYCE",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "JOYCE",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "Joyce",
+      "derivation": "sha256"
+    },
+    {
+      "password": "Joyce",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "Joyce",
+      "derivation": "md5"
+    },
+    {
+      "password": "Joyce",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "Joyce",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "joyce",
+      "derivation": "sha256"
+    },
+    {
+      "password": "joyce",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "joyce",
+      "derivation": "md5"
+    },
+    {
+      "password": "joyce",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "joyce",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "BLOOM4300",
+      "derivation": "sha256"
+    },
+    {
+      "password": "BLOOM4300",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "BLOOM4300",
+      "derivation": "md5"
+    },
+    {
+      "password": "BLOOM4300",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "BLOOM4300",
+      "derivation": "nul-pad32"
+    },
+    {
+      "password": "bloom4300",
+      "derivation": "sha256"
+    },
+    {
+      "password": "bloom4300",
+      "derivation": "sha256-first16"
+    },
+    {
+      "password": "bloom4300",
+      "derivation": "md5"
+    },
+    {
+      "password": "bloom4300",
+      "derivation": "nul-pad16"
+    },
+    {
+      "password": "bloom4300",
+      "derivation": "nul-pad32"
+    }
+  ],
+  "modes": [
+    [
+      "AES-GCM",
+      12
+    ],
+    [
+      "AES-GCM",
+      16
+    ],
+    [
+      "AES-EAX",
+      16
+    ],
+    [
+      "ChaCha20-Poly1305",
+      12
+    ],
+    [
+      "ChaCha20-Poly1305",
+      24
+    ]
+  ],
+  "tag_bytes": 16,
+  "associated_data": "empty",
+  "caution": "No arbitrary passwords, salted KDFs, other packet layouts, transpositions or unauthenticated modes tested.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "crypto_version": "3.23.0",
+  "elapsed_seconds": 20.986392327999965
+}

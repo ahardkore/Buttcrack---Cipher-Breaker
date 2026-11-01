@@ -1,0 +1,139 @@
+{
+  "status": "Registered running-key object test; no answer is selected by word recognition.",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "key_domains": {
+    "raw-file": {
+      "letters": 1197205,
+      "sha256": "9d7e5858ff9368aacbaad74ddfca9c8e92505c98399fc156848c94999e4a7ead",
+      "prefix32": "THEPROJECTGUTENBERGEBOOKOFULYSSE"
+    },
+    "gutenberg-body": {
+      "letters": 1182040,
+      "sha256": "6f074cfd3b645039ec4930f248cb73318a93496cfa99ebd1aa8ccffe72818ce2",
+      "prefix32": "PRODUCEDBYCOLCHOATANDDAVIDWIDGER"
+    },
+    "story": {
+      "letters": 1181988,
+      "sha256": "fda78ca01072ace6894d3c3bc103012a06a62c89e9239a1f69448fe9b036a119",
+      "prefix32": "STATELYPLUMPBUCKMULLIGANCAMEFROM"
+    }
+  },
+  "letter_paths": 18,
+  "representation_configurations": 576,
+  "unique_binary_buffers": 576,
+  "roundtrips": [
+    {
+      "drop_final_i": false,
+      "key_domain": "raw-file",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "raw-file",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "raw-file",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "gutenberg-body",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "gutenberg-body",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "gutenberg-body",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "story",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "story",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "key_domain": "story",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "raw-file",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "raw-file",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "raw-file",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "gutenberg-body",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "gutenberg-body",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "gutenberg-body",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "story",
+      "operation": "minus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "story",
+      "operation": "plus",
+      "exact_original_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "key_domain": "story",
+      "operation": "beaufort",
+      "exact_original_letter_roundtrip": true
+    }
+  ],
+  "accepted_records": [],
+  "caution": "Only the declared key domains, start0, signs, encodings and whole-packet schemas. A roundtrip alone is not meaningful plaintext.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

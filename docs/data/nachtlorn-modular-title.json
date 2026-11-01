@@ -1,0 +1,701 @@
+{
+  "status": "Structural test only, not an accepted solution.",
+  "alphabet": "NACHTLORBDEFGIJKMPQSUVWXYZ",
+  "source_letters": 8736,
+  "complete_groups": 1747,
+  "unconsumed_tail": "I",
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "moduli": [
+    2,
+    13
+  ],
+  "actual": {
+    "2": {
+      "version": 1,
+      "columns": 5,
+      "q": 2,
+      "rows": 1747,
+      "directions": 31,
+      "top": [
+        {
+          "coefficients": [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "histogram": [
+            838,
+            909
+          ],
+          "sum_squares": 1528525,
+          "statistic": 2.8855180309101343,
+          "dominant_residue": 1,
+          "dominant_count": 909,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "histogram": [
+            908,
+            839
+          ],
+          "sum_squares": 1528385,
+          "statistic": 2.725243274184322,
+          "dominant_residue": 0,
+          "dominant_count": 908,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "histogram": [
+            907,
+            840
+          ],
+          "sum_squares": 1528249,
+          "statistic": 2.5695477962221958,
+          "dominant_residue": 0,
+          "dominant_count": 907,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            0,
+            1,
+            1,
+            1,
+            0
+          ],
+          "histogram": [
+            907,
+            840
+          ],
+          "sum_squares": 1528249,
+          "statistic": 2.5695477962221958,
+          "dominant_residue": 0,
+          "dominant_count": 907,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            0,
+            0,
+            1,
+            0,
+            1
+          ],
+          "histogram": [
+            906,
+            841
+          ],
+          "sum_squares": 1528117,
+          "statistic": 2.4184315970235275,
+          "dominant_residue": 0,
+          "dominant_count": 906,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "histogram": [
+            902,
+            845
+          ],
+          "sum_squares": 1527629,
+          "statistic": 1.8597595878648008,
+          "dominant_residue": 0,
+          "dominant_count": 902,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            1,
+            0,
+            0,
+            1
+          ],
+          "histogram": [
+            845,
+            902
+          ],
+          "sum_squares": 1527629,
+          "statistic": 1.8597595878648008,
+          "dominant_residue": 1,
+          "dominant_count": 902,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "histogram": [
+            848,
+            899
+          ],
+          "sum_squares": 1527305,
+          "statistic": 1.4888380080137722,
+          "dominant_residue": 1,
+          "dominant_count": 899,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        }
+      ]
+    },
+    "13": {
+      "version": 1,
+      "columns": 5,
+      "q": 13,
+      "rows": 1747,
+      "directions": 30941,
+      "top": [
+        {
+          "coefficients": [
+            1,
+            9,
+            7,
+            5,
+            6
+          ],
+          "histogram": [
+            116,
+            135,
+            137,
+            131,
+            121,
+            130,
+            160,
+            129,
+            109,
+            172,
+            147,
+            160,
+            100
+          ],
+          "sum_squares": 240067,
+          "statistic": 39.41728677733249,
+          "dominant_residue": 9,
+          "dominant_count": 172,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            8,
+            10,
+            10,
+            8
+          ],
+          "histogram": [
+            122,
+            155,
+            125,
+            124,
+            159,
+            137,
+            128,
+            125,
+            166,
+            102,
+            154,
+            103,
+            147
+          ],
+          "sum_squares": 239863,
+          "statistic": 37.899255867200964,
+          "dominant_residue": 8,
+          "dominant_count": 166,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            5,
+            6,
+            6,
+            0
+          ],
+          "histogram": [
+            132,
+            121,
+            148,
+            155,
+            124,
+            131,
+            144,
+            156,
+            141,
+            103,
+            92,
+            161,
+            139
+          ],
+          "sum_squares": 239799,
+          "statistic": 37.423010875786986,
+          "dominant_residue": 11,
+          "dominant_count": 161,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            4,
+            4,
+            0,
+            9
+          ],
+          "histogram": [
+            133,
+            153,
+            187,
+            116,
+            123,
+            125,
+            124,
+            139,
+            153,
+            127,
+            111,
+            124,
+            132
+          ],
+          "sum_squares": 239633,
+          "statistic": 36.18775042930747,
+          "dominant_residue": 2,
+          "dominant_count": 187,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            12,
+            3,
+            5,
+            6
+          ],
+          "histogram": [
+            119,
+            158,
+            124,
+            166,
+            135,
+            125,
+            143,
+            98,
+            115,
+            142,
+            158,
+            118,
+            146
+          ],
+          "sum_squares": 239553,
+          "statistic": 35.59244419004017,
+          "dominant_residue": 3,
+          "dominant_count": 166,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            7,
+            4,
+            8,
+            1
+          ],
+          "histogram": [
+            146,
+            139,
+            134,
+            164,
+            112,
+            120,
+            150,
+            102,
+            115,
+            118,
+            166,
+            142,
+            139
+          ],
+          "sum_squares": 239527,
+          "statistic": 35.398969662278205,
+          "dominant_residue": 10,
+          "dominant_count": 166,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            2,
+            4,
+            0,
+            11
+          ],
+          "histogram": [
+            127,
+            153,
+            133,
+            138,
+            138,
+            134,
+            173,
+            129,
+            162,
+            107,
+            132,
+            118,
+            103
+          ],
+          "sum_squares": 239491,
+          "statistic": 35.13108185460783,
+          "dominant_residue": 6,
+          "dominant_count": 173,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        },
+        {
+          "coefficients": [
+            1,
+            9,
+            11,
+            10,
+            12
+          ],
+          "histogram": [
+            139,
+            176,
+            144,
+            123,
+            150,
+            124,
+            113,
+            135,
+            101,
+            147,
+            132,
+            149,
+            114
+          ],
+          "sum_squares": 239463,
+          "statistic": 34.92272467086423,
+          "dominant_residue": 1,
+          "dominant_count": 176,
+          "unique_exception_indices": [],
+          "exception_groups": []
+        }
+      ]
+    }
+  },
+  "actual_family_maximum": 39.41728677733249,
+  "null_seed": 20261101,
+  "null_method": "Independent within-column permutations, shared across moduli and alphabet workers.",
+  "null_results": [
+    {
+      "replicate": 0,
+      "maxima": {
+        "2": 4.332570120206128,
+        "13": 42.09616485403558
+      },
+      "family_maximum": 42.09616485403558
+    },
+    {
+      "replicate": 1,
+      "maxima": {
+        "2": 4.740125930165959,
+        "13": 42.52776187750419
+      },
+      "family_maximum": 42.52776187750419
+    },
+    {
+      "replicate": 2,
+      "maxima": {
+        "2": 4.950772753291403,
+        "13": 42.200343445907265
+      },
+      "family_maximum": 42.200343445907265
+    },
+    {
+      "replicate": 3,
+      "maxima": {
+        "2": 8.380652547223917,
+        "13": 42.497996565540916
+      },
+      "family_maximum": 42.497996565540916
+    },
+    {
+      "replicate": 4,
+      "maxima": {
+        "2": 7.83571837435602,
+        "13": 41.679450486548376
+      },
+      "family_maximum": 41.679450486548376
+    },
+    {
+      "replicate": 5,
+      "maxima": {
+        "2": 2.725243274184322,
+        "13": 43.07842014882658
+      },
+      "family_maximum": 43.07842014882658
+    },
+    {
+      "replicate": 6,
+      "maxima": {
+        "2": 11.059530623926776,
+        "13": 41.0246136233543
+      },
+      "family_maximum": 41.0246136233543
+    },
+    {
+      "replicate": 7,
+      "maxima": {
+        "2": 2.725243274184322,
+        "13": 42.82541499713784
+      },
+      "family_maximum": 42.82541499713784
+    },
+    {
+      "replicate": 8,
+      "maxima": {
+        "2": 2.725243274184322,
+        "13": 39.99771036061816
+      },
+      "family_maximum": 39.99771036061816
+    },
+    {
+      "replicate": 9,
+      "maxima": {
+        "2": 10.74356038923861,
+        "13": 44.25414997137955
+      },
+      "family_maximum": 44.25414997137955
+    },
+    {
+      "replicate": 10,
+      "maxima": {
+        "2": 3.755580995993114,
+        "13": 39.834001144819695
+      },
+      "family_maximum": 39.834001144819695
+    },
+    {
+      "replicate": 11,
+      "maxima": {
+        "2": 4.135661133371514,
+        "13": 39.700057240984506
+      },
+      "family_maximum": 39.700057240984506
+    },
+    {
+      "replicate": 12,
+      "maxima": {
+        "2": 7.570120206067486,
+        "13": 39.04522037779043
+      },
+      "family_maximum": 39.04522037779043
+    },
+    {
+      "replicate": 13,
+      "maxima": {
+        "2": 3.755580995993114,
+        "13": 45.19175729822564
+      },
+      "family_maximum": 45.19175729822564
+    },
+    {
+      "replicate": 14,
+      "maxima": {
+        "2": 5.385804235832893,
+        "13": 46.114481969089866
+      },
+      "family_maximum": 46.114481969089866
+    },
+    {
+      "replicate": 15,
+      "maxima": {
+        "2": 6.553520320549524,
+        "13": 43.85231825987398
+      },
+      "family_maximum": 43.85231825987398
+    },
+    {
+      "replicate": 16,
+      "maxima": {
+        "2": 6.0726960503720875,
+        "13": 40.518603319977046
+      },
+      "family_maximum": 40.518603319977046
+    },
+    {
+      "replicate": 17,
+      "maxima": {
+        "2": 5.610188895248939,
+        "13": 41.173440183171124
+      },
+      "family_maximum": 41.173440183171124
+    },
+    {
+      "replicate": 18,
+      "maxima": {
+        "2": 7.83571837435602,
+        "13": 49.79049799656559
+      },
+      "family_maximum": 49.79049799656559
+    },
+    {
+      "replicate": 19,
+      "maxima": {
+        "2": 2.725243274184322,
+        "13": 41.768746422438426
+      },
+      "family_maximum": 41.768746422438426
+    },
+    {
+      "replicate": 20,
+      "maxima": {
+        "2": 5.165998855180305,
+        "13": 39.402404121350855
+      },
+      "family_maximum": 39.402404121350855
+    },
+    {
+      "replicate": 21,
+      "maxima": {
+        "2": 5.165998855180305,
+        "13": 46.18889524899828
+      },
+      "family_maximum": 46.18889524899828
+    },
+    {
+      "replicate": 22,
+      "maxima": {
+        "2": 2.725243274184322,
+        "13": 40.54836863194055
+      },
+      "family_maximum": 40.54836863194055
+    },
+    {
+      "replicate": 23,
+      "maxima": {
+        "2": 5.165998855180305,
+        "13": 41.69433314253001
+      },
+      "family_maximum": 41.69433314253001
+    },
+    {
+      "replicate": 24,
+      "maxima": {
+        "2": 5.165998855180305,
+        "13": 56.82999427590153
+      },
+      "family_maximum": 56.82999427590153
+    },
+    {
+      "replicate": 25,
+      "maxima": {
+        "2": 7.052661705781247,
+        "13": 41.6199198626216
+      },
+      "family_maximum": 41.6199198626216
+    },
+    {
+      "replicate": 26,
+      "maxima": {
+        "2": 6.553520320549524,
+        "13": 51.76989124212946
+      },
+      "family_maximum": 51.76989124212946
+    },
+    {
+      "replicate": 27,
+      "maxima": {
+        "2": 4.534058385804201,
+        "13": 44.358328563251234
+      },
+      "family_maximum": 44.358328563251234
+    },
+    {
+      "replicate": 28,
+      "maxima": {
+        "2": 5.385804235832893,
+        "13": 40.19118488838012
+      },
+      "family_maximum": 40.19118488838012
+    },
+    {
+      "replicate": 29,
+      "maxima": {
+        "2": 4.332570120206128,
+        "13": 42.27475672581568
+      },
+      "family_maximum": 42.27475672581568
+    },
+    {
+      "replicate": 30,
+      "maxima": {
+        "2": 4.332570120206128,
+        "13": 42.12593016599885
+      },
+      "family_maximum": 42.12593016599885
+    }
+  ],
+  "null_maxima_at_least_actual": 29,
+  "smoothed_upper_fraction": 0.9375,
+  "caution": "Raw Pearson statistics are scores, not chi-square p-values. Conditional family only; not a global search correction.",
+  "controls": {
+    "synthetic": true,
+    "rows": 257,
+    "coefficients": [
+      1,
+      2,
+      3,
+      5,
+      8
+    ],
+    "outlier_index": 137,
+    "directions": 30941,
+    "single_error": true,
+    "affine_mixing": true,
+    "sample_reversal": true
+  },
+  "alphabet_name": "NACHTLORN",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "worker_source_sha256": "6471f9eb9c347d2d52a90d7f2d1ab6bc1d5f64b5d536714d9364cce86ab132ee",
+  "worker_binary_sha256": "c22297dec628ed3c5a8721479a03b62c156d4aa4dc8098861d258b588a543415",
+  "elapsed_seconds": 9.798217747000308
+}

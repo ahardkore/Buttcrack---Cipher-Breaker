@@ -15,6 +15,11 @@
     The output is self-contained: the person who runs the installer needs no
     Python, no git and no GitHub account.
 
+.PARAMETER PythonExecutable
+    Use this interpreter instead of searching with the Windows launcher. CI
+    passes the Python selected by actions/setup-python so the build and tests
+    use the same version, not an unrelated newer system installation.
+
 .PARAMETER SkipInstaller
     Stop after PyInstaller. Useful when you only want dist\Buttcrack\ to poke at.
 
@@ -38,6 +43,7 @@
 #>
 [CmdletBinding()]
 param(
+    [string]$PythonExecutable = '',
     [switch]$SkipInstaller,
     [switch]$Clean,
     [string]$CertThumbprint = '',
@@ -144,12 +150,20 @@ try {
     # the Microsoft Store stub, which "succeeds" by opening the Store.
     $pythonExe = $null
     $pythonArgs = @()
-    foreach ($candidate in @(@('py', '-3'), @('python'), @('python3'))) {
-        $cmd = Get-Command $candidate[0] -ErrorAction SilentlyContinue
-        if ($cmd -and $cmd.Source -notmatch 'WindowsApps') {
-            $pythonExe = $cmd.Source
-            $pythonArgs = @($candidate | Select-Object -Skip 1)
-            break
+    if ($PythonExecutable) {
+        $cmd = Get-Command $PythonExecutable -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $cmd -or $cmd.Source -match 'WindowsApps') {
+            Fail "Requested Python executable not found (or is a Store stub): $PythonExecutable"
+        }
+        $pythonExe = $cmd.Source
+    } else {
+        foreach ($candidate in @(@('py', '-3'), @('python'), @('python3'))) {
+            $cmd = Get-Command $candidate[0] -ErrorAction SilentlyContinue
+            if ($cmd -and $cmd.Source -notmatch 'WindowsApps') {
+                $pythonExe = $cmd.Source
+                $pythonArgs = @($candidate | Select-Object -Skip 1)
+                break
+            }
         }
     }
     if (-not $pythonExe) {
@@ -236,6 +250,12 @@ try {
     '{"operation":"decrypt","mode":"ECB","key":"00000000000000000000000000000000","data":"66e94bd4ef8a2c3b884cfa59ca342b2e"}' | Set-Content -Encoding ASCII $aesInput
     $aesReport = (& $CliExe 'modern' 'aes' '--input' $aesInput | Out-String) | ConvertFrom-Json
     if ($LASTEXITCODE -ne 0 -or $aesReport.output.hex -ne '00000000000000000000000000000000') {
+        # Inventory the interpreter and native runtime in the readable failure
+        # annotation; the extension's loader error alone cannot name a missing DLL.
+        & $VenvPython -c "import sys; print('Build Python:', sys.version, 'base:', sys.base_prefix)"
+        Get-ChildItem (Join-Path $AppDir '_internal') -Filter '*.dll' | ForEach-Object {
+            Write-Note ("bundled DLL: " + $_.Name)
+        }
         Fail 'The frozen AES provider failed its known-answer test.'
     }
     Write-Note 'AES provider: known-answer test passed'

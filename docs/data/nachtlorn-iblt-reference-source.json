@@ -1,0 +1,106 @@
+{
+  "status": "Public schema/algorithm references only; no author attribution. Reviewed C++ iblt.cpp and murmurhash3.cpp compiled solely for synthetic independent controls; Scala sources were read, not executed.",
+  "namesake_warning": "dantodor/gloom README advertises IBLT, but inspected BloomFilter.scala implements ordinary set-bit membership, not signed counts or peeling. Name alone supplies no recovery mechanism.",
+  "files": [
+    {
+      "repository": "dantodor/gloom",
+      "path": "README.md",
+      "local_path": "scratch/nachtlorn-gloom-library/README.md",
+      "git_blob_sha1": "594a059e2af690768ffca2e20e866cc77373124b",
+      "sha256": "f973346cdf83d8c8223c2052cd94f2584073c033433ef2bf7cc5d64088a2fabf",
+      "bytes": 366,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/594a059e2af690768ffca2e20e866cc77373124b"
+    },
+    {
+      "repository": "dantodor/gloom",
+      "path": "src/main/scala/lorcatech/gloom/BloomFilter.scala",
+      "local_path": "scratch/nachtlorn-gloom-library/src/main/scala/lorcatech/gloom/BloomFilter.scala",
+      "git_blob_sha1": "83fea7e70881a50dafc363e3c9644ffe8d0a185d",
+      "sha256": "f64c28049b110a6e8e1d89502e999160afb55359bcd16681fd2b19e597d2b6cb",
+      "bytes": 2195,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/83fea7e70881a50dafc363e3c9644ffe8d0a185d"
+    },
+    {
+      "repository": "dantodor/gloom",
+      "path": "src/main/scala/lorcatech/gloom/MutableBitArray.scala",
+      "local_path": "scratch/nachtlorn-gloom-library/src/main/scala/lorcatech/gloom/MutableBitArray.scala",
+      "git_blob_sha1": "60f02f9782ed471266014778686d18da895acecc",
+      "sha256": "e5c55912f2d4a40e167667a93a4f6dba2ee4a13c8b16d9e150ea0c31f740b30f",
+      "bytes": 1066,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/60f02f9782ed471266014778686d18da895acecc"
+    },
+    {
+      "repository": "dantodor/gloom",
+      "path": "src/test/scala/lorcatech/gloom/UsageSpec.scala",
+      "local_path": "scratch/nachtlorn-gloom-library/src/test/scala/lorcatech/gloom/UsageSpec.scala",
+      "git_blob_sha1": "9c99e8324fb0ac760fe9eb1f6fef9ad314e0778f",
+      "sha256": "1dd28bb373f4f6010c304ad39d5b844ccbfd5bb84df5acf0c5d9312d178ee5d0",
+      "bytes": 1152,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/9c99e8324fb0ac760fe9eb1f6fef9ad314e0778f"
+    },
+    {
+      "repository": "gavinandresen/IBLT_Cplusplus",
+      "path": "README.md",
+      "local_path": "scratch/nachtlorn-iblt-reference/README.md",
+      "git_blob_sha1": "00b021e4c8bbdc6706a287688e00ca5511c56603",
+      "sha256": "b121c00ca7fe7ac3581c293bede3b716ba088421779e50d175b58cbafa94a304",
+      "bytes": 278,
+      "blob_api_url": "https://api.github.com/repos/gavinandresen/IBLT_Cplusplus/git/blobs/00b021e4c8bbdc6706a287688e00ca5511c56603"
+    },
+    {
+      "repository": "gavinandresen/IBLT_Cplusplus",
+      "path": "iblt.cpp",
+      "local_path": "scratch/nachtlorn-iblt-reference/iblt.cpp",
+      "git_blob_sha1": "028104da5f2714297ee07c68ab4dcb90e4138e8e",
+      "sha256": "2a37b78100020930799a265db68021624bd3f2f934047d1fdc2f3978e6219599",
+      "bytes": 6221,
+      "blob_api_url": "https://api.github.com/repos/gavinandresen/IBLT_Cplusplus/git/blobs/028104da5f2714297ee07c68ab4dcb90e4138e8e"
+    },
+    {
+      "repository": "gavinandresen/IBLT_Cplusplus",
+      "path": "iblt.h",
+      "local_path": "scratch/nachtlorn-iblt-reference/iblt.h",
+      "git_blob_sha1": "23a5147b494a16f41ad5ff467d8a8b8208638434",
+      "sha256": "4dee4fab17dca17dc2250114098c9e0b144fe85acf31a01c2f038583c0012529",
+      "bytes": 1913,
+      "blob_api_url": "https://api.github.com/repos/gavinandresen/IBLT_Cplusplus/git/blobs/23a5147b494a16f41ad5ff467d8a8b8208638434"
+    },
+    {
+      "repository": "gavinandresen/IBLT_Cplusplus",
+      "path": "murmurhash3.cpp",
+      "local_path": "scratch/nachtlorn-iblt-reference/murmurhash3.cpp",
+      "git_blob_sha1": "098d54e2d1c021352f042beeca8e897308cf0bbc",
+      "sha256": "d4e10101ea24cf75f4fe10720b0d5dd341ea23c28764053122b642fac2d17a00",
+      "bytes": 1335,
+      "blob_api_url": "https://api.github.com/repos/gavinandresen/IBLT_Cplusplus/git/blobs/098d54e2d1c021352f042beeca8e897308cf0bbc"
+    },
+    {
+      "repository": "dantodor/gloom",
+      "path": "src/main/scala/lorcatech/gloom/main.scala",
+      "local_path": "scratch/nachtlorn-gloom-library/src/main/scala/lorcatech/gloom/main.scala",
+      "git_blob_sha1": "260fe40c057803f58eb147039bb2d6aa326031f6",
+      "sha256": "203060fe1c14d4bd2e674863161a9cff30565d1de708dc6ec52e3e291ce0c5ab",
+      "bytes": 426,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/260fe40c057803f58eb147039bb2d6aa326031f6"
+    },
+    {
+      "repository": "dantodor/gloom",
+      "path": "src/main/scala/lorcatech/gloom/MemAlloc.scala",
+      "local_path": "scratch/nachtlorn-gloom-library/src/main/scala/lorcatech/gloom/MemAlloc.scala",
+      "git_blob_sha1": "e70322529f6cebdea9cd6be819012de484e300f3",
+      "sha256": "216a4b8ff330c9940c0d185f31f85947e301ffa9f09488474dd90e7323284054",
+      "bytes": 942,
+      "blob_api_url": "https://api.github.com/repos/dantodor/gloom/git/blobs/e70322529f6cebdea9cd6be819012de484e300f3"
+    },
+    {
+      "repository": "gavinandresen/IBLT_Cplusplus",
+      "path": "murmurhash3.h",
+      "local_path": "scratch/nachtlorn-iblt-reference/murmurhash3.h",
+      "git_blob_sha1": "0e4ac92eef8e6d0b3ffc9afbd6d982024ae77172",
+      "sha256": "e89a3600b8639d6e4735f81ce5555caeb11eaa9616968284d918987cf3717521",
+      "bytes": 210,
+      "blob_api_url": "https://api.github.com/repos/gavinandresen/IBLT_Cplusplus/git/blobs/0e4ac92eef8e6d0b3ffc9afbd6d982024ae77172"
+    }
+  ],
+  "synthetic_validation": "docs/data/nachtlorn-fieldwise-iblt-oracle.json"
+}

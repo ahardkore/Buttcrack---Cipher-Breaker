@@ -1,0 +1,116 @@
+{
+  "status": "Unresolved. This is a clue audit, not a recovered construction or answer.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129,
+  "body_rows": 146,
+  "body_letters": 8736,
+  "poem_lines": [
+    "blue at the bottom of the bowl.",
+    "laughter, somewhere on the stairs.",
+    "one given.",
+    "one taken.",
+    "morning. neither be right."
+  ],
+  "acrostic": "BLOOM",
+  "proposed_given_taken_key": {
+    "key": "BLPNM",
+    "changed_poem_lines": [
+      3,
+      4
+    ],
+    "operations": [
+      "+1",
+      "-1"
+    ],
+    "status": "Line-order hypothesis, not an author's confirmed cipher key."
+  },
+  "indentation": {
+    "seed": 4300,
+    "algorithm": "random.Random(seed).randrange(8)",
+    "rows": 146,
+    "matches": 146,
+    "exact_match": true,
+    "mismatches": [],
+    "caution": "A layout-generator match, not recovered plaintext or proof of seed uniqueness."
+  },
+  "literal_fragments": [
+    {
+      "decoded_literal": "FRODO",
+      "key": "BLOOM",
+      "letter_offset": 7625,
+      "body_row": 128,
+      "source_line": 136,
+      "group": 2,
+      "source_columns_one_based": [
+        10,
+        14
+      ],
+      "source_columns_zero_based": [
+        9,
+        13
+      ],
+      "ciphertext": "GCCRA",
+      "context20": "VVEFRODOQHQMPJEPVIGL",
+      "status": "Literal unedited fragment; no unique selector or solution established."
+    },
+    {
+      "decoded_literal": "TRACT",
+      "key": "BLPNM",
+      "letter_offset": 7595,
+      "body_row": 127,
+      "source_line": 135,
+      "group": 8,
+      "source_columns_one_based": [
+        44,
+        48
+      ],
+      "source_columns_zero_based": [
+        43,
+        47
+      ],
+      "ciphertext": "UCPPF",
+      "context20": "DINTRACTCOMEDUEDATEZ",
+      "status": "Literal unedited fragment; no unique selector or solution established."
+    }
+  ],
+  "roundtrips": [
+    {
+      "key": "BLOOM",
+      "exact_source_letter_roundtrip": true
+    },
+    {
+      "key": "BLPNM",
+      "exact_source_letter_roundtrip": true
+    },
+    {
+      "key": "BLNPM",
+      "exact_source_letter_roundtrip": true
+    }
+  ],
+  "finite_joyce_roster": [
+    "BLOOM",
+    "LEOPOLD",
+    "MOLLY",
+    "STEPHEN",
+    "DEDALUS",
+    "MULLIGAN",
+    "HAINES",
+    "DEASY",
+    "DIGNAM",
+    "BOYLAN",
+    "MILLY",
+    "LENEHAN",
+    "BLAZES"
+  ],
+  "joyce_roster_hits": [],
+  "roster_caution": "Only the listed names and phase-zero keys; not a literary corpus search or significance test.",
+  "native_fragment": {
+    "seed": 4300,
+    "raw_word_offset": 653,
+    "letter_offset": 2021,
+    "ciphertext": "PWRPSYVPMBAZZI",
+    "decoded_literal": "SHAREISPAGETTI",
+    "status": "Post-discovery parameters; offset653 unexplained; no spelling repair applied."
+  },
+  "interpretation_gap": "No rule yet establishes the recovered population or selects its outlier uniquely."
+}

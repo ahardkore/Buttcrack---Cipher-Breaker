@@ -127,13 +127,14 @@ jobs:
       - name: Self-test (quick)
         run: |
           set -o pipefail
-          timeout -k 15 900 python -u -m buttcrack selftest --quick 2>&1 | tee selftest.log
-          code=${PIPESTATUS[0]}
-          if [ "$code" -ne 0 ]; then
+          # Handle the pipeline failure explicitly: GitHub runs bash with -e,
+          # which otherwise exits before the diagnostic annotations are emitted.
+          timeout -k 15 900 python -u -m buttcrack selftest --quick 2>&1 | tee selftest.log || {
+            code=$?
             echo "::error title=self-test (quick) failed with exit $code::$(tail -n 6 selftest.log | tr '\n' ' ')"
             tail -n 30 selftest.log | sed 's/^/::notice::/'
             exit "$code"
-          fi
+          }
 
       - name: CLI smoke test
         run: |

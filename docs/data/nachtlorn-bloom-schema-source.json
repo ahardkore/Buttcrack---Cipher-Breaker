@@ -1,0 +1,10 @@
+{
+  "repository": "joseph-fox/python-bloomfilter",
+  "path": "pybloom_live/pybloom.py",
+  "blob_sha": "e576dda8da2a0810f72c27ea8587dcbad70871c0",
+  "source_sha256": "d50a76deef54d558786e9de324ea00eb9201452eed88d7248ad0322eb39653ab",
+  "bytes": 36723,
+  "blob_api_url": "https://api.github.com/repos/joseph-fox/python-bloomfilter/git/blobs/e576dda8da2a0810f72c27ea8587dcbad70871c0",
+  "reference_only": "Public implementation inspected as a schema reference; not evidence of which software the puzzle author used.",
+  "important_size_check": "struct.calcsize(\"<idQd\") is 28, notwithstanding a 32-byte header comment in the reference."
+}

@@ -1,0 +1,562 @@
+{
+  "hypothesis": "R9",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "book_passage": "A bowl of white china had stood beside her deathbed holding the green sluggish bile which she had torn up from her rotting liver by fits of loud groaning vomiting.",
+  "candidate_reports": [
+    {
+      "derivation": {
+        "replacement": "green",
+        "before_unit_shifts": "GLOOM",
+        "derived_key": "GLPNM",
+        "operations": [
+          {
+            "poem_line": 3,
+            "initial": "O",
+            "delta": 1,
+            "result": "P"
+          },
+          {
+            "poem_line": 4,
+            "initial": "O",
+            "delta": -1,
+            "result": "N"
+          }
+        ],
+        "unchanged_initial_positions": [
+          2,
+          5
+        ],
+        "caution": "These are derived-key instructions under a hypothesis, not literal corrected acrostics or confirmed author directions."
+      },
+      "key": "GLPNM",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "GLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "GLPNM",
+          "glpnm",
+          "Glpnm"
+        ],
+        "key_specification": [
+          {
+            "password": "GLPNM",
+            "derivation": "sha256"
+          },
+          {
+            "password": "GLPNM",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "GLPNM",
+            "derivation": "md5"
+          },
+          {
+            "password": "GLPNM",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "GLPNM",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "glpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "glpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "glpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "glpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "glpnm",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "Glpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "Glpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "Glpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "Glpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "Glpnm",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R9 alternatives. No routes, further key edits, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    },
+    {
+      "derivation": {
+        "replacement": "white",
+        "before_unit_shifts": "WLOOM",
+        "derived_key": "WLPNM",
+        "operations": [
+          {
+            "poem_line": 3,
+            "initial": "O",
+            "delta": 1,
+            "result": "P"
+          },
+          {
+            "poem_line": 4,
+            "initial": "O",
+            "delta": -1,
+            "result": "N"
+          }
+        ],
+        "unchanged_initial_positions": [
+          2,
+          5
+        ],
+        "caution": "These are derived-key instructions under a hypothesis, not literal corrected acrostics or confirmed author directions."
+      },
+      "key": "WLPNM",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "WLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "WLPNM",
+          "wlpnm",
+          "Wlpnm"
+        ],
+        "key_specification": [
+          {
+            "password": "WLPNM",
+            "derivation": "sha256"
+          },
+          {
+            "password": "WLPNM",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "WLPNM",
+            "derivation": "md5"
+          },
+          {
+            "password": "WLPNM",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "WLPNM",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "wlpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "wlpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "wlpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "wlpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "wlpnm",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "Wlpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "Wlpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "Wlpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "Wlpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "Wlpnm",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R9 alternatives. No routes, further key edits, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    },
+    {
+      "derivation": {
+        "replacement": null,
+        "before_unit_shifts": "BLOOM",
+        "derived_key": "BLPNM",
+        "operations": [
+          {
+            "poem_line": 3,
+            "initial": "O",
+            "delta": 1,
+            "result": "P"
+          },
+          {
+            "poem_line": 4,
+            "initial": "O",
+            "delta": -1,
+            "result": "N"
+          }
+        ],
+        "unchanged_initial_positions": [
+          1,
+          2,
+          5
+        ],
+        "caution": "These are derived-key instructions under a hypothesis, not literal corrected acrostics or confirmed author directions."
+      },
+      "key": "BLPNM",
+      "source_letters": 8736,
+      "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+      "literal_key_test": {
+        "letter_paths": 6,
+        "representation_configurations": 192,
+        "unique_buffers": 192,
+        "roundtrips": [
+          {
+            "drop_final_i": false,
+            "operation": "minus",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "plus",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": false,
+            "operation": "beaufort",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "minus",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "plus",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          },
+          {
+            "drop_final_i": true,
+            "operation": "beaufort",
+            "key": "BLPNM",
+            "phase": 0,
+            "exact_letter_roundtrip": true
+          }
+        ],
+        "accepted_records": []
+      },
+      "standalone_password_test": {
+        "status": "tested",
+        "crypto_version": "3.23.0",
+        "password_cases": [
+          "BLPNM",
+          "blpnm",
+          "Blpnm"
+        ],
+        "key_specification": [
+          {
+            "password": "BLPNM",
+            "derivation": "sha256"
+          },
+          {
+            "password": "BLPNM",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "BLPNM",
+            "derivation": "md5"
+          },
+          {
+            "password": "BLPNM",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "BLPNM",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "blpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "blpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "blpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "blpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "blpnm",
+            "derivation": "nul-pad32"
+          },
+          {
+            "password": "Blpnm",
+            "derivation": "sha256"
+          },
+          {
+            "password": "Blpnm",
+            "derivation": "sha256-first16"
+          },
+          {
+            "password": "Blpnm",
+            "derivation": "md5"
+          },
+          {
+            "password": "Blpnm",
+            "derivation": "nul-pad16"
+          },
+          {
+            "password": "Blpnm",
+            "derivation": "nul-pad32"
+          }
+        ],
+        "modes": [
+          [
+            "AES-GCM",
+            12
+          ],
+          [
+            "AES-GCM",
+            16
+          ],
+          [
+            "AES-EAX",
+            16
+          ],
+          [
+            "ChaCha20-Poly1305",
+            12
+          ],
+          [
+            "ChaCha20-Poly1305",
+            24
+          ]
+        ],
+        "tag_bytes": 16,
+        "associated_data": "empty",
+        "representation_configurations": 64,
+        "unique_buffers": 64,
+        "authentication_attempts": 7296,
+        "attempts_by_mode": {
+          "AES-GCM": 3840,
+          "AES-EAX": 1920,
+          "ChaCha20-Poly1305": 1536
+        },
+        "accepted": []
+      },
+      "caution": "Only registered R9 alternatives. No routes, further key edits, phase search, word targets or stacked encryption. Neither negative tests nor exact roundtrips establish the right reading."
+    }
+  ],
+  "caution": "Alternative derived keys, never stacked encryptions. Historical BLPNM is a mechanical baseline, not a reason to accept old word fragments. No recovered population or outlier follows from key derivation alone."
+}

@@ -1,0 +1,2100 @@
+{
+  "status": "Binary-envelope construction test, not an assumed solution.",
+  "mode": "periodic-then-route",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "path_configurations": 2813,
+  "unique_letter_variants": 2522,
+  "valid_binary_decodings": 60528,
+  "invalid_packed_decodings": 60528,
+  "duplicate_binary_decodings": 0,
+  "unique_binary_buffers": 60528,
+  "wrapped_compression_attempts": 338388,
+  "verified_object_count": 0,
+  "zlib_dictionary_requests": 173005,
+  "preset_dictionary_id_matches": 0,
+  "verified_records": [],
+  "verified_record_limit": 32,
+  "magic_headers_recorded": 57,
+  "header_examples": [
+    {
+      "periodic": {
+        "kind": "identity"
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "A1-bijective",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "423c6eba6be8a0af23eca9f30981096e8bfde975c05337f467aa7a7bcfe352df",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3035
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "BLOOM"
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "5d6cd80443fa8995acf287621b5ca446e6348a39eaf0cff4a80ee77716f2fff6",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4637
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 7
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "0c4693c4f171fe8fb337fa410b1c844687b77340f5ff17dd674cfb63251ba36c",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1353
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "e488eeeadb7b765b3683ff00b35b6f1311a7443a8c7a378338875621b7f2c0fb",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 2170
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "I0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "bac7fcdb363fa53b169603721deae91d8ac9f4c2e9538b99a4616273a839edd2",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1873
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "5e08fbfae04808f6df7a0f551ec57d6a345d2b11f97acd0b5368cf2eac8e71e7",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4103
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 8
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "0990d1bb6266e792f6d5ca8b45fc53cec500158df9555b9ae49291d2c7616193",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1846
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "identity"
+      },
+      "alphabet": "reverse",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "a6970925fd2528ca7d34c73644a25a52a6580983d4ae6ebf299b3ae93f1211cb",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 3188
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 7
+      },
+      "alphabet": "I0",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "d1547fa5a79980d5d0bad4bea008a33055b7e893b9a003d6d1d6600166260f37",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1050
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "d10ab3e1edb3ddd5440fa62088767b42dac3f3eae44f57b0210e7e5146de9f62",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4450
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "51c1f827a1e757b906ab46deeb900be0e8d0ef6decde2912e9ec8f28e4b676d1",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 58
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 3
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "69d8074b381cab1474a99923239e37f9c6cac76ce784a7b3aec82b1e8b6b4f31",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 2951
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "reverse",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "88d1bcf1ca759d754046756a668e8bc05740b8cae41c766d1a13f0370b1c265c",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3160
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "f1a61630dcd0822d99a01a074ec0b2dcf7dedf35c8ab4e9b366f721ee9183c7a",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 2252
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "A1-bijective",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "8b7c9fe1b778ce4c019082108af19276d04891f2875a644e1c1a1babe2034be2",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3761
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 4
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "f427c4eae801dc086b519aae34337efde256fd7286395d451c3e45b52bfc4c9c",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 925
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "3f167452f0ec841dd5390ca6daf810cbb42e75871c37f111ad4bb4e43c5ee2b8",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4343
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "reverse"
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "67a3507cac374af4bd684adc80ee2f13a8a4c3a96676693765649c4a4e0cc0ba",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4610
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "reverse",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "ad7ff80c35bd7c846263d9bdebcb2f60a38e34be04871c6ec3cb1398acd07fdc",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3070
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "0a40acb67d2635beabd3f96f415d9616edbf655a10c2c4c0f86d6b762973879c",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 3180
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "96f4cc66846ba02ca7a40f2b1bd7b2fbc4d3f7c9dd6a897ff3207d1282a9c7ad",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4872
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "BLOOM"
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "e51fb1f1f40e492a3ba230ad90d3ea5bbded6ad68291d87d12e5233378c9a06b",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4637
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "6d756564630ba8253a2a4f1372ac4933723a78f1399676dafdf7ffc525b5c8a2",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1244
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "BLOOM"
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "fce477d7b18cac15dbe8a992ee49ec248de4393b939d2d65f0d5e9ce04cdcf74",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1579
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 6
+      },
+      "alphabet": "A0",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "c263c6963b2c8786ad914d2bcac357bbd8cfce1c74068dbd91bf0fa16d3dee27",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 3674
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      "route": {
+        "kind": "reverse"
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "9b2f5cadf3d4bd9f60d766b454652a9ad8e27bc6c127e39767532403d125e336",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4689
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "I0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "9a882c81b694c38aa2698c123f071753c596da767b2033c879887bcf8f215101",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4681
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "BLOOM"
+      },
+      "alphabet": "I0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "3c6273c86a8426560f82dea28944bca0eb56f30064c44d8f3ab75f6c792b26fb",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1820
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 4
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "55223985fde14aac82a0b8ecc3c1dbbff74e9e0b7595a5dcb5b38a617ab746b1",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 4669
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "BLPNM"
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "531476cab0ee4d4dfb8b92499b1a58e97337ff1a878d340b5f6d111fea06d9de",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 2129
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 8
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "de036f76a00cd7d368f9b1f6034497b426be56545589f55ace52026ffb700aaa",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1594
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 2
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "7808b4dd8d482bdfc5aaebd553cfe915c90f7472643bf1e9974d97c93eba9a34",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 321
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "reverse",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "30dcade096e56c0429a618ee77e35aceedebb5e96a842d18a6cde086cc45604e",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1062
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "227a9b19c7925980a3fc957b74fbdadd808f662229ea9c0803d3463b18404ad2",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 2757
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 4
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "f356696475c29c07e7583d8f69049027c62d24042f5719389c4061078145c5c7",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1025
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "59bf5d3c3d50824d66d71663303fec95ad40b55d210c7e621d5ec1a95192dbd9",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 2624
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "5cadf70fa8df519e2abfdd938b2ac7ad7f881cad58c8692fd3bbd39004e88c2e",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3876
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "e4538720d70b9f05b260ed2dc4ca9bb649350cb428a1d3b21fbaeabd9723f002",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1061
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "d992754aaa4b1415aaa550347131a7b75d0dbfd3f3badf33bad2a8c14b1a640f",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 2573
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 2
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "67aee41677d60d2329f5622a9a44ae2a2d99c5a2d6b0bbb0ac2c057ea752be24",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1397
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 4
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "ab854f2c3aa8e1e65152f58e937e690cc1052cbc06d8343ab2495e863a4761d0",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 3919
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "8baabc404e23e475b6b44b0c2e4ce2ff2a59bf2d10b075026ede4aaa3eaa0e0e",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4203
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      "route": {
+        "kind": "myszkowski",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "841bd3475b791c2726702982087bd9dd35f71eafef1029649794477e9ccd1fb8",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 4203
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "1f88fa052a157d87ebc6e48fe6f6031d81cb590addaa5744e3db469a2f81417c",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 879
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "0271bc3732d3f05dbfbe6cbb392e3f525781f9f5410a97e377f601fb06c49017",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 311
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      "alphabet": "A0",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "big",
+      "decoded_bytes": 5133,
+      "binary_sha256": "88089f90c58e6e13049cf57300987d04f42d3ba72c7c044af716d159cd461a6c",
+      "headers": [
+        {
+          "format": "jpeg",
+          "offset": 382
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      "alphabet": "A0",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "d62799ba225b87c766a6b7962b1f903094f91919dcb3ffcf9d35e82197e1ae5f",
+      "headers": [
+        {
+          "format": "jpeg",
+          "offset": 4748
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "3b80b98140dc82a2085de49b69b5d6a622e0a788e11e48bbcfc7b0cd0953b576",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 970
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "I0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "ad970cf026ed2efe436096b502c380c5b3f99dd2b92073306ff9d83dd75a0121",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1282
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "BLPNM"
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "7e7829dcd43f4021b8cb1319fce698c753603248af8bc527f2125bffa65b2b51",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 1501
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 5
+      },
+      "alphabet": "A0",
+      "block_width": null,
+      "byte_width": null,
+      "byteorder": "little",
+      "decoded_bytes": 5133,
+      "binary_sha256": "960baa9953e918d7b10d98e56d256170efbe93665ecde31c5099c26ccec142a0",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 2971
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 6
+      },
+      "alphabet": "keyed-NACHTLORN",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "022e757452fa79d6b46babf059954d047e38df9a3a970e46565e39de33da1054",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3151
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "little",
+      "decoded_bytes": 5242,
+      "binary_sha256": "147475a64c03dd91fea042db891cda082eef308396f80b2a8d60a66aabe629c3",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 2178
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 4
+      },
+      "alphabet": "A0",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "e6942bbc131614ac8778d302d0bc8e84c2b5fbae3964c5a2813109aaf3d21226",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1693
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "rail",
+        "rails": 5
+      },
+      "alphabet": "A1-bijective",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "f602144446079094e9c62be8903933829b11a418e159164fe1c1ed868c97df42",
+      "headers": [
+        {
+          "format": "bzip2",
+          "offset": 3882
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      "alphabet": "reverse",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "ce0bd8acf5f68f22ba963c3dc7659f2679292b0d32c94f046671e459814c0ce8",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 3014
+        }
+      ]
+    },
+    {
+      "periodic": {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      "route": {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      "alphabet": "keyed-BLOOM",
+      "block_width": 5,
+      "byte_width": 3,
+      "byteorder": "big",
+      "decoded_bytes": 5242,
+      "binary_sha256": "db625b5676a2ac990bf145c40113d135752eef0d054ccef4114d3b779bda9ab8",
+      "headers": [
+        {
+          "format": "gzip",
+          "offset": 1823
+        }
+      ]
+    }
+  ],
+  "header_record_limit": 1024,
+  "specification": {
+    "periodic_operations": [
+      {
+        "kind": "identity"
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLOOM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLPNM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "BLNPM",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 0
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 1
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 2
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 3
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 4
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 5
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 6
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 7
+      },
+      {
+        "kind": "minus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "plus",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "beaufort",
+        "key": "NACHTLORN",
+        "phase": 8
+      },
+      {
+        "kind": "porta",
+        "key": "NACHTLORN",
+        "phase": 8
+      }
+    ],
+    "routes": [
+      {
+        "kind": "identity"
+      },
+      {
+        "kind": "reverse"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLOOM"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLPNM"
+      },
+      {
+        "kind": "columnar",
+        "key": "BLNPM"
+      },
+      {
+        "kind": "columnar",
+        "key": "NACHTLORN"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLOOM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLPNM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "BLNPM"
+      },
+      {
+        "kind": "myszkowski",
+        "key": "NACHTLORN"
+      },
+      {
+        "kind": "rail",
+        "rails": 2
+      },
+      {
+        "kind": "rail",
+        "rails": 3
+      },
+      {
+        "kind": "rail",
+        "rails": 4
+      },
+      {
+        "kind": "rail",
+        "rails": 5
+      },
+      {
+        "kind": "rail",
+        "rails": 6
+      },
+      {
+        "kind": "rail",
+        "rails": 7
+      },
+      {
+        "kind": "rail",
+        "rails": 8
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 1,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 5,
+        "indent_draws": 146,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 0,
+        "inverse": true
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": false
+      },
+      {
+        "kind": "shuffle",
+        "unit": 60,
+        "indent_draws": 146,
+        "inverse": true
+      }
+    ],
+    "alphabets": [
+      {
+        "name": "A0",
+        "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "bias": 0
+      },
+      {
+        "name": "A1-bijective",
+        "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "bias": 1
+      },
+      {
+        "name": "I0",
+        "alphabet": "IJKLMNOPQRSTUVWXYZABCDEFGH",
+        "bias": 0
+      },
+      {
+        "name": "reverse",
+        "alphabet": "ZYXWVUTSRQPONMLKJIHGFEDCBA",
+        "bias": 0
+      },
+      {
+        "name": "keyed-BLOOM",
+        "alphabet": "BLOMACDEFGHIJKNPQRSTUVWXYZ",
+        "bias": 0
+      },
+      {
+        "name": "keyed-NACHTLORN",
+        "alphabet": "NACHTLORBDEFGIJKMPQSUVWXYZ",
+        "bias": 0
+      }
+    ],
+    "packings": [
+      [
+        null,
+        null
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        14,
+        8
+      ]
+    ],
+    "byteorders": [
+      "big",
+      "little"
+    ],
+    "compression_output_limit": 1048576,
+    "lzma_memory_limit": 67108864,
+    "pickle_policy": "static syntax only; never load or execute",
+    "archive_policy": "bounded reads only; never extract",
+    "preset_dictionary_ids": [
+      "4676cc5d",
+      "94cab4ce",
+      "3390d06c",
+      "f38efa17"
+    ]
+  },
+  "caution": "Tests only these letter transforms and binary wrappers; magic headers alone are not verified objects.",
+  "dictionary_variants": [
+    {
+      "name": "original-utf8",
+      "bytes": 1580890,
+      "adler32": "4676cc5d",
+      "sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac"
+    },
+    {
+      "name": "original-last32768",
+      "bytes": 32768,
+      "adler32": "94cab4ce",
+      "sha256": "66bed264b429296cba0b1b57d48ce01a8292494038a1ef0177c477bfc775f81b"
+    },
+    {
+      "name": "ascii-letters-upper",
+      "bytes": 1197205,
+      "adler32": "3390d06c",
+      "sha256": "9d7e5858ff9368aacbaad74ddfca9c8e92505c98399fc156848c94999e4a7ead"
+    },
+    {
+      "name": "ascii-letters-upper-last32768",
+      "bytes": 32768,
+      "adler32": "f38efa17",
+      "sha256": "b9f2f27c9fe4d5695ec3a6e8c115f78bbf2e7da9c259d1dd05691cb6bd7e6202"
+    }
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "elapsed_seconds": 76.89717392800003
+}

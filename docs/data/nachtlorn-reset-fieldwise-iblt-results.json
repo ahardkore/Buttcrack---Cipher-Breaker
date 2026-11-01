@@ -1,0 +1,613 @@
+{
+  "hypothesis": "R8",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "parameters": {
+    "fields": [
+      [
+        "count",
+        7,
+        32
+      ],
+      [
+        "key",
+        14,
+        64
+      ],
+      [
+        "checksum",
+        7,
+        32
+      ]
+    ],
+    "layouts": [
+      "interleaved",
+      "field-major"
+    ],
+    "digit_convention": "A0",
+    "letter_order": "most-significant first",
+    "signed_count": "two's complement32",
+    "max_absolute_count": 1000000,
+    "hash_partitions": 4,
+    "checksum_seed": 11,
+    "values_bytes": 0
+  },
+  "configurations": 40,
+  "records": [
+    {
+      "drop_final_i": false,
+      "operation": "identity",
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 145,
+        "key": 213,
+        "checksum": 154
+      },
+      "out_of_bound_signed_counts": 167,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "identity",
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 152,
+        "key": 219,
+        "checksum": 140
+      },
+      "out_of_bound_signed_counts": 160,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 144,
+        "key": 224,
+        "checksum": 141
+      },
+      "out_of_bound_signed_counts": 168,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 136,
+        "key": 235,
+        "checksum": 155
+      },
+      "out_of_bound_signed_counts": 176,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 145,
+        "key": 228,
+        "checksum": 136
+      },
+      "out_of_bound_signed_counts": 167,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 145,
+        "key": 226,
+        "checksum": 162
+      },
+      "out_of_bound_signed_counts": 167,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 150,
+        "key": 217,
+        "checksum": 152
+      },
+      "out_of_bound_signed_counts": 162,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 153,
+        "key": 216,
+        "checksum": 145
+      },
+      "out_of_bound_signed_counts": 159,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 148,
+        "key": 231,
+        "checksum": 145
+      },
+      "out_of_bound_signed_counts": 164,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 143,
+        "key": 225,
+        "checksum": 151
+      },
+      "out_of_bound_signed_counts": 169,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 145,
+        "key": 228,
+        "checksum": 134
+      },
+      "out_of_bound_signed_counts": 167,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 139,
+        "key": 221,
+        "checksum": 162
+      },
+      "out_of_bound_signed_counts": 173,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 147,
+        "key": 219,
+        "checksum": 150
+      },
+      "out_of_bound_signed_counts": 165,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 152,
+        "key": 221,
+        "checksum": 150
+      },
+      "out_of_bound_signed_counts": 160,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 146,
+        "key": 225,
+        "checksum": 143
+      },
+      "out_of_bound_signed_counts": 166,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "minus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 128,
+        "key": 234,
+        "checksum": 161
+      },
+      "out_of_bound_signed_counts": 184,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 146,
+        "key": 240,
+        "checksum": 130
+      },
+      "out_of_bound_signed_counts": 166,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "plus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 151,
+        "key": 220,
+        "checksum": 156
+      },
+      "out_of_bound_signed_counts": 161,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 146,
+        "key": 215,
+        "checksum": 152
+      },
+      "out_of_bound_signed_counts": 166,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": false,
+      "operation": "beaufort",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "field_constraints_failed",
+      "cells": 312,
+      "unsigned_overflow_fields": {
+        "count": 161,
+        "key": 216,
+        "checksum": 141
+      },
+      "out_of_bound_signed_counts": 151,
+      "exact_numeric_letter_roundtrip": true
+    },
+    {
+      "drop_final_i": true,
+      "operation": "identity",
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "identity",
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "BLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "GLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "minus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "plus",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "interleaved",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    },
+    {
+      "drop_final_i": true,
+      "operation": "beaufort",
+      "key": "WLOOM",
+      "phase": 0,
+      "exact_letter_roundtrip": true,
+      "layout": "field-major",
+      "status": "incompatible_dimensions",
+      "letters": 8735,
+      "complete_cells": 311,
+      "remainder_letters": 27
+    }
+  ],
+  "validated_tables": [],
+  "caution": "Hypothetical wire format, not an author-attributed or reference serializer. Divisibility and roundtrips alone do not validate plaintext. Numeric keys still require independent interpretation and an outlier rule.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}
