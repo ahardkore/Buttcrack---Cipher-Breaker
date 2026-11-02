@@ -1,0 +1,1829 @@
+{
+  "status": "Exact raw big-endian numeral/header compatibility; no packet or answer recovered.",
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "source_letters": 8736,
+  "alphabet_permutations_per_model": 403291461126605635584000000,
+  "headers": {
+    "gzip": [
+      "1f8b0800",
+      "1f8b0801",
+      "1f8b0802",
+      "1f8b0803",
+      "1f8b0804",
+      "1f8b0805",
+      "1f8b0806",
+      "1f8b0807",
+      "1f8b0808",
+      "1f8b0809",
+      "1f8b080a",
+      "1f8b080b",
+      "1f8b080c",
+      "1f8b080d",
+      "1f8b080e",
+      "1f8b080f",
+      "1f8b0810",
+      "1f8b0811",
+      "1f8b0812",
+      "1f8b0813",
+      "1f8b0814",
+      "1f8b0815",
+      "1f8b0816",
+      "1f8b0817",
+      "1f8b0818",
+      "1f8b0819",
+      "1f8b081a",
+      "1f8b081b",
+      "1f8b081c",
+      "1f8b081d",
+      "1f8b081e",
+      "1f8b081f"
+    ],
+    "zlib": [
+      "081d",
+      "083c",
+      "085b",
+      "087a",
+      "0899",
+      "08b8",
+      "08d7",
+      "08f6",
+      "1819",
+      "1838",
+      "1857",
+      "1876",
+      "1895",
+      "18b4",
+      "18d3",
+      "18f2",
+      "2815",
+      "2834",
+      "2853",
+      "2872",
+      "2891",
+      "28b0",
+      "28cf",
+      "28ee",
+      "3811",
+      "3830",
+      "384f",
+      "386e",
+      "388d",
+      "38ac",
+      "38cb",
+      "38ea",
+      "480d",
+      "482c",
+      "484b",
+      "486a",
+      "4889",
+      "48a8",
+      "48c7",
+      "48e6",
+      "5809",
+      "5828",
+      "5847",
+      "5866",
+      "5885",
+      "58a4",
+      "58c3",
+      "58e2",
+      "6805",
+      "6824",
+      "6843",
+      "6862",
+      "6881",
+      "68a0",
+      "68bf",
+      "68de",
+      "68fd",
+      "7801",
+      "7820",
+      "783f",
+      "785e",
+      "787d",
+      "789c",
+      "78bb",
+      "78da",
+      "78f9"
+    ],
+    "bzip2": [
+      "425a6831314159265359",
+      "425a6831177245385090",
+      "425a6832314159265359",
+      "425a6832177245385090",
+      "425a6833314159265359",
+      "425a6833177245385090",
+      "425a6834314159265359",
+      "425a6834177245385090",
+      "425a6835314159265359",
+      "425a6835177245385090",
+      "425a6836314159265359",
+      "425a6836177245385090",
+      "425a6837314159265359",
+      "425a6837177245385090",
+      "425a6838314159265359",
+      "425a6838177245385090",
+      "425a6839314159265359",
+      "425a6839177245385090"
+    ],
+    "xz": [
+      "fd377a585a00"
+    ]
+  },
+  "cases": [
+    {
+      "drop_final_i": false,
+      "retained_letters": 8736,
+      "bias": 0,
+      "feasible_minimal_byte_lengths": [
+        5132,
+        5133
+      ],
+      "formats": [
+        {
+          "format": "gzip",
+          "header_byte_length_trials": 64,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 256,
+          "max_prefix_letters_examined": 5
+        },
+        {
+          "format": "zlib",
+          "header_byte_length_trials": 132,
+          "alphabet_mappings": 810167137515394154496000,
+          "canonical_mappings": 808269883700933541888000,
+          "positive_header_intervals": [
+            {
+              "bytes": 5132,
+              "header_hex": "3811",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "3830",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "384f",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "386e",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "388d",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38cb",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38ea",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "480d",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "484b",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "486a",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "4889",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48a8",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48c7",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48e6",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5828",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5885",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58a4",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58c3",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58e2",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7801",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7820",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "783f",
+              "alphabet_mappings": 77852864261652480000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "785e",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "787d",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "789c",
+              "alphabet_mappings": 82308916360839168000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78bb",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78da",
+              "alphabet_mappings": 51090942171709440000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78f9",
+              "alphabet_mappings": 102181884343418880000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "081d",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "083c",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "085b",
+              "alphabet_mappings": 13692372502018129920000,
+              "canonical_mappings": 13692372502018129920000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "087a",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "0899",
+              "alphabet_mappings": 14765282287624028160000,
+              "canonical_mappings": 14765282287624028160000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08b8",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08d7",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08f6",
+              "alphabet_mappings": 10818859135413288960000,
+              "canonical_mappings": 10818859135413288960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1819",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1838",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1857",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1876",
+              "alphabet_mappings": 13590190617674711040000,
+              "canonical_mappings": 13590190617674711040000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1895",
+              "alphabet_mappings": 357636595201966080000,
+              "canonical_mappings": 357636595201966080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18b4",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18d3",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18f2",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2815",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2834",
+              "alphabet_mappings": 14254372865906933760000,
+              "canonical_mappings": 14254372865906933760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2872",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2891",
+              "alphabet_mappings": 13079281195957616640000,
+              "canonical_mappings": 13079281195957616640000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28b0",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28cf",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28ee",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "3811",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "3830",
+              "alphabet_mappings": 12823826485099069440000,
+              "canonical_mappings": 12823826485099069440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "384f",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "386e",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "388d",
+              "alphabet_mappings": 15122918882825994240000,
+              "canonical_mappings": 15122918882825994240000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38ac",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38cb",
+              "alphabet_mappings": 11086734451260948480000,
+              "canonical_mappings": 11086734451260948480000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38ea",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "480d",
+              "alphabet_mappings": 13539099675503001600000,
+              "canonical_mappings": 13539099675503001600000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "482c",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "484b",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "486a",
+              "alphabet_mappings": 11904189526008299520000,
+              "canonical_mappings": 11904189526008299520000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "4889",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48a8",
+              "alphabet_mappings": 12978559052819103744000,
+              "canonical_mappings": 12978559052819103744000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48c7",
+              "alphabet_mappings": 15174009824997703680000,
+              "canonical_mappings": 15174009824997703680000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48e6",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5809",
+              "alphabet_mappings": 12926008369442488320000,
+              "canonical_mappings": 12926008369442488320000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5828",
+              "alphabet_mappings": 6641822482322227200000,
+              "canonical_mappings": 6641822482322227200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5847",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5885",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "58a4",
+              "alphabet_mappings": 13079281195957616640000,
+              "canonical_mappings": 13079281195957616640000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "58c3",
+              "alphabet_mappings": 459818479545384960000,
+              "canonical_mappings": 459818479545384960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "58e2",
+              "alphabet_mappings": 13539099675503001600000,
+              "canonical_mappings": 13539099675503001600000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6805",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6824",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6843",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6862",
+              "alphabet_mappings": 15122918882825994240000,
+              "canonical_mappings": 15122918882825994240000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6881",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68a0",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68bf",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68de",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68fd",
+              "alphabet_mappings": 3780729720706498560000,
+              "canonical_mappings": 3780729720706498560000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "7801",
+              "alphabet_mappings": 14816373229795737600000,
+              "canonical_mappings": 14816373229795737600000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "7820",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "783f",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "785e",
+              "alphabet_mappings": 7765823210099834880000,
+              "canonical_mappings": 7765823210099834880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "787d",
+              "alphabet_mappings": 13232554022472744960000,
+              "canonical_mappings": 13232554022472744960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "789c",
+              "alphabet_mappings": 14458736634593771520000,
+              "canonical_mappings": 14458736634593771520000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78bb",
+              "alphabet_mappings": 14174330389837922304000,
+              "canonical_mappings": 14174330389837922304000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78da",
+              "alphabet_mappings": 15276191709341122560000,
+              "canonical_mappings": 15276191709341122560000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78f9",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            }
+          ],
+          "witness": {
+            "digit_alphabet": "VXBGCFDEHIJKLMNOPQRSTAUWYZ",
+            "bytes": 5132,
+            "prefix_hex": "381189f597a1e7ff65525abfcd054b9f",
+            "binary_sha256": "66556862dbf77e7a307d6b2b3f90ee5c88859d38c071be3f3f991f457c1ec912",
+            "canonical_numeral": false,
+            "scope": "Arbitrary completion certifies a header only; not a recovered packet or key."
+          },
+          "search_nodes": 3095,
+          "max_prefix_letters_examined": 9
+        },
+        {
+          "format": "bzip2",
+          "header_byte_length_trials": 36,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 162,
+          "max_prefix_letters_examined": 5
+        },
+        {
+          "format": "xz",
+          "header_byte_length_trials": 2,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 6,
+          "max_prefix_letters_examined": 5
+        }
+      ]
+    },
+    {
+      "drop_final_i": false,
+      "retained_letters": 8736,
+      "bias": 1,
+      "feasible_minimal_byte_lengths": [
+        5133
+      ],
+      "formats": [
+        {
+          "format": "gzip",
+          "header_byte_length_trials": 32,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 192,
+          "max_prefix_letters_examined": 5
+        },
+        {
+          "format": "zlib",
+          "header_byte_length_trials": 66,
+          "alphabet_mappings": 806029552289077788672000,
+          "canonical_mappings": 806029552289077788672000,
+          "positive_header_intervals": [
+            {
+              "bytes": 5133,
+              "header_hex": "081d",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "083c",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "085b",
+              "alphabet_mappings": 13641281559846420480000,
+              "canonical_mappings": 13641281559846420480000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "087a",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "0899",
+              "alphabet_mappings": 14816373229795737600000,
+              "canonical_mappings": 14816373229795737600000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08b8",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08d7",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "08f6",
+              "alphabet_mappings": 11945420812673187840000,
+              "canonical_mappings": 11945420812673187840000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1819",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1838",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1857",
+              "alphabet_mappings": 11904189526008299520000,
+              "canonical_mappings": 11904189526008299520000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1876",
+              "alphabet_mappings": 13539099675503001600000,
+              "canonical_mappings": 13539099675503001600000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "1895",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18b4",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18d3",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "18f2",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2815",
+              "alphabet_mappings": 14152190981563514880000,
+              "canonical_mappings": 14152190981563514880000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2834",
+              "alphabet_mappings": 14203281923735224320000,
+              "canonical_mappings": 14203281923735224320000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2872",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "2891",
+              "alphabet_mappings": 12006371410351718400000,
+              "canonical_mappings": 12006371410351718400000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28b0",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28cf",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "28ee",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "3811",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "3830",
+              "alphabet_mappings": 12772735542927360000000,
+              "canonical_mappings": 12772735542927360000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "384f",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "386e",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "388d",
+              "alphabet_mappings": 15122918882825994240000,
+              "canonical_mappings": 15122918882825994240000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38ac",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38cb",
+              "alphabet_mappings": 9911642781311631360000,
+              "canonical_mappings": 9911642781311631360000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "38ea",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "480d",
+              "alphabet_mappings": 13488008733331292160000,
+              "canonical_mappings": 13488008733331292160000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "482c",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "484b",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "486a",
+              "alphabet_mappings": 11904189526008299520000,
+              "canonical_mappings": 11904189526008299520000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "4889",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48a8",
+              "alphabet_mappings": 12981113599927689216000,
+              "canonical_mappings": 12981113599927689216000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48c7",
+              "alphabet_mappings": 15174009824997703680000,
+              "canonical_mappings": 15174009824997703680000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "48e6",
+              "alphabet_mappings": 14101100039391805440000,
+              "canonical_mappings": 14101100039391805440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5809",
+              "alphabet_mappings": 12926008369442488320000,
+              "canonical_mappings": 12926008369442488320000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5828",
+              "alphabet_mappings": 5466730812372910080000,
+              "canonical_mappings": 5466730812372910080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5847",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5866",
+              "alphabet_mappings": 510909421717094400000,
+              "canonical_mappings": 510909421717094400000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "5885",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "58a4",
+              "alphabet_mappings": 13079281195957616640000,
+              "canonical_mappings": 13079281195957616640000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "58e2",
+              "alphabet_mappings": 13590190617674711040000,
+              "canonical_mappings": 13590190617674711040000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6805",
+              "alphabet_mappings": 11955280468180008960000,
+              "canonical_mappings": 11955280468180008960000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6824",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6843",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6862",
+              "alphabet_mappings": 15122918882825994240000,
+              "canonical_mappings": 15122918882825994240000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "6881",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68a0",
+              "alphabet_mappings": 14050009097220096000000,
+              "canonical_mappings": 14050009097220096000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68bf",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68de",
+              "alphabet_mappings": 12977099311614197760000,
+              "canonical_mappings": 12977099311614197760000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "68fd",
+              "alphabet_mappings": 2605638050757181440000,
+              "canonical_mappings": 2605638050757181440000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "7801",
+              "alphabet_mappings": 14867464171967447040000,
+              "canonical_mappings": 14867464171967447040000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "7820",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "783f",
+              "alphabet_mappings": 13028190253785907200000,
+              "canonical_mappings": 13028190253785907200000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "785e",
+              "alphabet_mappings": 8940914880049152000000,
+              "canonical_mappings": 8940914880049152000000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "787d",
+              "alphabet_mappings": 13181463080301035520000,
+              "canonical_mappings": 13181463080301035520000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "789c",
+              "alphabet_mappings": 14407645692422062080000,
+              "canonical_mappings": 14407645692422062080000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78bb",
+              "alphabet_mappings": 14227975879118217216000,
+              "canonical_mappings": 14227975879118217216000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78da",
+              "alphabet_mappings": 15276191709341122560000,
+              "canonical_mappings": 15276191709341122560000
+            },
+            {
+              "bytes": 5133,
+              "header_hex": "78f9",
+              "alphabet_mappings": 11853098583836590080000,
+              "canonical_mappings": 11853098583836590080000
+            }
+          ],
+          "witness": {
+            "digit_alphabet": "VABCDEHIJKLMNOXGPQRSTUWYZF",
+            "bytes": 5133,
+            "prefix_hex": "081ddb9b1a457f2ecb9a4389e231044a",
+            "binary_sha256": "c43c9eb709a87aa1da6530732c33dd3e2ff2fe986c62da8420d349120d3d65d1",
+            "canonical_numeral": true,
+            "scope": "Arbitrary completion certifies a header only; not a recovered packet or key."
+          },
+          "search_nodes": 2387,
+          "max_prefix_letters_examined": 9
+        },
+        {
+          "format": "bzip2",
+          "header_byte_length_trials": 18,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 54,
+          "max_prefix_letters_examined": 2
+        },
+        {
+          "format": "xz",
+          "header_byte_length_trials": 1,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 0,
+          "max_prefix_letters_examined": 0
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "retained_letters": 8735,
+      "bias": 0,
+      "feasible_minimal_byte_lengths": [
+        5132,
+        5133
+      ],
+      "formats": [
+        {
+          "format": "gzip",
+          "header_byte_length_trials": 64,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 128,
+          "max_prefix_letters_examined": 3
+        },
+        {
+          "format": "zlib",
+          "header_byte_length_trials": 132,
+          "alphabet_mappings": 74439502744180654080000,
+          "canonical_mappings": 43682755556811571200000,
+          "positive_header_intervals": [
+            {
+              "bytes": 5132,
+              "header_hex": "081d",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "083c",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "085b",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "087a",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "0899",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "08b8",
+              "alphabet_mappings": 357636595201966080000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "08d7",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "08f6",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "1819",
+              "alphabet_mappings": 1021818843434188800000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "1838",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "1857",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "1876",
+              "alphabet_mappings": 1021818843434188800000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "1895",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "18b4",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "18d3",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "2815",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "2834",
+              "alphabet_mappings": 1634910149494702080000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "2872",
+              "alphabet_mappings": 919636959090769920000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "2891",
+              "alphabet_mappings": 1634910149494702080000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "28b0",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "28cf",
+              "alphabet_mappings": 919636959090769920000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "28ee",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 0
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "3811",
+              "alphabet_mappings": 1634910149494702080000,
+              "canonical_mappings": 1634910149494702080000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "3830",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "384f",
+              "alphabet_mappings": 1124000727777607680000,
+              "canonical_mappings": 1124000727777607680000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "386e",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "388d",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38ac",
+              "alphabet_mappings": 1430546380807864320000,
+              "canonical_mappings": 1430546380807864320000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38cb",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38ea",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "480d",
+              "alphabet_mappings": 766364132575641600000,
+              "canonical_mappings": 766364132575641600000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "482c",
+              "alphabet_mappings": 408727537373675520000,
+              "canonical_mappings": 408727537373675520000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "484b",
+              "alphabet_mappings": 1124000727777607680000,
+              "canonical_mappings": 1124000727777607680000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "486a",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "4889",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48a8",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48c7",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48e6",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5809",
+              "alphabet_mappings": 919636959090769920000,
+              "canonical_mappings": 919636959090769920000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5828",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5847",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5885",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58a4",
+              "alphabet_mappings": 1072909785605898240000,
+              "canonical_mappings": 1072909785605898240000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58c3",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58e2",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7801",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7820",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "783f",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "785e",
+              "alphabet_mappings": 1430546380807864320000,
+              "canonical_mappings": 1430546380807864320000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "787d",
+              "alphabet_mappings": 1226182612121026560000,
+              "canonical_mappings": 1226182612121026560000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "789c",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78bb",
+              "alphabet_mappings": 408727537373675520000,
+              "canonical_mappings": 408727537373675520000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78da",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78f9",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            }
+          ],
+          "witness": {
+            "digit_alphabet": "VABCXGDEHIJKLMNOPQRSTUWYZF",
+            "bytes": 5132,
+            "prefix_hex": "081d4e1d2f4d2a55c31082083f2c5eba",
+            "binary_sha256": "fd2fd3c5df476ac524e84046ef70ec1fe365c582331a256e6b0d3746e1287368",
+            "canonical_numeral": false,
+            "scope": "Arbitrary completion certifies a header only; not a recovered packet or key."
+          },
+          "search_nodes": 2160,
+          "max_prefix_letters_examined": 6
+        },
+        {
+          "format": "bzip2",
+          "header_byte_length_trials": 36,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 108,
+          "max_prefix_letters_examined": 5
+        },
+        {
+          "format": "xz",
+          "header_byte_length_trials": 2,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 6,
+          "max_prefix_letters_examined": 5
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "retained_letters": 8735,
+      "bias": 1,
+      "feasible_minimal_byte_lengths": [
+        5132,
+        5133
+      ],
+      "formats": [
+        {
+          "format": "gzip",
+          "header_byte_length_trials": 64,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 0,
+          "max_prefix_letters_examined": 0
+        },
+        {
+          "format": "zlib",
+          "header_byte_length_trials": 132,
+          "alphabet_mappings": 43582481579832459264000,
+          "canonical_mappings": 43582481579832459264000,
+          "positive_header_intervals": [
+            {
+              "bytes": 5132,
+              "header_hex": "3811",
+              "alphabet_mappings": 1634910149494702080000,
+              "canonical_mappings": 1634910149494702080000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "3830",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "384f",
+              "alphabet_mappings": 1124000727777607680000,
+              "canonical_mappings": 1124000727777607680000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "386e",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "388d",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38ac",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38cb",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "38ea",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "480d",
+              "alphabet_mappings": 817455074747351040000,
+              "canonical_mappings": 817455074747351040000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "482c",
+              "alphabet_mappings": 357636595201966080000,
+              "canonical_mappings": 357636595201966080000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "484b",
+              "alphabet_mappings": 1072909785605898240000,
+              "canonical_mappings": 1072909785605898240000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "486a",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "4889",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48a8",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48c7",
+              "alphabet_mappings": 1534636172515590144000,
+              "canonical_mappings": 1534636172515590144000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "48e6",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5809",
+              "alphabet_mappings": 919636959090769920000,
+              "canonical_mappings": 919636959090769920000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5828",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5847",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "5885",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58a4",
+              "alphabet_mappings": 1021818843434188800000,
+              "canonical_mappings": 1021818843434188800000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58c3",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "58e2",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7801",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "7820",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "783f",
+              "alphabet_mappings": 1481637322979573760000,
+              "canonical_mappings": 1481637322979573760000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "785e",
+              "alphabet_mappings": 1430546380807864320000,
+              "canonical_mappings": 1430546380807864320000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "787d",
+              "alphabet_mappings": 1175091669949317120000,
+              "canonical_mappings": 1175091669949317120000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "789c",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78bb",
+              "alphabet_mappings": 357636595201966080000,
+              "canonical_mappings": 357636595201966080000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78da",
+              "alphabet_mappings": 1532728265151283200000,
+              "canonical_mappings": 1532728265151283200000
+            },
+            {
+              "bytes": 5132,
+              "header_hex": "78f9",
+              "alphabet_mappings": 1583819207322992640000,
+              "canonical_mappings": 1583819207322992640000
+            }
+          ],
+          "witness": {
+            "digit_alphabet": "VBXCGDEHIJKLMNOPQRASFTUWYZ",
+            "bytes": 5132,
+            "prefix_hex": "3811fb0f207f7752930d0a8475b9c2ab",
+            "binary_sha256": "06868fbeaf5ddb3aa485ff53067b349c32410e7fe8559839454b6bd5b04a1f75",
+            "canonical_numeral": true,
+            "scope": "Arbitrary completion certifies a header only; not a recovered packet or key."
+          },
+          "search_nodes": 925,
+          "max_prefix_letters_examined": 9
+        },
+        {
+          "format": "bzip2",
+          "header_byte_length_trials": 36,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 108,
+          "max_prefix_letters_examined": 5
+        },
+        {
+          "format": "xz",
+          "header_byte_length_trials": 2,
+          "alphabet_mappings": 0,
+          "canonical_mappings": 0,
+          "positive_header_intervals": [],
+          "witness": null,
+          "search_nodes": 6,
+          "max_prefix_letters_examined": 5
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No little-endian, digit reversal, block packing, letterwise cipher or book stage tested.",
+    "Positive counts prove header compatibility only, not checksum-valid payloads.",
+    "Fixed-width A0 counts permit a zero-valued first glyph; canonical counts exclude it.",
+    "Counts are descriptive, not p-values or author-provenance evidence."
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

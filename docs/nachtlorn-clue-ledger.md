@@ -8,6 +8,14 @@ features, acceptance criteria or reasons to choose the next model.
 Current operating rules: [reset record](nachtlorn-reset.md) and
 [machine-readable plan](data/nachtlorn-reset-plan.json).
 
+
+**Latest continuation:** [whole-packet stored-gzip constraints](nachtlorn-stored-gzip.md)
+exclude five length/convention cases by exact trailer arithmetic. The two full-body
+cases time out under both Z3 and an independently budgeted cvc5 cross-check.
+Neither solver produces a source candidate: no actual-source CRC check is reached.
+The drop-final-I exclusions apply only to this narrow gzip construction; no packet,
+population, final outlier or general gzip exclusion is established.
+
 **Latest user-proposed lead:** replace blue using the book. **Green** was our
 contents-colour candidate, yielding **GLOOM**; white is a vessel-colour alternative. The
 [colour assessment](nachtlorn-colour-hypothesis.md) records the source distinction
@@ -30,10 +38,23 @@ test the independent field encoding and the explicit **GLPNM/WLPNM** unit-shift
 hypothesis. Both fail their bounded recovery gates; direct byte-XOR roles also
 recover no packet. No population or final outlier is claimed.
 
-**Latest continuation:** [replacement-role assessment](nachtlorn-replacement-roles.md)
+**Earlier continuation:** [replacement-role assessment](nachtlorn-replacement-roles.md)
 separates literal **BLACK/GREEN/WHITE** keys, keyword digit alphabets and eight
 exact book addresses. All registered recovery gates remain negative. The book
 association is not a confirmed payload key or an answer class.
+
+**Earlier continuation:** [exact representation invariants](nachtlorn-prefix-invariants.md)
+rule out raw big-endian whole-base26 gzip, bzip2 and XZ under every digit-alphabet
+permutation, not just selected keywords. The first six glyphs independently
+certify the exclusions. Short zlib headers remain compatible with many alphabets;
+this is not a packet recovery or a reason to prefer zlib. Scope and all four
+numeral/final-I conventions are recorded under R14.
+
+**Earlier continuation:** [little-endian congruences](nachtlorn-little-endian-invariants.md)
+find explicit gzip/zlib/XZ header-compatible alphabets in all four models, but
+none of the 12 arbitrary witnesses validates as a complete packet under the
+bounded checks. Four bzip2 queries time out: UNKNOWN, not an exclusion. Header
+compatibility does not choose a key, a byte order, a population or a final outlier.
 
 ## Literal source observations
 

@@ -2,7 +2,27 @@
 
 **Reset begun; no solution claimed.**
 
-**Latest continuation:** [replacement-role assessment](nachtlorn-replacement-roles.md)
+
+**Latest continuation:** [whole-packet stored-gzip constraints](nachtlorn-stored-gzip.md)
+exclude five length/convention cases by exact trailer arithmetic. The two full-body
+cases time out under both Z3 and an independently budgeted cvc5 cross-check.
+Neither solver produces a source candidate: no actual-source CRC check is reached.
+The drop-final-I exclusions apply only to this narrow gzip construction; no packet,
+population, final outlier or general gzip exclusion is established.
+
+**Earlier continuation:** [little-endian congruence checks](nachtlorn-little-endian-invariants.md)
+produce header-compatible gzip/zlib/XZ alphabets in all four numeral/final-I models,
+but no verified complete packet among the 12 arbitrary witnesses and 96 bounded
+zero-restoration checks. Four bzip2 feasibility queries time out and remain UNKNOWN.
+This does not extend the earlier big-endian exclusions to the other byte order.
+
+**Earlier continuation:** [exact representation invariants](nachtlorn-prefix-invariants.md)
+exclude raw big-endian whole-base26 gzip, bzip2 and XZ under **every** digit-alphabet
+permutation, both numeral conventions and full/drop-final-I inputs. An independent
+six-glyph certificate verifies the exclusions. Zlib headers remain underdetermined;
+no complete packet, recovered population or final outlier is established.
+
+**Earlier continuation:** [replacement-role assessment](nachtlorn-replacement-roles.md)
 separates literal **BLACK/GREEN/WHITE** keys, keyword digit alphabets and eight
 exact book addresses. All registered recovery gates remain negative. The book
 association is not a confirmed payload key or an answer class.
