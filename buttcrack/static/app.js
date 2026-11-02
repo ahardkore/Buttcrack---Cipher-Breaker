@@ -181,6 +181,7 @@ function applySession() {
   const saved = readSession();
   if (!saved) return;
   $("input").value = saved.text;
+  $("input").dispatchEvent(new Event("input", {bubbles: true}));
   for (const [id, value] of Object.entries(saved.options)) {
     const node = $(id);
     if (!node) continue;
@@ -250,6 +251,7 @@ function readFileInto(file) {
   const reader = new FileReader();
   reader.onload = () => {
     $("input").value = String(reader.result || "");
+    $("input").dispatchEvent(new Event("input", {bubbles: true}));
     $("input").focus();
     $("footer-status").textContent = `read ${file.name} (${file.size.toLocaleString("en-US")} bytes) here — nothing was uploaded`;
   };
@@ -351,6 +353,7 @@ function renderSamples() {
     chip.title = sample.text.slice(0, 90);
     chip.addEventListener("click", () => {
       $("input").value = sample.text;
+      $("input").dispatchEvent(new Event("input", {bubbles: true}));
       $("input").focus();
     });
     holder.appendChild(chip);
@@ -390,6 +393,7 @@ function wireBreak() {
   $("assistant").addEventListener("click", () => runAssistant());
   $("clear").addEventListener("click", () => {
     $("input").value = "";
+    $("input").dispatchEvent(new Event("input", {bubbles: true}));
     resetResult();
   });
   $("copy-plain").addEventListener("click", () => copyText(currentPlaintext()));
@@ -908,6 +912,7 @@ function wirePlayground() {
     const output = $("pg-output").value;
     if (!output.trim()) return;
     $("input").value = output;
+    $("input").dispatchEvent(new Event("input", {bubbles: true}));
     activateTab("break");
     resetResult();
   });
