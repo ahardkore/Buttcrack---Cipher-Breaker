@@ -187,6 +187,22 @@
         </div>
       </section>
 
+      <section class="card" id="strip-analysis" aria-labelledby="strip-title">
+        <h2 id="strip-title">Spacing-preserving strip counts</h2>
+        <p class="hint">For a sideways layout, each input line is a strip. Paste only the rows to compare in the ciphertext box; preserve indentation and spaces. Use ASCII letters and literal spaces (no tabs). Blank lines are ignored, but line numbers are preserved.</p>
+        <p class="hint">Choose the guide as a one-based column in the original, unrotated text. For counterclockwise rotation, before is below and after is above. Counts are descriptive only: a short or unique row is not necessarily an outlier or a solution.</p>
+        <div class="controls">
+          <label>Guide column (1-based) <input id="strip-column" type="number" min="1" max="100000" value="1"></label>
+          <button id="strip-run" type="button">Count current input</button>
+        </div>
+        <p id="strip-status" class="hint" role="status" aria-live="polite">Choose a guide and count the current input.</p>
+        <div class="workspace-scroll" id="strip-results" hidden><table class="data">
+          <caption>Counts of letters on each side of the chosen guide</caption>
+          <thead><tr><th>Input line</th><th>Letters</th><th>Before / below</th><th>On guide</th><th>After / above</th></tr></thead>
+          <tbody id="strip-rows"></tbody>
+        </table></div>
+      </section>
+
       <section class="card" id="analysis-workspace" aria-labelledby="workspace-title">
         <div class="card-head">
           <h2 id="workspace-title">Interactive analysis workspace</h2>
@@ -431,5 +447,6 @@
 <script src="app.js"></script>
 <script src="modern.js"></script>
 <script src="analysis-workspace.js"></script>
+<script src="strip-analysis.js"></script>
 </body>
 </html>

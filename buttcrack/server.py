@@ -10,6 +10,7 @@ API
 ``GET  /api/ciphers``          the registry, for the reference panel
 ``GET  /api/paradigm``         verified Paradigm Kryptos PK1–PK10 catalog (local)
 ``POST /api/analysis-workspace`` bounded frequency, period and key-alignment diagnostics
+``POST /api/strip-analysis``   spacing-preserving per-row column counts
 ``POST /api/modern``          ``{"lab", "options"}`` -> explicit offline crypto lab result
 ``POST /api/assistant``        ``{"text": ...}`` -> explainable local plan / exact-match status
 ``POST /api/identify``         ``{"text": ...}`` -> characterisation + hypotheses
@@ -540,6 +541,13 @@ class Handler(BaseHTTPRequestHandler):
                 except (ValueError, TypeError) as error:
                     return self._error(400, str(error))
                 return self._json(result)
+            if path == "/api/strip-analysis":
+                from .strip_analysis import analyze
+
+                try:
+                    return self._json(analyze(body.get("text"), body.get("column")))
+                except ValueError as error:
+                    return self._error(400, str(error))
             if path == "/api/identify":
                 text = str(body.get("text") or "")
                 if not text.strip():

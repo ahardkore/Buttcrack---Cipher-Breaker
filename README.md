@@ -401,6 +401,20 @@ See [docs/analysis-workspace.md](docs/analysis-workspace.md) for the methods and
 bounds. Everything uses the local server, without plotting dependencies or new
 session persistence.
 
+### Spacing-preserving strip counts
+
+The Break tab also offers **Spacing-preserving strip counts** for sideways or
+column-aligned text. Paste just the rows to compare into the ciphertext box,
+retaining indentation and spaces, and enter a **one-based** guide column in the
+original text. For each nonblank input line the tool counts ASCII letters before,
+on, and after the guide. Under a counterclockwise rotation those correspond to
+below, on, and above; blank lines retain their original line numbers. Tabs and
+non-ASCII characters are rejected instead of guessing their display width.
+Input is limited to 100,000 characters and 2,000 lines. This local measurement
+neither determines the guide nor selects an outlier, and does not decode text.
+It was motivated by the Nachtlorn investigation, where final I as the guide is
+only a provisional hypothesis, not a verified solution.
+
 ## Crypto Labs — explicit inputs, honest prerequisites
 
 The desktop **Crypto Labs** button / Labs menu and the local browser's **Crypto

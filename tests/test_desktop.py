@@ -81,6 +81,16 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn(b"<html", body.lower())
 
+    def test_strip_counts_via_desktop_server(self) -> None:
+        status, body = self.post("api/strip-analysis", {"text": " AB C\nXY  Z", "column": 3})
+        self.assertEqual(status, 200)
+        rows = json.loads(body)["rows"]
+        self.assertEqual([rows[0][key] for key in ("before", "on", "after")], [1, 1, 1])
+        self.assertEqual([rows[1][key] for key in ("before", "on", "after")], [2, 0, 1])
+        with self.assertRaises(urllib.error.HTTPError) as error:
+            self.post("api/strip-analysis", {"text": "A\tB", "column": 2})
+        self.assertEqual(error.exception.code, 400)
+
     def test_serves_the_api(self) -> None:
         status, body = self.get("api/health")
         self.assertEqual(status, 200)
