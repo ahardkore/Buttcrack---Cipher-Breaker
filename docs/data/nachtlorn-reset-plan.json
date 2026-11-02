@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "reset_R17_second_backend_complete_unresolved",
+  "status": "reset_R30_short_row_power_gate_failed",
   "date": "2026-11-01",
   "facts_file": "docs/data/nachtlorn-reset-facts.json",
   "historical_quarantine": {
@@ -671,6 +671,408 @@
         "exact_exclusions": 0,
         "interpretation": "Both independently budgeted cvc5 cases remain UNKNOWN. No extension to R16 exclusions, recovered alphabet, packet, population or outlier."
       }
+    },
+    {
+      "id": "R18",
+      "name": "Alphabet-independent fixed-width field capacity certificates",
+      "status": "tested_all_registered_raw_field_variants_exactly_excluded",
+      "basis": "R8 registered the key-only count32/key64/checksum32 field interpretation, motivated by the named-construction BLOOM and given/taken hypothesis, but tested only selected alphabets. R14 showed arbitrary alphabets should be handled exactly. No author attribution to IBLT is implied.",
+      "inputs": "Original raw body, full and explicit remove-final-I. No passwords, letter transforms, offsets, headers, inserted padding or answer fragments.",
+      "models": {
+        "field_schema": [
+          {
+            "name": "count",
+            "bits": 32,
+            "letters": 7
+          },
+          {
+            "name": "key",
+            "bits": 64,
+            "letters": 14
+          },
+          {
+            "name": "checksum",
+            "bits": 32,
+            "letters": 7
+          }
+        ],
+        "layouts": [
+          "cell_interleaved",
+          "field_major"
+        ],
+        "digit_order": [
+          "most_significant_first",
+          "least_significant_first"
+        ],
+        "digit_bias": [
+          0,
+          1
+        ]
+      },
+      "prediction": "Every field must be a nonnegative bit pattern below2**bits, before signed-count interpretation. With w digits and bias a, its most-significant glyph digit d obeys d <= floor(((2**bits-1)-a*(26**w-1)/25)/26**(w-1)). A bijective alphabet cannot assign more distinct leading glyphs than the number of permitted leading digits.",
+      "method": "Check dimensions; for each field type enumerate original-source most-significant positions and distinct glyphs. Produce a finite certificate of capacity+1 distinct leading glyphs with source indices when the bound is violated. Test against exhaustive small alphabets, independent per-field arithmetic, and synthetic valid fixed-width containers.",
+      "classification": "Dimension failure or a replayable leading-capacity certificate is an exact exclusion only for the registered raw fixed-width schema/layout/order/bias. Passing the necessary bound is inconclusive, never table recovery. Byte endianness and signed interpretation do not remove overflow.",
+      "population_and_outlier_gate": "No population or outlier is assigned from a dimension fit or capacity pass; a recovered IBLT would still need independent checksum/hash/peeling and population interpretation.",
+      "budget": "Finite source traversal only; no SMT, alphabet enumeration on the actual source, semantic scoring or further gzip budgets.",
+      "results": "docs/data/nachtlorn-reset-field-capacity-results.json",
+      "outcome": {
+        "full_body_cases": 8,
+        "leading_capacity_exclusions": 8,
+        "drop_final_i_cases": 8,
+        "dimension_exclusions": 8,
+        "independent_field_certificates": 24,
+        "observed_leading_glyphs_per_field_type_in_each_layout_and_direction": 26,
+        "capacity_A0": {
+          "count": 14,
+          "key": 8,
+          "checksum": 14
+        },
+        "capacity_A1": {
+          "count": 13,
+          "key": 7,
+          "checksum": 13
+        },
+        "recovered_tables": 0,
+        "scope_note": "All arbitrary fixed bijections, even separate per field type, fail this raw schema. Other serializations/transforms and named structures remain open; R16/R17 UNKNOWN unchanged."
+      }
+    },
+    {
+      "id": "R19",
+      "name": "Native shared-RNG layout clock compatibility",
+      "status": "tested_15_shared_state_recipes_rejected",
+      "basis": "R0 exactly reproduces all indentation with consecutive native random.Random(4300).randrange(8) calls. Test whether commonly used letter-generation calls could be interleaved on that same seeded instance while preserving the observed layout, independently of cipher keys or planted text.",
+      "historical_overlap": "Historical MT tests allowed fixed one/two-word letter/indent interleavings. This experiment explicitly uses native variable rejection for randrange(26) and randrange(8), plus row-granularity byte packing, and records aliasing. No claim that shared-RNG schedules have never been considered.",
+      "seed": 4300,
+      "methods": [
+        "randrange26",
+        "choices26",
+        "bits5_mod26",
+        "bits8_mod26",
+        "row_randbytes_mod26"
+      ],
+      "schedules": [
+        "indent_then_row",
+        "row_then_indent",
+        "all_rows_then_indents"
+      ],
+      "granularity": "Exactly one letter-generation batch for each original row, with its observed letter count. choices uses k=row length; randbytes uses n=row length; other methods draw once per letter. Seed once, no offset/prefix consumption/reseeding/global RNG.",
+      "baseline": "Consecutive indent calls only; previously known R0 fit, a regression baseline rather than a new discovery.",
+      "prediction": "For each schedule, reproduce every leading-space count exactly. A mismatch rejects only that direct shared-state recipe. Cipher substitutions or literal message overwrites after generation cannot repair an indentation mismatch without changing the recipe.",
+      "instrumentation": "Native RNG calls traced by a subclass that delegates unchanged to Python Random. Count 32-bit words for getrandbits and random(), independently compare final states and draws with plain Random controls.",
+      "classification": "All exact layout matches would be compatible schedules, not proof of the letter generator or recovered population. Mismatches are deterministic schedule failures, not p-values. Group identical full indentation predictions instead of treating aliases as independent evidence.",
+      "excluded": "Unknown seeds, arbitrary prefix offsets, extra calls, saved/restored state, reseeding, separate RNGs, changed row lengths, rejection depending on plaintext, conditional injection schedules, or comparison to historical word fragments. No actual-source letter decoding or gzip query.",
+      "controls": "Direct native Random equivalence, independent full-recipe simulations, variable-size batches, native rejection word counts, alias schedules, synthetic schedule recovery without assumed uniqueness, global-state preservation, source overwrite guard.",
+      "population_and_outlier_gate": "A matching layout alone cannot recover body objects or select an outlier. No message or population is selected in this experiment.",
+      "budget": "15 finite schedules, one known baseline, no search over seeds, offsets or alphabets.",
+      "results": "docs/data/nachtlorn-reset-layout-clock-results.json",
+      "outcome": {
+        "parameter_recipes": 15,
+        "distinct_indentation_predictions": 12,
+        "exact_matches": 0,
+        "baseline_matches": 146,
+        "baseline_rows": 146,
+        "baseline_mt_words": 323,
+        "first_mismatch_by_schedule": {
+          "indent_then_row": 2,
+          "row_then_indent": 1,
+          "all_rows_then_indents": 1
+        },
+        "python_version": "3.11.2",
+        "interpretation": "These direct shared-instance native recipes fail. The observed layout does not establish a body RNG seed, state or call schedule. Separate instances/reseeding/other generators or schedules remain open; no object population or outlier is recovered."
+      }
+    },
+    {
+      "id": "R20",
+      "name": "Indel-robust capacity bound for the registered field encoding",
+      "status": "tested_single_pair_excluded_for_registered_raw_fields",
+      "basis": "Literal one given / one taken can hypothesize one inserted and one deleted source letter. R18 proved only unchanged raw encoding failure; historical packed-object bounds explicitly did not handle phase-changing indels. Test this representation-repair hypothesis without editing the authoritative source or using a preferred output.",
+      "operand_hypothesis": "Full original body as source of a hypothetical repaired stream, obtained with m deletions and m insertions. Include arbitrary positions and letters, either edit order, coincident substitution-like edits and removal of terminal I followed by insertion elsewhere. m=1 is the registered clue test, not author-confirmed.",
+      "target": "Exactly the R18 fixed-width count7/key14/checksum7 schema, 312 cells, arbitrary fixed glyph-to-digit bijection A0/A1, both digit directions and layouts. Use key64 overflow only as a necessary condition, not as a decoded IBLT.",
+      "profiles": [
+        {
+          "layout": "cell_interleaved",
+          "key_leader_stride": 28
+        },
+        {
+          "layout": "field_major",
+          "key_leader_stride": 14
+        }
+      ],
+      "method": "For each stride and key-leading capacity (A0=8,A1=7), find the maximum run R of consecutive stride-spaced original symbols containing at most capacity distinct glyphs, over every source residue and start. With m insertions and m deletions, at least312-m target key leaders originate in at most2m+1 constant-shift source runs, so312-m <=(2m+1)*R is necessary. If violated, all such repairs fail under every fixed alphabet. Derive the integer lower bound on m, not a sufficient repair.",
+      "controls": "Exhaustive short-string run maxima, independent brute-force upper-bound replay, exhaustive single-indel-pair targets over a small alphabet, real-schema synthetic valid in-range fields corrupted by paired indels and verified forward, separate bias/capacity checks, certificate tampering, dimension preservation and source-overwrite guard.",
+      "classification": "A violated inequality is an exact exclusion only for paired-indel repair into this field encoding. A nonviolated inequality is inconclusive, not a recovered table, alphabet or outlier. No insertion/deletion is actually applied to the original file.",
+      "excluded": "Other field schemas, arbitrary per-cell alphabets, transpositions, additional letter ciphers, unbalanced length changes or interpreting given/taken as operations on decoded objects. No RNG/solver budget escalation.",
+      "historical_overlap": "Uses the existing capacity principle, now bounding phase-changing paired insertions/deletions rather than only fixed-frame replacements. This is not the first capacity test.",
+      "source_refresh": "Live gist unchanged: one revision, zero comments,11129bytes, SHA25604eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e. Refresh is provenance, not a new clue.",
+      "budget": "Four finite source profiles; no actual-source alphabet permutation, edit-pair enumeration, word search or solver query.",
+      "population_and_outlier_gate": "No population or answer is selected. Even a feasible encoding repair would require complete hash/checksum/peeling/forward validation and independent interpretation.",
+      "results": "docs/data/nachtlorn-reset-indel-capacity-results.json",
+      "outcome": {
+        "source_profiles": 4,
+        "all_single_pair_repairs_excluded": true,
+        "minimum_pairs_by_layout_and_bias": {
+          "cell_interleaved_A0": 9,
+          "cell_interleaved_A1": 9,
+          "field_major_A0": 8,
+          "field_major_A1": 10
+        },
+        "interpretation": "Necessary lower bounds, not constructive repairs or IBLT decoding; other representations and decoded-object interpretations remain open."
+      }
+    },
+    {
+      "id": "R21",
+      "name": "Fixed I-zero strip counts predicted solely from formatting geometry",
+      "status": "tested_all_positions_geometry_explains_ranges",
+      "basis": "The user elected to retain final I as a provisional zero and compare individual per-row ranges. R0 reproduces 60-letter rows grouped in fives and indentation, while the archived I-zero analysis reports eight tied patterns. Check whether the counting rule can distinguish row letter contents at all.",
+      "model": "One original row per strip; zero fixed at the printed final I physical column; counterclockwise; count letters strictly on each side and separately on the guide. For zero-based letter index j in a line grouped in fives with indent d, predicted column is d+j+floor(j/5). Test every actual row without changing it and compare all actual letter positions to formula, not just ranges.",
+      "control": "Synthetic rows across indents, group boundaries and lengths; identity-changing counterfactual replacing body glyphs but keeping all spaces and the final I fixed; independent row counts; altered group gap must fail the position formula. No ciphertext solving, new guide, selected word, statistical scoring or outlier search.",
+      "gate": "If geometry matches, the count pair is completely determined by row length, indent, group size and fixed guide, irrespective of letter identity. This explains ties and short-row behavior but does not rule out content-aware models, independent vertical guides, encoded intentional edits or downstream object-level outliers.",
+      "results": "docs/data/nachtlorn-strip-geometry.json",
+      "outcome": {
+        "rows": 146,
+        "exact_position_matches": 146,
+        "count_matches": 146,
+        "guide_column": 48,
+        "counterfactual": "All nonterminal glyphs changed in-memory with spaces and final I retained; all range records identical.",
+        "interpretation": "The fixed-guide letter-count-only range is determined by layout alone and cannot discriminate letter content. Content-aware visual extraction and downstream object-level outliers remain open."
+      }
+    },
+    {
+      "id": "R22",
+      "name": "Literal two B letters, neither right of the I guide",
+      "status": "tested_nonunique_raw_row_selection",
+      "basis": "One speculative content-aware reading of the literal words \u201cneither be right\u201d: be sounds like B, neither may refer to two, right may mean the original row right of the user-selected I-as-zero column. This is a proposed pun only, not a confirmed instruction or justified intermediate decryption.",
+      "fixed_rule": "On each of the first 145 complete original rows independently, require exactly two literal B glyphs total, both strictly left of physical column 48. A B on the zero column fails. Report the final short row separately as a boundary control, not as a recovered outlier. No other glyph, zero, orientation, count or plaintext is searched.",
+      "falsifier": "A unique full-row match is a necessary condition for this exact raw-row selection rule; multiple matches or none means it does not select a unique full row. Even a unique match would require an independently justified population, interpretation and outlier rule; it is not an answer.",
+      "calibration": "Conditional uniform shuffles of letter positions within each complete row, preserving the exact number of B letters and each row layout, imply p=comb(left_slots,2)/comb(60,2) for rows with exactly two Bs and p=0 otherwise. Sum probabilities for expected matches; do not report a global p-value or treat the model as the cipher distribution.",
+      "controls": "Synthetic rows with both B left, B at zero, B right, wrong B count; verify exact counts and permutation probability via enumeration; preserve source; independent row and aggregate checks.",
+      "scope": "Raw B pun and left-only two-B predicate only. Other clue readings, content transformations, recovered-object-level predicates, and the short-row hypothesis remain open. This is not a search of all letters or positions, and no output word is accepted.",
+      "results": "docs/data/nachtlorn-two-bs-results.json",
+      "outcome": {
+        "full_rows": 145,
+        "rows_with_exactly_two_B": 39,
+        "full_rows_matching": 21,
+        "unique_full_row": false,
+        "final_short_row_total_B": 1,
+        "conditional_expected_matches_numerator": 26821,
+        "conditional_expected_matches_denominator": 1770,
+        "interpretation": "This speculative two-B neither-right raw predicate does not uniquely select a full row. It does not exclude a different reading or content operation after recovery."
+      }
+    },
+    {
+      "id": "R23",
+      "name": "Common-substitution mirror pairs around the provisional I-zero guide",
+      "status": "tested_two_disjoint_same_row_conflicts",
+      "basis": "The user chose I as provisional zero and clarified one original line per vertical strip, counting letters rather than spaces. A candidate content-sensitive construction pairs the nearest printed letter on each side, then the next-nearest, and so on. Pairwise symmetry is an exploratory additional assumption, not a user assertion or an implication of the poem.",
+      "rule": "Use each of the 145 full source rows, guide physical column48. Exclude any on-guide glyph. Count only printed letters, pair below and above nearest-first until the shorter side ends, ignore excess letters on the longer side. A single unknown bijective mapping from every below glyph to its paired above glyph must hold across all full rows except at most one exceptional row. Retain but do not test the final short row, which has no above-guide letters.",
+      "prediction": "A conflict is two paired observations that map the same left glyph to different right glyphs, or different left glyphs to the same right glyph. If two conflicts have disjoint involved-row sets, at least two full rows must be omitted: no common bijection can explain all but one. An explicit source-position certificate permits independent verification.",
+      "controls": "Synthetic equal pairs, arbitrary substitution positive, one-bad-row positive, two-disjoint-conflict negative, same-row conflicts, shared-row conflicts, spaces and guide-on-letter, graph brute force oracle, malformed input and overwrite guard. Independently replay source certificates and validate the matching optimality via brute-force every possible single removed row.",
+      "scope": "Raw paired letters and one fixed global bijection only; no keys, extra layers, reversed side order, unknown guide, assumed word or alternative mappings tried. This does not reject separate mappings per row/position, transformed symbols, different pairings, noise, a recovered-object-level outlier, or the user count-only hypothesis. Certificate does not recover a population or answer.",
+      "results": "docs/data/nachtlorn-strip-pairing-results.json",
+      "outcome": {
+        "full_rows": 145,
+        "paired_observations": 3152,
+        "compatible_single_row_omissions": 0,
+        "disjoint_conflict_rows": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "final_row_pairs": 0,
+        "interpretation": "First two full rows separately contradict any fixed per-row function, so at most one exceptional full row cannot save this exact pairing model. Other pairing or processing rules and final-layer outliers remain open."
+      }
+    },
+    {
+      "id": "R24",
+      "name": "Any contiguous Ulysses plaintext under arbitrary fixed substitution and transposition",
+      "status": "tested_all_contiguous_book_windows_excluded_by_frequency",
+      "basis": "The literal BLOOM acrostic and verified layout-seed 4300 support (but do not confirm) the Joyce/Ulysses Gutenberg 4300 association. Test a concrete plaintext role without choosing a word, key, route or book start. Normalized contiguous excerpt is a hypothesis, not an author instruction.",
+      "rule": "Use pinned full Gutenberg Ulysses file (including boilerplate) normalized by keeping ASCII A-Z/a-z and uppercasing. Exhaustively consider every contiguous normalized-letter window of length 8736 (full body) and 8735 (only terminal I explicitly removed). The plaintext may undergo any fixed bijective letter substitution, any position transposition, in either order. A necessary invariant is the same sorted letter-count multiset; in particular the maximum letter count must equal the ciphertext maximum.",
+      "method": "Compute ciphertext maximum glyph frequency and the minimum over all book windows of the maximum per-letter frequency, using a rolling 26-counter. If min_book_max > cipher_max, exact exclusion of every window follows. Difference is a lower bound on glyph substitutions needed to repair the ciphertext histogram after any permutation, not a sufficient recovery. No full histogram scan or key search is required for exclusion.",
+      "controls": "Small synthetic exhaustive book windows versus direct Counter; planted excerpt under secret fixed bijection and arbitrary transposition; corrupt one glyph and validate bound; exact full/drop boundaries; normalization treats only literal ASCII letters; hash and overwrite guards.",
+      "exclusions": "Does not exclude Ulysses as a key, noncontiguous plaintext, multilingual/filler populations, other texts, changing substitutions, masking or encryption, compression, shorter hidden plaintext, or any final interpretation. Not a solution; no word or known answer targeted.",
+      "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+      "results": "docs/data/nachtlorn-book-frequency-invariant.json",
+      "outcome": {
+        "full": {
+          "windows": 1188470,
+          "cipher_max": 412,
+          "minimum_book_window_max": 888,
+          "necessary_glyph_substitutions": 476
+        },
+        "drop_terminal_i": {
+          "windows": 1188471,
+          "cipher_max": 412,
+          "minimum_book_window_max": 888,
+          "necessary_glyph_substitutions": 476
+        },
+        "independent_certificate": "All pinned-book windows have at least 888 E glyphs; a window at normalized offset 511420 attains 888 as its largest glyph count.",
+        "interpretation": "Only contiguous plaintext windows with fixed substitution and any transposition are ruled out. Ulysses as key or reference, additional layers, shorter or noncontiguous content remain open. No plaintext/outlier."
+      }
+    },
+    {
+      "id": "R25",
+      "name": "Whole-training Ulysses running-key offset scan with held-out English test",
+      "status": "tested_best_training_candidate_failed_heldout_screen",
+      "basis": "BLOOM and formatting seed 4300 support an unconfirmed Ulysses link. Earlier archive ranked all 1188470 offsets on 120-letter quadgrams and inspected only top20; R13 tested eight clue-passage starts with structured-packet gates. A genuinely distinct test ranks every eligible offset on 6000 source letters and evaluates a reserved suffix, without a chosen word. Whole English plaintext is a bounded possibility, not required by the author.",
+      "model": "Pinned complete Gutenberg ASCII-letter normalized book as nonrepeating running key, any contiguous start with room for all 8736 ciphertext letters. A0 modulo26 decryption P=(C-K)%26, aligned at body offset0. Preserve terminal I. No alternate arithmetic, reversal, key gaps, source edits or extra layer.",
+      "score": "Standard fixed English monogram probabilities, natural-log likelihood ratio against uniform 1/26. Compute every start exactly in intended arithmetic via FFT-based convolution (floating-point ranking, recheck selected scores directly). Choose the single highest training mean over first 6000 letters, tie by lowest offset. Last 2736 letters are never used for ranking. Require held-out mean LLR >=0.10 nats per letter as an English-marginal screen; threshold fixed before source execution. Passing screen is not a solution: full output and independent construction/outlier validation still required. A failed selected candidate does not prove no offset could pass the held-out screen.",
+      "controls": "Synthetic exact-score cross-correlation against brute force across every small offset, inversion, planted running-key natural-language-like synthetic full message, held-out recovery, numerical top-score replay, no-book-space normalization expansions, invalid inputs and source/book output overwrite guards.",
+      "budget": "One C-K family, 1188470 valid source offsets, no book offset search selected by preferred words and no phase, cipher family or key grid. No SMT query. Numpy FFT is a research-only dependency.",
+      "scope": "No conclusion about unknown short answer, non-English/intermediate objects, other offsets of ciphertext, letter operations, book encodings or clue roles. Historical 120-prefix search remains credited and its prior findings unchanged.",
+      "results": "docs/data/nachtlorn-book-runningkey-fullscan.json",
+      "outcome": {
+        "offsets_scored": 1188470,
+        "training_selected_book_offset": 365346,
+        "training_llr_nats_per_letter": -0.5295950282439621,
+        "heldout_llr_nats_per_letter": -0.6336042724589058,
+        "heldout_threshold_nats": 0.1,
+        "heldout_screen_pass": false,
+        "fft_direct_absolute_error": 0.0,
+        "interpretation": "Best training candidate fails reserved-suffix English-marginal screen. Not an exhaustive held-out exclusion of other offsets; no inference against short messages or other key/construction models."
+      }
+    },
+    {
+      "id": "R26",
+      "name": "Exact upper-bound replay of all Ulysses running-key training scores",
+      "status": "tested_all_offsets_training_upper_bound_negative",
+      "basis": "R25 FFT ranked every full-body-eligible C-K book offset by the first 6000 letters, but floating-point ranking is not a formal exclusion. Independently compute a conservative integer upper bound on the training score at every eligible offset. This is a verification and strengthening of the same model, not a new cipher grid or a solver-budget rerun.",
+      "model": "Same pinned whole Ulysses ASCII normalization, full 8736-letter ciphertext including I, same A0 P=C-K, first6000 training letters, and every offset with room for the entire body. Same fixed English monogram profile and uniform baseline as R25.",
+      "method": "For each decoded glyph, choose an integer weight w such that w/1000 is a verified strict upper bound on its natural-log likelihood ratio. A native integer worker scans every eligible offset exactly, sums 6000 integer weights and finds the largest upper-bound sum. Verify the 26 inequalities independently using high-precision Decimal exp and a safety margin. If maximum upper bound is below zero, no offset has positive training LLR; in particular none reaches R25\u2019s +0.10 held-out threshold on the training prefix. This is a screen for whole-body English marginal profile, not a necessary property of every English text and not proof no plaintext or short message exists.",
+      "controls": "Tiny exhaustive worker scores against separate Python scalar oracle for every offset; adversarial ties, fixed full-length boundary and empty/invalid input; synthetic encrypted natural-language-like message matches and passes; selected actual score directly recomputed, hash and overwrite guard; verify upper weights independently.",
+      "budget": "One deterministic integer exhaustive scan, 1188470 offsets times6000 positions; no new key family, output word search, or SMT/timeout rerun. Record compiler and SHA; protect inputs.",
+      "scope": "Rules out passing specified positive training score for this direct C-K English-marginal screen only. Does not exclude English with different statistics, short hidden text, intermediate non-prose objects, other operations, cipher alignments, book editions/normalizations, keys, or outlier rules. No proof of solution or book non-use.",
+      "results": "docs/data/nachtlorn-book-runningkey-exact-bound.json",
+      "outcome": {
+        "windows": 1188470,
+        "maximum_integer_upper_sum": -3174567,
+        "first_maximum_offset": 365346,
+        "maximizing_offsets": 1,
+        "maximum_mean_upper_bound_nats": -0.5290945,
+        "all_training_scores_negative": true,
+        "worker_sha256": "b7c5a557b065d895caf7f2dc77bfd0f9d68c3a1260c3431b62c8ac0fb5a6e510",
+        "interpretation": "Every candidate in the registered C-K book-key family has negative first-6000 English-profile LLR. Not a held-out scan, universal English criterion, short-message exclusion or cipher solution."
+      }
+    },
+    {
+      "id": "R27",
+      "name": "Held-out fixed-substitution English-frequency mixture across supplied pages",
+      "status": "tested_no_positive_heldout_mixture_signal",
+      "basis": "Author says not all layers are encryption and the final answer may be an outlier; full ciphertext need not be English. A real component of English-like plaintext diluted by uniform random background under one fixed substitution might leave a weak marginal signature. Earlier global IC/monogram counts and extensive periodic/cipher screens are historical exploratory observations, not evidence of this model. Test one substantially different held-out mixture model without word/fragment search.",
+      "model": "Original full body; page 1 rows1-61 as training (3660 letters), page2 rows62-146 as held-out (5076 letters, terminal I retained). Each letter independently distributed as (1-alpha)/26 + alpha*p(substitution), fixed English monogram p from R25 and unknown fixed bijection. Fit alpha in [0,1] and assignment maximizing page1 likelihood; frequency sorting is globally optimal for fixed alpha, ties alphabetically. Use held-out mean LLR vs uniform as only predictive score. No per-position, row, key, or guide search.",
+      "calibration": "Two prespecified 10000-sample Monte Carlo controls with NumPy PCG64 seed 20261102. Null A: independent iid uniform letters with same two page lengths; refit the entire training selection for every sample and measure held-out score. Null B: conditional random assignment of the actual pooled letter counts across fixed page lengths; refit each time; this conditions on global histogram and asks whether the observed split is unusual, not whether the ciphertext is uniform. Plus-one right-tail rates with Monte Carlo resolution 1/10001; not a correction for earlier research and not proof of any generator or language. Use deterministic batches, no repeated calibration if unpromising.",
+      "gate": "A positive heldout LLR with an unusual null-A upper-tail rate at or below 0.01 suggests only an English-profile mixture under this model; it is not a decoded plaintext, unique key, population or outlier. Null-B quantifies whether page allocation behaves unusually after conditioning on the observed totals. A negative result does not exclude short or different-language signals, changing alphabets or construction layers. No output words or fragments used.",
+      "controls": "Exact fitting compared with small exhaustive permutations and numeric grid; synthetic planted English-uniform mixture on two independent pages with known one-to-one alphabet; simulated same-distribution case; RNG seed reproducibility, all 26 glyph and page counts preserved, unknown/gapped inputs and overwrite guards; source result independently reconstructed from recorded parameter mapping and page counts.",
+      "results": "docs/data/nachtlorn-heldout-mixture-results.json",
+      "outcome": {
+        "page1_letters": 3660,
+        "page2_letters": 5076,
+        "training_alpha": 0.11269654010291896,
+        "training_llr_nats_per_letter": 0.004367724650915236,
+        "heldout_llr_nats_per_letter": -0.0016743484844618955,
+        "heldout_positive_and_uniform_tail_at_most_001": false,
+        "null_uniform": {
+          "replicates": 10000,
+          "at_least_actual": 1619,
+          "plus_one_upper_tail_rate": 0.16198380161983802,
+          "null_mean_heldout_llr": -0.0030249898642433753
+        },
+        "null_conditional_pooled_counts": {
+          "replicates": 10000,
+          "at_least_actual": 5001,
+          "plus_one_upper_tail_rate": 0.5001499850014999,
+          "null_mean_heldout_llr": -0.001817844358398721
+        },
+        "interpretation": "This page-stable fixed-bijection independent-letter mixture does not generalize. It neither excludes a sparse short payload nor identifies a key or outlier."
+      }
+    },
+    {
+      "id": "R28",
+      "name": "Post-observation family-corrected maximum letter count against iid uniform",
+      "status": "tested_post_observation_iid_uniform_union_bound",
+      "basis": "The historical archive already noted E occurs 412 times and about +4.2 standard deviations for a fixed glyph; the last continuation observed page1 181 and page2 231. Before this registration, one-sided binomial tails were also calculated exploratorily, so this is not a preregistered discovery. Quantify the specific maximum-count selection issue rigorously.",
+      "model": "Full 8736 ciphertext letters, 26 symbols; null all letters iid uniform. Observed statistic max over the 26 counts. Compute exact integer binomial upper tail for a specified symbol at the observed maximum and multiply by 26 using the union bound; cap at 1. Report page counts only as descriptive, not independently validated data because the global glyph was already known.",
+      "gate": "A small bound is evidence only against the ideal independent uniform model, not generator identification, an encoding rule, plaintext, or the final outlier. The 26-way union bound accounts for selecting the largest glyph, not the many earlier searches or selection of this family.",
+      "controls": "Exact binomial upper-tail arithmetic checked by exhaustive small-alphabet enumeration and direct independent integer sums; small random maximum-count enumeration verifies the union bound; source histogram independently replayed; pathological threshold boundaries and overwrite guards.",
+      "scope": "Does not rule out pseudorandom sequences, dependent positions, biased sampling, additional transformations, or any user-proposed visual strip rule. Explicitly not a claim E is the answer.",
+      "results": "docs/data/nachtlorn-maximum-count-null.json",
+      "outcome": {
+        "letters": 8736,
+        "max_count": 412,
+        "max_glyphs": [
+          "E"
+        ],
+        "specified_glyph_binomial_upper_tail_decimal": "0.000023467867903832782764",
+        "maximum_26_glyph_union_bound_decimal": "0.00061016456549965235186",
+        "page1_max_glyph_counts": {
+          "E": 181
+        },
+        "page2_max_glyph_counts": {
+          "E": 231
+        },
+        "interpretation": "Retrospective 26-way bound against ideal iid uniform only; not a generator attribution, visual-strip outlier, key, or solution, and not global correction for earlier tests."
+      }
+    },
+    {
+      "id": "R29",
+      "name": "Exact Ulysses running-key score bound for the two remaining modular signs",
+      "status": "tested_both_signs_all_training_upper_bounds_negative",
+      "basis": "R26 verified the complete full-body-eligible Ulysses offset family for C-K using an integer upper score, but did not cover the other two conventional modular readings. The historical all-offset book search ranked all three on only 120 letters; this checks whole 6000-letter training for the other two using the same fixed frequency profile and exact upper bounds. These are alternative arithmetic interpretations, not stacked layers or independent sources.",
+      "models": [
+        "P=(K-C) mod26",
+        "P=(C+K) mod26"
+      ],
+      "fixed": "Same complete book, ASCII normalization, 8736 body including terminal I, first6000 training symbols, any contiguous book start with enough room for full body, A0, exact upper weights from R26. Each sign is scanned once; no new guide, alphabet, target word, cipher position, rank threshold or solver budget.",
+      "method": "Native integer worker computes both independent per-offset upper-score sums in a single traversal of each candidate. A negative maximum is a conservative all-offset exclusion only for the specified positive training monogram score, not for arbitrary English or held-out evidence. Verify direct scalar maxima, compare every small synthetic offset/mode with Python, prove positive planted controls for both signs, ties, input guards.",
+      "scope": "No inference about short payloads, non-English objects, offset input alignments, other keyed arithmetic or any final outlier. No assumption that the whole body is English. No prior timeout or R26 C-K worker re-execution.",
+      "results": "docs/data/nachtlorn-book-sign-bounds.json",
+      "outcome": {
+        "windows": 1188470,
+        "models": [
+          {
+            "operation": "K-C",
+            "maximum_integer_upper_sum": -3132600,
+            "first_maximum_offset": 359675,
+            "maximizing_offsets": 1,
+            "maximum_mean_upper_bound_nats": -0.5221,
+            "all_training_scores_negative": true,
+            "witness_scalar_float_llr_mean": -0.5226002854455913
+          },
+          {
+            "operation": "C+K",
+            "maximum_integer_upper_sum": -3093716,
+            "first_maximum_offset": 919862,
+            "maximizing_offsets": 1,
+            "maximum_mean_upper_bound_nats": -0.5156193333333333,
+            "all_training_scores_negative": true,
+            "witness_scalar_float_llr_mean": -0.5161202341454034
+          }
+        ],
+        "worker_sha256": "4885e3120741ec845b4c267c9dc7cdc87a2f5b72e08a6e1791eae04bc87a48f8",
+        "interpretation": "Both signs have negative maximum upper training scores over every eligible offset. This is not a universal English or short-payload exclusion and does not identify a key or outlier."
+      }
+    },
+    {
+      "id": "R30",
+      "name": "Synthetic power gate for a last-row, arbitrary-book-offset short-message attack",
+      "status": "synthetic_gate_failed_actual_source_search_not_run",
+      "basis": "The user suggested the last short row as a possible outlier and chose final I as a provisional guide; neither establishes that the row is the last-layer answer. Ulysses as running key is also unconfirmed. Before an actual-source short-window hunt, test whether offset selection can recover independently planted 36-letter synthetic messages from the full pinned book-key space. This avoids declaring short English-like noise a break.",
+      "control_design": "Eight fixed synthetic English prose strings, ASCII normalized and truncated to exactly36 letters; eight predetermined book starts 0,14911,62017,118913,208117,320113,510019,810017. Encrypt P+K mod26 with pinned whole-book ASCII normalization. For each independent synthetic cipher, rank every eligible book offset using the same R25 fixed English monogram LLR on only the first25 letters, select the maximum with direct tie replay; hold out 11 letters. No observed Nachtlorn row or historical candidate words are used.",
+      "gate": "The actual-source short-row search is authorized by this plan only if all eight synthetic controls recover the exact 36-letter plaintext and pass the preset heldout LLR >=0.10 nats/letter. Any failure means this simple selection rule is too fragile for a trustworthy actual-source inference; record failures, do not run the real last-row hunt or tune a better score after seeing controls. Control pass alone would not identify an outlier or prove authorial intent.",
+      "budget": "Eight independent 25-letter FFT training scans, 1197170 full-length-eligible starts each; exact scalar replay of winners, deterministic fixed inputs, no actual source scan unless gate passes. Not repeated prior whole-body search or clue-key grid.",
+      "scope": "This is a sensitivity check, not evidence that any cryptosystem did or did not encrypt the real short row. It cannot exclude other keys, lengths, scoring, clue layers, or hidden messages; no book or source file modified.",
+      "results": "docs/data/nachtlorn-short-row-power-controls.json",
+      "outcome": {
+        "controls": 8,
+        "exact_recoveries": 2,
+        "heldout_screen_passes": 2,
+        "control_gate_passed": false,
+        "actual_source_search_performed": false,
+        "interpretation": "Short-prefix monogram selection misses six of eight planted messages across the full book offset range. The actual final-row search was not run and no conclusion about real ciphertext follows."
+      }
     }
   ],
   "not_assumed": [
@@ -681,5 +1083,6 @@
     "the final singleton is necessarily padding, a delimiter, zero, or the final outlier"
   ],
   "historical_negatives": "Keep their documented scopes. Do not repeat unchanged searches or treat them as proof that all other constructions fail.",
-  "next_gate": "Do not escalate these solver budgets again without a separately justified experiment. Before another body search, require a clue-grounded forward construction or exact representation invariant with a discriminating prediction; preserve both unresolved cases and all scoped exclusions."
+  "next_gate": "Do not run this weak short-row selector on source, or tune it to a preferred word. Seek a justified operation or a more discriminating method independently validated for the large keyspace, and require population/outlier evidence.",
+  "last_updated": "2026-11-02"
 }

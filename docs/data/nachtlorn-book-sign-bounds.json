@@ -1,0 +1,60 @@
+{
+  "windows": 1188470,
+  "models": [
+    {
+      "operation": "K-C",
+      "maximum_integer_upper_sum": -3132600,
+      "first_maximum_offset": 359675,
+      "maximizing_offsets": 1,
+      "maximum_mean_upper_bound_nats": -0.5221,
+      "all_training_scores_negative": true,
+      "witness_scalar_float_llr_mean": -0.5226002854455913
+    },
+    {
+      "operation": "C+K",
+      "maximum_integer_upper_sum": -3093716,
+      "first_maximum_offset": 919862,
+      "maximizing_offsets": 1,
+      "maximum_mean_upper_bound_nats": -0.5156193333333333,
+      "all_training_scores_negative": true,
+      "witness_scalar_float_llr_mean": -0.5161202341454034
+    }
+  ],
+  "hypothesis": "R29",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "worker_sha256": "4885e3120741ec845b4c267c9dc7cdc87a2f5b72e08a6e1791eae04bc87a48f8",
+  "source_letters": 8736,
+  "book_letters": 1197205,
+  "training_letters": 6000,
+  "upper_integer_weights": [
+    754,
+    -946,
+    -323,
+    101,
+    1195,
+    -545,
+    -646,
+    461,
+    594,
+    -3224,
+    -1605,
+    46,
+    -469,
+    563,
+    669,
+    -690,
+    -3700,
+    443,
+    498,
+    857,
+    -332,
+    -1369,
+    -488,
+    -3244,
+    -667,
+    -3950
+  ],
+  "scale": 1000,
+  "scope": "Only the two listed arithmetic operations, full-body-eligible contiguous starts and first 6000 letters. Negative upper scores do not rule out short payloads or other models."
+}

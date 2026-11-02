@@ -1,0 +1,35 @@
+{
+  "hypothesis": "R24",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129,
+  "book_sha256": "4ea566a510a547adcb01b52fe78ff269926fe8d5e8060591f725de6d77afa3ac",
+  "book_bytes": 1580890,
+  "book_normalization": "Keep original ASCII A-Z/a-z; uppercase after filtering. Whole pinned file, including Gutenberg material.",
+  "book_letters": 1197205,
+  "book_letters_sha256": "9d7e5858ff9368aacbaad74ddfca9c8e92505c98399fc156848c94999e4a7ead",
+  "cases": [
+    {
+      "drop_terminal_i": false,
+      "letters": 8736,
+      "cipher_max_count": 412,
+      "minimum_window_max_count": 888,
+      "first_attaining_offset": 511420,
+      "attaining_windows": 37,
+      "windows_examined": 1188470,
+      "minimum_cipher_symbol_substitutions_required": 476,
+      "all_contiguous_windows_excluded_by_max_count": true
+    },
+    {
+      "drop_terminal_i": true,
+      "letters": 8735,
+      "cipher_max_count": 412,
+      "minimum_window_max_count": 888,
+      "first_attaining_offset": 511420,
+      "attaining_windows": 44,
+      "windows_examined": 1188471,
+      "minimum_cipher_symbol_substitutions_required": 476,
+      "all_contiguous_windows_excluded_by_max_count": true
+    }
+  ],
+  "scope": "Necessary count invariant only: all contiguous book windows under any fixed bijection and arbitrary transposition. Not a key-recovery, a general cipher exclusion, or an identified outlier."
+}

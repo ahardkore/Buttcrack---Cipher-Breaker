@@ -1,0 +1,69 @@
+{
+  "hypothesis": "R20",
+  "source_letters": 8736,
+  "target_key_fields": 312,
+  "source_letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "profiles": [
+    {
+      "layout": "cell_interleaved",
+      "source_stride": 28,
+      "bias": 0,
+      "leading_capacity": 8,
+      "longest_source_run": {
+        "length": 17,
+        "source_start": 3062,
+        "source_end": 3510,
+        "distinct_glyphs": "CEGQRSWY"
+      },
+      "necessary_minimum_paired_edits": 9,
+      "single_pair_excluded": true
+    },
+    {
+      "layout": "cell_interleaved",
+      "source_stride": 28,
+      "bias": 1,
+      "leading_capacity": 7,
+      "longest_source_run": {
+        "length": 16,
+        "source_start": 4448,
+        "source_end": 4868,
+        "distinct_glyphs": "CEIKRVY"
+      },
+      "necessary_minimum_paired_edits": 9,
+      "single_pair_excluded": true
+    },
+    {
+      "layout": "field_major",
+      "source_stride": 14,
+      "bias": 0,
+      "leading_capacity": 8,
+      "longest_source_run": {
+        "length": 20,
+        "source_start": 6670,
+        "source_end": 6936,
+        "distinct_glyphs": "FINUVWYZ"
+      },
+      "necessary_minimum_paired_edits": 8,
+      "single_pair_excluded": true
+    },
+    {
+      "layout": "field_major",
+      "source_stride": 14,
+      "bias": 1,
+      "leading_capacity": 7,
+      "longest_source_run": {
+        "length": 15,
+        "source_start": 4173,
+        "source_end": 4369,
+        "distinct_glyphs": "GJNQSXZ"
+      },
+      "necessary_minimum_paired_edits": 10,
+      "single_pair_excluded": true
+    }
+  ],
+  "inequality": "312 - m <= (2*m + 1) * R is necessary",
+  "explanation": "At most m target key leaders are inserted. The remaining leaders occur in at most 2m+1 constant-displacement source runs, each a consecutive stride-spaced run with at most capacity glyphs. Each insertion/deletion introduces at most one boundary. Each source run has length <= R.",
+  "scope": "Necessary capacity only; not an IBLT decoding. Paired arbitrary source-letter insertions/deletions, exact R18 raw key fields and fixed bijective alphabet. Other transforms and representations remain open.",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129
+}
