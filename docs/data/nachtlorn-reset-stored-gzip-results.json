@@ -1,0 +1,164 @@
+{
+  "status": "Whole-packet single-stored-block gzip test; no word/answer scoring.",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "solver": {
+    "version": "5.3.3",
+    "package_version": "5.3.3.0",
+    "seed": 4300,
+    "case_budget_ms": 30000,
+    "candidate_cap": 512
+  },
+  "models": [
+    {
+      "drop_final_i": false,
+      "bias": 0,
+      "retained_letters": 8736,
+      "cases": [
+        {
+          "minimal_bytes": 5132,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5111,
+          "high_prefix_hex": "13f7",
+          "interval_prefix_covers": 0,
+          "prefix_compatible_alphabet_mappings": 0,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "empty_interval_cover",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 0.000312,
+          "exact_exclusion": true,
+          "meaning": "No alphabet matches the minimal-width ISIZE trailer, before any CRC search."
+        },
+        {
+          "minimal_bytes": 5133,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5112,
+          "high_prefix_hex": "13f8",
+          "interval_prefix_covers": 26,
+          "prefix_compatible_alphabet_mappings": 13130372138129326080000,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "unknown",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 30.059319,
+          "exact_exclusion": false,
+          "reason": "timeout",
+          "initial_smt2_sha256": "9d141dba9cc11201ddc20de5e243f7c0fbdbfee0c441b2fbae1ffe57cd50c8b1"
+        }
+      ]
+    },
+    {
+      "drop_final_i": false,
+      "bias": 1,
+      "retained_letters": 8736,
+      "cases": [
+        {
+          "minimal_bytes": 5133,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5112,
+          "high_prefix_hex": "13f8",
+          "interval_prefix_covers": 27,
+          "prefix_compatible_alphabet_mappings": 13181463080301035520000,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "unknown",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 30.055377,
+          "exact_exclusion": false,
+          "reason": "timeout",
+          "initial_smt2_sha256": "c4f227447890b787dd87d47e9906f1bed860617f6ea53a18de81f759fa7d6e13"
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "bias": 0,
+      "retained_letters": 8735,
+      "cases": [
+        {
+          "minimal_bytes": 5132,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5111,
+          "high_prefix_hex": "13f7",
+          "interval_prefix_covers": 0,
+          "prefix_compatible_alphabet_mappings": 0,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "empty_interval_cover",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 0.000373,
+          "exact_exclusion": true,
+          "meaning": "No alphabet matches the minimal-width ISIZE trailer, before any CRC search."
+        },
+        {
+          "minimal_bytes": 5133,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5112,
+          "high_prefix_hex": "13f8",
+          "interval_prefix_covers": 0,
+          "prefix_compatible_alphabet_mappings": 0,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "empty_interval_cover",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 0.000251,
+          "exact_exclusion": true,
+          "meaning": "No alphabet matches the minimal-width ISIZE trailer, before any CRC search."
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "bias": 1,
+      "retained_letters": 8735,
+      "cases": [
+        {
+          "minimal_bytes": 5132,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5111,
+          "high_prefix_hex": "13f7",
+          "interval_prefix_covers": 0,
+          "prefix_compatible_alphabet_mappings": 0,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "empty_interval_cover",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 0.000324,
+          "exact_exclusion": true,
+          "meaning": "No alphabet matches the minimal-width ISIZE trailer, before any CRC search."
+        },
+        {
+          "minimal_bytes": 5133,
+          "restored_trailing_zero_bytes": 2,
+          "payload_bytes": 5112,
+          "high_prefix_hex": "13f8",
+          "interval_prefix_covers": 0,
+          "prefix_compatible_alphabet_mappings": 0,
+          "budget_ms": 30000,
+          "candidate_cap": 512,
+          "status": "empty_interval_cover",
+          "candidate_numerals_checked": 0,
+          "candidate_audits": [],
+          "elapsed_seconds": 0.000256,
+          "exact_exclusion": true,
+          "meaning": "No alphabet matches the minimal-width ISIZE trailer, before any CRC search."
+        }
+      ]
+    }
+  ],
+  "scope": "FLG0, ten-byte gzip header, one nonempty final stored DEFLATE block, <=65535 payload bytes, valid CRC32/ISIZE; 0..7 trailing-zero restorations.",
+  "limits": [
+    "Other gzip headers/block types or multiple blocks/members are not tested.",
+    "Only empty covers or completed UNSAT enumeration are exclusions.",
+    "Timeout, UNKNOWN or candidate cap leaves the case unresolved.",
+    "A valid packet would not itself identify a population or outlier."
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

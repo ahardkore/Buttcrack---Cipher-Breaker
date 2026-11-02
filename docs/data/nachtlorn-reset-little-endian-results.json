@@ -1,0 +1,503 @@
+{
+  "status": "Bounded little-endian header feasibility; no answer selected by words.",
+  "source_letters": 8736,
+  "letter_sha256": "456fc44c44642d2f256961ac01f3dbb14cd165b3da9e64513a7518e5b61c610d",
+  "solver": {
+    "version": "5.3.3",
+    "package_version": "5.3.3.0",
+    "random_seed": 4300,
+    "timeout_ms_per_query": 15000
+  },
+  "headers": {
+    "gzip": [
+      "1f8b0800",
+      "1f8b0801",
+      "1f8b0802",
+      "1f8b0803",
+      "1f8b0804",
+      "1f8b0805",
+      "1f8b0806",
+      "1f8b0807",
+      "1f8b0808",
+      "1f8b0809",
+      "1f8b080a",
+      "1f8b080b",
+      "1f8b080c",
+      "1f8b080d",
+      "1f8b080e",
+      "1f8b080f",
+      "1f8b0810",
+      "1f8b0811",
+      "1f8b0812",
+      "1f8b0813",
+      "1f8b0814",
+      "1f8b0815",
+      "1f8b0816",
+      "1f8b0817",
+      "1f8b0818",
+      "1f8b0819",
+      "1f8b081a",
+      "1f8b081b",
+      "1f8b081c",
+      "1f8b081d",
+      "1f8b081e",
+      "1f8b081f"
+    ],
+    "zlib": [
+      "081d",
+      "083c",
+      "085b",
+      "087a",
+      "0899",
+      "08b8",
+      "08d7",
+      "08f6",
+      "1819",
+      "1838",
+      "1857",
+      "1876",
+      "1895",
+      "18b4",
+      "18d3",
+      "18f2",
+      "2815",
+      "2834",
+      "2853",
+      "2872",
+      "2891",
+      "28b0",
+      "28cf",
+      "28ee",
+      "3811",
+      "3830",
+      "384f",
+      "386e",
+      "388d",
+      "38ac",
+      "38cb",
+      "38ea",
+      "480d",
+      "482c",
+      "484b",
+      "486a",
+      "4889",
+      "48a8",
+      "48c7",
+      "48e6",
+      "5809",
+      "5828",
+      "5847",
+      "5866",
+      "5885",
+      "58a4",
+      "58c3",
+      "58e2",
+      "6805",
+      "6824",
+      "6843",
+      "6862",
+      "6881",
+      "68a0",
+      "68bf",
+      "68de",
+      "68fd",
+      "7801",
+      "7820",
+      "783f",
+      "785e",
+      "787d",
+      "789c",
+      "78bb",
+      "78da",
+      "78f9"
+    ],
+    "bzip2": [
+      "425a6831314159265359",
+      "425a6831177245385090",
+      "425a6832314159265359",
+      "425a6832177245385090",
+      "425a6833314159265359",
+      "425a6833177245385090",
+      "425a6834314159265359",
+      "425a6834177245385090",
+      "425a6835314159265359",
+      "425a6835177245385090",
+      "425a6836314159265359",
+      "425a6836177245385090",
+      "425a6837314159265359",
+      "425a6837177245385090",
+      "425a6838314159265359",
+      "425a6838177245385090",
+      "425a6839314159265359",
+      "425a6839177245385090"
+    ],
+    "xz": [
+      "fd377a585a00"
+    ]
+  },
+  "cases": [
+    {
+      "drop_final_i": false,
+      "bias": 0,
+      "retained_letters": 8736,
+      "families": [
+        {
+          "format": "gzip",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.215787,
+          "smt2_sha256": "763d015cef3795fba92175af7355f65c56e1db4221c788769d456ad702bf13f3",
+          "header_alternatives": 32,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "UZLVCBTINMSDWXAHRJYKPEFOQG",
+            "bytes": 5133,
+            "prefix_hex": "1f8b081baf6dc401d72270116713ed56",
+            "matched_header_hex": "1f8b081b",
+            "binary_sha256": "6025a51b168d841be85549fc9de7f17d58ebdc45c8366bc1338549bbd53181e8",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "zlib",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.24174,
+          "smt2_sha256": "e0f7d5c443301c7681e483da8c727a5000a01ccf9d882a4e2e2d4d981adc464f",
+          "header_alternatives": 66,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "MOHZIRUJDVPBEWCXTALGYQSNFK",
+            "bytes": 5133,
+            "prefix_hex": "3811a20c113d110e12ad76f924818295",
+            "matched_header_hex": "3811",
+            "binary_sha256": "c1c5356773045ad55eec52e8eee7162bb6e6b7bda570e02935add388cb35a48a",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "bzip2",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 15.073232,
+          "smt2_sha256": "f9fa5d2bd55166adc7677587cfe70f93cf84621d0bc236ca5c1b99b08d16bcfd",
+          "header_alternatives": 18,
+          "status": "unknown",
+          "reason": "timeout",
+          "meaning": "Feasibility unresolved; this is not a negative result."
+        },
+        {
+          "format": "xz",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.642784,
+          "smt2_sha256": "4c639a97a6ed02f365b8dd8ac8ddbf22b77709f630eedfff55742c8d3ea0a5eb",
+          "header_alternatives": 1,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "TNHBALWDRIFSVOZEUCKJGPYMXQ",
+            "bytes": 5133,
+            "prefix_hex": "fd377a585a00590ef0fe6aed40b22761",
+            "matched_header_hex": "fd377a585a00",
+            "binary_sha256": "e4875652f321355f0fc2f2e72b0d5ca815f4ddcdb5e3759a315fc9d68df00674",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        }
+      ]
+    },
+    {
+      "drop_final_i": false,
+      "bias": 1,
+      "retained_letters": 8736,
+      "families": [
+        {
+          "format": "gzip",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.286666,
+          "smt2_sha256": "8b899aefa720949607d134ae7115805ff34dea3185656584fb59b54a4c33f080",
+          "header_alternatives": 32,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "NFLTWCPKGEMVIHUOQASDZYBJRX",
+            "bytes": 5133,
+            "prefix_hex": "1f8b08124224c4ab4d0490e0735dd757",
+            "matched_header_hex": "1f8b0812",
+            "binary_sha256": "3d076c5c04b5d6309b416d2d8e4f465acd3ae25795813e505a8cfeca5a98d0eb",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "zlib",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.244374,
+          "smt2_sha256": "6ba1df3e7f0713c8f8b355211b8c2203d7ad5d18b7f25cd5738a75eeed053235",
+          "header_alternatives": 66,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "RFQNVOMEUDWBSCGTYIPZJHLKXA",
+            "bytes": 5133,
+            "prefix_hex": "78dad75aa5f0c0cd185019ac3c61cc84",
+            "matched_header_hex": "78da",
+            "binary_sha256": "14d203b6254155de9a4e13c15ea9ccba1c7eea6fb913bd4aefce9e52afdfb890",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "bzip2",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 15.089528,
+          "smt2_sha256": "9b9ec2bd13d4cfbc5b3f9ac26e1eae2add0623625f4ab77eeedc5dbfb869adee",
+          "header_alternatives": 18,
+          "status": "unknown",
+          "reason": "timeout",
+          "meaning": "Feasibility unresolved; this is not a negative result."
+        },
+        {
+          "format": "xz",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 1.726323,
+          "smt2_sha256": "0c6200ec9e0a2f0b84b11abb1a8a5bfc21cda6c2b7005668c38186d139c5d7d9",
+          "header_alternatives": 1,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "WKMSLBHPIDTFRYXJVGOUEANCQZ",
+            "bytes": 5133,
+            "prefix_hex": "fd377a585a000f6ba0a7a8f628c687b8",
+            "matched_header_hex": "fd377a585a00",
+            "binary_sha256": "3093ba06135bc0b3d1e1d3f6962b82896b8de327cf866f4f8b7e7a73da3230a6",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "bias": 0,
+      "retained_letters": 8735,
+      "families": [
+        {
+          "format": "gzip",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.226889,
+          "smt2_sha256": "7e537141d07cafcd8fe7f72eb82caf29f9718509ab1224582fd658bea0860383",
+          "header_alternatives": 32,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "CDQUVHWGORTNIKLYBEJPMFSZXA",
+            "bytes": 5132,
+            "prefix_hex": "1f8b0800cc6a76ae46224bda2b66dfc7",
+            "matched_header_hex": "1f8b0800",
+            "binary_sha256": "f0044152fae570f6ca270f8ba620d58b81d003f7445b390c9cfdd4d520a07771",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "zlib",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.259142,
+          "smt2_sha256": "149c6b17aa3ce51c244122ab031db9e15fec1170a8e26c96b4e20d075c2c520f",
+          "header_alternatives": 66,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "UXIBRFNZLWPYSCVGKHDOMJQETA",
+            "bytes": 5133,
+            "prefix_hex": "388d105af96b62a088ca935dfe176a86",
+            "matched_header_hex": "388d",
+            "binary_sha256": "0e1613866b550db2856a2983f5b6f04e8ec56faa8d07d3de4b41360775252d36",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "bzip2",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 15.080129,
+          "smt2_sha256": "5e56cb2bb936f630dcd23c599376d54ba8d34f3dad2dcd1f791bdf901efb2530",
+          "header_alternatives": 18,
+          "status": "unknown",
+          "reason": "timeout",
+          "meaning": "Feasibility unresolved; this is not a negative result."
+        },
+        {
+          "format": "xz",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.869397,
+          "smt2_sha256": "9cde1cc72393590aa2ff49b7967deb3bb6a37a04758e43a1840b7d7f2e5b7cdf",
+          "header_alternatives": 1,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "LUVKSPXQIWEANYBMJFCOZRHGDT",
+            "bytes": 5132,
+            "prefix_hex": "fd377a585a009d234f9445c2027132fd",
+            "matched_header_hex": "fd377a585a00",
+            "binary_sha256": "80220c0ef4607e050c39cdb461bb0025375050bfd028079e306000fa3aac9f2a",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        }
+      ]
+    },
+    {
+      "drop_final_i": true,
+      "bias": 1,
+      "retained_letters": 8735,
+      "families": [
+        {
+          "format": "gzip",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.228994,
+          "smt2_sha256": "9de36d565a9b7123df43f16fc67d7e1575aac0ce8f0cf9328dd5c61d8ac43807",
+          "header_alternatives": 32,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "IZQAPKHNBLTDMYUSFJRWCEXGVO",
+            "bytes": 5133,
+            "prefix_hex": "1f8b0817daaa1470c3aaae0b6f8db2ab",
+            "matched_header_hex": "1f8b0817",
+            "binary_sha256": "39838f1a9d9fd4575fbd00c23e29bd01c750aad3a403f3c25ac11c982fbe712c",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "zlib",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 0.145542,
+          "smt2_sha256": "68134028035d09c51f1f307caa1e41a50dda5bb9970bbfa8bbc4b4316f121f8c",
+          "header_alternatives": 66,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "QNPRYEMXADTSFJOBWZVUGIKLHC",
+            "bytes": 5133,
+            "prefix_hex": "7820a11f2638df023b3b78a96d73966e",
+            "matched_header_hex": "7820",
+            "binary_sha256": "acd8448350f3e09f9fb19ec0a27a246b3a3309b76eb02a1c8d663dafbc7ccbbf",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        },
+        {
+          "format": "bzip2",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 16.139425,
+          "smt2_sha256": "eccf9c25495e619f1a566a5571ddd50b0fc984f754b2f6d08bcf87e20b7566c6",
+          "header_alternatives": 18,
+          "status": "unknown",
+          "reason": "timeout",
+          "meaning": "Feasibility unresolved; this is not a negative result."
+        },
+        {
+          "format": "xz",
+          "timeout_ms": 15000,
+          "elapsed_seconds": 1.018337,
+          "smt2_sha256": "f6c00f8a116937afd3d16961ea66c5b85179b16e1918945e20c3703128971e3e",
+          "header_alternatives": 1,
+          "status": "sat",
+          "meaning": "One arbitrary header-compatible alphabet; not a recovered key.",
+          "witness": {
+            "digit_alphabet": "NOSWQBYCTEKRZIHPFLJMUDVGXA",
+            "bytes": 5133,
+            "prefix_hex": "fd377a585a00fdd680840e07903e7cec",
+            "matched_header_hex": "fd377a585a00",
+            "binary_sha256": "fbfe98adbe57db848f18b443186e905e33326c3e1825c971b24f6cf527c53c9b",
+            "exact_retained_letter_roundtrip": true,
+            "canonical_numeral": true
+          },
+          "witness_packet_check": {
+            "complete_stream_verified": false,
+            "accepted_records": [],
+            "zero_restorations_tested": 8,
+            "scope": "Only this arbitrary witness, output cap1MiB, XZ memory cap64MiB, no preset dictionary. Population/outlier unassigned."
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "SAT proves header compatibility only; one arbitrary witness is checked per SAT query.",
+    "UNSAT excludes only the specified raw little-endian representation/header family.",
+    "UNKNOWN or timeout is unresolved feasibility, never a negative.",
+    "No extra cipher, reversed digit order, block packing, offsets, passwords or book transformations."
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e"
+}

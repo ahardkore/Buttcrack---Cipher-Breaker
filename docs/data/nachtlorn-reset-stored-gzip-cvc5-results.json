@@ -1,0 +1,59 @@
+{
+  "status": "Independent backend for the same R16 constraints, not a new cipher model.",
+  "solver": {
+    "backend": "cvc5",
+    "package_version": "1.4.2",
+    "formula_builder_z3_version": "5.3.3",
+    "seed": 4300,
+    "case_budget_ms": 30000,
+    "candidate_cap": 512
+  },
+  "cases": [
+    {
+      "drop_final_i": false,
+      "bias": 0,
+      "minimal_bytes": 5133,
+      "restored_trailing_zero_bytes": 2,
+      "payload_bytes": 5112,
+      "high_prefix_hex": "13f8",
+      "interval_prefix_covers": 26,
+      "prefix_compatible_alphabet_mappings": 13130372138129326080000,
+      "budget_ms": 30000,
+      "candidate_cap": 512,
+      "status": "unknown",
+      "candidate_numerals_checked": 0,
+      "candidate_audits": [],
+      "elapsed_seconds": 30.000143,
+      "exact_exclusion": false,
+      "reason": "UnknownExplanation.TIMEOUT",
+      "initial_smt2_sha256": "9d141dba9cc11201ddc20de5e243f7c0fbdbfee0c441b2fbae1ffe57cd50c8b1"
+    },
+    {
+      "drop_final_i": false,
+      "bias": 1,
+      "minimal_bytes": 5133,
+      "restored_trailing_zero_bytes": 2,
+      "payload_bytes": 5112,
+      "high_prefix_hex": "13f8",
+      "interval_prefix_covers": 27,
+      "prefix_compatible_alphabet_mappings": 13181463080301035520000,
+      "budget_ms": 30000,
+      "candidate_cap": 512,
+      "status": "unknown",
+      "candidate_numerals_checked": 0,
+      "candidate_audits": [],
+      "elapsed_seconds": 30.000214,
+      "exact_exclusion": false,
+      "reason": "UnknownExplanation.TIMEOUT",
+      "initial_smt2_sha256": "05fe2e6930995cafe80d4f387b8e0520f4717101759bd9d0586fabb952dc8115"
+    }
+  ],
+  "limits": [
+    "Prior R16 exact exclusions are not rerun; only recorded UNKNOWN cases are selected.",
+    "Constraints, CRC checks and full-packet acceptance are unchanged.",
+    "Timeout or candidate cap remains incomplete, never an exclusion."
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "previous_result_sha256": "100c8257da07f8289d20c69e950395c9924bcc574a75708abee172abdb967acb",
+  "previous_result": "docs/data/nachtlorn-reset-stored-gzip-results.json"
+}

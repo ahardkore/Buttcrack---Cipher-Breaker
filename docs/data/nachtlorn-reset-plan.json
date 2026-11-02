@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "reset_literal_words_keyword_digits_and_anchored_book_checks_completed_no_solution",
+  "status": "reset_R17_second_backend_complete_unresolved",
   "date": "2026-11-01",
   "facts_file": "docs/data/nachtlorn-reset-facts.json",
   "historical_quarantine": {
@@ -487,6 +487,190 @@
         "structured_objects": 0,
         "all_letter_roundtrips_exact": true
       }
+    },
+    {
+      "id": "R14",
+      "name": "Exact binary-prefix invariants under arbitrary digit relabelling",
+      "status": "tested_exact_gzip_bzip2_xz_exclusions_zlib_prefix_underdetermined",
+      "basis": "Execute the representation-first gate left after R13, without adding a semantic keyword or a letterwise encryption. This is exploratory model testing, not an author-confirmed encoding.",
+      "model": "Each original glyph maps bijectively to a digit of a whole base26 integer; test digits0..25 and bijective digits1..26. Big-endian minimal bytes only. Fixed-width zero-leading numeral allowed conservatively; separately count canonical zero-free A0 numerals.",
+      "inputs": [
+        "full literal body",
+        "explicit final-I removal"
+      ],
+      "prefix_families": {
+        "gzip": "1f8b08 followed by all32 legal flag bytes; remaining header fields unrestricted",
+        "zlib": "All CM=8, CINFO0..7, FCHECK-valid two-byte headers; FDICT and FLEVEL unrestricted",
+        "bzip2": "BZh1..9 followed by either the first-block or empty-stream 48-bit marker",
+        "xz": "Six-byte stream magic only; flags and checksum unrestricted"
+      },
+      "method": "Count all injective glyph/digit assignments consistent with integer intervals for a prefix at each feasible minimal byte length. Fully included prefix subtrees contribute factorial completions; repeated-glyph and all-different constraints prune boundaries. No alphabet enumeration cap or heuristic cutoff.",
+      "gate": "A zero count excludes only this raw representation and header family. A positive count is prefix compatibility, not a decoded packet, recovered population, or outlier. A deterministic completion is a compatibility witness only.",
+      "excluded": [
+        "little-endian bytes",
+        "reversed numeral digits",
+        "blockwise encodings",
+        "letterwise cipher stages",
+        "arbitrary offsets",
+        "passwords",
+        "book-dependent transformations",
+        "preferred word or population searches"
+      ],
+      "controls": "Compare exact counts with exhaustive small-alphabet permutations; recover known relabelled compressed-header controls; check fixed mappings, bijective bias, leading-zero conventions and boundary inclusivity.",
+      "results": "docs/data/nachtlorn-reset-prefix-invariant-results.json",
+      "outcome": {
+        "models": 4,
+        "header_byte_length_intervals": 819,
+        "alphabet_permutations_per_model": 403291461126605635584000000,
+        "excluded_formats": [
+          "gzip",
+          "bzip2",
+          "xz"
+        ],
+        "zlib_header_only_mapping_counts": [
+          {
+            "drop_final_i": false,
+            "bias": 0,
+            "alphabet_mappings": 810167137515394154496000,
+            "canonical_mappings": 808269883700933541888000
+          },
+          {
+            "drop_final_i": false,
+            "bias": 1,
+            "alphabet_mappings": 806029552289077788672000,
+            "canonical_mappings": 806029552289077788672000
+          },
+          {
+            "drop_final_i": true,
+            "bias": 0,
+            "alphabet_mappings": 74439502744180654080000,
+            "canonical_mappings": 43682755556811571200000
+          },
+          {
+            "drop_final_i": true,
+            "bias": 1,
+            "alphabet_mappings": 43582481579832459264000,
+            "canonical_mappings": 43582481579832459264000
+          }
+        ],
+        "independent_certificate": "All permitted first-six-digit prefixes contradict equality/injectivity for source VXGFAG, or lie outside the numeral range. Independently checked without the interval counter.",
+        "complete_packets_recovered": 0,
+        "caution": "Zlib header-only witnesses are arbitrary completions, not recovered alphabets or validated packets."
+      }
+    },
+    {
+      "id": "R15",
+      "name": "Little-endian whole-numeral header congruences under arbitrary digit relabelling",
+      "status": "tested_12_header_witnesses_4_bzip2_timeouts_no_packet",
+      "basis": "Complete the byte-order distinction explicitly left open by R14; no new semantic key, literary population, or letter-stage cipher.",
+      "models": "Original order; full/drop final I; arbitrary bijective glyph mapping to0..25 or1..26; minimal little-endian integer bytes. A0 zero-leading numeral permitted as in the broader R14 model. For checksum validation of a SAT witness, separately restore0..7 lost trailing zero bytes, as in the earlier whole-integer models; these do not change a header already inside the minimal bytes.",
+      "header_families": "Exactly the R14 header catalog: all32 gzip flags, all66 valid zlib headers, all18 bzip2 block/empty prefixes, XZ six-byte magic. One disjunction per family, not a preferred header.",
+      "method": "SMT bit-vector constraints: AllDifferent digits in0..25; sum of modular positional coefficients plus bias equals an admitted little-endian header residue modulo2**(8*header_bytes). Older terms divisible by the modulus vanish. Enforce minimal byte representation long enough to contain the header.",
+      "solver": {
+        "package": "z3-solver",
+        "version": "5.3.3",
+        "random_seed": 4300,
+        "timeout_ms_per_query": 15000,
+        "queries": 16,
+        "witnesses_per_satisfiable_query": 1,
+        "package_version": "5.3.3.0"
+      },
+      "classification": "SAT: verify the complete alphabet and header in independent Python arithmetic, then check this one arbitrary completion for a bounded checksum-valid origin-zero compressed stream consuming all bytes. UNSAT: excludes that header family/model. UNKNOWN or timeout: untested feasibility, never a negative.",
+      "validation_limits": {
+        "output_bytes": 1048576,
+        "xz_memory_bytes": 67108864,
+        "preset_dictionary": "none supplied; a dictionary-required witness is not accepted as a complete stream",
+        "trailing_zero_restorations": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "limits": "No enumeration of all SAT mappings, no model counting, no inference from a lone header; a failing arbitrary witness does not eliminate other maps. SAT alphabets are compatibility witnesses, not recovered keys.",
+      "controls": "Exhaust small-alphabet permutations against solver SAT/UNSAT; compare modular coefficients with scalar full numerals; known relabelled compressed members; minimal-byte length, bias, exact source roundtrip and timeout-state handling.",
+      "results": "docs/data/nachtlorn-reset-little-endian-results.json",
+      "outcome": {
+        "queries": 16,
+        "sat": 12,
+        "unsat": 0,
+        "unknown": 4,
+        "unknown_reason": "All four bzip2 queries reached the solver timeout. Feasibility remains unresolved.",
+        "satisfiable_families_in_all_four_models": [
+          "gzip",
+          "zlib",
+          "xz"
+        ],
+        "independently_verified_witnesses": 12,
+        "packet_zero_restoration_checks": 96,
+        "verified_complete_streams": 0,
+        "caution": "One arbitrary completion per SAT query, not an exhaustive search of compatible alphabets. No payload or population is established."
+      }
+    },
+    {
+      "id": "R16",
+      "name": "Whole gzip packet with one stored DEFLATE block",
+      "status": "tested_5_exact_trailer_exclusions_2_timeouts_no_candidates",
+      "basis": "R15 shows header-only feasibility is underdetermined. Test a complete low-complexity gzip construction, including the far-end length and CRC, without choosing a keyword. Stored DEFLATE is a standard wrapper for incompressible binary data, not an author-confirmed layer.",
+      "models": "Raw original glyph order, full/drop final I, arbitrary bijection to0..25 or1..26, whole integer to minimal little-endian bytes, restore0..7 trailing zero bytes. Same alphabet class as R14/R15; no other cipher or book stage.",
+      "gzip_scope": {
+        "header": "Exactly ten bytes: magic1f8b, CM8, FLG0 (no optional fields); MTIME, XFL and OS bytes unrestricted.",
+        "deflate": "One final stored block: BFINAL1, BTYPE00, any ignored alignment bits, LEN/NLEN complementary; nonempty payload at most65535bytes.",
+        "trailer": "CRC32 of the entire stored payload and ISIZE equal to payload length. Must consume every packet byte.",
+        "size_rule": "Packet overhead23bytes. For each feasible minimal-byte length n and restoration z in0..7, payload length L=n+z-23. Require the ISIZE trailer to have exactly z trailing zero bytes. Its remaining bytes constrain the high end of the numeral."
+      },
+      "method": "Convert the high-end ISIZE interval to an exact disjoint cover of glyph/digit prefix assignments; combine that cover with low120-bit gzip/stored-block constraints in SMT. Enumerate distinct numeral-producing assignments, independently reconstruct each whole packet, check grammar, CRC32, ISIZE and bounded decompression.",
+      "budgets": {
+        "solver_seed": 4300,
+        "time_budget_ms_per_feasible_length_case": 30000,
+        "candidate_cap_per_case": 512,
+        "decompression_output_cap": 1048576,
+        "no_timeout_escalation": true
+      },
+      "classification": "A verified full packet is a recovery candidate, not an assigned population/outlier. An empty exact interval cover or solver exhaustion with all CRC failures excludes only this stored-block/FLG0 class in that case. Timeout or candidate cap is incomplete, never an exclusion.",
+      "excluded": "Other DEFLATE block types, multiple blocks, optional gzip fields, multiple members, larger payloads, other wrappers, other byte order, reversed digits, extra letter ciphers, arbitrary offsets, passwords and book transformations.",
+      "controls": "Exhaust small-alphabet interval covers; positive hand-built valid gzip/stored controls with independent library decoding under both digit biases; CRC corruption, NLEN corruption and nonfinal-block negatives; timeout/cap classifications; exact input roundtrip and source-overwrite guard.",
+      "results": "docs/data/nachtlorn-reset-stored-gzip-results.json",
+      "outcome": {
+        "feasible_length_cases": 7,
+        "empty_interval_cover_exclusions": 5,
+        "unknown_timeouts": 2,
+        "candidate_numerals_checked": 0,
+        "complete_packets": 0,
+        "scope_note": "All drop-final-I cases excluded for the registered single stored-block gzip class. Full body5133byte A0/A1 cases remain unresolved; no actual-source CRC candidate was produced. Positive CRC recovery is demonstrated by synthetic controls only."
+      }
+    },
+    {
+      "id": "R17",
+      "name": "Independent backend check of unresolved R16 packet constraints",
+      "status": "tested_2_timeouts_no_candidates",
+      "basis": "R16 remains unresolved in two full-body cases; change computational backend, not cipher/alphabet/header/payload hypotheses. R16 results and original30second budgets remain unchanged.",
+      "inputs": "Only the two R16 UNKNOWN cases, selected from its recorded report after verifying the original-source hash and derived length cases.",
+      "constraints": "Use exactly the R16 stored-gzip query builder; export standard SMT-LIB and parse into cvc5. Same interval cover, bijection, low120-bit fields, length, CRC validation and distinct-numeral blocking.",
+      "solver": {
+        "package": "cvc5",
+        "version": "1.4.2",
+        "seed": 4300,
+        "time_budget_ms_per_case": 30000,
+        "candidate_cap_per_case": 512
+      },
+      "budget_note": "This is a separately registered second-backend experiment, not a change to the first experiment or a relabelled timeout. No further budget escalation in this pass.",
+      "classification": "Only completed exhaustion with all candidates independently CRC-rejected proves an exclusion. A timeout or cap remains incomplete. A verified packet must pass the full parser/decompressor and original-letter roundtrip; population/outlier remain unassigned.",
+      "controls": "Use the same positive full-packet fixtures and CRC-corrupt/candidate-cap controls through the adapter; verify incremental SMT parsing and model values.",
+      "results": "docs/data/nachtlorn-reset-stored-gzip-cvc5-results.json",
+      "outcome": {
+        "cases": 2,
+        "unknown_timeouts": 2,
+        "candidate_numerals_checked": 0,
+        "actual_source_crc_checks": 0,
+        "complete_packets": 0,
+        "exact_exclusions": 0,
+        "interpretation": "Both independently budgeted cvc5 cases remain UNKNOWN. No extension to R16 exclusions, recovered alphabet, packet, population or outlier."
+      }
     }
   ],
   "not_assumed": [
@@ -497,5 +681,5 @@
     "the final singleton is necessarily padding, a delimiter, zero, or the final outlier"
   ],
   "historical_negatives": "Keep their documented scopes. Do not repeat unchanged searches or treat them as proof that all other constructions fail.",
-  "next_gate": "Representation-first: test numeral/packet invariants before admitting more semantic keyword guesses. A possible future check is repeated-glyph consistency against canonical binary prefixes under digit relabelling; it is not registered or executed in this pass."
+  "next_gate": "Do not escalate these solver budgets again without a separately justified experiment. Before another body search, require a clue-grounded forward construction or exact representation invariant with a discriminating prediction; preserve both unresolved cases and all scoped exclusions."
 }
