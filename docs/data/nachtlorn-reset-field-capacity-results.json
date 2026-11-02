@@ -1,0 +1,1663 @@
+{
+  "status": "Necessary fixed-width representation tests, not table recovery.",
+  "schema": [
+    {
+      "name": "count",
+      "letters": 7,
+      "bits": 32
+    },
+    {
+      "name": "key",
+      "letters": 14,
+      "bits": 64
+    },
+    {
+      "name": "checksum",
+      "letters": 7,
+      "bits": 32
+    }
+  ],
+  "index_convention": "zero-based index in retained original body letters, excluding whitespace",
+  "cases": [
+    {
+      "drop_final_i": false,
+      "layout": "cell_interleaved",
+      "digit_order": "most_significant_first",
+      "bias": 0,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "V",
+              "body_letter_index": 0
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 28
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 84
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 112
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 140
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 168
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 196
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 224
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 280
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 308
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 336
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 392
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 420
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 448
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 476
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 8,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "I",
+              "body_letter_index": 7
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 35
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 63
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 91
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 119
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 147
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 175
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 203
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 231
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "G",
+              "body_letter_index": 21
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 49
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 77
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 105
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 161
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 189
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 217
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 245
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 273
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 329
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 385
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 441
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 609
+            },
+            {
+              "glyph": "L",
+              "body_letter_index": 637
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 665
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "cell_interleaved",
+      "digit_order": "most_significant_first",
+      "bias": 1,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "V",
+              "body_letter_index": 0
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 28
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 84
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 112
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 140
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 168
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 196
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 224
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 280
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 308
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 336
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 392
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 420
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 448
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 7,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "I",
+              "body_letter_index": 7
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 35
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 63
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 91
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 119
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 147
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 175
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 203
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "G",
+              "body_letter_index": 21
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 49
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 77
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 105
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 161
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 189
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 217
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 245
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 273
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 329
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 385
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 441
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 609
+            },
+            {
+              "glyph": "L",
+              "body_letter_index": 637
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "cell_interleaved",
+      "digit_order": "least_significant_first",
+      "bias": 0,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "J",
+              "body_letter_index": 6
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 34
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 62
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 118
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 146
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 174
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 202
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 230
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 258
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 286
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 314
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 342
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 370
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 426
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 454
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 8,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "Q",
+              "body_letter_index": 20
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 48
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 76
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 104
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 132
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 160
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 188
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 216
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 244
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "P",
+              "body_letter_index": 27
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 55
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 83
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 111
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 139
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 167
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 223
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 251
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 279
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 335
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 447
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 475
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 531
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 559
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 587
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "cell_interleaved",
+      "digit_order": "least_significant_first",
+      "bias": 1,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "J",
+              "body_letter_index": 6
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 34
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 62
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 118
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 146
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 174
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 202
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 230
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 258
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 286
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 314
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 342
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 370
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 426
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 7,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "Q",
+              "body_letter_index": 20
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 48
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 76
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 104
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 132
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 160
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 188
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 216
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "P",
+              "body_letter_index": 27
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 55
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 83
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 111
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 139
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 167
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 223
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 251
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 279
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 335
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 447
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 475
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 531
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 559
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "field_major",
+      "digit_order": "most_significant_first",
+      "bias": 0,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "V",
+              "body_letter_index": 0
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 7
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 14
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 21
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 28
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 35
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 42
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 49
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 70
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 77
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 84
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 91
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 98
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 105
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 112
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 8,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "M",
+              "body_letter_index": 2184
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 2198
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 2212
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 2226
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 2240
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 2254
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 2268
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 2282
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 2296
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "Y",
+              "body_letter_index": 6552
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 6559
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 6566
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 6573
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 6580
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 6587
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 6594
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 6601
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 6608
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 6615
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 6629
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 6664
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 6671
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 6678
+            },
+            {
+              "glyph": "V",
+              "body_letter_index": 6713
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "field_major",
+      "digit_order": "most_significant_first",
+      "bias": 1,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "V",
+              "body_letter_index": 0
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 7
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 14
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 21
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 28
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 35
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 42
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 49
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 70
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 77
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 84
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 91
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 98
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 105
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 7,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "M",
+              "body_letter_index": 2184
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 2198
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 2212
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 2226
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 2240
+            },
+            {
+              "glyph": "G",
+              "body_letter_index": 2254
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 2268
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 2282
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "Y",
+              "body_letter_index": 6552
+            },
+            {
+              "glyph": "C",
+              "body_letter_index": 6559
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 6566
+            },
+            {
+              "glyph": "X",
+              "body_letter_index": 6573
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 6580
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 6587
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 6594
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 6601
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 6608
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 6615
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 6629
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 6664
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 6671
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 6678
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "field_major",
+      "digit_order": "least_significant_first",
+      "bias": 0,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "J",
+              "body_letter_index": 6
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 13
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 20
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 27
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 34
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 41
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 55
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 62
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 69
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 83
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 97
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 104
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 118
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 125
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 132
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 8,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "C",
+              "body_letter_index": 2197
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 2211
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 2225
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 2239
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 2253
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 2281
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 2295
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 2309
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 2323
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 14,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "G",
+              "body_letter_index": 6558
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 6565
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 6572
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 6579
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 6586
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 6593
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 6600
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 6614
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 6628
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 6635
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 6649
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 6656
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 6663
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 6670
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 6677
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": false,
+      "layout": "field_major",
+      "digit_order": "least_significant_first",
+      "bias": 1,
+      "retained_letters": 8736,
+      "cells": 312,
+      "fields": [
+        {
+          "name": "count",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "J",
+              "body_letter_index": 6
+            },
+            {
+              "glyph": "Y",
+              "body_letter_index": 13
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 20
+            },
+            {
+              "glyph": "P",
+              "body_letter_index": 27
+            },
+            {
+              "glyph": "K",
+              "body_letter_index": 34
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 41
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 55
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 62
+            },
+            {
+              "glyph": "Z",
+              "body_letter_index": 69
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 83
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 97
+            },
+            {
+              "glyph": "S",
+              "body_letter_index": 104
+            },
+            {
+              "glyph": "A",
+              "body_letter_index": 118
+            },
+            {
+              "glyph": "F",
+              "body_letter_index": 125
+            }
+          ]
+        },
+        {
+          "name": "key",
+          "letters": 14,
+          "bits": 64,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 7,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "C",
+              "body_letter_index": 2197
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 2211
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 2225
+            },
+            {
+              "glyph": "D",
+              "body_letter_index": 2239
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 2253
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 2281
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 2295
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 2309
+            }
+          ]
+        },
+        {
+          "name": "checksum",
+          "letters": 7,
+          "bits": 32,
+          "distinct_leading_glyphs": 26,
+          "permitted_leading_digits": 13,
+          "capacity_exceeded": true,
+          "certificate": [
+            {
+              "glyph": "G",
+              "body_letter_index": 6558
+            },
+            {
+              "glyph": "J",
+              "body_letter_index": 6565
+            },
+            {
+              "glyph": "W",
+              "body_letter_index": 6572
+            },
+            {
+              "glyph": "E",
+              "body_letter_index": 6579
+            },
+            {
+              "glyph": "T",
+              "body_letter_index": 6586
+            },
+            {
+              "glyph": "O",
+              "body_letter_index": 6593
+            },
+            {
+              "glyph": "R",
+              "body_letter_index": 6600
+            },
+            {
+              "glyph": "I",
+              "body_letter_index": 6614
+            },
+            {
+              "glyph": "B",
+              "body_letter_index": 6628
+            },
+            {
+              "glyph": "M",
+              "body_letter_index": 6635
+            },
+            {
+              "glyph": "U",
+              "body_letter_index": 6649
+            },
+            {
+              "glyph": "H",
+              "body_letter_index": 6656
+            },
+            {
+              "glyph": "Q",
+              "body_letter_index": 6663
+            },
+            {
+              "glyph": "N",
+              "body_letter_index": 6670
+            }
+          ]
+        }
+      ],
+      "exact_exclusion": true,
+      "status": "leading_capacity_exclusion"
+    },
+    {
+      "drop_final_i": true,
+      "layout": "cell_interleaved",
+      "digit_order": "most_significant_first",
+      "bias": 0,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "cell_interleaved",
+      "digit_order": "most_significant_first",
+      "bias": 1,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "cell_interleaved",
+      "digit_order": "least_significant_first",
+      "bias": 0,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "cell_interleaved",
+      "digit_order": "least_significant_first",
+      "bias": 1,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "field_major",
+      "digit_order": "most_significant_first",
+      "bias": 0,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "field_major",
+      "digit_order": "most_significant_first",
+      "bias": 1,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "field_major",
+      "digit_order": "least_significant_first",
+      "bias": 0,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    },
+    {
+      "drop_final_i": true,
+      "layout": "field_major",
+      "digit_order": "least_significant_first",
+      "bias": 1,
+      "retained_letters": 8735,
+      "status": "dimension_failure",
+      "exact_exclusion": true,
+      "cell_letters": 28,
+      "remainder": 27,
+      "fields": []
+    }
+  ],
+  "limits": [
+    "No header, offset, padding, letter cipher or varying per-cell alphabet is tested.",
+    "Capacity failure applies even with a separate bijective alphabet per field type.",
+    "Passing a bound does not validate a table, population or final outlier."
+  ],
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129,
+  "source_letters": 8736
+}

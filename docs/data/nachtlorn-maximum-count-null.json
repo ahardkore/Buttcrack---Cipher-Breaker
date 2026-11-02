@@ -1,0 +1,50 @@
+{
+  "hypothesis": "R28",
+  "source_sha256": "04eddf97e8ebbc9ce2565269508d63c99b60efc7cacf3f2c020f14215dc67e7e",
+  "source_bytes": 11129,
+  "letters": 8736,
+  "counts_A_to_Z": [
+    363,
+    307,
+    328,
+    328,
+    412,
+    339,
+    339,
+    337,
+    325,
+    299,
+    326,
+    317,
+    358,
+    333,
+    320,
+    351,
+    353,
+    370,
+    306,
+    318,
+    326,
+    324,
+    353,
+    308,
+    364,
+    332
+  ],
+  "max_count": 412,
+  "max_glyphs": [
+    "E"
+  ],
+  "expected_count_per_glyph_under_uniform": 336.0,
+  "specified_glyph_binomial_upper_tail_decimal": "0.000023467867903832782764",
+  "maximum_26_glyph_union_bound_decimal": "0.00061016456549965235186",
+  "page1_rows": 61,
+  "page1_max_glyph_counts": {
+    "E": 181
+  },
+  "page2_max_glyph_counts": {
+    "E": 231
+  },
+  "status": "Post-observation exploratory reference calculation, not a plaintext, key or outlier.",
+  "interpretation": "Under iid uniform letters, Pr(any of 26 counts >= observed maximum) is at most the union bound. This 26-way correction is not a correction for earlier research or proof of the generator. Marginal frequency and visual-strip outlier are different questions."
+}

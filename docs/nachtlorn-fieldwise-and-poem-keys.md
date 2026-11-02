@@ -6,6 +6,13 @@ Original wording, body letters, spaces and terminal I remain untouched.
 
 ## R8: per-field encoding, rather than one large base26 integer
 
+
+**Later exact follow-up:** [R18 field-capacity certificates](nachtlorn-field-capacity.md)
+exclude this **raw** fixed-width schema under every fixed bijective digit alphabet,
+not just the selected alphabets below. The later scope also includes reversed
+within-field digit order; it does not extend the exclusion to intervening letter
+transforms, other encodings or IBLTs generally.
+
 The [pinned C++ reference](data/nachtlorn-iblt-reference-source.json) supplies
 logical count32/key64/checksum32 fields and permits zero-length values. It does
 **not** supply the letter encoding below or attribute any implementation to the
