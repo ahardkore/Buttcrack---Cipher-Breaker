@@ -56,8 +56,13 @@ class TestPublicSolverExperience(unittest.TestCase):
         self.assertNotIn('<details open', shell)
         self.assertIn('id="solver-method"', shell)
         self.assertIn('id="solver-key"', shell)
+        self.assertIn('<option value="6" selected>Up to 6 layers</option>', shell)
         self.assertIn('Nothing is saved unless', shell)
         self.assertIn('id="save-attempt"', bp.session_html())
+        for page in VENTURE.glob("*.html"):
+            markup = page.read_text(encoding="utf-8")
+            if 'id="solver-depth"' in markup:
+                self.assertIn('<option value="6" selected>Up to 6 layers</option>', markup, page.name)
 
     def test_query_links_still_validate_their_real_target_and_fragment(self):
         bp.check_internal_links({"index.html": '<section id="solver"></section>', "wiki.html": '<a href="index.html?cipher=caesar&amp;example=caesar#solver">Try</a>'})

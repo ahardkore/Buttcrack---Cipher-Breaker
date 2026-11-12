@@ -9,6 +9,11 @@ if (typeof atob === 'undefined') {
 }
 const S = require('./solver.js');
 const P = require('./paradigm.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const reportedLayeredPuzzle = fs.readFileSync(
+  path.join(__dirname, '../../tests/fixtures/binary_base64_hex_morse.txt'), 'utf8'
+).trim();
 
 const PT1 = 'The council of Venice has decreed that all merchant vessels must pay the new harbour tax before entering the lagoon';
 const PT2 = 'Attack the northern gate at dawn and bring every available soldier with you because the enemy is waiting there';
@@ -145,6 +150,7 @@ const CASES = [
   ['hex', hex(PT2), PT2],
   ['binary', [...PT3].map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' '), PT3],
   ['xor single 0x2a', xor1(PT1, 0x2a), PT1],
+  ['binary -> b64 -> hex -> morse (reported short puzzle)', reportedLayeredPuzzle, 'I LIKE TRAINS'],
   ['b64 -> hex -> caesar', b64(hex(shift(PT2, 5))), PT2],
   ['b64 -> xor', b64(xor1(PT3, 0x5f)), PT3],
   ['hex -> vigenere', hex(vigEnc(PT1, 'LAMP')), PT1],

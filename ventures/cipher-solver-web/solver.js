@@ -76,8 +76,10 @@ function wordRate(text) {
   return all ? hit / all : 0;
 }
 
-/** Combined 0..1 plausibility that a string is English plaintext. */
-function plausibility(text) {
+/** Combined 0..1 plausibility that a string is English plaintext.
+ *  `fromEncoding` is only for the direct output of a structural decoder, not
+ *  for a guessed cipher key or reversed text. */
+function plausibility(text, fromEncoding = false) {
   const s = score(text);                       // ~-2.4 great .. ~-5.5 noise
   const norm = Math.max(0, Math.min(1, (s + 5.0) / 2.4));
   const wr = wordRate(text);
@@ -85,8 +87,13 @@ function plausibility(text) {
     ? (text.match(/[\x20-\x7e\n\t]/g) || []).length / text.length
     : 0;
   // Short strings can look great by luck, so ramp confidence in with length.
+  // A valid encoding plus a multi-word, English-like reading is different:
+  // the decoder searched no key, so its short plaintext keeps the lexical
+  // evidence without the short-sample penalty. Gibberish still gets the ramp.
   const n = lettersOnly(text).length;
-  const lengthRamp = Math.min(1, 0.45 + n / 60);
+  const tokens = text.toLowerCase().match(/[a-z']+/g) || [];
+  const decodedWords = fromEncoding && n >= 8 && tokens.length >= 2 && wr >= 0.15 && norm >= 0.5;
+  const lengthRamp = decodedWords ? 1 : Math.min(1, 0.45 + n / 60);
   // English is mostly letters and spaces. A "solution" studded with digits and
   // punctuation is almost always a scoring artefact over a handful of letters,
   // so weight by how text-like the character mix is.
@@ -856,7 +863,8 @@ const DECODERS = [
   },
   {
     name: 'binary',
-    test: s => /^[01\s]+$/.test(s) && s.replace(/\s/g, '').length >= 16,
+    test: s => /^[01\s]+$/.test(s) && s.replace(/\s/g, '').length >= 16
+      && s.replace(/\s/g, '').length % 8 === 0,
     run: s => {
       const b = s.replace(/\s/g, '');
       let out = '';
@@ -872,9 +880,13 @@ const DECODERS = [
   {
     name: 'morse',
     test: s => /^[.\-\s/|]+$/.test(s) && s.includes('.') && s.includes('-'),
-    run: s => s.trim().split(/\s*[/|]\s*|\s{2,}/).map(
-      w => w.trim().split(/\s+/).map(c => MORSE[c] || '').join('')
-    ).join(' ').trim(),
+    run: s => {
+      const words = s.trim().split(/\s*[/|]\s*|\s{2,}/).map(word => word.trim().split(/\s+/));
+      // Never turn an unknown Morse group into an empty letter and present the
+      // remaining fragment as a complete decoding.
+      if (words.some(word => word.some(code => !Object.hasOwn(MORSE, code)))) return null;
+      return words.map(word => word.map(code => MORSE[code]).join('')).join(' ').trim();
+    },
   },
   {
     name: 'reversed text',
@@ -913,7 +925,7 @@ function xorSingle(bytes) {
 // substitution climb.
 const FAST_ANSWER_CONFIDENCE = 0.58;
 
-function solve(text, depth = 3, chain = [], options = {}) {
+function solve(text, depth = 6, chain = [], options = {}) {
   // A recovered PK record is proven by exact normalized equality, not by this
   // small browser language model.  Keep this lookup before statistical attacks
   // so an already solved canonical challenge gets its construction evidence,
@@ -942,19 +954,9 @@ function solve(text, depth = 3, chain = [], options = {}) {
   const bytes = [...text].map(c => c.charCodeAt(0) & 0xff);
   if (bytes.length >= 8 && bytes.length < 4000) push(xorSingle(bytes));
 
-  // The periodic family (Vigenere, Beaufort, Variant Beaufort, Porta,
-  // Gronsfeld) shares one coset search and is still far cheaper than a
-  // mixed-alphabet climb.  Autokey's chain search costs about the same.
-  // Do not pay for either when a deterministic attack already explains
-  // the input.
-  if (options.compare || bestConfidence() < FAST_ANSWER_CONFIDENCE) {
-    push(periodic(text));
-    push(quagmire3(text));
-    push(autokey(text));
-  }
-
   for (const r of results) r.chain = chain.slice();
 
+  let decodedAnswer = false;
   if (depth > 0) {
     // Decoding a clearly shaped layer is cheaper and more informative than a
     // substitution climb over the wrapper.  Keep reverse for last: every long
@@ -974,11 +976,12 @@ function solve(text, depth = 3, chain = [], options = {}) {
       // A decoded layer that is already readable is itself an answer, and no
       // other decoder (or deeper search) can beat a readable decoding of the
       // right shape -- stop this branch here.
-      const direct = plausibility(inner);
+      const direct = plausibility(inner, dec.name !== 'reversed text');
       if (direct > 0.35) {
+        decodedAnswer = true;
         results.push({
           cipher: dec.name, key: '-', plaintext: inner, confidence: direct,
-          method: 'encoding layer decoded', chain: chain.concat(dec.name),
+          method: 'encoding layer decoded', chain: chain.slice(),
         });
         break;
       }
@@ -989,17 +992,30 @@ function solve(text, depth = 3, chain = [], options = {}) {
     }
   }
 
+  // Peel structural layers before searching periodic keys. A keyed attack on
+  // Base64/hex can manufacture a more English-looking wrapper reading than the
+  // real short payload; the verified representation should be explored first.
+  // The periodic family still runs when no decoded answer explains the text,
+  // or when the caller explicitly asked to compare more families.
+  if (options.compare || (!decodedAnswer && bestConfidence() < FAST_ANSWER_CONFIDENCE)) {
+    push(periodic(text));
+    push(quagmire3(text));
+    push(autokey(text));
+    for (const r of results) if (r.chain === undefined) r.chain = chain.slice();
+  }
+
   // The mixed-alphabet climber is the expensive last resort.  It cannot improve
   // a convincing direct or decoded answer, and skipping it in those cases keeps
   // the browser responsive for the overwhelmingly common Caesar/base64 inputs.
-  if (lettersOnly(text).length >= 60 && (options.compare || bestConfidence() < FAST_ANSWER_CONFIDENCE)) {
+  if (lettersOnly(text).length >= 60 && (options.compare || (!decodedAnswer && bestConfidence() < FAST_ANSWER_CONFIDENCE))) {
     push(substitution(text));
   }
 
   // Reverse is intentionally deferred until after the real cipher attacks.  It
   // remains part of the general layered search, without making each branch pay
   // for a second copy of the full solver.
-  if (depth > 0 && bestConfidence() < FAST_ANSWER_CONFIDENCE) {
+  if (!decodedAnswer && depth > 0 && bestConfidence() < FAST_ANSWER_CONFIDENCE
+      && chain[chain.length - 1] !== 'reversed text') {
     const reverse = DECODERS.find(dec => dec.name === 'reversed text');
     if (reverse && reverse.test(text)) {
       let inner;
@@ -1009,7 +1025,7 @@ function solve(text, depth = 3, chain = [], options = {}) {
         if (direct > 0.35) {
           results.push({
             cipher: reverse.name, key: '-', plaintext: inner, confidence: direct,
-            method: 'encoding layer decoded', chain: chain.concat(reverse.name),
+            method: 'encoding layer decoded', chain: chain.slice(),
           });
         }
         const sub = solve(inner, depth - 1, chain.concat(reverse.name));

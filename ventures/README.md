@@ -55,10 +55,11 @@ Two layers of content, each targeting a different search intent:
 Each page has genuine explanatory content (AdSense rejects thin pages, and so
 does Google's ranking).
 
-Accuracy is verified by `test.js` — 30 end-to-end cases covering every cipher
+Accuracy is verified by `test.js` — 42 end-to-end cases covering every cipher
 family (including the periodic family: Beaufort, Variant Beaufort, Porta,
-Gronsfeld, Trithemius and autokey) and several layered combinations. It passes
-30/30, and CI runs it on every deploy so a bad change cannot ship.
+Gronsfeld, Trithemius and autokey) and several layered combinations, including
+the reported short `binary → Base64 → hex → Morse` puzzle. It passes 42/42, and
+CI runs it on every deploy so a bad change cannot ship.
 
 ```bash
 python3 ventures/cipher-solver-web/build_model.py   # compile the language model

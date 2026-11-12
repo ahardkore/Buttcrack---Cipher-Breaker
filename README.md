@@ -267,7 +267,7 @@ BUTTCRACK_ALLOWED_HOSTS='*.preview.example.com' buttcrack serve --port 8099   # 
 
 A comma-separated list, a port after a name is ignored, and `*.` matches subdomains only. Nothing is accepted by default: the server has to be told which name is yours.
 
-There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to three stacked layers; everything this README describes (51 ciphers, six languages, the M-94) is the full local tool.
+There is also a browser-only quick version — a compact trigram solver that runs entirely client-side, no server and no upload — published with a **Wikipedia-style cipher wiki** (one encyclopedia article per cipher, fifty in all, generated from the solver's own registry) at **[ciphersolverpro.com](https://ciphersolverpro.com)**. It breaks twenty ciphers — the shift family, the periodic family (Vigenère, Beaufort, Variant Beaufort, Porta, Gronsfeld, Trithemius, autokey), monoalphabetic substitution, rail fence, single-byte XOR and the common encodings — with up to six stacked encoding layers; everything this README describes (51 ciphers, six languages, the M-94) is the full local tool.
 
 ---
 

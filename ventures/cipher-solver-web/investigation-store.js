@@ -17,7 +17,7 @@
   function attempt(a){
     if(!a || typeof a!=='object')throw new Error('Invalid attempt.');
     const options=a.options;
-    if(!options || (options.method!=='auto' && !Object.hasOwn(examples,options.method)) || typeof options.compare!=='boolean' || !Number.isInteger(options.depth) || options.depth<0 || options.depth>3)throw new Error('Invalid saved settings.');
+    if(!options || (options.method!=='auto' && !Object.hasOwn(examples,options.method)) || typeof options.compare!=='boolean' || !Number.isInteger(options.depth) || options.depth<0 || options.depth>6)throw new Error('Invalid saved settings.');
     const key=str(options.key,'Supplied key',512),text=str(a.text,'Ciphertext',20000);
     if(!text.trim())throw new Error('Empty saved ciphertext.');
     const created=str(a.created_at,'Timestamp',80);if(!Number.isFinite(Date.parse(created)))throw new Error('Invalid timestamp.');
