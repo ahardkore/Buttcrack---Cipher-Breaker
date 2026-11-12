@@ -24,7 +24,8 @@ settings & examples** is closed initially. It exposes:
 
 - An actual method selector, rather than a family-shaped sample masquerading as
   a selected algorithm; default is auto-detect.
-- Optional supplied keys, direct-only / up to three encoding layers.
+- Optional supplied keys, direct-only / up to six encoding layers (six is the
+  default, matching the full solver's layer ceiling).
 - **Explore more cipher families**, a slower opt-in to additional root attacks.
 - Passive example loading and Clear (resets current input/settings/results).
 
@@ -41,6 +42,16 @@ none are fabricated when the list is short. Every method may internally
 shortlist, and recursive branches retain their best candidate: the list is not
 exhaustive. Broader-family comparison expands root work, not every recursive
 branch, to avoid exploding a mobile search. Stop remains available.
+
+Structural encoding layers are explored before periodic key searches, so a
+keyed guess against a Base64/hex wrapper cannot hide a readable inner payload.
+A valid decoder whose output is a short, multi-word English-like reading keeps
+that lexical evidence without the usual short-sample penalty; this does not
+apply to guessed keys or reversed text. The reported
+`binary → Base64 → hex → Morse` puzzle (`I LIKE TRAINS`) is a shared regression
+fixture for the browser worker and the full Python solver. Explicit depth
+limits still stop the search, and malformed binary/Morse groups are not
+silently truncated into a partial answer.
 
 Statistical candidates and supplied-key readings are explicitly unproven.
 Scores/close-score gaps are heuristics, not probabilities. Green corpus labels
@@ -155,6 +166,8 @@ method routing, legacy-auto compatibility, actual candidate collection, corpus
 boundaries and history validation. `tests/browser/public-experience.spec.js`
 exercises the actual pages/workers at a mobile viewport, wiki navigation, explicit
 history, comparison and restoration. CI runs the deterministic web tests alongside
-Kryptos tests before Playwright. Local DOM tests additionally check stale-worker
-rejection, quota rollback, safe rendering and backup restore. Real browser/layout
+Kryptos tests before Playwright. The deploy accuracy harness also includes the
+reported layered fixture, so a browser-only regression cannot pass the unit
+suite and then ship through the Pages workflow. Local DOM tests additionally check
+stale-worker rejection, quota rollback, safe rendering and backup restore. Real browser/layout
 validation is separate from DOM execution.

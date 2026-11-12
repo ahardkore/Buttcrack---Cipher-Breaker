@@ -28,6 +28,22 @@ test('mobile solver is prominent; details stay folded and page has no horizontal
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });
 
+test('the reported four-layer binary puzzle solves with the untouched default settings',async({page})=>{
+  await page.setViewportSize({width:375,height:812});
+  await openSite(page);
+  await expect(page.locator('#solver-method')).toHaveValue('auto');
+  await expect(page.locator('#solver-depth')).toHaveValue('6');
+  const ciphertext=fs.readFileSync(path.resolve(__dirname,'../fixtures/binary_base64_hex_morse.txt'),'utf8').trim();
+  await page.locator('#ciphertext').fill(ciphertext);
+  await page.locator('#go').click();
+  await expect(page.locator('#output > div .plaintext').first()).toHaveText('I LIKE TRAINS',{timeout:15000});
+  await page.locator('.candidate-details summary').first().click();
+  await expect(page.locator('.candidate-details').first()).toContainText('binary → base64 → base16 (hex) → morse');
+  await page.getByText('Submitted text & settings for this result',{exact:true}).click();
+  await expect(page.locator('#output')).toContainText('encoding depth: 6');
+  expect(await page.evaluate(()=>localStorage.getItem('buttcrack.browser.investigations.v1'))).toBeNull();
+});
+
 test('wiki action preselects actual method and full worked example without auto-solving',async({page})=>{
   await openSite(page,'playfair-cipher-wiki.html');
   await page.getByRole('link',{name:'Try this cipher →',exact:true}).click();

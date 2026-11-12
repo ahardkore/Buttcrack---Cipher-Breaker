@@ -395,6 +395,11 @@ class TestStacks(unittest.TestCase):
     def test_encoding_over_encoding(self):
         self.assert_chain(code("base32", code("base64")), "base32 -> base64")
 
+    def test_reported_short_binary_base64_hex_morse_puzzle(self):
+        """Keep the full solver's answer aligned with the public browser regression."""
+        ciphertext = (pathlib.Path(__file__).parent / "fixtures" / "binary_base64_hex_morse.txt").read_text().strip()
+        self.assert_chain(ciphertext, "binary -> base64 -> base16 -> morse", "I LIKE TRAINS")
+
     def test_three_layers(self):
         inner = enc("caesar", "The signal will be given at midnight from the north tower", key=9)
         stacked = code("base32", code("base64", inner))

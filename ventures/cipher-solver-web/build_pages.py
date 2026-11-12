@@ -1009,7 +1009,7 @@ def solver_html() -> str:
       <div class="advanced-grid">
         <label for="solver-method">Method to test</label><select id="solver-method"><option value="auto">Auto-detect (browser-supported methods)</option></select>
         <label for="solver-key">Supplied key (optional)</label><input id="solver-key" type="text" maxlength="512" autocomplete="off" spellcheck="false" placeholder="Leave blank for key recovery where supported">
-        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3" selected>Up to 3 layers</option></select>
+        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3">Up to 3 layers</option><option value="4">Up to 4 layers</option><option value="5">Up to 5 layers</option><option value="6" selected>Up to 6 layers</option></select>
       </div>
       <label class="compare-option" for="solver-compare"><input id="solver-compare" type="checkbox"> Explore more cipher families (slower; not exhaustive)</label>
       <p class="privacy" id="method-help">Auto-detect ranks English-looking candidates, not probabilities. A selected method never silently falls back to a different cipher.</p>
@@ -1443,8 +1443,9 @@ def windows_app_html() -> str:
       <li><strong>Six languages.</strong> English with an 80,000-word dictionary distilled from
       a 25-million-word corpus, plus French, German, Italian, Latin and Spanish n-gram models —
       and <code>--language auto</code> to probe all six.</li>
-      <li><strong>Deeper layers.</strong> Encodings and ciphers stacked six deep, unwrapped and
-      reported as a chain, with the key of the cipher that actually hid the message.</li>
+      <li><strong>Cipher stacks.</strong> Encodings and ciphers stacked six deep, unwrapped and
+      reported as a chain, with the key of the cipher that actually hid the message. The browser
+      handles encoding stacks; the full version also searches ciphers underneath ciphers.</li>
       <li><strong>Your own time budget.</strong> Hard puzzles get minutes instead of the
       seconds a web page can spare, and the search reports what it tried and what it scored.</li>
     </ul>
@@ -1519,8 +1520,9 @@ PAGES = [
     <h2>Layered puzzles</h2>
     <p>Puzzle setters stack things: base64 around hex around a Caesar shift. After trying the
     direct ciphers, the solver tests whether the text is a valid encoding, unwraps one layer,
-    and runs the whole process again on the result, up to three layers deep. The decode chain
-    is shown with the answer so you can see exactly what was done.</p>
+    and runs the whole process again on the result, up to six layers deep by default (you can
+    lower the limit in Advanced). The decode chain is shown with the answer so you can see
+    exactly what was done.</p>
 
     <h2>A worked example</h2>
     <p>Press the <strong>Layered</strong> sample above. The input looks like base64. Decoding
@@ -1761,7 +1763,7 @@ PAGES = [
             ),
             (
                 "How deep can the layers go?",
-                "The browser version peels up to three encoding layers. The full version goes six layers deep, searches 50 ciphers and scores in six languages, which is what you want for harder challenges.",
+                "Both versions peel up to six encoding layers by default. The full version also searches 50 ciphers, handles cipher-on-cipher stacks and scores in six languages, which is what you want for harder challenges.",
             ),
             (
                 "Can it handle flag formats?",

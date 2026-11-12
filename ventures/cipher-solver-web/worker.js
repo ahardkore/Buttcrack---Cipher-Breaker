@@ -6,7 +6,7 @@ self.onmessage=e=>{
   try{
     const text=e.data.text;
     self.postMessage({type:'identified',info:identify(text)});
-    const report=BrowserRequest.run(text,e.data.options || {depth:e.data.depth ?? 3});
+    const report=BrowserRequest.run(text,e.data.options || {depth:e.data.depth ?? 6});
     self.postMessage({type:'done',...report,elapsed:(Date.now()-started)/1000});
   }catch(error){self.postMessage({type:'error',message:String(error.message || error)});}
 };

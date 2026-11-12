@@ -46,7 +46,7 @@
       <div class="advanced-grid">
         <label for="solver-method">Method to test</label><select id="solver-method"><option value="auto">Auto-detect (browser-supported methods)</option></select>
         <label for="solver-key">Supplied key (optional)</label><input id="solver-key" type="text" maxlength="512" autocomplete="off" spellcheck="false" placeholder="Leave blank for key recovery where supported">
-        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3" selected>Up to 3 layers</option></select>
+        <label for="solver-depth">Encoding layers</label><select id="solver-depth"><option value="0">Direct only</option><option value="1">Up to 1 layer</option><option value="2">Up to 2 layers</option><option value="3">Up to 3 layers</option><option value="4">Up to 4 layers</option><option value="5">Up to 5 layers</option><option value="6" selected>Up to 6 layers</option></select>
       </div>
       <label class="compare-option" for="solver-compare"><input id="solver-compare" type="checkbox"> Explore more cipher families (slower; not exhaustive)</label>
       <p class="privacy" id="method-help">Auto-detect ranks English-looking candidates, not probabilities. A selected method never silently falls back to a different cipher.</p>
@@ -180,8 +180,9 @@
     <h2>Layered puzzles</h2>
     <p>Puzzle setters stack things: base64 around hex around a Caesar shift. After trying the
     direct ciphers, the solver tests whether the text is a valid encoding, unwraps one layer,
-    and runs the whole process again on the result, up to three layers deep. The decode chain
-    is shown with the answer so you can see exactly what was done.</p>
+    and runs the whole process again on the result, up to six layers deep by default (you can
+    lower the limit in Advanced). The decode chain is shown with the answer so you can see
+    exactly what was done.</p>
 
     <h2>A worked example</h2>
     <p>Press the <strong>Layered</strong> sample above. The input looks like base64. Decoding

@@ -9,10 +9,10 @@
     substitution:text=>text.replace(/[^a-zA-Z]/g,'').length>=60 ? S.substitution(text) : null,
     xor_single:text=>text.length>=8 && text.length<4000 ? S.xorSingle([...text].map(c=>c.charCodeAt(0)&255)) : null};
   function settings(value={}) {
-    const method=value.method ?? 'auto',key=value.key ?? '',depth=value.depth ?? 3;
+    const method=value.method ?? 'auto',key=value.key ?? '',depth=value.depth ?? 6;
     if(typeof method!=='string' || (method!=='auto' && !Object.hasOwn(examples,method)))throw new Error('Choose a listed method.');
     if(typeof key!=='string' || key.length>512)throw new Error('Key limit is 512 characters.');
-    if(!Number.isInteger(depth) || depth<0 || depth>3)throw new Error('Encoding depth must be 0–3.');
+    if(!Number.isInteger(depth) || depth<0 || depth>6)throw new Error('Encoding depth must be 0–6.');
     if(value.compare!==undefined && typeof value.compare!=='boolean')throw new Error('Comparison must be a boolean.');
     if(method==='auto' && key)throw new Error('Select a specific method before supplying a key.');
     return {method,key,depth,compare:method==='auto' && !!value.compare,exampleId:typeof value.exampleId==='string' ? value.exampleId : null};
