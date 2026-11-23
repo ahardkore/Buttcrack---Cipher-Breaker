@@ -147,7 +147,8 @@ buttcrack show playfair
 buttcrack demo                # encrypt a few messages, then break them with no hints
 
 # web interface
-buttcrack serve --port 8080   # a server: binds 0.0.0.0, reachable from your network
+buttcrack serve --port 8080   # local server: loopback only by default
+buttcrack serve --host 0.0.0.0 # opt into LAN access (no authentication; trusted network only)
 buttcrack app                 # a desktop app: loopback only, opens your browser, has a window
 ```
 
@@ -256,7 +257,7 @@ decrypt("Xiqh zp ef bbzr.", "vigenere", "LEMON")   # 'Meet me at noon.'
 * **Playground** — pick any of the 51 ciphers, type a key, encrypt or decrypt, and see the layout preserved.
 * **Reference** — the cipher table with keyspaces, search costs and each cipher's own notes on what breaks it.
 
-Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own three static files, refuses path traversal, and holds no state beyond the in-memory job list.
+Bind it to the network with `--host 0.0.0.0`; it serves only the API and its own static files, refuses path traversal, and holds no state beyond the in-memory job list. **The API has no user authentication:** Host/Origin checks mitigate browser-based cross-origin access, not access by other clients that can reach the port. Only expose it on a trusted network or behind an authenticated, access-controlled proxy. Crack requests are limited to 100,000 characters and at most 120 seconds per job; the server also refuses new work when all 32 job records are occupied.
 
 It also checks the `Host` header it is asked on, because a local server answers whatever name the browser was told to use: `evil.example` can be pointed at your loopback address and then read every reply. Loopback names and address literals are accepted, and nothing else — which is what you want on a laptop and not what you want behind a proxy. A tunnel, a container port forward or a hosted preview sends the *name* it is published under, so name it:
 
@@ -488,7 +489,8 @@ Node, and its browser is a download, so CI runs it as its own job rather than
 making every contributor wait for it.
 
 `BUTTCRACK_STRICT=1` turns solver warnings into test failures; CI runs the suite
-with it set.
+with it set. See [docs/contributing.md](docs/contributing.md) for test tiers,
+optional browser setup, and release-checksum context.
 
 Layout:
 

@@ -1091,14 +1091,14 @@ def build_parser() -> argparse.ArgumentParser:
     doctor.set_defaults(func=cmd_doctor)
 
     serve = sub.add_parser("serve", help="run the web interface")
-    serve.add_argument("--host", default="0.0.0.0", help="interface to bind (default: 0.0.0.0)")
+    serve.add_argument("--host", default="127.0.0.1", help="interface to bind (default: 127.0.0.1; use 0.0.0.0 for LAN access)")
     serve.add_argument("--port", "-p", type=int, default=int(os.environ.get("PORT", 8080)))
     serve.add_argument("--no-browser", action="store_true", help="do not try to open a browser")
     serve.add_argument("--no-color", action="store_true")
     serve.set_defaults(func=cmd_serve)
 
-    # `serve` is the server: it binds 0.0.0.0 on a fixed port so you can reach
-    # it from elsewhere.  `app` is the desktop program the Windows installer
+    # `serve` defaults to loopback; pass --host 0.0.0.0 only when network
+    # access is intended. `app` is the desktop program the Windows installer
     # puts in the Start menu: loopback only, any free port, and a window to
     # close.  Same interface, opposite defaults, so neither has to compromise.
     app = sub.add_parser("app", help="run the desktop application (local web UI, 127.0.0.1 only)")
