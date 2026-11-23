@@ -52,6 +52,8 @@ from .paradigm import RECORDS, catalog
 STATIC_DIR = Path(__file__).parent / "static"
 LAB_SLOTS = threading.BoundedSemaphore(2)
 MAX_BODY_BYTES = 4 * 1024 * 1024
+MAX_CIPHERTEXT_CHARS = 100_000
+MAX_SEARCH_BUDGET_SECONDS = 120.0
 #: Finished jobs are kept for a while so a slow poller can still collect them.
 JOB_TTL_SECONDS = 600
 MAX_JOBS = 32
@@ -483,9 +485,11 @@ class Handler(BaseHTTPRequestHandler):
                 text = str(body.get("text") or "")
                 if not text.strip():
                     return self._error(400, "no ciphertext given")
+                if len(text) > MAX_CIPHERTEXT_CHARS:
+                    return self._error(413, f"ciphertext too long (limit {MAX_CIPHERTEXT_CHARS} characters)")
                 options = {
                     "text": text,
-                    "budget": _clamp(float(body.get("budget", 30.0)), 0.5, 600.0),
+                    "budget": _clamp(float(body.get("budget", 30.0)), 0.5, MAX_SEARCH_BUDGET_SECONDS),
                     "workers": int(_clamp(float(body.get("workers", 1)), 1, max(1, os.cpu_count() or 1) * 2)),
                     "depth": int(_clamp(float(body.get("depth", 6)), 0, 8)),
                     "candidates": int(_clamp(float(body.get("candidates", 8)), 1, 24)),
@@ -668,7 +672,7 @@ def make_server(host: str, port: int) -> _Server:
     return server
 
 
-def serve(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True) -> int:
+def serve(host: str = "127.0.0.1", port: int = 8080, open_browser: bool = True) -> int:
     """Run the web interface until interrupted.  Returns a process exit code."""
     try:
         httpd = make_server(host, port)

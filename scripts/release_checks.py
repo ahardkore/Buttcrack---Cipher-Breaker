@@ -36,9 +36,11 @@ def main():
     checks["installer_file_presence"] = bool(artifacts) or (ROOT / "packaging").exists()
     checks["package_size_bytes"] = sum(p.stat().st_size for p in artifacts)
     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in artifacts}
-    (ROOT / "release-sha256.json").write_text(json.dumps(hashes, indent=2), encoding="utf-8")
     print(json.dumps(checks, indent=2))
-    print("SHA-256 manifest: release-sha256.json")
+    if hashes:
+        print("Source artifact SHA-256:", json.dumps(hashes, indent=2))
+    else:
+        print("No built artifacts to hash; release workflows generate checksums after building.")
     return 0 if all(v is True for v in checks.values() if isinstance(v, bool)) else 1
 
 

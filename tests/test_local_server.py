@@ -115,6 +115,32 @@ class LocalServerRefusalTests(unittest.TestCase):
     def tearDownClass(cls) -> None:
         cls.app.stop()
 
+    def test_crack_rejects_oversized_ciphertext(self):
+        payload = json.dumps({"text": "A" * (server.MAX_CIPHERTEXT_CHARS + 1)}).encode()
+        status, _, body = headers_of(
+            self.app.port, "POST", "/api/crack", {"Content-Type": "application/json"}, payload
+        )
+        self.assertEqual(status, 413, body)
+        self.assertIn("ciphertext too long", json.loads(body)["error"])
+
+    def test_crack_caps_search_budget(self):
+        payload = json.dumps({"text": "Wkh txlfn", "budget": 600}).encode()
+        with mock.patch.object(server.JOBS, "create", return_value="bounded-job") as create:
+            status, _, body = headers_of(
+                self.app.port, "POST", "/api/crack", {"Content-Type": "application/json"}, payload
+            )
+        self.assertEqual(status, 200, body)
+        self.assertEqual(create.call_args.args[0]["budget"], server.MAX_SEARCH_BUDGET_SECONDS)
+
+    def test_oversized_request_body_is_rejected(self):
+        # Exercise the actual length guard without allocating a multi-megabyte fixture.
+        with mock.patch.object(server, "MAX_BODY_BYTES", 8):
+            status, _, body = headers_of(
+                self.app.port, "POST", "/api/identify", {"Content-Type": "application/json"}, b" " * 9
+            )
+        self.assertEqual(status, 400, body)
+        self.assertIn("request body too large", json.loads(body)["error"])
+
     def test_comparison_search_options_are_passed_to_the_job(self):
         options = {"text": "Wkh dufklyh frqwdlqv pdqb ohwwhuv", "compare": True, "candidates": 10, "budget": .5}
         with mock.patch.object(server.JOBS, "create", return_value="comparison-job") as create:

@@ -149,15 +149,19 @@ jobs:
           python -m buttcrack identify "Wkh txlfn eurzq ira" | grep -qi caesar
 
   package:
-    name: package builds and installs
+    name: package builds and installs (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
       - name: Build sdist and wheel
         run: |
